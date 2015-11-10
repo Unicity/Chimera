@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema
+	xmlns="http://static.unicity.com/modules/xsd/spring-bt.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:spring="http://static.unicity.com/modules/xsd/spring.xsd"
+	targetNamespace="http://static.unicity.com/modules/xsd/spring-bt.xsd"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Import Schema -->
+	<xsd:import namespace="http://static.unicity.com/modules/xsd/spring.xsd" schemaLocation="http://static.unicity.com/modules/xsd/spring.xsd" />
+	<!-- Root Elements -->
+	<xsd:element name="action" type="action" />
+	<xsd:element name="branch" type="branch" />
+	<xsd:element name="breakpoint" type="breakpoint" />
+	<xsd:element name="composite" type="composite" />
+	<xsd:element name="condition" type="condition" />
+	<xsd:element name="decorator" type="decorator" />
+	<xsd:element name="leaf" type="leaf" />
+	<xsd:element name="logger" type="logger" />
+	<xsd:element name="parallel" type="parallel" />
+	<xsd:element name="picker" type="picker" />
+	<xsd:element name="ref" type="ref" />
+	<xsd:element name="resetter" type="resetter" />
+	<xsd:element name="selector" type="selector" />
+	<xsd:element name="semaphore" type="semaphore" />
+	<xsd:element name="sequence" type="sequence" />
+	<xsd:element name="stub" type="stub" />
+	<xsd:element name="ticker" type="ticker" />
+	<xsd:element name="timer" type="timer" />
+	<!-- Node Definitions -->
+	<xsd:complexType name="action">
+		<xsd:complexContent>
+			<xsd:extension base="leaf" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="blackboard">
+		<xsd:complexContent>
+			<xsd:extension base="map" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="branch">
+		<xsd:complexContent>
+			<xsd:extension base="composite" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="breakpoint">
+		<xsd:complexContent>
+			<xsd:extension base="leaf-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Breakpoint" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="composite">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="composite-base">
+		<xsd:complexContent>
+			<xsd:extension base="task">
+				<xsd:sequence>
+					<xsd:element name="tasks" type="tasks" minOccurs="0" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="condition">
+		<xsd:complexContent>
+			<xsd:extension base="leaf" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="decorator">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="element">
+		<xsd:attribute name="id" type="spring:identifier" use="optional" />
+		<xsd:attribute name="name" type="spring:identifiers" use="optional" />
+		<xsd:attribute name="scope" type="spring:scope" use="optional" default="singleton" />
+		<xsd:attribute name="title" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:group name="elements">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="action" type="action" />
+				<xsd:element name="branch" type="branch" />
+				<xsd:element name="breakpoint" type="breakpoint" />
+				<xsd:element name="composite" type="composite" />
+				<xsd:element name="condition" type="condition" />
+				<xsd:element name="decorator" type="decorator" />
+				<xsd:element name="leaf" type="leaf" />
+				<xsd:element name="logger" type="logger" />
+				<xsd:element name="parallel" type="parallel" />
+				<xsd:element name="picker" type="picker" />
+				<xsd:element name="ref" type="ref" />
+				<xsd:element name="resetter" type="resetter" />
+				<xsd:element name="selector" type="selector" />
+				<xsd:element name="semaphore" type="semaphore" />
+				<xsd:element name="sequence" type="sequence" />
+				<xsd:element name="stub" type="stub" />
+				<xsd:element name="ticker" type="ticker" />
+				<xsd:element name="timer" type="timer" />
+				<xsd:any namespace="##other" processContents="strict" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="entry">
+		<xsd:group ref="spring:elements"/>
+		<xsd:attribute name="key" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="optional" />
+		<xsd:attribute name="value-ref" type="spring:identifier" use="optional" />
+		<xsd:attribute name="value-type" type="spring:primitive" use="optional" default="string" />
+	</xsd:complexType>
+	<xsd:complexType name="leaf">
+		<xsd:complexContent>
+			<xsd:extension base="task">
+				<xsd:attribute name="type" type="spring:class" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="leaf-base">
+		<xsd:complexContent>
+			<xsd:extension base="task" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="logger">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Logger" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="map">
+		<xsd:sequence>
+			<xsd:element name="entry" type="entry" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="spring:identifier" use="optional" />
+		<xsd:attribute name="name" type="spring:identifiers" use="optional" />
+		<xsd:attribute name="scope" type="spring:scope" use="optional" default="singleton" />
+	</xsd:complexType>
+	<xsd:complexType name="parallel">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Parallel" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="picker">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Picker" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ref">
+		<xsd:complexContent>
+			<xsd:extension base="spring:ref" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="resetter">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Resetter" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="selector">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Selector" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="semaphore">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Semaphore" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="sequence">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Sequence" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="settings">
+		<xsd:complexContent>
+			<xsd:extension base="map" />
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="stub">
+		<xsd:complexContent>
+			<xsd:extension base="leaf-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Stub" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="task">
+		<xsd:complexContent>
+			<xsd:extension base="element">
+				<xsd:sequence>
+					<xsd:element name="blackboard" type="blackboard" minOccurs="0" maxOccurs="1" />
+					<xsd:element name="settings" type="settings" minOccurs="0" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="tasks">
+		<xsd:group ref="elements"/>
+	</xsd:complexType>
+	<xsd:complexType name="ticker">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Ticker" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="timer">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Timer" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

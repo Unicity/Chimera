@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Mappings" type="Mappings" />
+	<xs:complexType name="Atom">
+		<xs:sequence>
+			<xs:element name="Rel" type="FormatType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="Ind" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Field">
+		<xs:sequence>
+			<xs:element name="Item" type="Item" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="Format" type="FormatType" use="required" />
+	</xs:complexType>
+	<xs:simpleType name="FormatType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="model" />
+			<xs:enumeration value="canonical" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Item">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Name" type="xs:string" use="required" />
+				<xs:attribute name="Type" type="PrimitiveType" use="optional" default="string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Key">
+		<xs:sequence>
+			<xs:element name="Atom" type="Atom" minOccurs="2" maxOccurs="2" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Keys">
+		<xs:sequence>
+			<xs:element name="Key" type="Key" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Mapping">
+		<xs:sequence>
+			<xs:element name="System" type="System" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="Mappings">
+		<xs:sequence>
+			<xs:element name="Mapping" type="Mapping" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="PrimitiveType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="bool" />
+			<xs:enumeration value="boolean" />
+			<xs:enumeration value="char" />
+			<xs:enumeration value="date" />
+			<xs:enumeration value="datetime" />
+			<xs:enumeration value="time" />
+			<xs:enumeration value="timestamp" />
+			<xs:enumeration value="decimal" />
+			<xs:enumeration value="double" />
+			<xs:enumeration value="float" />
+			<xs:enumeration value="money" />
+			<xs:enumeration value="number" />
+			<xs:enumeration value="real" />
+			<xs:enumeration value="single" />
+			<xs:enumeration value="bit" />
+			<xs:enumeration value="byte" />
+			<xs:enumeration value="int" />
+			<xs:enumeration value="int8" />
+			<xs:enumeration value="int16" />
+			<xs:enumeration value="int32" />
+			<xs:enumeration value="int64" />
+			<xs:enumeration value="long" />
+			<xs:enumeration value="short" />
+			<xs:enumeration value="uint" />
+			<xs:enumeration value="uint8" />
+			<xs:enumeration value="uint16" />
+			<xs:enumeration value="uint32" />
+			<xs:enumeration value="uint64" />
+			<xs:enumeration value="integer" />
+			<xs:enumeration value="word" />
+			<xs:enumeration value="ord" />
+			<xs:enumeration value="ordinal" />
+			<xs:enumeration value="nil" />
+			<xs:enumeration value="null" />
+			<xs:enumeration value="nvarchar" />
+			<xs:enumeration value="string" />
+			<xs:enumeration value="varchar" />
+			<xs:enumeration value="undefined" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="System">
+		<xs:sequence>
+			<xs:element name="Keys" type="Keys" minOccurs="1" maxOccurs="1" />
+			<xs:element name="Translations" type="Translations" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="Translation">
+		<xs:sequence>
+			<xs:element name="Field" type="Field" minOccurs="2" maxOccurs="2" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Translations">
+		<xs:sequence>
+			<xs:element name="Translation" type="Translation" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

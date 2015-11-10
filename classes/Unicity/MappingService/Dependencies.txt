@@ -1,0 +1,9 @@
+Packages:
+* \Unicity\Automaton
+* \Unicity\Common
+* \Unicity\Config
+* \Unicity\Core
+* \Unicity\IO
+* \Unicity\Lexer
+* \Unicity\Throwable
+* \Leap

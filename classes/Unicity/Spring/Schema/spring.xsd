@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema
+	xmlns="http://static.unicity.com/modules/xsd/spring.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://static.unicity.com/modules/xsd/spring.xsd"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Root Element -->
+	<xsd:element name="objects" type="objects" />
+	<!-- Node Definitions -->
+	<xsd:complexType name="array">
+		<xsd:group ref="elements"/>
+	</xsd:complexType>
+	<xsd:complexType name="constructor-arg">
+		<xsd:group ref="elements"/>
+		<xsd:attribute name="expression" type="xsd:string" use="optional" />
+		<xsd:attribute name="ref" type="identifier" use="optional" />
+		<xsd:attribute name="type" type="primitive" use="optional" default="string" />
+		<xsd:attribute name="value" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="dictionary">
+		<xsd:sequence>
+			<xsd:element name="entry" type="entry" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:group name="elements">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="array" type="array" />
+				<xsd:element name="dictionary" type="dictionary" />
+				<xsd:element name="expression" type="expression" />
+				<xsd:element name="function" type="function" />
+				<xsd:element name="idref" type="idref" />
+				<xsd:element name="list" type="list" />
+				<xsd:element name="map" type="map" />
+				<xsd:element name="null" type="null" />
+				<xsd:element name="object" type="object" />
+				<xsd:element name="ref" type="ref" />
+				<xsd:element name="set" type="set" />
+				<xsd:element name="undefined" type="undefined" />
+				<xsd:element name="value" type="value" />
+				<xsd:any namespace="##other" processContents="strict" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="entry">
+		<xsd:group ref="elements"/>
+		<xsd:attribute name="key" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="optional" />
+		<xsd:attribute name="value-ref" type="identifier" use="optional" />
+		<xsd:attribute name="value-type" type="primitive" use="optional" default="string" />
+	</xsd:complexType>
+	<xsd:complexType name="expression">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="type" type="primitive" use="optional" default="string" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="function">
+		<xsd:choice minOccurs="0" maxOccurs="0"/>
+		<xsd:attribute name="delegate-object" type="class" use="required" />
+		<xsd:attribute name="delegate-method" type="method" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="idref">
+		<xsd:choice minOccurs="0" maxOccurs="0"/>
+		<xsd:attribute name="object" type="identifier" use="optional"/>
+		<xsd:attribute name="local" type="identifier" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="list">
+		<xsd:group ref="elements"/>
+	</xsd:complexType>
+	<xsd:complexType name="map">
+		<xsd:sequence>
+			<xsd:element name="entry" type="entry" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="null">
+		<xsd:choice minOccurs="0" maxOccurs="0"/>
+	</xsd:complexType>
+	<xsd:complexType name="object">
+		<xsd:sequence>
+			<xsd:element name="constructor-arg" type="constructor-arg" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="property" type="property" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="factory-object" type="class" use="optional" />
+		<xsd:attribute name="factory-method" type="method" use="optional" />
+		<xsd:attribute name="id" type="identifier" use="optional" />
+		<xsd:attribute name="init-method" type="method" use="optional" />
+		<xsd:attribute name="name" type="identifiers" use="optional" />
+		<xsd:attribute name="scope" type="scope" use="optional" default="singleton" />
+		<xsd:attribute name="type" type="class" use="optional" default="\stdClass" />
+	</xsd:complexType>
+	<xsd:complexType name="objects">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="object" type="object" />
+				<xsd:any namespace="##other" processContents="strict" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="property">
+		<xsd:group ref="elements"/>
+		<xsd:attribute name="name" type="field" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="ref">
+		<xsd:choice minOccurs="0" maxOccurs="0"/>
+		<xsd:attribute name="object" type="identifier" use="optional"/>
+		<xsd:attribute name="local" type="identifier" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="set">
+		<xsd:group ref="elements"/>
+	</xsd:complexType>
+	<xsd:complexType name="undefined">
+		<xsd:choice minOccurs="0" maxOccurs="0"/>
+	</xsd:complexType>
+	<xsd:complexType name="value">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<!--<xsd:attribute name="xml:space" type="space" use="optional" />-->
+				<xsd:attribute name="type" type="primitive" use="optional" default="string" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- Rule Definitions -->
+	<xsd:simpleType name="class">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="((\\\|_|\\.)?[a-zA-Z][a-zA-Z0-9]*)+"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="method">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z_][a-zA-Z0-9_]*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="field">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z_][a-zA-Z0-9_]*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="identifier">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z0-9_]+"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="identifiers">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z0-9_]+((,|;|\s)+[a-zA-Z0-9_]+)*"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="primitive">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="bool" />
+			<xsd:enumeration value="boolean" />
+			<xsd:enumeration value="char" />
+			<xsd:enumeration value="date" />
+			<xsd:enumeration value="datetime" />
+			<xsd:enumeration value="time" />
+			<xsd:enumeration value="timestamp" />
+			<xsd:enumeration value="decimal" />
+			<xsd:enumeration value="double" />
+			<xsd:enumeration value="float" />
+			<xsd:enumeration value="money" />
+			<xsd:enumeration value="number" />
+			<xsd:enumeration value="real" />
+			<xsd:enumeration value="single" />
+			<xsd:enumeration value="bit" />
+			<xsd:enumeration value="byte" />
+			<xsd:enumeration value="int" />
+			<xsd:enumeration value="int8" />
+			<xsd:enumeration value="int16" />
+			<xsd:enumeration value="int32" />
+			<xsd:enumeration value="int64" />
+			<xsd:enumeration value="long" />
+			<xsd:enumeration value="short" />
+			<xsd:enumeration value="uint" />
+			<xsd:enumeration value="uint8" />
+			<xsd:enumeration value="uint16" />
+			<xsd:enumeration value="uint32" />
+			<xsd:enumeration value="uint64" />
+			<xsd:enumeration value="integer" />
+			<xsd:enumeration value="word" />
+			<xsd:enumeration value="ord" />
+			<xsd:enumeration value="ordinal" />
+			<xsd:enumeration value="nil" />
+			<xsd:enumeration value="null" />
+			<xsd:enumeration value="nvarchar" />
+			<xsd:enumeration value="string" />
+			<xsd:enumeration value="varchar" />
+			<xsd:enumeration value="undefined" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="scope">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="session" />
+			<xsd:enumeration value="singleton" />
+			<xsd:enumeration value="prototype" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="space">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="preserve" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>
