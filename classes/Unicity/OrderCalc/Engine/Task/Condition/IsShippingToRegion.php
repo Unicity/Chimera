@@ -38,7 +38,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$begin = Core\Convert::toInteger($this->settings->getValue('begin'));
 			$end = Core\Convert::toInteger($this->settings->getValue('end'));
 
-			if (($zip >= $begin) || ($zip <= $end)) {
+			if (($zip >= $begin) && ($zip <= $end)) {
 				return BT\Task\Status::SUCCESS;
 			}
 
