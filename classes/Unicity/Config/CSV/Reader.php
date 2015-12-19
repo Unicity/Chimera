@@ -49,6 +49,7 @@ namespace Unicity\Config\CSV {
 				'encoder' => null,
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
 				'escape' => '\\',
+				'filter' => null, // {{ class_name }}
 				'key_case' => null, // null || CASE_LOWER || CASE_UPPER
 				'list_type' => '\\Unicity\\Common\\Mutable\\ArrayList',
 				'schema' => array(),
