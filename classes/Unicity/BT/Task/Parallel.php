@@ -67,26 +67,28 @@ namespace Unicity\BT\Task {
 				if ($shuffle) {
 					$this->tasks->shuffle();
 				}
-				$inactives = 0;
-				$successes = 0;
-				$failures = 0;
+				$inactivesCt = 0;
+				$successesCt = 0;
+				$successesMax = min(Core\Convert::toInteger($this->settings->getValue('successes')), $count);
+				$failuresCt = 0;
+				$failuresMax = min(Core\Convert::toInteger($this->settings->getValue('failures')), $count);
 				foreach ($this->tasks as $task) {
 					$status = BT\Task\Handler::process($task, $exchange);
 					switch ($status) {
 						case BT\Task\Status::INACTIVE:
-							$inactives++;
+							$inactivesCt++;
 							break;
 						case BT\Task\Status::ACTIVE:
 							break;
 						case BT\Task\Status::SUCCESS:
-							$successes++;
-							if ($successes >= min($successes, $count)) {
+							$successesCt++;
+							if ($successesCt >= $successesMax) {
 								return BT\Task\Status::SUCCESS;
 							}
 							break;
 						case BT\Task\Status::FAILED:
-							$failures++;
-							if ($failures >= min($failures, $count)) {
+							$failuresCt++;
+							if ($failuresCt >= $failuresMax) {
 								return BT\Task\Status::FAILED;
 							}
 							break;
@@ -95,7 +97,7 @@ namespace Unicity\BT\Task {
 							return $status;
 					}
 				}
-				if ($inactives != $count) {
+				if ($inactivesCt != $count) {
 					return BT\Task\Status::ACTIVE;
 				}
 			}

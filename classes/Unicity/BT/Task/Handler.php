@@ -40,7 +40,12 @@ namespace Unicity\BT\Task {
 		 */
 		public static function process(BT\Task $task, BT\Exchange $exchange) {
 			$task->before();
-			$status = $task->process($exchange);
+			try {
+				$status = $task->process($exchange);
+			}
+			catch (\Exception $ex) {
+				$status = BT\Task\Status::ERROR;
+			}
 			$task->after();
 			return $status;
 		}
