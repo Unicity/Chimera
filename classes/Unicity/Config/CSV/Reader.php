@@ -115,7 +115,10 @@ namespace Unicity\Config\CSV {
 							$value = Core\Convert::changeType($value, $type);
 						}
 
-						$procedure(new Common\Mutable\HashMap($record));
+						$map = new Common\Mutable\HashMap($record);
+						if (($self->filter === null) || call_user_func_array(array($self->filter, 'isQualified'), array($map))) {
+							$procedure($map);
+						}
 					}
 				}
 			});
