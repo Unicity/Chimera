@@ -79,9 +79,9 @@ namespace Unicity\Config\HTML {
 					throw $ex;
 				}
 				$template = ob_get_clean();
-				if (!empty($this->metadata['minify'])) {
-					$template = Minify\HTML::minify($template, $this->metadata['minify']);
-				}
+				//if (!empty($this->metadata['minify'])) {
+				//	$template = Minify\HTML::minify($template, $this->metadata['minify']);
+				//}
 				return $template;
 			}
 			return $declaration;
