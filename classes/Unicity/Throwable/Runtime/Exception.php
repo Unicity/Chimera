@@ -45,12 +45,12 @@ namespace Unicity\Throwable\Runtime {
 		 *
 		 * @access public
 		 * @param string $message                                   the error message
-		 * @param array $variables                                  translation variables
+		 * @param array $variables                                  the translation variables
 		 * @param integer $code                                     the exception code
 		 */
 		public function __construct($message = '', array $variables = null, $code = 0) {
 			parent::__construct(
-				empty($variables) ? (string) $message : strtr( (string) $message, $variables),
+				empty($variables) ? (string) $message : strtr((string) $message, $variables),
 				(int) $code
 			);
 			$this->code = (int) $code; // Known bug: http://bugs.php.net/39615
@@ -83,7 +83,7 @@ namespace Unicity\Throwable\Runtime {
 		 *                                                          to the current object
 		 */
 		public function __equals($object) {
-			return (($object !== null) && ($object instanceof Throwable\Runtime\Exception) && ((string)serialize($object) == (string)serialize($this)));
+			return (($object !== null) && ($object instanceof Throwable\Runtime\Exception) && ((string) serialize($object) == (string) serialize($this)));
 		}
 
 		/**
