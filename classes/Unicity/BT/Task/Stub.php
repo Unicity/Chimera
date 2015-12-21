@@ -35,19 +35,19 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if ($this->settings->hasKey('status')) {
-				$status = $this->settings->getValue('status');
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if ($this->policy->hasKey('status')) {
+				$status = $this->policy->getValue('status');
 				if (is_string($status)) {
 					$status = BT\Task\Status::valueOf($status);
 				}
-				$this->settings->putEntry('status', Core\Convert::toInteger($status));
+				$this->policy->putEntry('status', Core\Convert::toInteger($status));
 			}
 			else {
-				$this->settings->putEntry('status', BT\Task\Status::SUCCESS);
+				$this->policy->putEntry('status', BT\Task\Status::SUCCESS);
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			return $this->settings->hasKey('status');
+			return $this->policy->hasKey('status');
 		}
 
 	}

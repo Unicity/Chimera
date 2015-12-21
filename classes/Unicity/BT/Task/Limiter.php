@@ -43,12 +43,12 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('limit')) {
-				$this->settings->putEntry('limit', 1);
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('limit')) {
+				$this->policy->putEntry('limit', 1);
 			}
 			$this->calls = 0;
 		}
@@ -71,7 +71,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$limit = Core\Convert::toInteger($this->settings->getValue('limit'));
+			$limit = Core\Convert::toInteger($this->policy->getValue('limit'));
 			if ($this->calls < $limit) {
 				$status = BT\Task\Handler::process($this->task, $exchange);
 				$this->calls++;

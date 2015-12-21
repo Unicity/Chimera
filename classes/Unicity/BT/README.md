@@ -82,14 +82,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 
 Example:
 
@@ -114,7 +114,7 @@ Attributes:
 | `name`    | string |                               | Used to assign a set of alias selector for the node.  | No         |
 | `scope`   | enum   | <b>singleton</b>, prototype, session | Defines how the object is to be instantiated.  | No         |
 
-Settings:
+Policy:
 
 - N/A.
 
@@ -151,14 +151,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -186,14 +186,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 
 Example:
 
@@ -220,14 +220,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -255,14 +255,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 
 Example:
 
@@ -289,14 +289,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -324,7 +324,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type    | Values                        | Description                                           | Required   |
 | :-------: | :-----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -333,7 +333,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -360,7 +360,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type    | Values                        | Description                                           | Required   |
 | :-------: | :-----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -373,7 +373,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -401,7 +401,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type    | Values                        | Description                                           | Required   |
 | :-------: | :-----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -412,7 +412,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -440,14 +440,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -475,7 +475,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -485,7 +485,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -513,7 +513,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -522,7 +522,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -550,7 +550,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -559,7 +559,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -587,7 +587,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type    | Values                        | Description                                           | Required   |
 | :-------: | :-----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -600,7 +600,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -626,7 +626,7 @@ Attributes:
 | `value`   | string |                               | Used to assign a value to the entry.                  | No         |
 | `value-ref` | string |                             | Used to represent the id of an object as the value.   | No         |
 
-Settings:
+Policy:
 
 - N/A.
 
@@ -695,14 +695,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 
 Example:
 
@@ -729,14 +729,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -764,7 +764,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -775,7 +775,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -809,7 +809,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -819,7 +819,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -849,7 +849,7 @@ Attributes:
 | `local`   | string |                               | Used to represent the id of an object in the same XML unit. | No   |
 | `object`  | string |                               | Used to represent the id of an object in any XML unit. | No        |
 
-Settings:
+Policy:
 
 - N/A
 
@@ -882,14 +882,14 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 - None.
 
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -917,7 +917,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -926,7 +926,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -960,7 +960,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -969,7 +969,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -997,7 +997,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -1006,7 +1006,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -1023,11 +1023,11 @@ Example:
 
 --------------------------------------------------------------------------------------------------------------------------
 
-#### <i>\<spring-bt:settings /></i>
+#### <i>\<spring-bt:policy /></i>
 
 Description:
 
-- This represents a `\Unicity\Common\Mutable\IMap` object. These settings are used to configure a task upon initialization.
+- This represents a `\Unicity\Common\Mutable\IMap` object. This policy defines the default configuration for the task.
 
 Attributes:
 
@@ -1037,7 +1037,7 @@ Attributes:
 | `name`    | string |                               | Used to assign a set of alias selector for the node.  | No         |
 | `scope`   | enum   | <b>singleton</b>, prototype, session | Defines how the object is to be instantiated.  | No         |
 
-Settings:
+Policy:
 
 - N/A.
 
@@ -1049,9 +1049,9 @@ Example:
 
 ````
 <spring-bt:iterator>
-	<spring-bt:settings>
+	<spring-bt:policy>
 		<spring-bt:entry key="steps" type="integer" value="10" />
-	</spring-bt:settings>
+	</spring-bt:policy>
 </spring-bt:iterator>
 ````
 
@@ -1074,7 +1074,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type    | Values                        | Description                                           | Required   |
 | :-------: | :-----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -1083,7 +1083,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 
 Example:
 
@@ -1107,7 +1107,7 @@ Attributes:
 | `name`    | string |                               | Used to assign a set of alias selector for the node.  | No         |
 | `scope`   | enum   | <b>singleton</b>, prototype, session | Defines how the object is to be instantiated.  | No         |
 
-Settings:
+Policy:
 
 - N/A.
 
@@ -1163,7 +1163,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -1172,7 +1172,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -1200,7 +1200,7 @@ Attributes:
 | `title`   | string |                               | Used to assign a title to the node.                   | No         |
 | `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
 
-Settings:
+Policy:
 
 | Setting   | Type   | Values                        | Description                                           | Required   |
 | :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
@@ -1210,7 +1210,7 @@ Settings:
 Children:
 
 - May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:settings />` node.
+- May contain 1 `<spring:policy />` node.
 - May contain 1 `<spring:tasks />` node.
 
 Example:
@@ -1235,7 +1235,7 @@ Attributes:
 | `encoding`   | enum   | UTF-8                          | Used to identify the character encoding.              | Yes        |
 | `standalone` | enum   | yes, <b>no</b>                 | Used to indicate that the document stands alone.      | No         |
 
-Settings:
+Policy:
 
 - N/A.
 

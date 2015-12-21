@@ -84,7 +84,7 @@ namespace Unicity\BT {
 			$registry->putEntry(array('selector', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SelectorElement());
 			$registry->putEntry(array('semaphore', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SemaphoreElement());
 			$registry->putEntry(array('sequence', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SequenceElement());
-			$registry->putEntry(array('settings', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SettingsElement());
+			$registry->putEntry(array('policy', BT\Task::NAMESPACE_URI), new BT\Object\Factory\PolicyElement());
 			$registry->putEntry(array('stub', BT\Task::NAMESPACE_URI), new BT\Object\Factory\StubElement());
 			$registry->putEntry(array('tasks', BT\Task::NAMESPACE_URI), new BT\Object\Factory\TasksElement());
 			$registry->putEntry(array('ticker', BT\Task::NAMESPACE_URI), new BT\Object\Factory\TickerElement());

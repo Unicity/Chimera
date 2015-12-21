@@ -45,14 +45,14 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('interval')) {
-				$this->settings->putEntry('interval', 1000); // 1 millisecond = 1/1000 of a second
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('interval')) {
+				$this->policy->putEntry('interval', 1000); // 1 millisecond = 1/1000 of a second
 			}
-			$this->next_time = microtime(true) + (Core\Convert::toInteger($this->settings->getValue('interval')) / 1000);
+			$this->next_time = microtime(true) + (Core\Convert::toInteger($this->policy->getValue('interval')) / 1000);
 		}
 
 		/**
@@ -73,7 +73,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$interval = Core\Convert::toInteger($this->settings->getValue('interval')) / 1000; // milliseconds => seconds
+			$interval = Core\Convert::toInteger($this->policy->getValue('interval')) / 1000; // milliseconds => seconds
 
 			if (microtime(true) >= $this->next_time) {
 				$status = BT\Task\Handler::process($this->task, $exchange);
@@ -90,7 +90,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 */
 		public function reset() {
-			$this->start_time = microtime(true) + (Core\Convert::toInteger($this->settings->getValue('interval')) / 1000);
+			$this->start_time = microtime(true) + (Core\Convert::toInteger($this->policy->getValue('interval')) / 1000);
 		}
 
 	}

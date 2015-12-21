@@ -43,12 +43,12 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('max_count')) {
-				$this->settings->putEntry('max_count', 10);
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('max_count')) {
+				$this->policy->putEntry('max_count', 10);
 			}
 			$this->counter = 0;
 		}
@@ -71,7 +71,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$max_count = Core\Convert::toInteger($this->settings->getValue('max_count'));
+			$max_count = Core\Convert::toInteger($this->policy->getValue('max_count'));
 			if ($this->counter < $max_count) {
 				$this->counter++;
 				return BT\Task\Status::ACTIVE;

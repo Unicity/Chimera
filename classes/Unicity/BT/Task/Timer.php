@@ -45,15 +45,15 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('delay')) {
-				$this->settings->putEntry('delay', 0); // 1 millisecond = 1/1000 of a second
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('delay')) {
+				$this->policy->putEntry('delay', 0); // 1 millisecond = 1/1000 of a second
 			}
-			if (!$this->settings->hasKey('duration')) {
-				$this->settings->putEntry('duration', 1000); // 1 millisecond = 1/1000 of a second
+			if (!$this->policy->hasKey('duration')) {
+				$this->policy->putEntry('duration', 1000); // 1 millisecond = 1/1000 of a second
 			}
 			$this->start_time = microtime(true);
 		}
@@ -76,11 +76,11 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$delay = Core\Convert::toInteger($this->settings->getValue('delay')) / 1000; // milliseconds => seconds
+			$delay = Core\Convert::toInteger($this->policy->getValue('delay')) / 1000; // milliseconds => seconds
 
 			$deltaT = microtime(true) - $this->start_time;
 			if ($deltaT >= $delay) {
-				$duration = Core\Convert::toInteger($this->settings->getValue('duration')) / 1000; // milliseconds => seconds
+				$duration = Core\Convert::toInteger($this->policy->getValue('duration')) / 1000; // milliseconds => seconds
 
 				if ($deltaT < ($delay + $duration)) {
 					return BT\Task\Handler::process($this->task, $exchange);

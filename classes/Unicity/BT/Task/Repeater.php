@@ -36,22 +36,22 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if ($this->settings->hasKey('until')) {
-				$until = $this->settings->getValue('until');
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if ($this->policy->hasKey('until')) {
+				$until = $this->policy->getValue('until');
 				if (is_string($until)) {
 					$until = BT\Task\Status::valueOf($until);
 				}
 				if ($until !== BT\Task\Status::SUCCESS) {
 					$until = BT\Task\Status::FAILED;
 				}
-				$this->settings->putEntry('until', $until);
+				$this->policy->putEntry('until', $until);
 			}
 			else {
-				$this->settings->putEntry('until', BT\Task\Status::SUCCESS);
+				$this->policy->putEntry('until', BT\Task\Status::SUCCESS);
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$until = $this->settings->getValue('until');
+			$until = $this->policy->getValue('until');
 			do {
 				$status = BT\Task\Handler::process($this->task, $exchange);
 				if (!in_array($status, array(BT\Task\Status::SUCCESS, BT\Task\Status::FAILED))) {

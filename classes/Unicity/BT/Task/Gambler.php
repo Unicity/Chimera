@@ -37,18 +37,18 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('callable')) {
-				$this->settings->putEntry('callable', 'rand'); // ['rand', 'mt_rand']
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('callable')) {
+				$this->policy->putEntry('callable', 'rand'); // ['rand', 'mt_rand']
 			}
-			if (!$this->settings->hasKey('odds')) {
-				$this->settings->putEntry('odds', 0.01);
+			if (!$this->policy->hasKey('odds')) {
+				$this->policy->putEntry('odds', 0.01);
 			}
-			if (!$this->settings->hasKey('options')) {
-				$this->settings->putEntry('options', 100);
+			if (!$this->policy->hasKey('options')) {
+				$this->policy->putEntry('options', 100);
 			}
 		}
 
@@ -60,9 +60,9 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$callable = explode(',', $this->settings->getValue('callable'));
-			$options = Core\Convert::toInteger($this->settings->getValue('options'));
-			$probability = Core\Convert::toDouble($this->settings->hasKey('odds')) * $options;
+			$callable = explode(',', $this->policy->getValue('callable'));
+			$options = Core\Convert::toInteger($this->policy->getValue('options'));
+			$probability = Core\Convert::toDouble($this->policy->hasKey('odds')) * $options;
 			if (call_user_func($callable, array(1, $options)) <= $probability) {
 				$status = BT\Task\Handler::process($this->task, $exchange);
 				return $status;

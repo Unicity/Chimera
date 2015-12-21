@@ -123,13 +123,11 @@ namespace Unicity\Config\SOAP {
 					$children[$key] = $child;
 				}
 			}
-			/*
 			$elements = $element->children();
 			foreach ($elements as $child) {
 				$key = $child->getName();
 				$children[$key] = $child;
 			}
-			*/
 			$children = array_values($children);
 			return $children;
 		}

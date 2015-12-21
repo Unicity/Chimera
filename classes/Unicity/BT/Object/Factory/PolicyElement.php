@@ -24,7 +24,7 @@ namespace Unicity\BT\Object\Factory {
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 
-	class SettingsElement extends Spring\Object\Factory {
+	class PolicyElement extends Spring\Object\Factory {
 
 		/**
 		 * This method returns an object matching the description specified by the element.

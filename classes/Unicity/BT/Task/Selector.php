@@ -36,14 +36,14 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
 			// frequency: once, each
 			// order: shuffle, weight, fixed
-			if (!$this->settings->hasKey('shuffle')) {
-				$this->settings->putEntry('shuffle', false);
+			if (!$this->policy->hasKey('shuffle')) {
+				$this->policy->putEntry('shuffle', false);
 			}
 		}
 
@@ -55,7 +55,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$shuffle = Core\Convert::toBoolean($this->settings->getValue('shuffle'));
+			$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
 			if ($shuffle) {
 				$this->tasks->shuffle();
 			}

@@ -35,21 +35,21 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('error')) {
-				$this->settings->putEntry('error', false);
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('error')) {
+				$this->policy->putEntry('error', false);
 			}
-			if (!$this->settings->hasKey('inactive')) {
-				$this->settings->putEntry('inactive', false);
+			if (!$this->policy->hasKey('inactive')) {
+				$this->policy->putEntry('inactive', false);
 			}
-			if (!$this->settings->hasKey('active')) {
-				$this->settings->putEntry('acitve', false);
+			if (!$this->policy->hasKey('active')) {
+				$this->policy->putEntry('acitve', false);
 			}
-			if (!$this->settings->hasKey('success')) {
-				$this->settings->putEntry('success', true);
+			if (!$this->policy->hasKey('success')) {
+				$this->policy->putEntry('success', true);
 			}
 		}
 
@@ -64,22 +64,22 @@ namespace Unicity\BT\Task {
 			$status = BT\Task\Handler::process($this->task, $exchange);
 			switch ($status) {
 				case BT\Task\Status::ERROR:
-					if ($this->settings->getValue('error')) {
+					if ($this->policy->getValue('error')) {
 						return BT\Task\Status::FAILED;
 					}
 					return $status;
 				case BT\Task\Status::INACTIVE:
-					if ($this->settings->getValue('inactive')) {
+					if ($this->policy->getValue('inactive')) {
 						return BT\Task\Status::FAILED;
 					}
 					return $status;
 				case BT\Task\Status::ACTIVE:
-					if ($this->settings->getValue('active')) {
+					if ($this->policy->getValue('active')) {
 						return BT\Task\Status::FAILED;
 					}
 					return $status;
 				case BT\Task\Status::SUCCESS:
-					if ($this->settings->getValue('success')) {
+					if ($this->policy->getValue('success')) {
 						return BT\Task\Status::FAILED;
 					}
 					return $status;

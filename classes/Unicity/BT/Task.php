@@ -50,12 +50,12 @@ namespace Unicity\BT {
 		protected $blackboard;
 
 		/**
-		 * This variable stores any settings associated with the task.
+		 * This variable stores the policy associated with the task.
 		 *
 		 * @access protected
 		 * @var Common\Mutable\IMap
 		 */
-		protected $settings;
+		protected $policy;
 
 		/**
 		 * This variable stores the title of the task.
@@ -70,15 +70,15 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
 			$this->blackboard = ($blackboard !== null)
 				? $blackboard
 				: new Common\Mutable\HashMap();
 			$this->title = '';
-			$this->settings = ($settings !== null)
-				? $settings
+			$this->policy = ($policy !== null)
+				? $policy
 				: new Common\Mutable\HashMap();
 		}
 
@@ -90,8 +90,8 @@ namespace Unicity\BT {
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->blackboard);
+			unset($this->policy);
 			unset($this->title);
-			unset($this->settings);
 		}
 
 		/**
@@ -123,14 +123,14 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method returns any settings associated with this task.
+		 * This method returns the policy associated with this task.
 		 *
 		 * @access public
-		 * @return Common\Mutable\IMap                              the settings associated with
-		 *                                                          this task
+		 * @return Common\Mutable\IMap                              the policy associated with the
+		 *                                                          task
 		 */
-		public function getSettings() {
-			return $this->settings;
+		public function getPolicy() {
+			return $this->policy;
 		}
 
 		/**
@@ -184,14 +184,14 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method sets the task's settings.
+		 * This method sets the task's policy.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $settings                     the settings to be associated
+		 * @param Common\Mutable\IMap $policy                       the policy to be associated
 		 *                                                          with this task
 		 */
-		public function setSettings(Common\Mutable\IMap $settings) {
-			$this->settings = $settings;
+		public function setPolicy(Common\Mutable\IMap $policy  ) {
+			$this->policy = $policy;
 		}
 
 		/**

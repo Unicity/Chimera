@@ -36,12 +36,12 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('id')) {
-				$this->settings->putEntry('id', __CLASS__);
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('id')) {
+				$this->policy->putEntry('id', __CLASS__);
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$id = Core\Convert::toString($this->settings->getValue('id'));
+			$id = Core\Convert::toString($this->policy->getValue('id'));
 
 			if ($this->blackboard->hasKey($id)) {
 				$hashCode = $this->blackboard->getValue($id);
@@ -81,7 +81,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 */
 		public function reset() {
-			$id = Core\Convert::toString($this->settings->getValue('id'));
+			$id = Core\Convert::toString($this->policy->getValue('id'));
 			if ($this->blackboard->hasKey($id)) {
 				$this->blackboard->removeKey($id);
 			}

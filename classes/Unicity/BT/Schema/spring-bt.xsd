@@ -190,7 +190,7 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	<xsd:complexType name="settings">
+	<xsd:complexType name="policy">
 		<xsd:complexContent>
 			<xsd:extension base="map" />
 		</xsd:complexContent>
@@ -207,7 +207,7 @@
 			<xsd:extension base="element">
 				<xsd:sequence>
 					<xsd:element name="blackboard" type="blackboard" minOccurs="0" maxOccurs="1" />
-					<xsd:element name="settings" type="settings" minOccurs="0" maxOccurs="1" />
+					<xsd:element name="policy" type="policy" minOccurs="0" maxOccurs="1" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>

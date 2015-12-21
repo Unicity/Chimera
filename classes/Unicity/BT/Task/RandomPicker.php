@@ -35,12 +35,12 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $settings                     any settings associated with the task
+		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $settings = null) {
-			parent::__construct($blackboard, $settings);
-			if (!$this->settings->hasKey('callable')) {
-				$this->settings->putEntry('callable', 'rand'); // ['rand', 'mt_rand']
+		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
+			parent::__construct($blackboard, $policy);
+			if (!$this->policy->hasKey('callable')) {
+				$this->policy->putEntry('callable', 'rand'); // ['rand', 'mt_rand']
 			}
 		}
 
@@ -52,7 +52,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			$callable = explode(',', $this->settings->getValue('callable'));
+			$callable = explode(',', $this->policy->getValue('callable'));
 			$count = $this->tasks->count();
 			if ($count > 0) {
 				$index = call_user_func($callable, array(0, $count));

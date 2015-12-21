@@ -50,12 +50,12 @@ namespace Unicity\BT\Object\Factory {
 				: null;
 
 			$element->registerXPathNamespace('spring-bt', BT\Task::NAMESPACE_URI);
-			$children = $element->xpath('./spring-bt:settings');
-			$settings = (!empty($children))
+			$children = $element->xpath('./spring-bt:policy');
+			$policy = (!empty($children))
 				? $parser->getObjectFromElement($children[0])
 				: null;
 
-			$object = new $type($blackboard, $settings);
+			$object = new $type($blackboard, $policy);
 
 			if (!($object instanceof BT\Task\Logger)) {
 				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task logger, but got an element of type ":type" instead.', array(':type' => $type));
