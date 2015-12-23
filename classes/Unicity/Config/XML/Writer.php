@@ -92,7 +92,57 @@ namespace Unicity\Config\XML {
 				}
 				return $template;
 			}
-			return $declaration;
+			else {
+				ob_start();
+				try {
+					$document = new \DOMDocument();
+					$document->formatOutput = true;
+					$this->toXML($document, $document, $this->data);
+
+					echo $declaration;
+					echo $document->saveXML();
+				}
+				catch (\Exception $ex) {
+					ob_end_clean();
+					throw $ex;
+				}
+				$template = ob_get_clean();
+				return $template;
+			}
+		}
+
+		/**
+		 * This method returns the data as an XML string.
+		 *
+		 * @access protected
+		 * @param \DOMDocument $document                            the XML DOM document
+		 * @param \DOMElement $element                              the XML DOM element
+		 * @param mixed $data                                       the data as an XML string
+		 */
+		protected function toXML($document, $element, $data) {
+			if (is_array($data)) {
+				if (Common\Collection::isDictionary($data)) {
+					foreach ($data as $node => $value) {
+						$child = $document->createElement($node);
+						$element->appendChild($child);
+						$this->toXML($document, $child, $value);
+					}
+				}
+				else {
+					foreach ($data as $value) {
+						$this->toXML($document, $element, $value);
+					}
+				}
+			}
+			else if (is_string($data) && preg_match('/^<!CDATA\[.*\]\]>$/', $data)) {
+				$data = substr($data, 8, strlen($data) - 11);
+				$child = $document->createCDATASection($data);
+				$element->appendChild($child);
+			}
+			else if ($data !== null) {
+				$child = $document->createTextNode(Core\Convert::toString($data));
+				$element->appendChild($child);
+			}
 		}
 
 	}
