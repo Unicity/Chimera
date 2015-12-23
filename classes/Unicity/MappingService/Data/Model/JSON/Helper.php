@@ -55,7 +55,6 @@ namespace Unicity\MappingService\Data\Model\JSON {
 				return $value;
 			}
 
-
 			if (!($value instanceof MappingService\Data\Model\JSON\ArrayList)) {
 				throw new Throwable\Runtime\Exception('Invalid value defined. Expected an array of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\MappingService\\Data\\Model\\JSON\\ArrayList', ':type1' => Core\DataType::info($value)->type));
 			}
