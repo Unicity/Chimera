@@ -35,7 +35,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$body = $exchange->getIn()->getBody();
 			if ($body instanceof Common\Mutable\HashMap) {
 				$writer = new Config\JSON\Writer($body);
-				$writer->config($this->settings->toDictionary());
+				$writer->config($this->policy->toDictionary());
 				$writer->export($exchange->getOut());
 				return BT\Task\Status::SUCCESS;
 			}

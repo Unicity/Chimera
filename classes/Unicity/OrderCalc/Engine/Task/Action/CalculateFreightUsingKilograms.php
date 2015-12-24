@@ -57,9 +57,9 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				$weight += $line->quantity * $value;
 			}
 
-			$breakpoint = Core\Convert::toDouble($this->settings->getValue('breakpoint'));
-			$rate = Core\Convert::toDouble($this->settings->getValue('rate'));
-			$surcharge = Trade\Money::make($this->settings->getValue('surcharge'), $order->currency);
+			$breakpoint = Core\Convert::toDouble($this->policy->getValue('breakpoint'));
+			$rate = Core\Convert::toDouble($this->policy->getValue('rate'));
+			$surcharge = Trade\Money::make($this->policy->getValue('surcharge'), $order->currency);
 
 			$weight = max(0.0, ceil($weight) - $breakpoint);
 

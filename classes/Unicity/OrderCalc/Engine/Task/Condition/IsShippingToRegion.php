@@ -35,8 +35,8 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$zip = Core\Convert::toInteger($order->shipToAddress->zip);
 
-			$begin = Core\Convert::toInteger($this->settings->getValue('begin'));
-			$end = Core\Convert::toInteger($this->settings->getValue('end'));
+			$begin = Core\Convert::toInteger($this->policy->getValue('begin'));
+			$end = Core\Convert::toInteger($this->policy->getValue('end'));
 
 			if (($zip >= $begin) && ($zip <= $end)) {
 				return BT\Task\Status::SUCCESS;

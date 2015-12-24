@@ -34,7 +34,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Exchange $exchange) {
 			$order = $exchange->getIn()->getBody()->Order;
 
-			$zip_codes = $this->settings->getValue('zip-codes');
+			$zip_codes = $this->policy->getValue('zip-codes');
 
 			if ($zip_codes->hasValue($order->shipToAddress->zip)) {
 				return BT\Task\Status::SUCCESS;

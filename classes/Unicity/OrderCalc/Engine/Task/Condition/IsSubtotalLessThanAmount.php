@@ -33,7 +33,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Exchange $exchange) {
 			$order = $exchange->getIn()->getBody()->Order;
 
-			$amount = Core\Convert::toDouble($this->settings->getValue('amount'));
+			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
 			if ($order->terms->subtotal < $amount) {
 				return BT\Task\Status::SUCCESS;

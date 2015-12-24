@@ -37,7 +37,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$tax_amount = Trade\Money::make($order->terms->subtotal, $order->currency)
 				->add(Trade\Money::make($order->terms->freight->amount, $order->currency));
 
-			$tax_rate = Core\Convert::toDouble($this->settings->getValue('rate'));
+			$tax_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 
 			$tax_amount = $tax_amount->multiply($tax_rate);
 

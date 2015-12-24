@@ -34,7 +34,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Exchange $exchange) {
 			$order = $exchange->getIn()->getBody()->Order;
 
-			$shippingMethods = $this->settings->getValue('methods');
+			$shippingMethods = $this->policy->getValue('methods');
 
 			if (($order->transactions->items->count() > 0) && $shippingMethods->hasValue($order->transactions->items[0]->method)) {
 				return BT\Task\Status::SUCCESS;

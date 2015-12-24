@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Exchange $exchange) {
 			$order = $exchange->getIn()->getBody()->Order;
 
-			$country = $this->settings->getValue('country');
+			$country = $this->policy->getValue('country');
 			if (($order->market == $country) &&	($order->shipToAddress->country == $country)) {
 				return BT\Task\Status::SUCCESS;
 			}

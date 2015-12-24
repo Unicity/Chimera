@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Exchange $exchange) {
 			$order = $exchange->getIn()->getBody()->Order;
 
-			$currency = $this->settings->getValue('currency');
+			$currency = $this->policy->getValue('currency');
 			if ($order->currency == $currency) {
 				return BT\Task\Status::SUCCESS;
 			}

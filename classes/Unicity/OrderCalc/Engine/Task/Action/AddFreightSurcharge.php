@@ -34,7 +34,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order = $exchange->getIn()->getBody()->Order;
 
 			$order->terms->freight->amount = Trade\Money::make($order->terms->freight->amount, $order->currency)
-				->add(Trade\Money::make($this->settings->getValue('surcharge'), $order->currency))
+				->add(Trade\Money::make($this->policy->getValue('surcharge'), $order->currency))
 				->getConvertedAmount();
 
 			return BT\Task\Status::SUCCESS;
