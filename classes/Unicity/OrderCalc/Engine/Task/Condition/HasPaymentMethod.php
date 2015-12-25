@@ -19,8 +19,6 @@
 namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\OrderCalc;
 
 	class HasPaymentMethod extends BT\Task\Condition {
 

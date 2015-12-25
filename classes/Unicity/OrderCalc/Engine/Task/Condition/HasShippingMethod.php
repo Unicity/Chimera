@@ -19,7 +19,6 @@
 namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
 	use \Unicity\OrderCalc;
 
 	class HasShippingMethod extends BT\Task\Condition {

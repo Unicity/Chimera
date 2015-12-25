@@ -19,9 +19,6 @@
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\OrderCalc;
 	use \Unicity\Trade;
 
 	class NormalizeOrder extends BT\Task\Action {

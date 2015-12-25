@@ -19,8 +19,6 @@
 namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
-	use \Unicity\Trade;
-	use \Unicity\OrderCalc;
 
 	class IsShippingOutOfArea extends BT\Task\Condition {
 

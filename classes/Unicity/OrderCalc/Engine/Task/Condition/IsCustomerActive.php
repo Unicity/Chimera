@@ -19,8 +19,6 @@
 namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
-	use \Unicity\Log;
-	use \Unicity\OrderCalc;
 
 	class IsCustomerActive extends BT\Task\Condition {
 
@@ -36,13 +34,11 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$status = $order->customer->status;
 			if (in_array($status, array('Suspended', 'Terminated'))) { // TODO abstract out to a config file
-				Log\Manager::instance()->add(Log\Level::error(), 'Expect a valid customer status, but got ":status" instead.', array(':status' => $status));
 				return BT\Task\Status::ERROR;
 			}
 
 			$type = $order->customer->type;
 			if (in_array($type, array('LegacySuspended', 'LegacyTerminated'))) { // TODO abstract out to a config file
-				Log\Manager::instance()->add(Log\Level::error(), 'Expect a valid customer type, but got ":type" instead.', array(':type' => $type));
 				return BT\Task\Status::ERROR;
 			}
 
