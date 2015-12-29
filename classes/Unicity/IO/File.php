@@ -137,7 +137,7 @@ namespace Unicity\IO {
 			unset($this->name);
 			unset($this->path);
 			if ($this->temporary) {
-				unlink($this->uri);
+				@unlink($this->uri);
 			}
 			unset($this->temporary);
 			unset($this->uri);
