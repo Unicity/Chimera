@@ -3,7 +3,7 @@
 /*
  * The BSD License
  *
- * Copyright 2015 Unicity International
+ * Copyright 2015-2016 Unicity International
  * Copyright 2007–2012 Kohana Team
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Unicity International
+ * Copyright 2015-2016 Unicity International
  * Copyright 2011-2012 Spadefoot Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
