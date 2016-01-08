@@ -41,7 +41,7 @@ namespace Unicity\IO {
 			$this->path = null;
 			$this->ext = null;
 
-			$this->uri = $this->uri = 'data://text/plain,' . $string;
+			$this->uri = 'data://text/plain,' . $string;
 			$this->temporary = false;
 		}
 
