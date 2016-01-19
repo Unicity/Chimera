@@ -47,11 +47,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			foreach ($order->lines->items as $line) {
 				$value = $line->item->weightEach->value;
-				$uom = $line->item->weightEach->unit;
-				if (preg_match('/^lb(s)?$/i', $uom)) {
+				$unit = $line->item->weightEach->unit;
+				if (preg_match('/^lb(s)?$/i', $unit)) {
 					$value = $value / self::LBS_TO_KGS_CONVERSION_RATE;
 				}
-				else if (!preg_match('/^kg(s)?$/i', $uom)) {
+				else if (!preg_match('/^kg(s)?$/i', $unit)) {
 					return BT\Task\Status::ERROR;
 				}
 				$weight += $line->quantity * $value;
