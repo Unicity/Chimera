@@ -28,7 +28,7 @@ namespace Unicity\IO {
 	 * @class
 	 * @package IO
 	 */
-	class String extends IO\File {
+	class StringRef extends IO\File {
 
 		/**
 		 * This constructor initializes the class with a string.
