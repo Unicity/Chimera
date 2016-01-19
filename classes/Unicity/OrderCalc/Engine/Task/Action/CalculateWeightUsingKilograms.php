@@ -57,7 +57,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				$weight += $line->quantity * $value;
 			}
 
-			$order->lines->aggregate->weight->value = 'kg';
+			$order->lines->aggregate->weight->unit = 'kg';
 			$order->lines->aggregate->weight->value = $weight;
 
 			return BT\Task\Status::SUCCESS;
