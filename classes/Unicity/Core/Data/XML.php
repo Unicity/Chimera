@@ -260,7 +260,7 @@ namespace Unicity\Core\Data {
 		 *                                                          the current object
 		 */
 		public function __toString() {
-			return (string) serialize($this);
+			return $this->asXML();
 		}
 
 		/**
