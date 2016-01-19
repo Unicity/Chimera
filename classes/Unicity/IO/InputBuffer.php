@@ -45,7 +45,7 @@ namespace Unicity\IO {
 				$input = stream_get_contents($handle);
 				fclose($handle);
 			}
-			$this->uri = 'data://text/plain,' . $input;
+			$this->uri = 'data://text/plain,' . $input; // +'s may go missing (see http://php.net/manual/en/wrappers.data.php)
 		}
 
 		/**
