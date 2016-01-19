@@ -38,7 +38,7 @@ namespace Unicity\Common\Mutable {
 		 * @access public
 		 * @param mixed $value                                      the value to be appended
 		 * @param vararg $mixed                                     any data to be formatted
-		 * @return Common\Mutable\String                            a reference to this string object
+		 * @return Common\Mutable\StringRef                         a reference to this string object
 		 */
 		public function append(/*$value, $mixed...*/) {
 			$argc = func_num_args();
@@ -65,7 +65,7 @@ namespace Unicity\Common\Mutable {
 		 * @access public
 		 * @param integer $sIndex                                   the beginning index
 		 * @param integer $eIndex                                   the ending index
-		 * @return Common\Mutable\String                            a reference to this string object
+		 * @return Common\Mutable\StringRef                         a reference to this string object
 		 */
 		public function delete($sIndex, $eIndex = null) {
 			if ($eIndex === null) {
@@ -81,7 +81,7 @@ namespace Unicity\Common\Mutable {
 		 * @access public
 		 * @param integer $offset                                   the beginning index
 		 * @param mixed $value                                      the value to be inserted
-		 * @return Common\Mutable\String                            a reference to this string object
+		 * @return Common\Mutable\StringRef                         a reference to this string object
 		 */
 		public function insert($offset, $value) {
 			$this->string = substr($this->string, 0, $offset) . $value . substr($this->string, $offset);
@@ -94,7 +94,7 @@ namespace Unicity\Common\Mutable {
 		 * @access public
 		 * @param mixed $value                                      the value to be prepended
 		 * @param vararg $mixed                                     any data to be formatted
-		 * @return Common\Mutable\String                            a reference to this string object
+		 * @return Common\Mutable\StringRef                         a reference to this string object
 		 */
 		public function prepend(/*$value, $mixed...*/) {
 			$argc = func_num_args();
@@ -120,7 +120,7 @@ namespace Unicity\Common\Mutable {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be substituted
-		 * @return Common\Mutable\String                            a reference to this string object
+		 * @return Common\Mutable\StringRef                         a reference to this string object
 		 */
 		public function setValue($value) {
 			$this->string = (string)$value;
