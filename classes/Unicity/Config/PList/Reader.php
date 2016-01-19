@@ -288,11 +288,11 @@ namespace Unicity\Config\PList {
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "string" node
-		 * @return \Unicity\Common\String                           the value as a string
+		 * @return \Unicity\Common\StringRef                        the value as a string
 		 */
 		protected function parseStringElement(\SimpleXMLElement $node) {
 			$value = dom_import_simplexml($node)->textContent;
-			$string = new Common\String($value);
+			$string = new Common\StringRef($value);
 			return $string;
 		}
 

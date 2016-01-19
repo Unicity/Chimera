@@ -319,7 +319,7 @@ namespace Unicity\Spring {
 						else if ($value instanceof Common\ISet) {
 							$this->addSet($root, $child, $value);
 						}
-						else if ($value instanceof Common\String) {
+						else if ($value instanceof Common\StringRef) {
 							$this->addValue($root, $child, $value, 'string');
 						}
 						else if ($value instanceof Core\Data\Undefined) {
@@ -391,7 +391,7 @@ namespace Unicity\Spring {
 					else if ($data instanceof Common\ISet) {
 						$this->addSet($root, $child, $data);
 					}
-					else if ($data instanceof Common\String) {
+					else if ($data instanceof Common\StringRef) {
 						$this->addValue($root, $child, $data, 'string');
 					}
 					else if ($data instanceof Core\Data\Undefined) {
@@ -473,7 +473,7 @@ namespace Unicity\Spring {
 						else if ($value instanceof Common\ISet) {
 							$this->addSet($root, $child, $value);
 						}
-						else if ($value instanceof Common\String) {
+						else if ($value instanceof Common\StringRef) {
 							$this->addValue($root, $child, $value, 'string');
 						}
 						else if ($value instanceof Core\Data\Undefined) {
@@ -593,7 +593,7 @@ namespace Unicity\Spring {
 					else if ($data instanceof Common\ISet) {
 						$this->addSet($root, $child, $data);
 					}
-					else if ($data instanceof Common\String) {
+					else if ($data instanceof Common\StringRef) {
 						$this->addValue($root, $child, $data, 'string');
 					}
 					else if ($data instanceof Core\Data\Undefined) {
@@ -662,7 +662,7 @@ namespace Unicity\Spring {
 						else if ($value instanceof Common\ISet) {
 							$this->addSet($root, $child, $value);
 						}
-						else if ($value instanceof Common\String) {
+						else if ($value instanceof Common\StringRef) {
 							$this->addValue($root, $child, $value, 'string');
 						}
 						else if ($value instanceof Core\Data\Undefined) {

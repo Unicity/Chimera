@@ -182,7 +182,7 @@ namespace Unicity\MappingService\Data {
 		 * @return boolean                                          whether the value is "empty"
 		 */
 		public static function isEmpty($value) {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (Common\String::isTypeOf($value) && ($value == '')));
+			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (Common\StringRef::isTypeOf($value) && ($value == '')));
 		}
 
 		/**

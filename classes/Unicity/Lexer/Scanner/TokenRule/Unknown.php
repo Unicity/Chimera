@@ -45,7 +45,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) {
 			$char = $reader->readChar($reader->position(), false);
 			if ($char !== null) {
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::unknown(), new Common\String($char));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::unknown(), new Common\StringRef($char));
 				$reader->skip(1);
 				return $tuple;
 			}

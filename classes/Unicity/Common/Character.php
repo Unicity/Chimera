@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class Character extends Core\Object implements Common\IPrimitive {
+	class Character extends Core\Object implements Common\IPrimitiveVal {
 
 		/**
 		 * This variable stores the primitive value.
@@ -161,7 +161,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be parsed
-		 * @return \Unicity\Common\IPrimitive                       the primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the primitive value
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be parsed
 		 */
@@ -174,13 +174,13 @@ namespace Unicity\Common {
 			else if (is_string($value)) {
 				$char = $value;
 			}
-			else if ($value instanceof Common\String) {
+			else if ($value instanceof Common\StringRef) {
 				$char = $value->__value();
 			}
 			else if (is_integer($value)) {
 				$char = chr($value);
 			}
-			else if ($value instanceof Common\Integer) {
+			else if ($value instanceof Common\IntegerVal) {
 				$char = chr($value->__value());
 			}
 
@@ -196,7 +196,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be boxed
-		 * @return \Unicity\Common\IPrimitive                       the boxed primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the boxed primitive value
 		 */
 		public static function valueOf($value) {
 			return new static($value);

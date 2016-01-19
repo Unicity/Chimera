@@ -28,7 +28,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class Double extends Core\Object implements Common\IPrimitive {
+	class DoubleVal extends Core\Object implements Common\IPrimitiveVal {
 
 		/**
 		 * This variable stores the primitive value.
@@ -96,7 +96,7 @@ namespace Unicity\Common {
 				if (is_numeric($object)) {
 					return ($object == $this->value);
 				}
-				return (($object instanceof Common\Double) && ($object->value == $this->value));
+				return (($object instanceof Common\DoubleVal) && ($object->value == $this->value));
 			}
 			return false;
 		}
@@ -126,8 +126,8 @@ namespace Unicity\Common {
 		 * This method returns how the two objects should be ordered.
 		 *
 		 * @access public
-		 * @param \Unicity\Common\Double $x                         the first primitive to compare
-		 * @param \Unicity\Common\Double $y                         the second primitive to compare
+		 * @param \Unicity\Common\DoubleVal $x                         the first primitive to compare
+		 * @param \Unicity\Common\DoubleVal $y                         the second primitive to compare
 		 * @return integer                                          a negative integer, zero, or a positive
 		 *                                                          integer as this object is less than,
 		 *                                                          equal to, or greater than the first
@@ -149,7 +149,7 @@ namespace Unicity\Common {
 		 */
 		public static function isTypeOf($value) {
 			if ($value !== null) {
-				return (is_numeric($value) || (is_object($value) && ($value instanceof Common\Double)));
+				return (is_numeric($value) || (is_object($value) && ($value instanceof Common\DoubleVal)));
 			}
 			return false;
 		}
@@ -159,10 +159,10 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be parsed
-		 * @return \Unicity\Common\IPrimitive                       the primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the primitive value
 		 */
 		public static function parse($value) {
-			return ($value instanceof Common\IPrimitive) ? (double) $value->__value() : (double) $value;
+			return ($value instanceof Common\IPrimitiveVal) ? (double) $value->__value() : (double) $value;
 		}
 
 		/**
@@ -170,7 +170,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be boxed
-		 * @return \Unicity\Common\IPrimitive                       the boxed primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the boxed primitive value
 		 */
 		public static function valueOf($value) {
 			return new static($value);

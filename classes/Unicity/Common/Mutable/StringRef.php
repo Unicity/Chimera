@@ -30,7 +30,7 @@ namespace Unicity\Common\Mutable {
 	 *
 	 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/StringBuilder.html
 	 */
-	class String extends Common\String {
+	class StringRef extends Common\StringRef {
 
 		/**
 		 * This method appends the string representation of the specified value.

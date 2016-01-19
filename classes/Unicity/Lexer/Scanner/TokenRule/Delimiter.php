@@ -72,7 +72,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) {
 			$char = $reader->readChar($reader->position(), false);
 			if (($char !== null) && ($char == $this->delimiter)) {
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::delimiter(), new Common\String($char));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::delimiter(), new Common\StringRef($char));
 				$reader->skip(1);
 				return $tuple;
 			}

@@ -118,7 +118,7 @@ namespace Unicity\IO {
 			$this->path = null;
 			$this->ext = null;
 
-			if ( ! Common\String::isTypeOf($uri)) {
+			if ( ! Common\StringRef::isTypeOf($uri)) {
 				throw new Throwable\InvalidArgument\Exception('Unable to handle argument. Argument must be a string, but got :type.', array(':type' => gettype($uri)));
 			}
 

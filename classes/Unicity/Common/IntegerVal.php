@@ -22,13 +22,13 @@ namespace Unicity\Common {
 	use \Unicity\Core;
 
 	/**
-	 * This class creates an immutable boxed boolean value.
+	 * This class creates an immutable boxed integer value.
 	 *
 	 * @access public
 	 * @class
 	 * @package Common
 	 */
-	class Boolean extends Core\Object implements Common\IPrimitive {
+	class IntegerVal extends Core\Object implements Common\IPrimitiveVal {
 
 		/**
 		 * This variable stores the primitive value.
@@ -42,9 +42,9 @@ namespace Unicity\Common {
 		 * This constructor initializes the class with the specified value.
 		 *
 		 * @access public
-		 * @param boolean $value                                    the primitive value to be boxed
+		 * @param integer $value                                    the primitive value to be boxed
 		 */
-		public function __construct($value = false) {
+		public function __construct($value = 0) {
 			$this->value = static::parse($value);
 		}
 
@@ -62,13 +62,13 @@ namespace Unicity\Common {
 			$x = $this->value;
 			$y = static::parse($object);
 
-			if (!$x && $y) {
+			if ($x < $y) {
 				return -1;
 			}
 			else if ($x == $y) {
 				return 0;
 			}
-			else { // ($x && !$y)
+			else { // ($x > $y)
 				return 1;
 			}
 		}
@@ -93,10 +93,10 @@ namespace Unicity\Common {
 		 */
 		public function __equals($object) {
 			if ($object !== null) {
-				if (is_bool($object)) {
+				if (is_integer($object)) {
 					return ($object == $this->value);
 				}
-				return (($object instanceof Common\Boolean) && ($object->value == $this->value));
+				return (($object instanceof Common\IntegerVal) && ($object->value == $this->value));
 			}
 			return false;
 		}
@@ -109,14 +109,14 @@ namespace Unicity\Common {
 		 *                                                          object
 		 */
 		public function __toString() {
-			return ($this->value) ? 'true' : 'false';
+			return "{$this->value}";
 		}
 
 		/**
 		 * This method returns the un-boxed value.
 		 *
 		 * @access public
-		 * @return boolean                                          the primitive value
+		 * @return integer                                          the primitive value
 		 */
 		public function __value() {
 			return $this->value;
@@ -126,8 +126,8 @@ namespace Unicity\Common {
 		 * This method returns how the two objects should be ordered.
 		 *
 		 * @access public
-		 * @param \Unicity\Common\Boolean $x                        the first primitive to compare
-		 * @param \Unicity\Common\Boolean $y                        the second primitive to compare
+		 * @param \Unicity\Common\IntegerVal $x                     the first primitive to compare
+		 * @param \Unicity\Common\IntegerVal $y                     the second primitive to compare
 		 * @return integer                                          a negative integer, zero, or a positive
 		 *                                                          integer as this object is less than,
 		 *                                                          equal to, or greater than the first
@@ -149,7 +149,7 @@ namespace Unicity\Common {
 		 */
 		public static function isTypeOf($value) {
 			if ($value !== null) {
-				return (is_bool($value) || (is_object($value) && ($value instanceof Common\Boolean)));
+				return (is_integer($value) || (is_object($value) && ($value instanceof Common\IntegerVal)));
 			}
 			return false;
 		}
@@ -159,10 +159,10 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be parsed
-		 * @return \Unicity\Common\IPrimitive                       the primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the primitive value
 		 */
 		public static function parse($value) {
-			return ($value instanceof Common\IPrimitive) ? (bool) $value->__value() : (bool) $value;
+			return ($value instanceof Common\IPrimitiveVal) ? (int) $value->__value() : (int) $value;
 		}
 
 		/**
@@ -170,7 +170,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be boxed
-		 * @return \Unicity\Common\IPrimitive                       the boxed primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the boxed primitive value
 		 */
 		public static function valueOf($value) {
 			return new static($value);

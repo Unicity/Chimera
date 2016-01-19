@@ -236,7 +236,7 @@ namespace Unicity\MappingService\Data\Field {
 		 */
 		public function transliterate() {
 			if ($this->info->type == 'string') {
-				$value = Common\String::transliterate($this->value)->__toString();
+				$value = Common\StringRef::transliterate($this->value)->__toString();
 				return static::factory($this->name, $value);
 			}
 			return $this;

@@ -128,12 +128,12 @@ namespace Unicity\Locale {
 					$records = DB\SQL::select('locale')
 						->before(function(DB\Connection\Driver $driver) {
 							$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
-								return Common\String::transliterate($string)->__toString();
+								return Common\StringRef::transliterate($string)->__toString();
 							}, 1);
 						})
 						->from('Countries')
 						->where(DB\SQL::expr('LOWER([CountryName])'), '=', strtolower($country))
-						->where(DB\SQL::expr("LOWER(TRANSLITERATE([CountryName]))"), '=', Common\String::transliterate($country)->toLowerCase()->__toString(), 'OR')
+						->where(DB\SQL::expr("LOWER(TRANSLITERATE([CountryName]))"), '=', Common\StringRef::transliterate($country)->toLowerCase()->__toString(), 'OR')
 						->limit(1)
 						->query();
 
@@ -157,12 +157,12 @@ namespace Unicity\Locale {
 					$records = DB\SQL::select('locale')
 						->before(function(DB\Connection\Driver $driver) {
 							$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
-								return Common\String::transliterate($string)->__toString();
+								return Common\StringRef::transliterate($string)->__toString();
 							}, 1);
 						})
 						->from('Countries')
 						->where(DB\SQL::expr('LOWER([CountryName])'), 'LIKE', '%' . strtolower($country) . '%')
-						->where(DB\SQL::expr("LOWER(TRANSLITERATE([CountryName]))"), 'LIKE', '%' . Common\String::transliterate($country)->toLowerCase() . '%', 'OR')
+						->where(DB\SQL::expr("LOWER(TRANSLITERATE([CountryName]))"), 'LIKE', '%' . Common\StringRef::transliterate($country)->toLowerCase() . '%', 'OR')
 						->limit(1)
 						->query();
 

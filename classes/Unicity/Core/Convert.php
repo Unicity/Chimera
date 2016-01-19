@@ -163,7 +163,7 @@ namespace Unicity\Core {
 					if (method_exists($value, 'toBoolean')) {
 						return $value->toBoolean();
 					}
-					else if ($value instanceof Common\String) {
+					else if ($value instanceof Common\StringRef) {
 						return static::toBoolean($value->__toString());
 					}
 					else {
@@ -201,7 +201,7 @@ namespace Unicity\Core {
 					if (method_exists($value, 'toChar')) {
 						return $value->toChar();
 					}
-					else if ($value instanceof Common\String) {
+					else if ($value instanceof Common\StringRef) {
 						return static::toChar($value->__toString());
 					}
 					else {
@@ -244,7 +244,7 @@ namespace Unicity\Core {
 					if (method_exists($value, 'toDateTime')) {
 						return $value->toDateTime();
 					}
-					else if ($value instanceof Common\String) {
+					else if ($value instanceof Common\StringRef) {
 						return static::toDateTime($value->__toString());
 					}
 					else {
@@ -316,7 +316,7 @@ namespace Unicity\Core {
 					if (method_exists($value, 'toDouble')) {
 						return $value->toDouble();
 					}
-					else if ($value instanceof Common\String) {
+					else if ($value instanceof Common\StringRef) {
 						return static::toDouble($value->__toString());
 					}
 					else {
@@ -363,7 +363,7 @@ namespace Unicity\Core {
 					if (method_exists($value, 'toInteger')) {
 						return $value->toInteger();
 					}
-					else if ($value instanceof Common\String) {
+					else if ($value instanceof Common\StringRef) {
 						return static::toInteger($value->__toString());
 					}
 					else {
@@ -431,7 +431,7 @@ namespace Unicity\Core {
 					if (method_exists($value, 'toOrdinal')) {
 						return $value->toOrdinal();
 					}
-					else if ($value instanceof Common\String) {
+					else if ($value instanceof Common\StringRef) {
 						return static::toOrdinal($value->__toString());
 					}
 					else {

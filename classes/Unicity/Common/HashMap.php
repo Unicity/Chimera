@@ -129,7 +129,7 @@ namespace Unicity\Common {
 		 * @throws \Unicity\Throwable\InvalidArgument\Exception     indicates an invalid key was specified
 		 */
 		protected function getKey($key) {
-			if (is_object($key) && ($key instanceof Common\String)) {
+			if (is_object($key) && ($key instanceof Common\StringRef)) {
 				return $key->__toString();
 			}
 			else if (!(is_integer($key) || is_string($key))) {

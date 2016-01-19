@@ -21,12 +21,12 @@ namespace Unicity\Common {
 	use \Unicity\Common;
 
 	/**
-	 * This class creates an immutable boxed float value.
+	 * This class creates an immutable boxed decimal value.
 	 *
 	 * @access public
 	 * @class
 	 * @package Common
 	 */
-	class Float extends Common\Double { }
+	class DecimalVal extends Common\DoubleVal { }
 
 }

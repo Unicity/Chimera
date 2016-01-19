@@ -31,7 +31,7 @@ namespace Unicity\Common {
 	 *
 	 * @see http://docs.oracle.com/javase/6/docs/api/java/lang/String.html
 	 */
-	class String extends Core\Object implements \ArrayAccess, \Countable, Common\IPrimitive, \Iterator, \SeekableIterator {
+	class StringRef extends Core\Object implements \ArrayAccess, \Countable, Common\IPrimitiveVal, \Iterator, \SeekableIterator {
 
 		#region Instance Variables
 
@@ -116,7 +116,7 @@ namespace Unicity\Common {
 		 * @access public
 		 * @param mixed $value                                      the value that is concatenated to the end
 		 *                                                          of this string
-		 * @return string                                           a string that represents the concatenation
+		 * @return Common\StringRef                                 a new string object
 		 *                                                          of this object's characters followed by the
 		 *                                                          string argument's characters
 		 */
@@ -398,7 +398,7 @@ namespace Unicity\Common {
 		 * @param string $regex                                     the regular expression to match against
 		 * @param string $replacement                               the replacement string
 		 * @param integer $limit                                    the maximum number of matches possible
-		 * @return Common\String                                    a new string object
+		 * @return Common\StringRef                                 a new string object
 		 */
 		public function replaceRegex($regex, $replacement, $limit = null) {
 			$buffer = ($limit !== null)
@@ -413,7 +413,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param array $values                                     an associated array of values
-		 * @return Common\String                                    a new string object
+		 * @return Common\StringRef                                 a new string object
 		 */
 		public function replaceValues(array $values = null) {
 			$buffer = empty($values) ? $this->string : strtr((string)$this->string, $values);
@@ -425,6 +425,7 @@ namespace Unicity\Common {
 		 * This method reverses the order of the characters in the string.
 		 *
 		 * @access public
+		 * @return Common\StringRef                                 a new string object
 		 */
 		public function reverse() {
 			$object = new static(strrev($this->string));
@@ -483,7 +484,7 @@ namespace Unicity\Common {
 		 * @access public
 		 * @param integer $sIndex                                   the start index
 		 * @param integer $eIndex                                   the end index
-		 * @return Common\String                                    the substring between the specified
+		 * @return Common\StringRef                                 the substring between the specified
 		 *                                                          indexes
 		 */
 		public function substring($sIndex, $eIndex = null) {
@@ -500,7 +501,7 @@ namespace Unicity\Common {
 		 * of the default locale.
 		 *
 		 * @access public
-		 * @return Common\String                                    the string, converted to lowercase
+		 * @return Common\StringRef                                 the string, converted to lowercase
 		 */
 		public function toLowerCase() {
 			$object = new static(strtolower($this->string));
@@ -522,7 +523,7 @@ namespace Unicity\Common {
 		 * of the default locale.
 		 *
 		 * @access public
-		 * @return Common\String                                    the string, converted to upper case
+		 * @return Common\StringRef                                 the string, converted to upper case
 		 */
 		public function toUpperCase() {
 			$object = new static(strtoupper($this->string));
@@ -534,7 +535,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param string $removables                                the characters to be removed
-		 * @return Common\String                                    the newly trimmed string
+		 * @return Common\StringRef                                 the newly trimmed string
 		 */
 		public function trim($removables = " \t\n\r\0\x0B") {
 			$object = new static(trim($this->string, $removables));
@@ -546,7 +547,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param string $removables                                the characters to be removed
-		 * @return Common\String                                    the newly trimmed string
+		 * @return Common\StringRef                                 the newly trimmed string
 		 */
 		public function trimLeft($removables = " \t\n\r\0\x0B") {
 			$object = new static(ltrim($this->string, $removables));
@@ -558,7 +559,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param string $removables                                the characters to be removed
-		 * @return Common\String                                    the newly trimmed string
+		 * @return Common\StringRef                                 the newly trimmed string
 		 */
 		public function trimRight($removables = " \t\n\r\0\x0B") {
 			$object = new static(rtrim($this->string, $removables));
@@ -606,7 +607,7 @@ namespace Unicity\Common {
 		 * @access public
 		 * @param string $string                                    the string to be formatted
 		 * @param vararg $objects                                   the objects to be incorporated
-		 * @return Common\String                                    the newly formatted string
+		 * @return Common\StringRef                                 the newly formatted string
 		 */
 		public static function format(/*$string, $objects...*/) {
 			$argc = func_num_args();
@@ -638,7 +639,7 @@ namespace Unicity\Common {
 		 */
 		public static function isTypeOf($value) {
 			if ($value !== null) {
-				return (is_string($value) || (is_object($value) && ($value instanceof Common\String)));
+				return (is_string($value) || (is_object($value) && ($value instanceof Common\StringRef)));
 			}
 			return false;
 		}
@@ -648,7 +649,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $string
-		 * @return Common\String                                    the newly transliterated string
+		 * @return Common\StringRef                                 the newly transliterated string
 		 *
 		 * @see http://www.php.net/manual/en/transliterator.transliterate.php
 		 * @see http://stackoverflow.com/questions/4794647/php-dealing-special-characters-with-iconv
@@ -680,7 +681,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be wrapped as a string
-		 * @return Common\String                                    the new string object
+		 * @return Common\StringRef                                 the new string object
 		 */
 		public static function valueOf($value) {
 			return new static($value);

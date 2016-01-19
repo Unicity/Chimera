@@ -90,7 +90,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 					}
 				}
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple($type, new Common\String($token));
+				$tuple = new Lexer\Scanner\Tuple($type, new Common\StringRef($token));
 				return $tuple;
 			}
 			return null;

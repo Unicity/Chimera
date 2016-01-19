@@ -120,13 +120,13 @@ namespace Unicity\Locale {
 				$records = DB\SQL::select('locale')
 					//->before(function(DB\Connection\Driver $driver) {
 					//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
-					//		return Common\String::transliterate($string)->__toString();
+					//		return Common\StringRef::transliterate($string)->__toString();
 					//	}, 1);
 					//})
 					->from('States')
 					->where_block('(')
 					->where(DB\SQL::expr('LOWER([StateName])'), '=', strtolower($state))
-					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateName]))'), '=', Common\String::transliterate($state)->toLowerCase()->__toString(), 'OR')
+					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateName]))'), '=', Common\StringRef::transliterate($state)->toLowerCase()->__toString(), 'OR')
 					->where_block(')')
 					->where('CountryNumeric3', '=', $country)
 					->limit(1)
@@ -153,13 +153,13 @@ namespace Unicity\Locale {
 				$records = DB\SQL::select('locale')
 					//->before(function(DB\Connection\Driver $driver) {
 					//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
-					//		return Common\String::transliterate($string)->__toString();
+					//		return Common\StringRef::transliterate($string)->__toString();
 					//	}, 1);
 					//})
 					->from('States')
 					->where_block('(')
 					->where(DB\SQL::expr('LOWER([StateName])'), 'LIKE', '%' . strtolower($state) . '%')
-					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateName]))'), 'LIKE', '%' . Common\String::transliterate($state)->toLowerCase() . '%', 'OR')
+					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateName]))'), 'LIKE', '%' . Common\StringRef::transliterate($state)->toLowerCase() . '%', 'OR')
 					->where_block(')')
 					->where('CountryNumeric3', '=', $country)
 					->limit(1)

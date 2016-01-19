@@ -166,7 +166,7 @@ namespace Unicity\Config\WDDX {
 		 *
 		 * @access protected
 		 * @param \DOMElement $node                                 a reference to the "comment" node
-		 * @return \Unicity\Common\String                           the value as a string
+		 * @return \Unicity\Common\StringRef                        the value as a string
 		 */
 		protected function parseCommentElement(\DOMElement $node) {
 			return $this->parseStringElement($node);
@@ -329,14 +329,14 @@ namespace Unicity\Config\WDDX {
 		 *
 		 * @access protected
 		 * @param \DOMElement $node                                 a reference to the "string" node
-		 * @return \Unicity\Common\String                           the value as a string
+		 * @return \Unicity\Common\StringRef                        the value as a string
 		 */
 		protected function parseStringElement(\DOMElement $node) {
 			$value = $node->textContent;
 			$value = Core\Convert::toString($value);
 			$value = Core\Data\XML::toUnicodeString($value);
 			$value = Core\Data\Charset::encode($value, $this->metadata['encoding'][0], $this->metadata['encoding'][1]);
-			$string = new Common\String($value);
+			$string = new Common\StringRef($value);
 			return $string;
 		}
 
@@ -442,7 +442,7 @@ namespace Unicity\Config\WDDX {
 		 *
 		 * @access protected
 		 * @param \DOMDocument $document                            a reference to the "wddxPacket" node
-		 * @return \Unicity\Common\String                           the value as a string
+		 * @return \Unicity\Common\StringRef                        the value as a string
 		 */
 		protected function parseWDDXPacketElement(\DOMDocument $document) {
 			$map = new Common\Mutable\HashMap();

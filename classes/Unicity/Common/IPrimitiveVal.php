@@ -27,7 +27,7 @@ namespace Unicity\Common {
 	 * @interface
 	 * @package Common
 	 */
-	interface IPrimitive extends Core\IComparable {
+	interface IPrimitiveVal extends Core\IComparable {
 
 		/**
 		 * This method returns the un-boxed value.
@@ -42,7 +42,7 @@ namespace Unicity\Common {
 		 *
 		 * @access public
 		 * @param mixed $value                                      the value to be boxed
-		 * @return \Unicity\Common\IPrimitive                       the boxed primitive value
+		 * @return \Unicity\Common\IPrimitiveVal                    the boxed primitive value
 		 */
 		public static function valueOf($value);
 
