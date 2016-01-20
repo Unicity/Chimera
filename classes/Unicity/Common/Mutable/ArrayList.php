@@ -384,7 +384,6 @@ namespace Unicity\Common\Mutable {
 		 * @access public
 		 * @param integer $index                                    the index of the element to be set
 		 * @param mixed $value                                      the value to be set
-		 * @return boolean                                          whether the value was set
 		 * @throws Throwable\InvalidArgument\Exception              indicates that index must be an integer
 		 */
 		public function __set($index, $value) {

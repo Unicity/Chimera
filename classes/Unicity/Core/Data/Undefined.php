@@ -21,7 +21,7 @@ namespace Unicity\Core\Data {
 	use \Unicity\Core;
 	use \Unicity\Throwable;
 
-	final class Undefined extends Core\Object {
+	final class Undefined extends Core\Object implements \ArrayAccess, \Countable, \Iterator {
 
 		/**
 		 * This variable stores a singleton instance of this class.
@@ -52,6 +52,25 @@ namespace Unicity\Core\Data {
 		public final function __construct() {
 			// do nothing
 		}
+		/**
+		 * This method returns the number of elements in the collection.
+		 *
+		 * @access public
+		 * @return integer                                          the number of elements
+		 */
+		public function count() {
+			return 0;
+		}
+
+		/**
+		 * This method returns the current element that is pointed at by the iterator.
+		 *
+		 * @access public
+		 * @return mixed                                            the current element
+		 */
+		public function current() {
+			return $this;
+		}
 
 		/**
 		 * This method returns a reference to this class.
@@ -66,16 +85,6 @@ namespace Unicity\Core\Data {
 		}
 
 		/**
-		 * This method returns an empty string.
-		 *
-		 * @access public
-		 * @return string                                           an empty string
-		 */
-		public final function __toString() {
-			return '';
-		}
-
-		/**
 		 * This method returns a singleton instance of this class.
 		 *
 		 * @access public
@@ -87,6 +96,118 @@ namespace Unicity\Core\Data {
 				static::$instance = new Core\Data\Undefined();
 			}
 			return static::$instance;
+		}
+
+		/**
+		 * This method returns the current key that is pointed at by the iterator.
+		 *
+		 * @access public
+		 * @return mixed                                            the key on success or null on failure
+		 */
+		public function key() {
+			return null;
+		}
+
+		/**
+		 * This method returns an empty string.
+		 *
+		 * @access public
+		 * @return string                                           an empty string
+		 */
+		public final function __toString() {
+			return '';
+		}
+
+		/**
+		 * This method will iterate to the next element.
+		 *
+		 * @access public
+		 */
+		public function next() {
+			// do nothing
+		}
+
+		/**
+		 * This method determines whether an offset exists.
+		 *
+		 * @access public
+		 * @override
+		 * @param integer $offset                                   the offset to be evaluated
+		 * @return boolean                                          whether the requested offset exists
+		 */
+		public function offsetExists($offset) {
+			return false;
+		}
+
+		/**
+		 * This methods gets value at the specified offset.
+		 *
+		 * @access public
+		 * @override
+		 * @param integer $offset                                   the offset to be fetched
+		 * @return mixed                                            the value at the specified offset
+		 */
+		public function offsetGet($offset) {
+			return $this;
+		}
+
+		/**
+		 * This methods sets the specified value at the specified offset.
+		 *
+		 * @access public
+		 * @override
+		 * @param integer $offset                                   the offset to be set
+		 * @param mixed $value                                      the value to be set
+		 * @throws Throwable\UnimplementedMethod\Exception          indicates the method has not been
+		 *                                                          implemented
+		 */
+		public function offsetSet($offset, $value) {
+			// do nothing
+		}
+
+		/**
+		 * This method allows for the specified offset to be unset.
+		 *
+		 * @access public
+		 * @override
+		 * @param integer $offset                                   the offset to be unset
+		 * @throws Throwable\UnimplementedMethod\Exception          indicates the method has not been
+		 *                                                          implemented
+		 */
+		public function offsetUnset($offset) {
+			// do nothing
+		}
+
+		/**
+		 * This method will resets the iterator.
+		 *
+		 * @access public
+		 */
+		public function rewind() {
+			// do nothing
+		}
+
+		/**
+		 * This method replaces the value at the specified index.
+		 *
+		 * @access public
+		 * @param integer $index                                    the index of the element to be set
+		 * @param mixed $value                                      the value to be set
+		 * @return boolean                                          whether the value was set
+		 * @throws Throwable\InvalidArgument\Exception              indicates that index must be an integer
+		 */
+		public function __set($index, $value) {
+			// do nothing
+		}
+
+		/**
+		 * This method determines whether all elements have been iterated through.
+		 *
+		 * @access public
+		 * @return boolean                                          whether iterator is still valid
+		 */
+		public function valid() {
+			return false;
 		}
 
 	}
