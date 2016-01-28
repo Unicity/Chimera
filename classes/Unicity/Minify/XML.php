@@ -72,6 +72,7 @@ namespace Unicity\Minify {
 			$this->xml = str_replace("\r\n", "\n", trim($xml));
 			$this->options = array_merge(array(
 				'preserveComments' => true,
+				'preserveEmptyLines' => true,
 				'preserveEmptyNodes' => true,
 				'preserveWhiteSpace' => true,
 			), $options);
@@ -99,41 +100,48 @@ namespace Unicity\Minify {
 			$document = new \DOMDocument();
 
 			if (!$this->options['preserveWhiteSpace']) {
-                $document->preserveWhiteSpace = false;
-            }
+				$document->preserveWhiteSpace = false;
+			}
 			else {
 				$xml = preg_replace('/ +/', ' ', $xml);
-				$xml = preg_replace("/ +(\\R)+/", "\n", $xml);
-				//$xml = preg_replace("/ +</", '<', $xml);
-				//$xml = preg_replace("/> +/", '>', $xml);
+				$xml = preg_replace('/ +(\\R)+/', "\n", $xml);
 			}
 
-            $document->loadXML($xml);
+			$document->loadXML($xml);
 
 			$xpath = new \DOMXPath($document);
 
 			// http://www.meetup.com/sf-php/messages/boards/thread/9078171
-            if (!$this->options['preserveComments']) {
-                while (($nodes = $xpath->query('//comment()')) && $nodes->length) {
-                    foreach ($nodes as $node) {
-                        $node->parentNode->removeChild($node);
-                    }
-                }
-            }
+			if (!$this->options['preserveComments']) {
+				while (($nodes = $xpath->query('//comment()')) && $nodes->length) {
+					foreach ($nodes as $node) {
+						$node->parentNode->removeChild($node);
+					}
+				}
+			}
 
 			// http://stackoverflow.com/questions/8603237/remove-empty-tags-from-a-xml-with-php
 			// not(*) does not have children elements
 			// not(@*) does not have attributes
 			// text()[normalize-space()] nodes that include whitespace text
-            if (!$this->options['preserveEmptyNodes']) {
-                while (($nodes = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $nodes->length) {
-                    foreach ($nodes as $node) {
-                        $node->parentNode->removeChild($node);
-                    }
-                }
-            }
+			if (!$this->options['preserveEmptyNodes']) {
+				while (($nodes = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $nodes->length) {
+					foreach ($nodes as $node) {
+						$node->parentNode->removeChild($node);
+					}
+				}
+			}
 
 			$xml = $document->saveXML();
+
+			if (!$this->options['preserveEmptyLines']) {
+				$lines = preg_split('/\\R/', $xml);
+				$lines = array_filter($lines, function(string $line) {
+					return (trim($line) != '');
+				});
+				$xml = implode("\n", $lines);
+				unset($lines);
+			}
 
 			return $xml;
 		}
