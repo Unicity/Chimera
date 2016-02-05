@@ -148,7 +148,7 @@ namespace Unicity\MappingService\Data {
 							$attributes = $child->attributes();
 							if (isset($attributes['Name'])) {
 								$key = Core\Data\XML::valueOf($attributes['Name']);
-								$value = Core\Data\XML::valueOf($child[0]);
+								$value = dom_import_simplexml($child[0])->textContent;
 								if (isset($attributes['Type'])) {
 									$type = Core\Data\XML::valueOf($attributes['Type']);
 									if (!(is_string($type) && preg_match('/^(bool(ean)?|int(eger)?|float|string)$/i', $type))) {
