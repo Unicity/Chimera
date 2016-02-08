@@ -19,6 +19,7 @@
 namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
+	use Unicity\Core;
 
 	class HasItemDescription extends BT\Task\Condition {
 
@@ -36,7 +37,8 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$itemCt = $order->transactions->items->count();
 			for ($i = 0; $i < $itemCt; $i++) {
-				if (preg_match($pattern, $order->transactions->items[0]->item->catalogSlide->content->description)) {
+				$description = trim(Core\Convert::toString($order->transactions->items[0]->item->catalogSlide->content->description));
+				if (preg_match($pattern, $description)) {
 					return BT\Task\Status::SUCCESS;
 				}
 			}
