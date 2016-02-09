@@ -42,9 +42,11 @@ namespace Unicity\BT\Task {
 			if ($this->policy->hasKey('status')) {
 				$status = $this->policy->getValue('status');
 				if (is_string($status)) {
-					$status = BT\Task\Status::valueOf($status);
+					$this->policy->putEntry('status', Core\Convert::toInteger(BT\Task\Status::valueOf(strtoupper($status))));
 				}
-				$this->policy->putEntry('status', Core\Convert::toInteger($status));
+				else {
+					$this->policy->putEntry('status', Core\Convert::toInteger($status));
+				}
 			}
 			else {
 				$this->policy->putEntry('status', BT\Task\Status::SUCCESS);
@@ -59,7 +61,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status code
 		 */
 		public function process(BT\Exchange $exchange) {
-			return $this->policy->hasKey('status');
+			return $this->policy->getValue('status');
 		}
 
 	}
