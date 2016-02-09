@@ -35,9 +35,8 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$pattern = $this->policy->getValue('pattern');
 
-			$itemCt = $order->transactions->items->count();
-			for ($i = 0; $i < $itemCt; $i++) {
-				$description = trim(Core\Convert::toString($order->transactions->items[0]->item->catalogSlide->content->description));
+			foreach ($order->lines->items as $line) {
+				$description = trim(Core\Convert::toString($line->item->catalogSlide->content->description));
 				if (preg_match($pattern, $description)) {
 					return BT\Task\Status::SUCCESS;
 				}
