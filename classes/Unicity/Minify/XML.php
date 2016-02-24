@@ -136,7 +136,7 @@ namespace Unicity\Minify {
 
 			if (!$this->options['preserveEmptyLines']) {
 				$lines = preg_split('/\\R/', $xml);
-				$lines = array_filter($lines, function(string $line) {
+				$lines = array_filter($lines, function($line) {
 					return (trim($line) != '');
 				});
 				$xml = implode("\n", $lines);
