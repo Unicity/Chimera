@@ -44,7 +44,7 @@ namespace Unicity\BT\Task {
 				$state = $task->process($entity);
 			}
 			catch (\Exception $ex) {
-				$state = BT\State\Error::with($entity);
+				$state = BT\State\Error::with(new BT\Entity($ex->getMessage()));
 			}
 			$task->after();
 			return $state;
