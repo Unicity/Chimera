@@ -28,6 +28,14 @@ namespace Unicity\BT\State {
 	 */
 	class Active extends BT\State {
 
+		/**
+		 * This method returns a new instance of this class.
+		 *
+		 * @access public
+		 * @static
+		 * @param BT\Entity $entity                                 the entity
+		 * @return BT\State                                         the state
+		 */
 		public static function with(BT\Entity $entity) {
 			return new BT\State\Active(BT\Status::ACTIVE, $entity);
 		}
