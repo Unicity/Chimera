@@ -42,14 +42,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 					$map = new Common\Mutable\HashMap();
 					$map->putEntry('Order', OrderCalc\Engine\Model\Marshaller::unmarshal($reader));
-					$entity->setBody($map);
 
-					return BT\State\Success::with($entity);
+					return BT\State\Success::with(new BT\Entity($map));
 				}
 				catch (Throwable\Runtime\Exception $ex) {
-					$entity->setBody($ex);
-
-					return BT\State\Error::with($entity);
+					return BT\State\Error::with(new BT\Entity($ex));
 				}
 			}
 			return BT\State\Failed::with($entity);
