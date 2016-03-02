@@ -52,7 +52,7 @@ namespace Unicity\BT {
 		 * @param integer $status                                   the status code
 		 * @param BT\Entity $entity                                 the entity
 		 */
-		protected function __construct(int $status, BT\Entity $entity = null) {
+		protected function __construct($status, BT\Entity $entity = null) {
 			$this->entity = $entity;
 			$this->status = $status;
 		}
