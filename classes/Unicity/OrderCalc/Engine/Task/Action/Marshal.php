@@ -28,18 +28,18 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$body = $exchange->getIn()->getBody();
 			if ($body instanceof Common\Mutable\HashMap) {
 				$writer = new Config\JSON\Writer($body);
 				$writer->config($this->policy->toDictionary());
 				$writer->export($exchange->getOut());
-				return BT\Status::SUCCESS;
+				return BT\State\Success::with($entity);
 			}
-			return BT\Status::FAILED;
+			return BT\State\Failed::with($entity);
 		}
 
 	}

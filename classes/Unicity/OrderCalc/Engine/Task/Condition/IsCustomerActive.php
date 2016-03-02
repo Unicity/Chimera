@@ -26,23 +26,23 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$order = $exchange->getIn()->getBody()->Order;
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
 			$status = $order->customer->status;
 			if (in_array($status, array('Suspended', 'Terminated'))) { // TODO abstract out to a config file
-				return BT\Status::ERROR;
+				return BT\State\Error::with($entity);
 			}
 
 			$type = $order->customer->type;
 			if (in_array($type, array('LegacySuspended', 'LegacyTerminated'))) { // TODO abstract out to a config file
-				return BT\Status::ERROR;
+				return BT\State\Error::with($entity);
 			}
 
-			return BT\Status::SUCCESS;
+			return BT\State\Success::with($entity);
 		}
 
 	}

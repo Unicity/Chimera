@@ -26,19 +26,19 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$order = $exchange->getIn()->getBody()->Order;
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
 			$zip_codes = $this->policy->getValue('zip-codes');
 
 			if ($zip_codes->hasValue($order->shipToAddress->zip)) {
-				return BT\Status::SUCCESS;
+				return BT\State\Success::with($entity);
 			}
 
-			return BT\Status::FAILED;
+			return BT\State\Failed::with($entity);
 		}
 
 	}

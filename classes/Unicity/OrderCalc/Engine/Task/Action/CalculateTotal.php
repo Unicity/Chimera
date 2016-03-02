@@ -27,11 +27,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$order = $exchange->getIn()->getBody()->Order;
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
 			$order->terms->pretotal = Trade\Money::make($order->terms->subtotal, $order->currency)
 				->add(Trade\Money::make($order->terms->freight->amount, $order->currency))
@@ -39,7 +39,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				->getConvertedAmount();
 			$order->terms->total = $order->terms->pretotal;
 
-			return BT\Status::SUCCESS;
+			return BT\State\Success::with($entity);
 		}
 
 	}

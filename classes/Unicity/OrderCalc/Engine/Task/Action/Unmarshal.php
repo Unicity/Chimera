@@ -31,29 +31,28 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$body = $exchange->getIn()->getBody();
+		public function process(BT\Entity $entity) {
+			$body = $entity->getBody();
 			if ($body instanceof IO\File) {
 				try {
 					$reader = new Config\JSON\Reader($body, array('assoc' => false));
 
-					$models = new Common\Mutable\HashMap();
-					$models->putEntry('Order', OrderCalc\Engine\Model\Marshaller::unmarshal($reader));
+					$map = new Common\Mutable\HashMap();
+					$map->putEntry('Order', OrderCalc\Engine\Model\Marshaller::unmarshal($reader));
+					$entity->setBody($map);
 
-					$exchange->getIn()->setBody($models);
-
-					return BT\Status::SUCCESS;
+					return BT\State\Success::with($entity);
 				}
 				catch (Throwable\Runtime\Exception $ex) {
-					$exchange->getOut()->setBody($ex);
+					$entity->setBody($ex);
 
-					return BT\Status::ERROR;
+					return BT\State\Error::with($entity);
 				}
 			}
-			return BT\Status::FAILED;
+			return BT\State\Failed::with($entity);
 		}
 
 	}

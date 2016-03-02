@@ -97,7 +97,7 @@ namespace Unicity\BT {
 				}
 			}
 
-			return BT\Status::ERROR;
+			return BT\State\Error::with($entity);
 		}
 
 	}

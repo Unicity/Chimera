@@ -37,11 +37,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$order = $exchange->getIn()->getBody()->Order;
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
 			$weight = 0.0;
 
@@ -52,7 +52,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 					$value = $value / self::LBS_TO_KGS_CONVERSION_RATE;
 				}
 				else if (!preg_match('/^kg(s)?$/i', $unit)) {
-					return BT\Status::ERROR;
+					return BT\State\Error::with($entity);
 				}
 				$weight += $line->quantity * $value;
 			}
@@ -68,7 +68,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				->add($surcharge)
 				->getConvertedAmount();
 
-			return BT\Status::SUCCESS;
+			return BT\State\Success::with($entity);
 		}
 
 	}

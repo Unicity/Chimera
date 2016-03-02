@@ -27,22 +27,22 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$order = $exchange->getIn()->getBody()->Order;
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
 			$pattern = $this->policy->getValue('pattern');
 
 			foreach ($order->lines->items as $line) {
 				$description = trim(Core\Convert::toString($line->item->catalogSlide->content->description));
 				if (preg_match($pattern, $description)) {
-					return BT\Status::SUCCESS;
+					return BT\State\Success::with($entity);
 				}
 			}
 
-			return BT\Status::FAILED;
+			return BT\State\Failed::with($entity);
 		}
 
 	}

@@ -27,17 +27,17 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$order = $exchange->getIn()->getBody()->Order;
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
 			$order->terms->freight->amount = Trade\Money::make($order->terms->freight->amount, $order->currency)
 				->add(Trade\Money::make($this->policy->getValue('surcharge'), $order->currency))
 				->getConvertedAmount();
 
-			return BT\Status::SUCCESS;
+			return BT\State\Success::with($entity);
 		}
 
 	}
