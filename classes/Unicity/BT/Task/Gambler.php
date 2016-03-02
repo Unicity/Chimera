@@ -56,18 +56,17 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$callable = explode(',', $this->policy->getValue('callable'));
 			$options = Core\Convert::toInteger($this->policy->getValue('options'));
 			$probability = Core\Convert::toDouble($this->policy->hasKey('odds')) * $options;
 			if (call_user_func($callable, array(1, $options)) <= $probability) {
-				$status = BT\Task\Handler::process($this->task, $exchange);
-				return $status;
+				return BT\Task\Handler::process($this->task, $entity);
 			}
-			return BT\Status::ACTIVE;
+			return BT\State\Active::with($entity);
 		}
 
 	}

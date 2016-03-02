@@ -35,19 +35,19 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @static
 		 * @param BT\Task $task                                     the task to do the processing
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public static function process(BT\Task $task, BT\Exchange $exchange) {
+		public static function process(BT\Task $task, BT\Entity $entity) {
 			$task->before();
 			try {
-				$status = $task->process($exchange);
+				$state = $task->process($entity);
 			}
 			catch (\Exception $ex) {
-				$status = BT\Status::ERROR;
+				$state = BT\State\Error::with($entity);
 			}
 			$task->after();
-			return $status;
+			return $state;
 		}
 
 	}

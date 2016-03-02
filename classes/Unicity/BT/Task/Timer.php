@@ -72,10 +72,10 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$delay = Core\Convert::toInteger($this->policy->getValue('delay')) / 1000; // milliseconds => seconds
 
 			$deltaT = microtime(true) - $this->start_time;
@@ -83,11 +83,11 @@ namespace Unicity\BT\Task {
 				$duration = Core\Convert::toInteger($this->policy->getValue('duration')) / 1000; // milliseconds => seconds
 
 				if ($deltaT < ($delay + $duration)) {
-					return BT\Task\Handler::process($this->task, $exchange);
+					return BT\Task\Handler::process($this->task, $entity);
 				}
 			}
 
-			return BT\Status::INACTIVE;
+			return BT\State\Inactive::with($entity);
 		}
 
 		/**

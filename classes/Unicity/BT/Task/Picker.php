@@ -48,19 +48,19 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
 			if ($shuffle) {
 				$this->tasks->shuffle();
 			}
 			$index = Core\Convert::toInteger($this->policy->getValue('index'));
 			if ($this->tasks->hasIndex($index)) {
-				return BT\Task\Handler::process($this->tasks->getValue($index), $exchange);
+				return BT\Task\Handler::process($this->tasks->getValue($index), $entity);
 			}
-			return BT\Status::ERROR;
+			return BT\State\Error::with($entity);
 		}
 
 	}

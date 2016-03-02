@@ -49,29 +49,29 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$id = Core\Convert::toString($this->policy->getValue('id'));
 
 			if ($this->blackboard->hasKey($id)) {
 				$hashCode = $this->blackboard->getValue($id);
 				if ($hashCode == $this->task->__hashCode()) {
-					$status = BT\Task\Handler::process($this->task, $exchange);
-					if ($status != BT\Status::ACTIVE) {
+					$state = BT\Task\Handler::process($this->task, $entity);
+					if ($state->getStatus() != BT\Status::ACTIVE) {
 						$this->blackboard->removeKey($id);
 					}
-					return $status;
+					return $state;
 				}
-				return BT\Status::ACTIVE;
+				return BT\State\Active::with($entity);
 			}
 			else {
-				$status = BT\Task\Handler::process($this->task, $exchange);
-				if ($status == BT\Status::ACTIVE) {
+				$state = BT\Task\Handler::process($this->task, $entity);
+				if ($state->getStatus() == BT\Status::ACTIVE) {
 					$this->blackboard->putEntry($id, $this->task->__hashCode());
 				}
-				return $status;
+				return $state;
 			}
 		}
 

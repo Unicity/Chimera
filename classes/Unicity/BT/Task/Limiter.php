@@ -67,17 +67,17 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$limit = Core\Convert::toInteger($this->policy->getValue('limit'));
 			if ($this->calls < $limit) {
-				$status = BT\Task\Handler::process($this->task, $exchange);
+				$state = BT\Task\Handler::process($this->task, $entity);
 				$this->calls++;
-				return $status;
+				return $state;
 			}
-			return BT\Status::FAILED;
+			return BT\State\Failed::with($entity);
 		}
 
 		/**

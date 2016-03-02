@@ -69,19 +69,19 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$interval = Core\Convert::toInteger($this->policy->getValue('interval')) / 1000; // milliseconds => seconds
 
 			if (microtime(true) >= $this->next_time) {
-				$status = BT\Task\Handler::process($this->task, $exchange);
+				$state = BT\Task\Handler::process($this->task, $entity);
 				$this->next_time += $interval;
-				return $status;
+				return $state;
 			}
 
-			return BT\Status::ACTIVE;
+			return BT\State\Active::with($entity);
 		}
 
 		/**

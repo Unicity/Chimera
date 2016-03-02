@@ -151,10 +151,10 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @abstract
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public abstract function process(BT\Exchange $exchange);
+		public abstract function process(BT\Entity $entity);
 
 		/**
 		 * This method resets the task.

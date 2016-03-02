@@ -51,25 +51,27 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
 			if ($shuffle) {
 				$this->tasks->shuffle();
 			}
 			$inactives = 0;
 			foreach ($this->tasks as $task) {
-				$status = BT\Task\Handler::process($task, $exchange);
+				$state = BT\Task\Handler::process($task, $entity);
+				$status = $state->getStatus();
 				if ($status == BT\Status::INACTIVE) {
 					$inactives++;
 				}
 				else if ($status != BT\Status::SUCCESS) {
-					return $status;
+					return $state;
 				}
+				$entity = $state->getEntity();
 			}
-			return ($inactives < $this->tasks->count()) ? BT\Status::SUCCESS : BT\Status::INACTIVE;
+			return ($inactives < $this->tasks->count()) ? BT\State\Success::with($entity) : BT\State\Inactive::with($entity);
 		}
 
 	}

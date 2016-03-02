@@ -88,13 +88,13 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$status = BT\Task\Handler::process($this->task, $exchange);
+		public function process(BT\Entity $entity) {
+			$state = BT\Task\Handler::process($this->task, $entity);
 			if ($this->isEnabled()) {
-				switch ($status) {
+				switch ($state->getStatus()) {
 					case BT\Status::INACTIVE:
 						$this->logger->add($this->level, 'Task: :task Status: Inactive', array(':task' => $this->task));
 						break;
@@ -115,7 +115,7 @@ namespace Unicity\BT\Task {
 						break;
 				}
 			}
-			return $status;
+			return $state;
 		}
 
 	}

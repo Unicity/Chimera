@@ -57,10 +57,10 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$count = $this->tasks->count();
 			if ($count > 0) {
 				$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
@@ -73,8 +73,8 @@ namespace Unicity\BT\Task {
 				$failuresCt = 0;
 				$failuresMax = min(Core\Convert::toInteger($this->policy->getValue('failures')), $count);
 				foreach ($this->tasks as $task) {
-					$status = BT\Task\Handler::process($task, $exchange);
-					switch ($status) {
+					$state = BT\Task\Handler::process($task, $entity);
+					switch ($state->getStatus()) {
 						case BT\Status::INACTIVE:
 							$inactivesCt++;
 							break;
@@ -83,25 +83,26 @@ namespace Unicity\BT\Task {
 						case BT\Status::SUCCESS:
 							$successesCt++;
 							if ($successesCt >= $successesMax) {
-								return BT\Status::SUCCESS;
+								return $state;
 							}
 							break;
 						case BT\Status::FAILED:
 							$failuresCt++;
 							if ($failuresCt >= $failuresMax) {
-								return BT\Status::FAILED;
+								return $state;
 							}
 							break;
 						case BT\Status::ERROR:
 						case BT\Status::QUIT:
-							return $status;
+							return $state;
 					}
+					$entity = $state->getEntity();
 				}
 				if ($inactivesCt != $count) {
-					return BT\Status::ACTIVE;
+					return BT\State\Active::with($entity);
 				}
 			}
-			return BT\Status::INACTIVE;
+			return BT\State\Inactive::with($entity);
 		}
 
 	}

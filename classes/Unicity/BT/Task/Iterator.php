@@ -52,28 +52,30 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$steps = Core\Convert::toInteger($this->policy->getValue('steps'));
 			if ($this->policy->getValue('reverse')) { // direction
 				for ($i = $steps - 1; $i >= 0; $i--) {
-					$status = BT\Task\Handler::process($this->task, $exchange);
-					if (!in_array($status, array(BT\Status::SUCCESS, BT\Status::FAILED, BT\Status::ERROR, BT\Status::QUIT))) {
-						return $status;
+					$state = BT\Task\Handler::process($this->task, $entity);
+					if (!in_array($state->getStatus(), array(BT\Status::SUCCESS, BT\Status::FAILED, BT\Status::ERROR, BT\Status::QUIT))) {
+						return $state;
 					}
+					$entity = $state->getEntity();
 				}
 			}
 			else {
 				for ($i = 0; $i < $steps; $i++) {
-					$status = BT\Task\Handler::process($this->task, $exchange);
-					if (!in_array($status, array(BT\Status::SUCCESS, BT\Status::FAILED, BT\Status::ERROR, BT\Status::QUIT))) {
-						return $status;
+					$state = BT\Task\Handler::process($this->task, $entity);
+					if (!in_array($state->getStatus(), array(BT\Status::SUCCESS, BT\Status::FAILED, BT\Status::ERROR, BT\Status::QUIT))) {
+						return $state;
 					}
+					$entity = $state->getEntity();
 				}
 			}
-			return BT\Status::SUCCESS;
+			return BT\State\Success::with($entity);
 		}
 
 	}

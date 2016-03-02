@@ -24,13 +24,13 @@ namespace Unicity\BT {
 	use \Unicity\Throwable;
 
 	/**
-	 * This class represents a message.
+	 * This class represents an entity.
 	 *
 	 * @access public
 	 * @class
 	 * @see http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/Message.html
 	 */
-	class Message extends Core\Object implements Core\IMessage {
+	class Entity extends Core\Object implements Core\IMessage {
 
 		/**
 		 * This variable stores the HTTP status codes and descriptions.

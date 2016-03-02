@@ -64,27 +64,29 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$inactives = 0;
 			while ($this->state < $this->tasks->count()) {
-				$status = BT\Task\Handler::process($this->tasks->getValue($this->state), $exchange);
+				$response = BT\Task\Handler::process($this->tasks->getValue($this->state), $entity);
+				$status = $response->getStatus();
 				if ($status == BT\Status::INACTIVE) {
 					$inactives++;
 				}
 				else if ($status == BT\Status::ACTIVE) {
-					return $status;
+					return $response;
 				}
 				else if ($status != BT\Status::SUCCESS) {
 					$this->state = 0;
-					return $status;
+					return $response;
 				}
+				$entity = $response->getEntity();
 				$this->state++;
 			}
 			$this->state = 0;
-			return ($inactives < $this->tasks->count()) ? BT\Status::SUCCESS : BT\Status::INACTIVE;
+			return ($inactives < $this->tasks->count()) ? BT\State\Success::with($entity) : BT\State\Inactive::with($entity);
 		}
 
 		/**

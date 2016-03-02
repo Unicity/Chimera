@@ -41,12 +41,10 @@ namespace Unicity\BT\Task {
 			parent::__construct($blackboard, $policy);
 			if ($this->policy->hasKey('status')) {
 				$status = $this->policy->getValue('status');
-				if (is_string($status)) {
-					$this->policy->putEntry('status', Core\Convert::toInteger(BT\Status::valueOf(strtoupper($status))));
-				}
-				else {
-					$this->policy->putEntry('status', Core\Convert::toInteger($status));
-				}
+				$status = (is_string($status))
+					? BT\Status::valueOf(strtoupper($status))
+					: Core\Convert::toInteger($status);
+				$this->policy->putEntry('status', $status);
 			}
 			else {
 				$this->policy->putEntry('status', BT\Status::SUCCESS);
@@ -57,11 +55,25 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			return $this->policy->getValue('status');
+		public function process(BT\Entity $entity) {
+			$status = $this->policy->getValue('status');
+			switch ($status) {
+				case BT\Status::ACTIVE:
+					return BT\State\Active::with($entity);
+				case BT\Status::ERROR:
+					return BT\State\Error::with($entity);
+				case BT\Status::FAILED:
+					return BT\State\Failed::with($entity);
+				case BT\Status::INACTIVE:
+					return BT\State\Inactive::with($entity);
+				case BT\Status::QUIT:
+					return BT\State\Quit::with($entity);
+				default: // BT\Status::SUCCESS
+					return BT\State\Success::with($entity);
+			}
 		}
 
 	}

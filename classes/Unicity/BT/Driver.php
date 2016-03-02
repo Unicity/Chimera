@@ -59,11 +59,11 @@ namespace Unicity\BT {
 		 * This method executes the tasks define in the pipeline.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the given exchange to process
+		 * @param BT\Entity $entity                                 the entity to be processed
 		 * @param string $id                                        the id of behavior tree to run
-		 * @return integer                                          the status code
+		 * @return BT\State                                         the state
 		 */
-		public function run(BT\Exchange $exchange, $id = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
+		public function run(BT\Entity $entity, $id = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
 			$factory = new Spring\XMLObjectFactory(Spring\Data\XML::load($this->file));
 
 			$registry = $factory->getParser()->getRegistry();
@@ -93,7 +93,7 @@ namespace Unicity\BT {
 			if ($factory->hasObject($id)) {
 				$object = $factory->getObject($id);
 				if ($object instanceof BT\Task) {
-					return BT\Task\Handler::process($object, $exchange);
+					return BT\Task\Handler::process($object, $entity);
 				}
 			}
 

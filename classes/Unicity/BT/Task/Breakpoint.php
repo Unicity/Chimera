@@ -32,11 +32,11 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			return BT\Status::QUIT;
+		public function process(BT\Entity $entity) {
+			return BT\State\Quit::with($entity);
 		}
 
 	}

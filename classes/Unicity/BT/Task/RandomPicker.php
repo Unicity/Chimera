@@ -48,18 +48,18 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$callable = explode(',', $this->policy->getValue('callable'));
 			$count = $this->tasks->count();
 			if ($count > 0) {
 				$index = call_user_func($callable, array(0, $count));
 				$task = $this->tasks->getValue($index);
-				return BT\Task\Handler::process($task, $exchange);
+				return BT\Task\Handler::process($task, $entity);
 			}
-			return BT\Status::ERROR;
+			return BT\State\Error::with($entity);
 		}
 
 	}

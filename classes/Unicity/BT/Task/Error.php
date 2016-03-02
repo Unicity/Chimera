@@ -56,34 +56,24 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
-			$status = BT\Task\Handler::process($this->task, $exchange);
-			switch ($status) {
-				case BT\Status::ACTIVE:
-					if ($this->policy->getValue('active')) {
-						return BT\Status::ERROR;
-					}
-					return $status;
-				case BT\Status::FAILED:
-					if ($this->policy->getValue('failed')) {
-						return BT\Status::ERROR;
-					}
-					return $status;
-				case BT\Status::INACTIVE:
-					if ($this->policy->getValue('inactive')) {
-						return BT\Status::ERROR;
-					}
-					return $status;
-				case BT\Status::SUCCESS:
-					if ($this->policy->getValue('success')) {
-						return BT\Status::ERROR;
-					}
-					return $status;
+		public function process(BT\Entity $entity) {
+			$state = BT\Task\Handler::process($this->task, $entity);
+			if (($state instanceof BT\State\Active) && $this->policy->getValue('active')) {
+				return BT\State\Error::with($state->getEntity());
 			}
-			return $status;
+			if (($state instanceof BT\State\Failed) && $this->policy->getValue('failed')) {
+				return BT\State\Error::with($state->getEntity());
+			}
+			if (($state instanceof BT\State\Inactive) && $this->policy->getValue('inactive')) {
+				return BT\State\Error::with($state->getEntity());
+			}
+			if (($state instanceof BT\State\Success) && $this->policy->getValue('success')) {
+				return BT\State\Error::with($state->getEntity());
+			}
+			return $state;
 		}
 
 	}

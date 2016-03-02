@@ -42,9 +42,9 @@ namespace Unicity\BT\Task {
 			parent::__construct($blackboard, $policy);
 			if ($this->policy->hasKey('until')) {
 				$until = $this->policy->getValue('until');
-				if (is_string($until)) {
-					$until = BT\Status::valueOf($until);
-				}
+				$until = (is_string($until))
+					? BT\Status::valueOf(strtoupper($until))
+					: Core\Convert::toInteger($until);
 				if ($until !== BT\Status::SUCCESS) {
 					$until = BT\Status::FAILED;
 				}
@@ -59,19 +59,20 @@ namespace Unicity\BT\Task {
 		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function process(BT\Exchange $exchange) {
+		public function process(BT\Entity $entity) {
 			$until = $this->policy->getValue('until');
 			do {
-				$status = BT\Task\Handler::process($this->task, $exchange);
+				$state = BT\Task\Handler::process($this->task, $entity);
+				$status = $state->getStatus();
 				if (!in_array($status, array(BT\Status::SUCCESS, BT\Status::FAILED))) {
-					return $status;
+					return $state;
 				}
 			}
 			while ($status == $until);
-			return $until;
+			return $state;
 		}
 
 	}

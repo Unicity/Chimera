@@ -29,7 +29,7 @@ namespace Unicity\BT\State {
 	 */
 	class Failed extends BT\State {
 
-		public static function factory(BT\Entity $entity = null) {
+		public static function with(BT\Entity $entity) {
 			return new BT\State\Success(BT\Status::FAILED, $entity);
 		}
 
