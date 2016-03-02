@@ -76,7 +76,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param mixed $body                                       the message's body
 		 */
-		public function setBody($body);
+		public function setBody($body = null);
 
 		/**
 		 * This method sets the header with specified name.

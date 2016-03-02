@@ -144,15 +144,16 @@ namespace Unicity\Core {
 		 * This constructor initializes the class with some default data.
 		 *
 		 * @access public
+		 * @param mixed $body                                       the message's body
 		 */
-		public function __construct() {
+		public function __construct($body = null) {
 			$this->headers = new Common\Mutable\HashMap();
 			$this->headers->putEntry('content-disposition', 'inline');
-			$this->headers->putEntry('content-type', 'text/html; charset=UTF-8');
+			$this->headers->putEntry('content-type', 'text/plain; charset=UTF-8');
 			$this->headers->putEntry('cache-control', 'no-store, no-cache, must-revalidate');
 			$this->headers->putEntry('expires', 'Sat, 26 Jul 1997 05:00:00 GMT');
 			$this->headers->putEntry('pragma', 'no-cache');
-			$this->body = null;
+			$this->body = $body;
 			$this->id = $this->__hashCode();
 			$this->protocol = 'HTTP/1.1';
 			$this->status = 200;
@@ -279,7 +280,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param mixed $body                                       the message's body
 		 */
-		public function setBody($body) {
+		public function setBody($body = null) {
 			if (is_object($body) && ($body instanceof IO\File)) {
 				$this->body = $body;
 			}
