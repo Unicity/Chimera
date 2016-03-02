@@ -36,7 +36,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			$order->terms->total = $this->roundToNearest5($order->terms->pretotal, $order->currency);
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 		/**

@@ -33,11 +33,11 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$order = $exchange->getIn()->getBody()->Order;
 
 			$country = $this->policy->getValue('country');
-			if (($order->market == $country) &&	($order->shipToAddress->country == $country)) {
-				return BT\Task\Status::SUCCESS;
+			if (($order->market == $country) && ($order->shipToAddress->country == $country)) {
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

@@ -34,15 +34,15 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$status = $order->customer->status;
 			if (in_array($status, array('Suspended', 'Terminated'))) { // TODO abstract out to a config file
-				return BT\Task\Status::ERROR;
+				return BT\Status::ERROR;
 			}
 
 			$type = $order->customer->type;
 			if (in_array($type, array('LegacySuspended', 'LegacyTerminated'))) { // TODO abstract out to a config file
-				return BT\Task\Status::ERROR;
+				return BT\Status::ERROR;
 			}
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

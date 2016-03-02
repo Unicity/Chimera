@@ -35,10 +35,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$shippingMethods = $this->policy->getValue('methods');
 
 			if (($order->transactions->items->count() > 0) && $shippingMethods->hasValue($order->transactions->items[0]->method)) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

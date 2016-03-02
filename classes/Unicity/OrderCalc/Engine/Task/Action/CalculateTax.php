@@ -43,7 +43,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			$order->terms->tax->amount = $tax_amount->getConvertedAmount();
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

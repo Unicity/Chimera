@@ -39,11 +39,11 @@ namespace Unicity\BT\Task {
 		 */
 		public function process(BT\Exchange $exchange) {
 			$status = BT\Task\Handler::process($this->task, $exchange);
-			if ($status == BT\Task\Status::SUCCESS) {
-				return BT\Task\Status::FAILED;
+			if ($status == BT\Status::SUCCESS) {
+				return BT\Status::FAILED;
 			}
-			else if ($status == BT\Task\Status::FAILED) {
-				return BT\Task\Status::SUCCESS;
+			else if ($status == BT\Status::FAILED) {
+				return BT\Status::SUCCESS;
 			}
 			return $status;
 		}

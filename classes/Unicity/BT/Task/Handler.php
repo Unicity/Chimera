@@ -44,7 +44,7 @@ namespace Unicity\BT\Task {
 				$status = $task->process($exchange);
 			}
 			catch (\Exception $ex) {
-				$status = BT\Task\Status::ERROR;
+				$status = BT\Status::ERROR;
 			}
 			$task->after();
 			return $status;

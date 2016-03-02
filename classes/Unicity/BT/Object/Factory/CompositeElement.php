@@ -44,13 +44,13 @@ namespace Unicity\BT\Object\Factory {
 			}
 			$type = $parser->valueOf($attributes['type']);
 
-			$element->registerXPathNamespace('spring-bt', BT\Task::NAMESPACE_URI);
+			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:blackboard');
 			$blackboard = (!empty($children))
 				? $parser->getObjectFromElement($children[0])
 				: null;
 
-			$element->registerXPathNamespace('spring-bt', BT\Task::NAMESPACE_URI);
+			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:policy');
 			$policy = (!empty($children))
 				? $parser->getObjectFromElement($children[0])
@@ -66,7 +66,7 @@ namespace Unicity\BT\Object\Factory {
 				$object->setTitle($parser->valueOf($attributes['title']));
 			}
 
-			$element->registerXPathNamespace('spring-bt', BT\Task::NAMESPACE_URI);
+			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:tasks');
 			if (!empty($children)) {
 				foreach ($children as $child) {

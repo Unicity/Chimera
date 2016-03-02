@@ -60,7 +60,7 @@ namespace Unicity\BT\Task {
 			if ($this->policy->getValue('reverse')) { // direction
 				for ($i = $steps - 1; $i >= 0; $i--) {
 					$status = BT\Task\Handler::process($this->task, $exchange);
-					if (!in_array($status, array(BT\Task\Status::SUCCESS, BT\Task\Status::FAILED, BT\Task\Status::ERROR, BT\Task\Status::QUIT))) {
+					if (!in_array($status, array(BT\Status::SUCCESS, BT\Status::FAILED, BT\Status::ERROR, BT\Status::QUIT))) {
 						return $status;
 					}
 				}
@@ -68,12 +68,12 @@ namespace Unicity\BT\Task {
 			else {
 				for ($i = 0; $i < $steps; $i++) {
 					$status = BT\Task\Handler::process($this->task, $exchange);
-					if (!in_array($status, array(BT\Task\Status::SUCCESS, BT\Task\Status::FAILED, BT\Task\Status::ERROR, BT\Task\Status::QUIT))) {
+					if (!in_array($status, array(BT\Status::SUCCESS, BT\Status::FAILED, BT\Status::ERROR, BT\Status::QUIT))) {
 						return $status;
 					}
 				}
 			}
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

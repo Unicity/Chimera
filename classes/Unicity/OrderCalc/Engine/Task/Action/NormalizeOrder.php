@@ -38,7 +38,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order->currency = strtoupper($order->currency);
 			$order->terms->subtotal = Trade\Money::make($order->terms->subtotal, $order->currency)->getConvertedAmount();
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

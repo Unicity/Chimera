@@ -62,14 +62,14 @@ namespace Unicity\BT\Task {
 			$inactives = 0;
 			foreach ($this->tasks as $task) {
 				$status = BT\Task\Handler::process($task, $exchange);
-				if ($status == BT\Task\Status::INACTIVE) {
+				if ($status == BT\Status::INACTIVE) {
 					$inactives++;
 				}
-				else if ($status != BT\Task\Status::SUCCESS) {
+				else if ($status != BT\Status::SUCCESS) {
 					return $status;
 				}
 			}
-			return ($inactives < $this->tasks->count()) ? BT\Task\Status::SUCCESS : BT\Task\Status::INACTIVE;
+			return ($inactives < $this->tasks->count()) ? BT\Status::SUCCESS : BT\Status::INACTIVE;
 		}
 
 	}

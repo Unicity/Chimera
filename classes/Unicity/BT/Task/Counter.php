@@ -74,7 +74,7 @@ namespace Unicity\BT\Task {
 			$max_count = Core\Convert::toInteger($this->policy->getValue('max_count'));
 			if ($this->counter < $max_count) {
 				$this->counter++;
-				return BT\Task\Status::ACTIVE;
+				return BT\Status::ACTIVE;
 			}
 			$this->counter = 0;
 			$status = BT\Task\Handler::process($this->task, $exchange);

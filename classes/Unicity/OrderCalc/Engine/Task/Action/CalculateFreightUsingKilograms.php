@@ -52,7 +52,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 					$value = $value / self::LBS_TO_KGS_CONVERSION_RATE;
 				}
 				else if (!preg_match('/^kg(s)?$/i', $unit)) {
-					return BT\Task\Status::ERROR;
+					return BT\Status::ERROR;
 				}
 				$weight += $line->quantity * $value;
 			}
@@ -68,7 +68,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				->add($surcharge)
 				->getConvertedAmount();
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

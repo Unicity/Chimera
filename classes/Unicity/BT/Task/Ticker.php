@@ -81,7 +81,7 @@ namespace Unicity\BT\Task {
 				return $status;
 			}
 
-			return BT\Task\Status::ACTIVE;
+			return BT\Status::ACTIVE;
 		}
 
 		/**

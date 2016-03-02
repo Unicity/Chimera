@@ -60,7 +60,7 @@ namespace Unicity\BT\Task {
 			if ($this->tasks->hasIndex($index)) {
 				return BT\Task\Handler::process($this->tasks->getValue($index), $exchange);
 			}
-			return BT\Task\Status::ERROR;
+			return BT\Status::ERROR;
 		}
 
 	}

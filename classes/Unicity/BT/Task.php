@@ -34,14 +34,6 @@ namespace Unicity\BT {
 	abstract class Task extends Core\Object {
 
 		/**
-		 * This constant represents the default namespace used by Spring XML for behavior
-		 * trees.
-		 *
-		 * @const string
-		 */
-		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/spring-bt.xsd';
-
-		/**
 		 * This variable stores a reference to the blackboard.
 		 *
 		 * @access protected

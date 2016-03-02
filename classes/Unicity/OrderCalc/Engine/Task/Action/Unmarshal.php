@@ -45,15 +45,15 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 					$exchange->getIn()->setBody($models);
 
-					return BT\Task\Status::SUCCESS;
+					return BT\Status::SUCCESS;
 				}
 				catch (Throwable\Runtime\Exception $ex) {
 					$exchange->getOut()->setBody($ex);
 
-					return BT\Task\Status::ERROR;
+					return BT\Status::ERROR;
 				}
 			}
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

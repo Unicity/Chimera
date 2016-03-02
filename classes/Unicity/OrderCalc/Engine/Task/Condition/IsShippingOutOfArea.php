@@ -35,10 +35,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$zip_codes = $this->policy->getValue('zip-codes');
 
 			if ($zip_codes->hasValue($order->shipToAddress->zip)) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

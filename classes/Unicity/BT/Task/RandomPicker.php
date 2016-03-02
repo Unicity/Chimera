@@ -59,7 +59,7 @@ namespace Unicity\BT\Task {
 				$task = $this->tasks->getValue($index);
 				return BT\Task\Handler::process($task, $exchange);
 			}
-			return BT\Task\Status::ERROR;
+			return BT\Status::ERROR;
 		}
 
 	}

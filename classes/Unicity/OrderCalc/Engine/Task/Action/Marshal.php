@@ -37,9 +37,9 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				$writer = new Config\JSON\Writer($body);
 				$writer->config($this->policy->toDictionary());
 				$writer->export($exchange->getOut());
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

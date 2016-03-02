@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * Copyright 2015-2016 Unicity International
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace Unicity\BT {
+
+	use \Unicity\BT;
+
+	/**
+	 * This class represents a state of a task.
+	 *
+	 * @access public
+	 * @class
+	 * @see https://dzone.com/articles/practical-php-refactoring-17
+	 */
+	abstract class State {
+
+		/**
+		 * This variable stores the entity.
+		 *
+		 * @access protected
+		 * @var BT\Entity
+		 */
+		protected $entity;
+
+		/**
+		 * This variable stores the status code.
+		 *
+		 * @access protected
+		 * @var integer
+		 */
+		protected $status;
+
+		/**
+		 * This constructor initializes the class.
+		 *
+		 * @access protected
+		 * @param integer $status                                   the status code
+		 * @param BT\Entity $entity                                 the entity
+		 */
+		protected function __construct(int $status, BT\Entity $entity = null) {
+			$this->entity = $entity;
+			$this->status = $status;
+		}
+
+		/**
+		 * This method returns the entity.
+		 *
+		 * @access public
+		 * @return BT\Entity                                        the entity
+		 */
+		public function getEntity() {
+			return $this->entity;
+		}
+
+		/**
+		 * This method returns the status code.
+		 *
+		 * @access public
+		 * @return integer                                          the status code
+		 */
+		public function getStatus() {
+			return $this->status;
+		}
+
+		/**
+		 * This method returns the status code as a string.
+		 *
+		 * @access public
+		 * @return string                                           the status code as a string
+		 */
+		public function __toString() {
+			return strval($this->status);
+		}
+
+	}
+
+}

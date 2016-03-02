@@ -75,33 +75,33 @@ namespace Unicity\BT\Task {
 				foreach ($this->tasks as $task) {
 					$status = BT\Task\Handler::process($task, $exchange);
 					switch ($status) {
-						case BT\Task\Status::INACTIVE:
+						case BT\Status::INACTIVE:
 							$inactivesCt++;
 							break;
-						case BT\Task\Status::ACTIVE:
+						case BT\Status::ACTIVE:
 							break;
-						case BT\Task\Status::SUCCESS:
+						case BT\Status::SUCCESS:
 							$successesCt++;
 							if ($successesCt >= $successesMax) {
-								return BT\Task\Status::SUCCESS;
+								return BT\Status::SUCCESS;
 							}
 							break;
-						case BT\Task\Status::FAILED:
+						case BT\Status::FAILED:
 							$failuresCt++;
 							if ($failuresCt >= $failuresMax) {
-								return BT\Task\Status::FAILED;
+								return BT\Status::FAILED;
 							}
 							break;
-						case BT\Task\Status::ERROR:
-						case BT\Task\Status::QUIT:
+						case BT\Status::ERROR:
+						case BT\Status::QUIT:
 							return $status;
 					}
 				}
 				if ($inactivesCt != $count) {
-					return BT\Task\Status::ACTIVE;
+					return BT\Status::ACTIVE;
 				}
 			}
-			return BT\Task\Status::INACTIVE;
+			return BT\Status::INACTIVE;
 		}
 
 	}

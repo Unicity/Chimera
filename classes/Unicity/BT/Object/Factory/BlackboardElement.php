@@ -40,7 +40,7 @@ namespace Unicity\BT\Object\Factory {
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
 			$object = new Common\Mutable\HashMap();
 
-			$children = $parser->getElementChildren($element, BT\Task::NAMESPACE_URI);
+			$children = $parser->getElementChildren($element, BT\Schema::NAMESPACE_URI);
 			if (!empty($children)) {
 				foreach ($children as $child) {
 					$name = $parser->getElementName($child);

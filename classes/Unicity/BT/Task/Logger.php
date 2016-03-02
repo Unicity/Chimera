@@ -95,22 +95,22 @@ namespace Unicity\BT\Task {
 			$status = BT\Task\Handler::process($this->task, $exchange);
 			if ($this->isEnabled()) {
 				switch ($status) {
-					case BT\Task\Status::INACTIVE:
+					case BT\Status::INACTIVE:
 						$this->logger->add($this->level, 'Task: :task Status: Inactive', array(':task' => $this->task));
 						break;
-					case BT\Task\Status::ACTIVE:
+					case BT\Status::ACTIVE:
 						$this->logger->add($this->level, 'Task: :task Status: Active', array(':task' => $this->task));
 						break;
-					case BT\Task\Status::SUCCESS:
+					case BT\Status::SUCCESS:
 						$this->logger->add($this->level, 'Task: :task Status: Success', array(':task' => $this->task));
 						break;
-					case BT\Task\Status::FAILED:
+					case BT\Status::FAILED:
 						$this->logger->add($this->level, 'Task: :task Status: Failed', array(':task' => $this->task));
 						break;
-					case BT\Task\Status::ERROR:
+					case BT\Status::ERROR:
 						$this->logger->add($this->level, 'Task: :task Status: Error', array(':task' => $this->task));
 						break;
-					case BT\Task\Status::QUIT:
+					case BT\Status::QUIT:
 						$this->logger->add($this->level, 'Task: :task Status: Quit', array(':task' => $this->task));
 						break;
 				}

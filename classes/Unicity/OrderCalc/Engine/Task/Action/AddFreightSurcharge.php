@@ -37,7 +37,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				->add(Trade\Money::make($this->policy->getValue('surcharge'), $order->currency))
 				->getConvertedAmount();
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

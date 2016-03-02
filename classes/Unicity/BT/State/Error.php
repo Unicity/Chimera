@@ -16,27 +16,21 @@
  * limitations under the License.
  */
 
-namespace Unicity\BT\Task {
+namespace Unicity\BT\State {
 
 	use \Unicity\BT;
 
 	/**
-	 * This class represents a task breakpoint.
+	 * This class represents a task state that encountered a fatal error (e.g. an exception
+	 * was thrown).
 	 *
 	 * @access public
 	 * @class
 	 */
-	class Breakpoint extends BT\Task\Action {
+	class Error extends BT\State {
 
-		/**
-		 * This method processes the models and returns the status.
-		 *
-		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
-		 */
-		public function process(BT\Exchange $exchange) {
-			return BT\Status::QUIT;
+		public static function factory(BT\Entity $entity = null) {
+			return new BT\State\Success(BT\Status::ERROR, $entity);
 		}
 
 	}

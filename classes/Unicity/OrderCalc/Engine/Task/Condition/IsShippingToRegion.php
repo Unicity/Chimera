@@ -39,10 +39,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$end = Core\Convert::toInteger($this->policy->getValue('end'));
 
 			if (($zip >= $begin) && ($zip <= $end)) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

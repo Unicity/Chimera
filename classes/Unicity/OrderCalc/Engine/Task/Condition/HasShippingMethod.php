@@ -36,10 +36,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$shippingMethods = $this->policy->getValue('methods');
 
 			if ($shippingMethods->hasValue($order->shippingMethod->type) && OrderCalc\Engine\ToolKit::isEmpty($order->shippingMethod->location)) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

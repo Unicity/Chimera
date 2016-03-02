@@ -43,13 +43,13 @@ namespace Unicity\BT\Object\Factory {
 				? $parser->valueOf($attributes['type'])
 				: '\\Unicity\\BT\\Task\\Breakpoint';
 
-			$element->registerXPathNamespace('spring-bt', BT\Task::NAMESPACE_URI);
+			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:blackboard');
 			$blackboard = (!empty($children))
 				? $parser->getObjectFromElement($children[0])
 				: null;
 
-			$element->registerXPathNamespace('spring-bt', BT\Task::NAMESPACE_URI);
+			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:policy');
 			$policy = (!empty($children))
 				? $parser->getObjectFromElement($children[0])

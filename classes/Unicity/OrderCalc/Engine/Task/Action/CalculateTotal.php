@@ -39,7 +39,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				->getConvertedAmount();
 			$order->terms->total = $order->terms->pretotal;
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

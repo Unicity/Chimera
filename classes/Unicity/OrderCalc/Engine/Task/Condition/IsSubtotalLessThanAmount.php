@@ -36,10 +36,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
 			if ($order->terms->subtotal < $amount) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

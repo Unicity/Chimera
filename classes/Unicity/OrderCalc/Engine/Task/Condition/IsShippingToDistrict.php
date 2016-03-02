@@ -35,10 +35,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 			$districts = $this->policy->getValue('districts');
 
 			if ($districts->hasValue($order->shipToAddress->address2)) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

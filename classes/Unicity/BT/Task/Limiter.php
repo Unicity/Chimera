@@ -77,7 +77,7 @@ namespace Unicity\BT\Task {
 				$this->calls++;
 				return $status;
 			}
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 		/**

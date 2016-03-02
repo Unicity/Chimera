@@ -34,10 +34,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$currency = $this->policy->getValue('currency');
 			if ($order->currency == $currency) {
-				return BT\Task\Status::SUCCESS;
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Task\Status::FAILED;
+			return BT\Status::FAILED;
 		}
 
 	}

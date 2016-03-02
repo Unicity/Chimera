@@ -42,14 +42,14 @@ namespace Unicity\BT\Task {
 			if ($this->policy->hasKey('status')) {
 				$status = $this->policy->getValue('status');
 				if (is_string($status)) {
-					$this->policy->putEntry('status', Core\Convert::toInteger(BT\Task\Status::valueOf(strtoupper($status))));
+					$this->policy->putEntry('status', Core\Convert::toInteger(BT\Status::valueOf(strtoupper($status))));
 				}
 				else {
 					$this->policy->putEntry('status', Core\Convert::toInteger($status));
 				}
 			}
 			else {
-				$this->policy->putEntry('status', BT\Task\Status::SUCCESS);
+				$this->policy->putEntry('status', BT\Status::SUCCESS);
 			}
 		}
 

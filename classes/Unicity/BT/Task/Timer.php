@@ -87,7 +87,7 @@ namespace Unicity\BT\Task {
 				}
 			}
 
-			return BT\Task\Status::INACTIVE;
+			return BT\Status::INACTIVE;
 		}
 
 		/**

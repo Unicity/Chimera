@@ -59,16 +59,16 @@ namespace Unicity\BT\Task {
 				$hashCode = $this->blackboard->getValue($id);
 				if ($hashCode == $this->task->__hashCode()) {
 					$status = BT\Task\Handler::process($this->task, $exchange);
-					if ($status != BT\Task\Status::ACTIVE) {
+					if ($status != BT\Status::ACTIVE) {
 						$this->blackboard->removeKey($id);
 					}
 					return $status;
 				}
-				return BT\Task\Status::ACTIVE;
+				return BT\Status::ACTIVE;
 			}
 			else {
 				$status = BT\Task\Handler::process($this->task, $exchange);
-				if ($status == BT\Task\Status::ACTIVE) {
+				if ($status == BT\Status::ACTIVE) {
 					$this->blackboard->putEntry($id, $this->task->__hashCode());
 				}
 				return $status;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Unicity\BT\Task {
+namespace Unicity\BT {
 
 	use \Unicity\BT;
 	use \Unicity\Common;

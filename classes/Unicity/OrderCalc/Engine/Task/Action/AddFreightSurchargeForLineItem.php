@@ -47,7 +47,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			$order->terms->freight->amount = $freight->getConvertedAmount();
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

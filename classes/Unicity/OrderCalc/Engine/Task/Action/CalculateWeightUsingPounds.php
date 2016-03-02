@@ -48,11 +48,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			foreach ($order->lines->items as $line) {
 				$value = $line->item->weightEach->value;
 				$unit = $line->item->weightEach->unit;
-				if (!preg_match('/^kg(s)?$/i', $unit)) {
+				if (preg_match('/^kg(s)?$/i', $unit)) {
 					$value = $value * self::KGS_TO_LBS_CONVERSION_RATE;
 				}
-				else if (preg_match('/^lb(s)?$/i', $unit)) {
-					return BT\Task\Status::ERROR;
+				else if (!preg_match('/^lb(s)?$/i', $unit)) {
+					return BT\Status::ERROR;
 				}
 				$weight += $line->quantity * $value;
 			}
@@ -60,7 +60,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order->lines->aggregate->weight->unit = 'lbs';
 			$order->lines->aggregate->weight->value = $weight;
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

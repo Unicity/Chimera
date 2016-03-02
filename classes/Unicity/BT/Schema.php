@@ -16,28 +16,26 @@
  * limitations under the License.
  */
 
-namespace Unicity\BT\Task {
+namespace Unicity\BT {
 
-	use \Unicity\BT;
+	use \Unicity\Core;
 
 	/**
-	 * This class represents a task breakpoint.
+	 * This class encapsulates schema related information.
 	 *
 	 * @access public
+	 * @abstract
 	 * @class
 	 */
-	class Breakpoint extends BT\Task\Action {
+	abstract class Schema extends Core\Object {
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This constant represents the default namespace used by Spring XML for behavior
+		 * trees.
 		 *
-		 * @access public
-		 * @param BT\Exchange $exchange                             the exchange given to process
-		 * @return integer                                          the status code
+		 * @const string
 		 */
-		public function process(BT\Exchange $exchange) {
-			return BT\Status::QUIT;
-		}
+		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/spring-bt.xsd';
 
 	}
 

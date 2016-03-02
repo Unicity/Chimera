@@ -43,15 +43,15 @@ namespace Unicity\BT\Task {
 			if ($this->policy->hasKey('until')) {
 				$until = $this->policy->getValue('until');
 				if (is_string($until)) {
-					$until = BT\Task\Status::valueOf($until);
+					$until = BT\Status::valueOf($until);
 				}
-				if ($until !== BT\Task\Status::SUCCESS) {
-					$until = BT\Task\Status::FAILED;
+				if ($until !== BT\Status::SUCCESS) {
+					$until = BT\Status::FAILED;
 				}
 				$this->policy->putEntry('until', $until);
 			}
 			else {
-				$this->policy->putEntry('until', BT\Task\Status::SUCCESS);
+				$this->policy->putEntry('until', BT\Status::SUCCESS);
 			}
 		}
 
@@ -66,7 +66,7 @@ namespace Unicity\BT\Task {
 			$until = $this->policy->getValue('until');
 			do {
 				$status = BT\Task\Handler::process($this->task, $exchange);
-				if (!in_array($status, array(BT\Task\Status::SUCCESS, BT\Task\Status::FAILED))) {
+				if (!in_array($status, array(BT\Status::SUCCESS, BT\Status::FAILED))) {
 					return $status;
 				}
 			}

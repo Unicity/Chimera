@@ -63,24 +63,24 @@ namespace Unicity\BT\Task {
 		public function process(BT\Exchange $exchange) {
 			$status = BT\Task\Handler::process($this->task, $exchange);
 			switch ($status) {
-				case BT\Task\Status::FAILED:
+				case BT\Status::FAILED:
 					if ($this->policy->getValue('failed')) {
-						return BT\Task\Status::SUCCESS;
+						return BT\Status::SUCCESS;
 					}
 					return $status;
-				case BT\Task\Status::ERROR:
+				case BT\Status::ERROR:
 					if ($this->policy->getValue('error')) {
-						return BT\Task\Status::SUCCESS;
+						return BT\Status::SUCCESS;
 					}
 					return $status;
-				case BT\Task\Status::INACTIVE:
+				case BT\Status::INACTIVE:
 					if ($this->policy->getValue('inactive')) {
-						return BT\Task\Status::SUCCESS;
+						return BT\Status::SUCCESS;
 					}
 					return $status;
-				case BT\Task\Status::ACTIVE:
+				case BT\Status::ACTIVE:
 					if ($this->policy->getValue('active')) {
-						return BT\Task\Status::SUCCESS;
+						return BT\Status::SUCCESS;
 					}
 					return $status;
 			}

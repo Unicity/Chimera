@@ -38,7 +38,7 @@ namespace Unicity\BT\Task {
 		 */
 		public function process(BT\Exchange $exchange) {
 			$status = BT\Task\Handler::process($this->task, $exchange);
-			if ($status == BT\Task\Status::SUCCESS) {
+			if ($status == BT\Status::SUCCESS) {
 				$this->task->reset();
 			}
 			return $status;

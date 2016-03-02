@@ -67,7 +67,7 @@ namespace Unicity\BT\Task {
 				$status = BT\Task\Handler::process($this->task, $exchange);
 				return $status;
 			}
-			return BT\Task\Status::ACTIVE;
+			return BT\Status::ACTIVE;
 		}
 
 	}

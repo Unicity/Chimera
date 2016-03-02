@@ -71,20 +71,20 @@ namespace Unicity\BT\Task {
 			$inactives = 0;
 			while ($this->state < $this->tasks->count()) {
 				$status = BT\Task\Handler::process($this->tasks->getValue($this->state), $exchange);
-				if (in_array($status, array(BT\Task\Status::SUCCESS, BT\Task\Status::ERROR, BT\Task\Status::QUIT))) {
+				if (in_array($status, array(BT\Status::SUCCESS, BT\Status::ERROR, BT\Status::QUIT))) {
 					$this->state = 0;
 					return $status;
 				}
-				else if ($status == BT\Task\Status::ACTIVE) {
+				else if ($status == BT\Status::ACTIVE) {
 					return $status;
 				}
-				else if ($status == BT\Task\Status::INACTIVE) {
+				else if ($status == BT\Status::INACTIVE) {
 					$inactives++;
 				}
 				$this->state++;
 			}
 			$this->state = 0;
-			return ($inactives < $this->tasks->count()) ? BT\Task\Status::FAILED : BT\Task\Status::INACTIVE;
+			return ($inactives < $this->tasks->count()) ? BT\Status::FAILED : BT\Status::INACTIVE;
 		}
 
 		/**

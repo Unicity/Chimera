@@ -38,7 +38,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order->terms->pretotal = 0.00;
 			$order->terms->total = 0.00;
 
-			return BT\Task\Status::SUCCESS;
+			return BT\Status::SUCCESS;
 		}
 
 	}

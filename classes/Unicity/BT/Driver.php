@@ -67,28 +67,28 @@ namespace Unicity\BT {
 			$factory = new Spring\XMLObjectFactory(Spring\Data\XML::load($this->file));
 
 			$registry = $factory->getParser()->getRegistry();
-			$registry->putEntry(array('action', BT\Task::NAMESPACE_URI), new BT\Object\Factory\ActionElement());
-			$registry->putEntry(array('blackboard', BT\Task::NAMESPACE_URI), new BT\Object\Factory\BlackboardElement());
-			$registry->putEntry(array('branch', BT\Task::NAMESPACE_URI), new BT\Object\Factory\BranchElement());
-			$registry->putEntry(array('breakpoint', BT\Task::NAMESPACE_URI), new BT\Object\Factory\BreakpointElement());
-			$registry->putEntry(array('composite', BT\Task::NAMESPACE_URI), new BT\Object\Factory\CompositeElement());
-			$registry->putEntry(array('condition', BT\Task::NAMESPACE_URI), new BT\Object\Factory\ConditionElement());
-			$registry->putEntry(array('decorator', BT\Task::NAMESPACE_URI), new BT\Object\Factory\DecoratorElement());
-			$registry->putEntry(array('entry', BT\Task::NAMESPACE_URI), new BT\Object\Factory\EntryElement);
-			$registry->putEntry(array('leaf', BT\Task::NAMESPACE_URI), new BT\Object\Factory\LeafElement());
-			$registry->putEntry(array('logger', BT\Task::NAMESPACE_URI), new BT\Object\Factory\LoggerElement());
-			$registry->putEntry(array('parallel', BT\Task::NAMESPACE_URI), new BT\Object\Factory\ParallelElement());
-			$registry->putEntry(array('picker', BT\Task::NAMESPACE_URI), new BT\Object\Factory\PickerElement());
-			$registry->putEntry(array('ref', BT\Task::NAMESPACE_URI), new BT\Object\Factory\RefElement());
-			$registry->putEntry(array('resetter', BT\Task::NAMESPACE_URI), new BT\Object\Factory\ResetterElement());
-			$registry->putEntry(array('selector', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SelectorElement());
-			$registry->putEntry(array('semaphore', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SemaphoreElement());
-			$registry->putEntry(array('sequence', BT\Task::NAMESPACE_URI), new BT\Object\Factory\SequenceElement());
-			$registry->putEntry(array('policy', BT\Task::NAMESPACE_URI), new BT\Object\Factory\PolicyElement());
-			$registry->putEntry(array('stub', BT\Task::NAMESPACE_URI), new BT\Object\Factory\StubElement());
-			$registry->putEntry(array('tasks', BT\Task::NAMESPACE_URI), new BT\Object\Factory\TasksElement());
-			$registry->putEntry(array('ticker', BT\Task::NAMESPACE_URI), new BT\Object\Factory\TickerElement());
-			$registry->putEntry(array('timer', BT\Task::NAMESPACE_URI), new BT\Object\Factory\TimerElement());
+			$registry->putEntry(array('action', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ActionElement());
+			$registry->putEntry(array('blackboard', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BlackboardElement());
+			$registry->putEntry(array('branch', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BranchElement());
+			$registry->putEntry(array('breakpoint', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BreakpointElement());
+			$registry->putEntry(array('composite', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\CompositeElement());
+			$registry->putEntry(array('condition', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ConditionElement());
+			$registry->putEntry(array('decorator', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\DecoratorElement());
+			$registry->putEntry(array('entry', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\EntryElement);
+			$registry->putEntry(array('leaf', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\LeafElement());
+			$registry->putEntry(array('logger', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\LoggerElement());
+			$registry->putEntry(array('parallel', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ParallelElement());
+			$registry->putEntry(array('picker', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\PickerElement());
+			$registry->putEntry(array('ref', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\RefElement());
+			$registry->putEntry(array('resetter', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ResetterElement());
+			$registry->putEntry(array('selector', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SelectorElement());
+			$registry->putEntry(array('semaphore', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SemaphoreElement());
+			$registry->putEntry(array('sequence', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SequenceElement());
+			$registry->putEntry(array('policy', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\PolicyElement());
+			$registry->putEntry(array('stub', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\StubElement());
+			$registry->putEntry(array('tasks', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TasksElement());
+			$registry->putEntry(array('ticker', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TickerElement());
+			$registry->putEntry(array('timer', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TimerElement());
 
 			if ($factory->hasObject($id)) {
 				$object = $factory->getObject($id);
@@ -97,7 +97,7 @@ namespace Unicity\BT {
 				}
 			}
 
-			return BT\Task\Status::ERROR;
+			return BT\Status::ERROR;
 		}
 
 	}
