@@ -29,7 +29,7 @@ namespace Unicity\BT\State {
 	class Quit extends BT\State {
 
 		public static function with(BT\Entity $entity) {
-			return new BT\State\Success(BT\Status::QUIT, $entity);
+			return new BT\State\Quit(BT\Status::QUIT, $entity);
 		}
 
 	}

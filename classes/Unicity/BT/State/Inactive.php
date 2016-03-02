@@ -29,7 +29,7 @@ namespace Unicity\BT\State {
 	class Inactive extends BT\State {
 
 		public static function with(BT\Entity $entity) {
-			return new BT\State\Success(BT\Status::INACTIVE, $entity);
+			return new BT\State\Inactive(BT\Status::INACTIVE, $entity);
 		}
 
 	}
