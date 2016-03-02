@@ -32,11 +32,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * @return BT\State                                         the state
 		 */
 		public function process(BT\Entity $entity) {
-			$body = $exchange->getIn()->getBody();
+			$body = $entity->getBody();
 			if ($body instanceof Common\Mutable\HashMap) {
 				$writer = new Config\JSON\Writer($body);
 				$writer->config($this->policy->toDictionary());
-				$writer->export($exchange->getOut());
+				$writer->export($entity);
 				return BT\State\Success::with($entity);
 			}
 			return BT\State\Failed::with($entity);
