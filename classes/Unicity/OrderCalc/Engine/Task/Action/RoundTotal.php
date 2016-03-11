@@ -34,7 +34,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->terms->total = $this->roundToNearest5($order->terms->pretotal, $order->currency);
+			$order->terms->total = $this->roundToNearest5($order->terms->total, $order->currency);
 
 			return BT\State\Success::with($entity);
 		}

@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Action {
+namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
+	use \Unicity\Core;
 
-	class ResetTotals extends BT\Task\Action {
+	class IsPretotalLessThanOrEqualToAmount extends BT\Task\Condition {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,16 +33,13 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->terms->discount->amount = 0.00;
-			$order->terms->freight->amount = 0.00;
-			$order->terms->tax->amount = 0.00;
-			$order->terms->pretotal = 0.00;
-			if ($order->terms->hasKey('timbre')) {
-				$order->terms->timbre->amount = 0.00;
-			}
-			$order->terms->total = 0.00;
+			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
-			return BT\State\Success::with($entity);
+			if ($order->terms->pretotal <= $amount) {
+				return BT\State\Success::with($entity);
+			}
+
+			return BT\State\Failed::with($entity);
 		}
 
 	}

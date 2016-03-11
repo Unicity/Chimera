@@ -21,7 +21,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Trade;
 
-	class CalculateTotal extends BT\Task\Action {
+	class CalculatePretotal extends BT\Task\Action {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -33,10 +33,6 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->terms->pretotal = Trade\Money::make($order->terms->subtotal, $order->currency)
-				->add(Trade\Money::make($order->terms->freight->amount, $order->currency))
-				->add(Trade\Money::make($order->terms->tax->amount, $order->currency))
-				->getConvertedAmount();
 			$order->terms->total = $order->terms->pretotal;
 
 			return BT\State\Success::with($entity);

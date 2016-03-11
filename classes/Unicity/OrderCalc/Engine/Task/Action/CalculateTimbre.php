@@ -19,8 +19,10 @@
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
+	use \Unicity\Core;
+	use \Unicity\Trade;
 
-	class ResetTotals extends BT\Task\Action {
+	class CalculateTimbre extends BT\Task\Action {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,14 +34,13 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->terms->discount->amount = 0.00;
-			$order->terms->freight->amount = 0.00;
-			$order->terms->tax->amount = 0.00;
-			$order->terms->pretotal = 0.00;
-			if ($order->terms->hasKey('timbre')) {
-				$order->terms->timbre->amount = 0.00;
-			}
-			$order->terms->total = 0.00;
+			$tax_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
+
+			$order->terms->timbre->amount = Trade\Money::make($order->terms->pretotal, $order->currency)
+				->multiply($tax_rate)
+				->getConvertedAmount();
+
+			$order->terms->timbre->percentage = $tax_rate;
 
 			return BT\State\Success::with($entity);
 		}
