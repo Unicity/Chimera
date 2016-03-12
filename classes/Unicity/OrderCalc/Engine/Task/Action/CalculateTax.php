@@ -34,14 +34,13 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$tax_amount = Trade\Money::make($order->terms->subtotal, $order->currency)
-				->add(Trade\Money::make($order->terms->freight->amount, $order->currency));
-
 			$tax_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 
-			$tax_amount = $tax_amount->multiply($tax_rate);
+			$order->terms->tax->amount = Trade\Money::make($order->terms->subtotal, $order->currency)
+				->add(Trade\Money::make($order->terms->freight->amount, $order->currency))
+				->multiply($tax_rate)
+				->getConvertedAmount();
 
-			$order->terms->tax->amount = $tax_amount->getConvertedAmount();
 			$order->terms->tax->percentage = $tax_rate * 100;
 
 			return BT\State\Success::with($entity);
