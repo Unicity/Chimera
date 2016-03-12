@@ -21,7 +21,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Trade;
 
-	class CalculatePretotal extends BT\Task\Action {
+	class CalculateTotal extends BT\Task\Action {
 
 		/**
 		 * This method processes the models and returns the status.
