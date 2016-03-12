@@ -42,7 +42,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$tax_amount = $tax_amount->multiply($tax_rate);
 
 			$order->terms->tax->amount = $tax_amount->getConvertedAmount();
-			$order->terms->tax->percentage = $tax_rate;
+			$order->terms->tax->percentage = $tax_rate * 100;
 
 			return BT\State\Success::with($entity);
 		}
