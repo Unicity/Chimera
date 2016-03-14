@@ -22,7 +22,7 @@ namespace Unicity\BT\Task {
 	use \Unicity\Common;
 
 	/**
-	 * This class represents a task inverter.
+	 * This class represents a task predicate.
 	 *
 	 * @access public
 	 * @class
