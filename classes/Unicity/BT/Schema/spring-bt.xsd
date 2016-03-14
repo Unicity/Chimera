@@ -19,6 +19,7 @@
 	<xsd:element name="logger" type="logger" />
 	<xsd:element name="parallel" type="parallel" />
 	<xsd:element name="picker" type="picker" />
+	<xsd:element name="predicate" type="predicate" />
 	<xsd:element name="ref" type="ref" />
 	<xsd:element name="resetter" type="resetter" />
 	<xsd:element name="selector" type="selector" />
@@ -97,6 +98,7 @@
 				<xsd:element name="logger" type="logger" />
 				<xsd:element name="parallel" type="parallel" />
 				<xsd:element name="picker" type="picker" />
+				<xsd:element name="predicate" type="predicate" />
 				<xsd:element name="ref" type="ref" />
 				<xsd:element name="resetter" type="resetter" />
 				<xsd:element name="selector" type="selector" />
@@ -157,6 +159,18 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+	<xsd:complexType name="predicate">
+		<xsd:complexContent>
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="policy">
+		<xsd:complexContent>
+			<xsd:extension base="map" />
+		</xsd:complexContent>
+	</xsd:complexType>
 	<xsd:complexType name="ref">
 		<xsd:complexContent>
 			<xsd:extension base="spring:ref" />
@@ -188,11 +202,6 @@
 			<xsd:extension base="composite-base">
 				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Sequence" />
 			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-	<xsd:complexType name="policy">
-		<xsd:complexContent>
-			<xsd:extension base="map" />
 		</xsd:complexContent>
 	</xsd:complexType>
 	<xsd:complexType name="stub">

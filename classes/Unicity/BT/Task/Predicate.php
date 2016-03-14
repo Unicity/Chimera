@@ -19,15 +19,16 @@
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
+	use \Unicity\Common;
 
 	/**
 	 * This class represents a task inverter.
 	 *
 	 * @access public
 	 * @class
-	 * @see http://guineashots.com/2014/08/15/an-introduction-to-behavior-trees-part-3/
+	 * @see https://docs.unrealengine.com/latest/INT/Engine/AI/BehaviorTrees/HowUE4BehaviorTreesDiffer/index.html
 	 */
-	class Inverter extends BT\Task\Decorator {
+	final class Predicate extends BT\Task\Composite {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -37,12 +38,9 @@ namespace Unicity\BT\Task {
 		 * @return BT\State                                         the state
 		 */
 		public function process(BT\Entity $entity) {
-			$state = BT\Task\Handler::process($this->task, $entity);
+			$state = BT\Task\Handler::process($this->tasks->getValue(0), $entity);
 			if ($state instanceof BT\State\Success) {
-				return BT\State\Failed::with($state->getEntity());
-			}
-			if ($state instanceof BT\State\Failed) {
-				return BT\State\Success::with($state->getEntity());
+				return BT\Task\Handler::process($this->tasks->getValue(1), $entity);
 			}
 			return $state;
 		}

@@ -19,7 +19,6 @@
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
-	use \Unicity\Common;
 
 	/**
 	 * This class represents a task branch.
