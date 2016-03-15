@@ -35,7 +35,7 @@ namespace Unicity {
 		 * @static
 		 * @var array                                               an array of classpaths to search
 		 */
-		protected static $classpaths = array('');
+		public static $classpaths = array('');
 
 		/**
 		 * This method imports a class so that it can be used there-on-after.

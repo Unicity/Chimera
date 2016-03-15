@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Data\Model\JSON {
+namespace Unicity\OrderCalc\Engine\Model\JSON {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 	 *
 	 * @see http://json-schema.org/
 	 */
-	class HashMap extends Common\Mutable\HashMap implements OrderCalc\Data\IModel {
+	class HashMap extends Common\Mutable\HashMap implements OrderCalc\Engine\IModel {
 
 		/**
 		 * This variable stores whether field names are case sensitive.
@@ -60,7 +60,7 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 		 */
 		public function __construct($schema, $case_sensitive = true) {
 			parent::__construct();
-			$this->schema = OrderCalc\Data\Model\JSON\Helper::resolveJSONSchema($schema);
+			$this->schema = OrderCalc\Engine\Model\JSON\Helper::resolveJSONSchema($schema);
 			$this->case_sensitive = Core\Convert::toBoolean($case_sensitive);
 		}
 
@@ -123,11 +123,11 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 				if (isset($definition['type'])) {
 					switch ($definition['type']) {
 						case 'array':
-							$value = new OrderCalc\Data\Model\JSON\ArrayList($definition, $this->case_sensitive);
+							$value = new OrderCalc\Engine\Model\JSON\ArrayList($definition, $this->case_sensitive);
 							$this->elements[$field] = $value;
 							return $value;
 						case 'object':
-							$value = new OrderCalc\Data\Model\JSON\HashMap($definition, $this->case_sensitive);
+							$value = new OrderCalc\Engine\Model\JSON\HashMap($definition, $this->case_sensitive);
 							$this->elements[$field] = $value;
 							return $value;
 					}
@@ -179,25 +179,25 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 						if (isset($definition['type'])) {
 							switch ($definition['type']) {
 								case 'array':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveArrayValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveArrayValue($value, $definition, $this->case_sensitive);
 									break;
 								case 'boolean':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveBooleanValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveBooleanValue($value, $definition);
 									break;
 								case 'integer':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveIntegerValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveIntegerValue($value, $definition);
 									break;
 								case 'number':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveNumberValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveNumberValue($value, $definition);
 									break;
 								case 'null':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveNullValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveNullValue($value, $definition);
 									break;
 								case 'object':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveObjectValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveObjectValue($value, $definition, $this->case_sensitive);
 									break;
 								case 'string':
-									$value = OrderCalc\Data\Model\JSON\Helper::resolveStringValue($value, $definition);
+									$value = OrderCalc\Engine\Model\JSON\Helper::resolveStringValue($value, $definition);
 									break;
 							}
 						}

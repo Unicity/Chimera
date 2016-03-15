@@ -39,9 +39,13 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			if ($body instanceof IO\File) {
 				try {
 					$reader = new Config\JSON\Reader($body, array('assoc' => false));
+					$policy = array(
+						'case_sensitive' => true,
+						'schema' => '\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\Order',
+					);
 
 					$map = new Common\Mutable\HashMap();
-					$map->putEntry('Order', OrderCalc\Engine\Model\Marshaller::unmarshal($reader));
+					$map->putEntry('Order', OrderCalc\Engine\Model\Marshaller::unmarshal($reader, $policy));
 
 					return BT\State\Success::with(new BT\Entity($map));
 				}

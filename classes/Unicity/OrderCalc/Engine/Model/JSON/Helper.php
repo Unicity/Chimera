@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Data\Model\JSON {
+namespace Unicity\OrderCalc\Engine\Model\JSON {
 
 	use \Unicity\Bootstrap;
+	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
@@ -43,11 +44,13 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 		 * @static
 		 * @param mixed $value                                      the value to be resolved
 		 * @param array $definition                                 the schema definition
+		 * @param boolean $case_sensitive                           whether field names are case
+		 *                                                          sensitive
 		 * @return mixed                                            the resolved value
 		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
 		 *                                                          to meet a requirement
 		 */
-		public static function resolveArrayValue($value, $definition) {
+		public static function resolveArrayValue($value, $definition, $case_sensitive) {
 			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an array, but got ":type".', array(':type' => Core\DataType::info($value)->type));
@@ -55,8 +58,15 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 				return $value;
 			}
 
-			if (!($value instanceof OrderCalc\Data\Model\JSON\ArrayList)) {
-				throw new Throwable\Runtime\Exception('Invalid value defined. Expected an array of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\OrderCalc\\Data\\Model\\JSON\\ArrayList', ':type1' => Core\DataType::info($value)->type));
+			if (!($value instanceof OrderCalc\Engine\Model\JSON\ArrayList)) {
+				if (is_object($value) || is_array($value)) {
+					$buffer = new OrderCalc\Engine\Model\JSON\ArrayList($definition, $case_sensitive);
+					$buffer->addValues(Core\Convert::toArray($value));
+					$value = $buffer;
+				}
+				else {
+					throw new Throwable\Runtime\Exception('Invalid value defined. Expected an array of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\OrderCalc\\Data\\Model\\JSON\\ArrayList', ':type1' => Core\DataType::info($value)->type));
+				}
 			}
 
 			if (isset($definition['minItems'])) {
@@ -113,13 +123,24 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 			if (is_string($schema)) {
 				$components = preg_split('/(\\\|_)+/', trim($schema, '\\'));
 
-				$file = Bootstrap::rootPath() . implode(DIRECTORY_SEPARATOR, $components) . '.json';
+				$fileName = implode(DIRECTORY_SEPARATOR, $components) . '.json';
 
-				$schema = Config\JSON\Reader::load(new IO\File($file))->read();
+				foreach (Bootstrap::$classpaths as $directory) {
+					$uri = Bootstrap::rootPath() . $directory . $fileName;
+					if (file_exists($uri)) {
+						$schema = Config\JSON\Reader::load(new IO\File($uri))->read();
+						break;
+					}
+					$uri = $directory . $fileName;
+					if (file_exists($uri)) {
+						$schema = Config\JSON\Reader::load(new IO\File($uri))->read();
+						break;
+					}
+				}
 			}
 			$schema = Core\Convert::toDictionary($schema);
 			if (isset($schema['$ref'])) {
-				$result = OrderCalc\Data\Model\JSON\Helper::resolveJSONSchema($schema['$ref']);
+				$result = OrderCalc\Engine\Model\JSON\Helper::resolveJSONSchema($schema['$ref']);
 				if (isset($schema['properties'])) {
 					$result = array_merge($result, $schema['properties']);
 				}
@@ -284,11 +305,13 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 		 * @static
 		 * @param mixed $value                                      the value to be resolved
 		 * @param array $definition                                 the schema definition
+		 * @param boolean $case_sensitive                           whether field names are case
+		 *                                                          sensitive
 		 * @return mixed                                            the resolved value
 		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
 		 *                                                          to meet a requirement
 		 */
-		public static function resolveObjectValue($value, $definition) {
+		public static function resolveObjectValue($value, $definition, $case_sensitive) {
 			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an object, but got :type.', array(':type' => Core\DataType::info($value)->type));
@@ -296,8 +319,15 @@ namespace Unicity\OrderCalc\Data\Model\JSON {
 				return $value;
 			}
 
-			if (!($value instanceof OrderCalc\Data\Model\JSON\HashMap)) {
-				throw new Throwable\Runtime\Exception('Invalid value defined. Expected an object of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\OrderCalc\\Data\\Model\\JSON\\HashMap', ':type1' => Core\DataType::info($value)->type));
+			if (!($value instanceof OrderCalc\Engine\Model\JSON\HashMap)) {
+				if (is_object($value) || is_array($value)) {
+					$buffer = new OrderCalc\Engine\Model\JSON\HashMap($definition, $case_sensitive);
+					$buffer->putEntries(Core\Convert::toDictionary($value));
+					$value = $buffer;
+				}
+				else {
+					throw new Throwable\Runtime\Exception('Invalid value defined. Expected an object of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\OrderCalc\\Data\\Model\\JSON\\HashMap', ':type1' => Core\DataType::info($value)->type));
+				}
 			}
 
 			return $value;
