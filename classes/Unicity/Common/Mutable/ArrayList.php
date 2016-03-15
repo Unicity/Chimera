@@ -48,7 +48,7 @@ namespace Unicity\Common\Mutable {
 		 * This method will add the elements in the specified array to the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of values to be added
+		 * @param mixed $values                                     an array of values to be added
 		 * @return boolean                                          whether any elements were added
 		 */
 		public function addValues($values) {

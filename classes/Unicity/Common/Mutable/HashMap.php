@@ -89,7 +89,7 @@ namespace Unicity\Common\Mutable {
 		 * This method puts all of the key/value mappings into the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $entries                             the array to be mapped
+		 * @param mixed $entries                                    the array to be mapped
 		 * @return boolean                                          whether any key/value pairs were set
 		 */
 		public function putEntries($entries) {

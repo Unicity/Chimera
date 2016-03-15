@@ -420,7 +420,7 @@ namespace Unicity\Common {
 		 *                                                          traversable
 		 */
 		protected function assertNotTraversable($assertion) {
-			if (($assertion === null) || !(is_array($assertion) || ($assertion instanceof \Traversable))) {
+			if (($assertion === null) || !(is_array($assertion) || ($assertion instanceof \stdClass) || ($assertion instanceof \Iterator) || ($assertion instanceof \Traversable))) {
 				throw new Throwable\InvalidArgument\Exception('Invalid argument specified. Argument must be traversable.');
 			}
 		}

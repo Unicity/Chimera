@@ -130,7 +130,7 @@ namespace Unicity\Core {
 						return $value->toArray();
 					}
 					if (method_exists($value, 'toList')) {
-						return $value->toList()->toArray();
+						return Core\Convert::toArray($value->toList());
 					}
 					return array_values(get_object_vars($value));
 				default:
@@ -281,7 +281,7 @@ namespace Unicity\Core {
 						return $value->toDictionary();
 					}
 					if (method_exists($value, 'toMap')) {
-						return $value->toMap()->toDictionary();
+						return Core\Convert::toDictionary($value->toMap());
 					}
 					return get_object_vars($value);
 				default:
