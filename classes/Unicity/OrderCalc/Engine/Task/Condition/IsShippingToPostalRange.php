@@ -21,7 +21,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 	use \Unicity\BT;
 	use \Unicity\Core;
 
-	class IsShippingToPostalArea extends BT\Task\Condition {
+	class IsShippingToPostalRange extends BT\Task\Condition {
 
 		/**
 		 * This method processes the models and returns the status.
