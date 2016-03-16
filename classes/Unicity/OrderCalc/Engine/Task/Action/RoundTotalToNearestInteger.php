@@ -22,7 +22,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\Core;
 	use \Unicity\Trade;
 
-	class RoundTotal extends BT\Task\Action {
+	class RoundTotalToNearestInteger extends BT\Task\Action {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -34,28 +34,9 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->terms->total = $this->roundToNearest5($order->terms->total, $order->currency);
+			$order->terms->total = Core\Convert::toDouble(round($order->terms->total));
 
 			return BT\State\Success::with($entity);
-		}
-
-		/**
-		 * This method rounds the value to the nearest 5 cents' place.
-		 *
-		 * @access public
-		 * @param double $value                                     the value to be rounded
-		 * @return double                                           the rounded value
-		 *
-		 * @see http://forums.devshed.com/php-development-5/round-nearest-5-cents-537959.html
-		 */
-		protected function roundToNearest5($value, $currency) {
-			$currency = new Trade\Currency($currency);
-
-			return round(
-				Core\Convert::toDouble($value) / 5,
-				$currency->getDefaultFractionDigits(),
-				PHP_ROUND_HALF_UP
-			) * 5;
 		}
 
 	}
