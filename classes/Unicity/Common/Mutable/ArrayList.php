@@ -54,7 +54,7 @@ namespace Unicity\Common\Mutable {
 		public function addValues($values) {
 			if ( ! empty($values)) {
 				foreach ($values as $value) {
-					$this->elements[] = $value;
+					$this->addValue($value);
 				}
 				return true;
 			}

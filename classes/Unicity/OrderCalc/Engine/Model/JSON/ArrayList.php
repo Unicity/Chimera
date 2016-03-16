@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 	 *
 	 * @see http://json-schema.org/
 	 */
-	class ArrayList extends Common\Mutable\ArrayList {
+	class ArrayList extends Common\Mutable\ArrayList implements OrderCalc\Engine\IModel {
 
 		/**
 		 * This variable stores whether field names are case sensitive.
@@ -102,23 +102,6 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 			}
 			$this->elements[] = $value;
 			return true;
-		}
-
-		/**
-		 * This method will add the elements in the specified array to the collection.
-		 *
-		 * @access public
-		 * @param \Traversable $values                              an array of values to be added
-		 * @return boolean                                          whether any elements were added
-		 */
-		public function addValues($values) {
-			if ( ! empty($values)) {
-				foreach ($values as $value) {
-					$this->addValue($value);
-				}
-				return true;
-			}
-			return false;
 		}
 
 		/**

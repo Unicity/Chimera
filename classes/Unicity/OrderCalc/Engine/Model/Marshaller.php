@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Engine\Model {
 		 * @static
 		 * @param Config\Reader $reader                             the config reader to use
 		 * @param array $policy                                     the policy for reading in the data
-		 * @return Common\ICollection                               the resource as a collection
+		 * @return OrderCalc\Engine\IModel                          the model
 		 */
 		public static function unmarshal(Config\Reader $reader, array $policy = array()) {
 			$case_sensitive = isset($policy['case_sensitive'])
