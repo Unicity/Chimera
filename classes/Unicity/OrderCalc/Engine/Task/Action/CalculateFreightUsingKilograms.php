@@ -43,6 +43,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
+			$freight = Trade\Money::make($order->terms->freight->amount, $order->currency);
 			$weight = 0.0;
 
 			foreach ($order->lines->items as $line) {
@@ -66,6 +67,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order->terms->freight->amount = Trade\Money::make($weight, $order->currency)
 				->multiply($rate)
 				->add($surcharge)
+				->add($freight)
 				->getConvertedAmount();
 
 			return BT\State\Success::with($entity);
