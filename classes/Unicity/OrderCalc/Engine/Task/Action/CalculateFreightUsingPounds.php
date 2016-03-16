@@ -43,7 +43,6 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$freight = Trade\Money::make($order->terms->freight->amount, $order->currency);
 			$weight = 0.0;
 
 			foreach ($order->lines->items as $line) {
@@ -58,11 +57,12 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				$weight += $line->quantity * $value;
 			}
 
+			$freight = Trade\Money::make($order->terms->freight->amount, $order->currency);
 			$breakpoint = Core\Convert::toDouble($this->policy->getValue('breakpoint'));
 			$rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 			$surcharge = Trade\Money::make($this->policy->getValue('surcharge'), $order->currency);
-
-			$weight = max(0.0, ceil($weight) - $breakpoint);
+			$round = Core\Convert::toBoolean($this->policy->getValue('round'));
+			$weight = ($round) ? max(0.0, ceil($weight - $breakpoint)) : max(0.0, $weight - $breakpoint);
 
 			$order->terms->freight->amount = Trade\Money::make($weight, $order->currency)
 				->multiply($rate)
