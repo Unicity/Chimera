@@ -20,7 +20,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
 
-	class IsShippingOutOfArea extends BT\Task\Condition {
+	class IsShippingToCity extends BT\Task\Condition {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,9 +32,9 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$zip_codes = $this->policy->getValue('zip-codes');
+			$districts = $this->policy->getValue('cities');
 
-			if ($zip_codes->hasValue($order->shipToAddress->zip)) {
+			if ($districts->hasValue($order->shipToAddress->city)) {
 				return BT\State\Success::with($entity);
 			}
 
