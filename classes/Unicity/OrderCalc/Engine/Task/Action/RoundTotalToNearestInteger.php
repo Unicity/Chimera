@@ -34,7 +34,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->terms->total = Core\Convert::toDouble(round($order->terms->total));
+			$order->terms->total = round($order->terms->total);
 
 			return BT\State\Success::with($entity);
 		}
