@@ -1,0 +1,24 @@
+{
+    "name": "Unicity/Chimera",
+    "description": "A compilation of useful PHP classes.",
+    "version": "0.0.1",
+    "type": "library",
+    "homepage": "http://github.com/Unicity/Chimera",
+    "keywords": ["AOP", "behavior tree", "lexer", "mapping", "Spring"],
+    "license": "Apache-2.0",
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "php": ">=7.0.0"
+    },
+    "suggest": {
+        "ext-mbstring": "*"
+    },
+    "prefer-stable": true,
+    "autoload": {
+        "psr-0": {
+            "Unicity": "classes/"
+        }
+    }
+}
