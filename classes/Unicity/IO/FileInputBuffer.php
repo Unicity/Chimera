@@ -66,6 +66,7 @@ namespace Unicity\IO {
 		 *                                                          be matched with an input file
 		 */
 		public function __construct($key, $index = -1) {
+			ini_set('file_uploads', 'ON');
 			if (isset($_FILES[$key])) {
 				$info = ($index > -1) ? $_FILES[$key][$index] : $_FILES[$key];
 
