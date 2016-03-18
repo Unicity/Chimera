@@ -37,7 +37,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			foreach ($order->lines->items as $line) {
 				$description = trim(Core\Convert::toString($line->catalogSlide->content->description));
-				if (preg_match($pattern, $description)) {
+				if (preg_match($pattern, $description) && ($line->quantity > 0)) {
 					return BT\State\Success::with($entity);
 				}
 			}
