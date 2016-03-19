@@ -21,7 +21,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Trade;
 
-	class NormalizeOrder extends BT\Task\Action {
+	class NormalizeTerms extends BT\Task\Action {
 
 		/**
 		 * This method processes the models and returns the status.

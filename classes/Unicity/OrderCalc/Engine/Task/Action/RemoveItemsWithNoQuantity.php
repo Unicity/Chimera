@@ -16,18 +16,29 @@
  * limitations under the License.
  */
 
-namespace Unicity\ORM {
+namespace Unicity\OrderCalc\Engine\Task\Action {
 
-	interface IModel {
+	use \Unicity\BT;
+	use \Unicity\ORM;
+
+	class RemoveItemsWithNoQuantity extends BT\Task\Action {
 
 		/**
-		 * This method returns an array of arguments for constructing another model
-		 * via function programming.
+		 * This method processes the models and returns the status.
 		 *
 		 * @access public
-		 * @return array                                            the array of arguments
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function __constructor_args();
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
+
+			$order->lines->items = ORM\JSON\FP\ArrayList::filter($order->lines->items, function($line) {
+				return ($line->quantity > 0);
+			});
+
+			return BT\State\Success::with($entity);
+		}
 
 	}
 

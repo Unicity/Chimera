@@ -54,6 +54,17 @@ namespace Unicity\ORM\Dynamic\Model {
 		}
 
 		/**
+		 * This method returns an array of arguments for constructing another model
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the array of arguments
+		 */
+		public function __constructor_args() {
+			return array(null, $this->case_sensitive);
+		}
+
+		/**
 		 * This destructor ensures that any resources are properly disposed.
 		 *
 		 * @access public
@@ -61,6 +72,16 @@ namespace Unicity\ORM\Dynamic\Model {
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->case_sensitive);
+		}
+
+		/**
+		 * This method returns the schema associated with this model.
+		 *
+		 * @access public
+		 * @return array                                            the model's schema
+		 */
+		public function getSchema() {
+			return null;
 		}
 
 	}

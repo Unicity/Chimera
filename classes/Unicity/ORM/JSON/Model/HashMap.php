@@ -65,6 +65,17 @@ namespace Unicity\ORM\JSON\Model {
 		}
 
 		/**
+		 * This method returns an array of arguments for constructing another model
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the array of arguments
+		 */
+		public function __constructor_args() {
+			return array($this->schema, $this->case_sensitive);
+		}
+
+		/**
 		 * This destructor ensures that any resources are properly disposed.
 		 *
 		 * @access public
