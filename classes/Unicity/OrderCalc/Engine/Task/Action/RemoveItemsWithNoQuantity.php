@@ -19,7 +19,7 @@
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\ORM;
+	use \Unicity\FP;
 
 	class RemoveItemsWithNoQuantity extends BT\Task\Action {
 
@@ -33,7 +33,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$order->lines->items = ORM\JSON\FP\ArrayList::filter($order->lines->items, function($line) {
+			$order->lines->items = FP\IList::filter($order->lines->items, function($line) {
 				return ($line->quantity > 0);
 			});
 

@@ -50,6 +50,15 @@ namespace Unicity\Common\Mutable {
 		public function addValues($values);
 
 		/**
+		 * This method returns an array of arguments for constructing another collection
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the argument array for initialization
+		 */
+		public function __constructor_args();
+
+		/**
 		 * This method inserts a value at the specified index.
 		 *
 		 * @access public

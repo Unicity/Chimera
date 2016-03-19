@@ -54,11 +54,11 @@ namespace Unicity\ORM\Dynamic\Model {
 		}
 
 		/**
-		 * This method returns an array of arguments for constructing another model
+		 * This method returns an array of arguments for constructing another collection
 		 * via function programming.
 		 *
 		 * @access public
-		 * @return array                                            the array of arguments
+		 * @return array                                            the argument array for initialization
 		 */
 		public function __constructor_args() {
 			return array(null, $this->case_sensitive);

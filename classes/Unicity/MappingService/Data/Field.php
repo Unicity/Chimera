@@ -54,6 +54,17 @@ namespace Unicity\MappingService\Data {
 		}
 
 		/**
+		 * This method returns an array of arguments for constructing another collection
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the argument array for initialization
+		 */
+		public function __constructor_args() {
+			return array($this->format, null);
+		}
+
+		/**
 		 * This destructor ensures that any resources are properly disposed.
 		 *
 		 * @access public

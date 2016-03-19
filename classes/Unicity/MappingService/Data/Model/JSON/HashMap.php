@@ -65,6 +65,17 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		}
 
 		/**
+		 * This method returns an array of arguments for constructing another collection
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the argument array for initialization
+		 */
+		public function __constructor_args() {
+			return array($this->schema, $this->case_sensitive);
+		}
+
+		/**
 		 * This destructor ensures that any resources are properly disposed.
 		 *
 		 * @access public

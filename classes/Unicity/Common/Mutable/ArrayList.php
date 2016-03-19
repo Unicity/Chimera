@@ -73,6 +73,17 @@ namespace Unicity\Common\Mutable {
 		}
 
 		/**
+		 * This method returns an array of arguments for constructing another collection
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the argument array for initialization
+		 */
+		public function __constructor_args() {
+			return array(null);
+		}
+
+		/**
 		 * This method inserts a value at the specified index.
 		 *
 		 * @access public

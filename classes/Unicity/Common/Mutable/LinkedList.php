@@ -30,6 +30,17 @@ namespace Unicity\Common\Mutable {
 	 */
 	class LinkedList extends Common\LinkedList implements Common\Mutable\IList {
 
+		/**
+		 * This method returns an array of arguments for constructing another collection
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the argument array for initialization
+		 */
+		public function __constructor_args() {
+			return array(null);
+		}
+
 		public function insertLast($value) {
 			if ($this->head != null) {
 				$link = new Common\Mutable\LinkedList\Node($value);
