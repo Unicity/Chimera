@@ -23,7 +23,7 @@ namespace Unicity\FP {
 	use \Unicity\FP;
 
 	/**
-	 * This class provides a set of method to process an array list.
+	 * This class provides a set of method to process a list.
 	 *
 	 * @access public
 	 * @class
@@ -59,8 +59,8 @@ namespace Unicity\FP {
 		 * @static
 		 * @param Common\Mutable\IList $xs                          the left operand
 		 * @param callable $predicate                               the predicate function to be used
-		 * @return boolean                                          whether some of the items
-		 *                                                          passed the truthy test
+		 * @return boolean                                          whether some of the items passed
+		 *                                                          the truthy test
 		 */
 		public static function any(Common\Mutable\IList $xs, callable $predicate) {
 			return FP\IList::indexWhere($xs, $predicate) > -1;
@@ -100,6 +100,21 @@ namespace Unicity\FP {
 			return $zs;
 		}
 
+		/**
+		 * This method returns a tuple where the first item contains longest prefix of the array
+		 * list that does not satisfy the predicate and the second item contains the remainder.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xs                          the left operand
+		 * @param callable $predicate                               the predicate function to be used
+		 * @return Common\Tuple                                     the tuple
+		 */
+		public static function break_(Common\Mutable\IList $xs, callable $predicate) {
+			return FP\IList::span($xs, function($x, $i) use ($predicate) {
+				return !$predicate($x, $i);
+			});
+		}
 
 		/**
 		 * This method evaluates whether the specified object is contained within the list.
@@ -120,9 +135,9 @@ namespace Unicity\FP {
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\Mutable\IList $xs                               the left operand
-		 * @param mixed $y                                               the object to be removed
-		 * @return Common\Mutable\IList                                  the list
+		 * @param Common\Mutable\IList $xs                          the left operand
+		 * @param mixed $y                                          the object to be removed
+		 * @return Common\Mutable\IList                             the list
 		 */
 		public static function delete(Common\Mutable\IList $xs, $y) {
 			$class = new \ReflectionClass(get_class($xs));
@@ -184,9 +199,9 @@ namespace Unicity\FP {
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\Mutable\IList $xs                               the left operand
+		 * @param Common\Mutable\IList $xs                          the left operand
 		 * @param callable $predicate                               the predicate function to be used
-		 * @return Common\Mutable\IList                                  the list
+		 * @return Common\Mutable\IList                             the list
 		 */
 		public static function dropWhileEnd(Common\Mutable\IList $xs, callable $predicate) {
 			return FP\IList::dropWhile($xs, function($x, $i) use ($predicate) {
@@ -232,12 +247,12 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method returns the array list flattened.
+		 * This method returns the list flattened.
 		 *
 		 * @access public
 		 * @static
 		 * @param Common\Mutable\IList $xs                          the left operand
-		 * @return Common\Mutable\IList                             the flattened array list
+		 * @return Common\Mutable\IList                             the flattened list
 		 */
 		public static function flatten(Common\Mutable\IList $xs) {
 			$class = new \ReflectionClass(get_class($xs));
@@ -264,11 +279,11 @@ namespace Unicity\FP {
 		 * @return mixed                                            the result
 		 */
 		public static function foldLeft(Common\Mutable\IList $xs, callable $operator, $initial) {
-			$z = $initial;
+			$c = $initial;
 			foreach ($xs as $i => $x) {
-				$z = $operator($z, $x);
+				$c = $operator($c, $x);
 			}
-			return $z;
+			return $c;
 		}
 
 		/**
@@ -282,11 +297,34 @@ namespace Unicity\FP {
 		 * @return mixed                                            the result
 		 */
 		public static function foldRight(Common\Mutable\IList $xs, callable $operator, $initial) {
-			$z = $initial;
+			$c = $initial;
 			for ($i = $xs->count() - 1; $i >= 0; $i--) {
-				$z = $operator($z, $xs->getValue($i));
+				$c = $operator($c, $xs->getValue($i));
 			}
-			return $z;
+			return $c;
+		}
+
+		/**
+		 * This method returns a hash map of lists of items that are considered in the same group.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xs                          the left operand
+		 * @param callable $subroutine                              the subroutine to be used
+		 * @return Common\Mutable\IMap                                    a hash map of lists of items that
+		 *                                                          are considered in the same group
+		 */
+		public static function group(Common\Mutable\IList $xs, callable $subroutine) {
+			$groups = new Common\Mutable\HashMap();
+			foreach ($xs as $i => $x) {
+				$k = $subroutine($x, $i);
+				$ys = ($groups->hasKey($k))
+					? $groups->getValue($k)
+					: new Common\Mutable\ArrayList();
+				$ys->addValue($x);
+				$groups->putEntry($k, $ys);
+			}
+			return $groups;
 		}
 
 		/**
@@ -414,12 +452,12 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method returns the length of this array list.
+		 * This method returns the length of this list.
 		 *
 		 * @access public
 		 * @static
 		 * @param Common\Mutable\IList $xs                          the left operand
-		 * @return integer                                          the length of this array list
+		 * @return integer                                          the length of this list
 		 */
 		public static function length(Common\Mutable\IList $xs) {
 			return $xs->count();
@@ -461,18 +499,18 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method returns an array list containing only unique items from the specified
-		 * array list (i.e. duplicates are removed).
+		 * This method returns a list containing only unique items from the specified
+		 * list (i.e. duplicates are removed).
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\Mutable\IList $xs                          the array list to be processed
-		 * @return Common\Mutable\IList                             an array list with the duplicates
+		 * @param Common\Mutable\IList $xs                          the list to be processed
+		 * @return Common\Mutable\IList                             a list with the duplicates
 		 *                                                          removed
 		 */
 		public static function nub(Common\Mutable\IList $xs) {
 			$zs = new Common\Mutable\HashSet();
-			return FP\IList::filter($xs, function($x, $i) use ($zs) {
+			return FP\IList::filter($xs, function($x) use ($zs) {
 				if ($zs->hasValue($x)) {
 					return false;
 				}
@@ -482,18 +520,43 @@ namespace Unicity\FP {
 		}
 
 		/**
+		 * This method returns a pair of lists: those items that satisfy the predicate and
+		 * those items that do not satisfy the predicate.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xs                          the list to be partitioned
+		 * @param callable $predicate                               the predicate function to be used
+		 * @return Common\Tuple                                     the results
+		 */
+		public static function partition(Common\Mutable\IList $xs, callable $predicate) {
+			$class = new \ReflectionClass(get_class($xs));
+			$passed = $class->newInstanceArgs($xs->__constructor_args());
+			$failed = $class->newInstanceArgs($xs->__constructor_args());
+			foreach ($xs as $i => $x) {
+				if ($predicate($x, $i)) {
+					$passed->addValue($x);
+				}
+				else {
+					$failed->addValue($x);
+				}
+			}
+			return Common\Tuple::box2($passed, $failed);
+		}
+
+		/**
 		 * This method returns a list of values matching the specified key.
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\Mutable\IList $xss                         the array list to be processed
+		 * @param Common\Mutable\IList $xss                         the list to be processed
 		 * @param mixed $k                                          the key associated with value to be
 		 *                                                          plucked
 		 * @return Common\Mutable\IList                             a list of values matching the specified
 		 *                                                          key
 		 */
 		public static function pluck(Common\Mutable\IList $xss, $k) {
-			return FP\IList::map($xss, function(Common\Mutable\IMap $xs, $i) use ($k) {
+			return FP\IList::map($xss, function(Common\Mutable\IMap $xs) use ($k) {
 				return $xs->getValue($k);
 			});
 		}
@@ -530,7 +593,7 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method (aka "remove") returns an array list containing those items that do not
+		 * This method (aka "remove") returns a list containing those items that do not
 		 * satisfy the predicate.  Opposite of "filter".
 		 *
 		 * @access public
@@ -562,12 +625,12 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method shuffles the items in the array list using the Fisher-Yates shuffle.
+		 * This method shuffles the items in the list using the Fisher-Yates shuffle.
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\Mutable\IList $xs                               the array list to be shuffled
-		 * @return Common\Mutable\IList                                  the shuffled array list
+		 * @param Common\Mutable\IList $xs                          the list to be shuffled
+		 * @return Common\Mutable\IList                             the shuffled list
 		 *
 		 * @see http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 		 */
@@ -595,6 +658,40 @@ namespace Unicity\FP {
 			$ys = $class->newInstanceArgs($xs->__constructor_args());
 			$ys->addValues(array_slice($xs->toArray(), $offset, $length));
 			return $ys;
+		}
+
+		/**
+		 * This method returns a tuple where the first item contains longest prefix of the array
+		 * list that satisfies the predicate and the second item contains the remainder.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xs                          the left operand
+		 * @param callable $predicate                               the predicate function to be used
+		 * @return Common\Tuple                                     the tuple
+		 */
+		public static function span(Common\Mutable\IList $xs, callable $predicate) {
+			return Common\Tuple::box2(
+				FP\IList::takeWhile($xs, $predicate),
+				FP\IList::dropWhile($xs, $predicate)
+			);
+		}
+
+		/**
+		 * This method returns a tuple where the first item contains the first "n" items
+		 * in the list and the second item contains the remainder.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xs                          the left operand
+		 * @param integer $n                                        the number of items to take
+		 * @return Common\Tuple                                     the tuple
+		 */
+		public static function split(Common\Mutable\IList $xs, $n) {
+			return Common\Tuple::box2(
+				FP\IList::take($xs, $n),
+				FP\IList::drop($xs, $n)
+			);
 		}
 
 		/**
@@ -662,6 +759,43 @@ namespace Unicity\FP {
 			return FP\IList::takeWhile($xs, function($x, $i) use ($predicate) {
 				return !$predicate($x, $i);
 			});
+		}
+
+		/**
+		 * This method returns a tuple of two (or more) lists after splitting a list of tuple
+		 * groupings.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xss                          a list of tuple groupings
+		 * @return Common\Tuple                                      a tuple of two (or more) lists
+		 */
+		public static function unzip(Common\Mutable\IList $xss) {
+			$ys = new Common\Mutable\ArrayList();
+			$zs = new Common\Mutable\ArrayList();
+			foreach ($xss as $i => $xs) {
+				$ys->addValue($xs->first());
+				$zs->addValue($xs->second());
+			}
+			return Common\Tuple::box2($ys, $zs);
+		}
+
+		/**
+		 * This method returns a new list of tuple pairings.
+		 *
+		 * @access public
+		 * @static
+		 * @param Common\Mutable\IList $xs                          the left operand
+		 * @param Common\Mutable\IList $ys                          the right operand
+		 * @return Common\Mutable\IList                             a new list of tuple pairings
+		 */
+		public static function zip(Common\Mutable\IList $xs, Common\Mutable\IList $ys) {
+			$zs = new Common\Mutable\ArrayList();
+			$length = min($xs->count(), $ys->count());
+			for ($i = 0; $i < $length; $i++) {
+				$zs->addValue(Common\Tuple::box2($xs->getValue($i), $ys->getValue($i)));
+			}
+			return $zs;
 		}
 
 	}

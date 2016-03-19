@@ -149,6 +149,7 @@ namespace Unicity\Common {
 			if ($format != '%s') {
 				return sprintf($format, $string); // this is done for efficiency
 			}
+			return $string;
 		}
 
 		/**
