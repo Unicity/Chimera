@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Model\JSON {
+namespace Unicity\ORM\Model\JSON {
 
 	use \Unicity\Bootstrap;
-	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
-	use \Unicity\OrderCalc;
+	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
 	/**
@@ -31,7 +30,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 	 *
 	 * @access public
 	 * @class
-	 * @package OrderCalc
+	 * @package ORM
 	 *
 	 */
 	class Helper extends Core\Object {
@@ -51,16 +50,16 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveArrayValue($value, $definition, $case_sensitive) {
-			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
+			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an array, but got ":type".', array(':type' => Core\DataType::info($value)->type));
 				}
 				return $value;
 			}
 
-			if (!($value instanceof OrderCalc\Engine\Model\JSON\ArrayList)) {
+			if (!($value instanceof ORM\Model\JSON\ArrayList)) {
 				if (is_object($value) || is_array($value)) {
-					$model = new OrderCalc\Engine\Model\JSON\ArrayList($definition, $case_sensitive);
+					$model = new ORM\Model\JSON\ArrayList($definition, $case_sensitive);
 					$model->addValues(Core\Convert::toArray($value));
 					$value = $model;
 				}
@@ -99,7 +98,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveBooleanValue($value, $definition) {
-			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
+			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a boolean, but got :type.', array(':type' => Core\DataType::info($value)->type));
 				}
@@ -140,7 +139,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 			}
 			$schema = Core\Convert::toDictionary($schema);
 			if (isset($schema['$ref'])) {
-				$result = OrderCalc\Engine\Model\JSON\Helper::resolveJSONSchema($schema['$ref']);
+				$result = ORM\Model\JSON\Helper::resolveJSONSchema($schema['$ref']);
 				if (isset($schema['properties'])) {
 					$result = array_merge($result, $schema['properties']);
 				}
@@ -162,7 +161,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveIntegerValue($value, $definition) {
-			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
+			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an integer, but got :type.', array(':type' => Core\DataType::info($value)->type));
 				}
@@ -229,7 +228,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveNumberValue($value, $definition) {
-			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
+			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a number, but got :type.', array(':type' => Core\DataType::info($value)->type));
 				}
@@ -288,7 +287,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveNullValue($value, $definition) {
-			if (OrderCalc\Engine\ToolKit::isUndefined($value)) {
+			if (Core\Data\ToolKit::isUndefined($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a null, but got :type.', array(':type' => Core\DataType::info($value)->type));
 				}
@@ -312,16 +311,16 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveObjectValue($value, $definition, $case_sensitive) {
-			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
+			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an object, but got :type.', array(':type' => Core\DataType::info($value)->type));
 				}
 				return $value;
 			}
 
-			if (!($value instanceof OrderCalc\Engine\Model\JSON\HashMap)) {
+			if (!($value instanceof ORM\Model\JSON\HashMap)) {
 				if (is_object($value) || is_array($value)) {
-					$model = new OrderCalc\Engine\Model\JSON\HashMap($definition, $case_sensitive);
+					$model = new ORM\Model\JSON\HashMap($definition, $case_sensitive);
 					$model->putEntries(Core\Convert::toDictionary($value));
 					$value = $model;
 				}
@@ -346,7 +345,7 @@ namespace Unicity\OrderCalc\Engine\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveStringValue($value, $definition) {
-			if (OrderCalc\Engine\ToolKit::isUnset($value)) {
+			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($definition['required']) && $definition['required']) {
 					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a string, but got :type.', array(':type' => Core\DataType::info($value)->type));
 				}

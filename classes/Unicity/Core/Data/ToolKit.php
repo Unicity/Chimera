@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine {
+namespace Unicity\Core\Data {
 
 	use \Unicity\Core;
 
@@ -25,7 +25,7 @@ namespace Unicity\OrderCalc\Engine {
 	 *
 	 * @access public
 	 * @class
-	 * @package MappingService
+	 * @package Core
 	 */
 	class ToolKit extends Core\Object {
 

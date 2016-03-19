@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Model {
+namespace Unicity\ORM\Model\JSON {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
-	use \Unicity\OrderCalc;
+	use \Unicity\ORM;
 
 	class Marshaller {
 
@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Engine\Model {
 		 * @static
 		 * @param Config\Reader $reader                             the config reader to use
 		 * @param array $policy                                     the policy for reading in the data
-		 * @return OrderCalc\Engine\IModel                          the model
+		 * @return ORM\IModel                                       the model
 		 */
 		public static function unmarshal(Config\Reader $reader, array $policy = array()) {
 			$case_sensitive = isset($policy['case_sensitive'])
@@ -42,15 +42,15 @@ namespace Unicity\OrderCalc\Engine\Model {
 			if (($path !== null) && !$case_sensitive) {
 				$path = strtolower($path);
 			}
-			$schema = OrderCalc\Engine\Model\JSON\Helper::resolveJSONSchema($policy['schema']);
+			$schema = ORM\Model\JSON\Helper::resolveJSONSchema($policy['schema']);
 			$type = isset($schema['type']) ? $schema['type'] : 'object';
 			switch ($type) {
 				case 'array':
-					$array = new OrderCalc\Engine\Model\JSON\ArrayList($schema, $case_sensitive);
+					$array = new ORM\Model\JSON\ArrayList($schema, $case_sensitive);
 					$array->addValues($reader->read($path));
 					return $array;
 				default:
-					$object = new OrderCalc\Engine\Model\JSON\HashMap($schema, $case_sensitive);
+					$object = new ORM\Model\JSON\HashMap($schema, $case_sensitive);
 					$object->putEntries($reader->read($path));
 					return $object;
 			}

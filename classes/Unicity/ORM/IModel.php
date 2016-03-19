@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine {
+namespace Unicity\ORM {
 
 	interface IModel { }
 

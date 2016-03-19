@@ -19,7 +19,7 @@
 namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 	use \Unicity\BT;
-	use \Unicity\OrderCalc;
+	use \Unicity\Core;
 
 	class HasShippingMethod extends BT\Task\Condition {
 
@@ -35,7 +35,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$shippingMethods = $this->policy->getValue('methods');
 
-			if ($shippingMethods->hasValue($order->shippingMethod->type) && OrderCalc\Engine\ToolKit::isEmpty($order->shippingMethod->location)) {
+			if ($shippingMethods->hasValue($order->shippingMethod->type) && Core\Data\ToolKit::isEmpty($order->shippingMethod->location)) {
 				return BT\State\Success::with($entity);
 			}
 

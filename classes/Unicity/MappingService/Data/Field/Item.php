@@ -170,17 +170,17 @@ namespace Unicity\MappingService\Data\Field {
 		/**
 		 * This method return the same object, but first checks if the value has been set.
 		 *
-		 * @access publiv
+		 * @access public
 		 * @return MappingService\Data\Field\Item                   the same object
 		 */
 		public function isRequired() {
 			if ($this->info->type == 'string') {
-				if (MappingService\Data\ToolKit::isEmpty($this->value)) {
+				if (Core\Data\ToolKit::isEmpty($this->value)) {
 					// TODO add logging
 				}
 				return $this;
 			}
-			else if (MappingService\Data\ToolKit::isUnset($this->value)) {
+			else if (Core\Data\ToolKit::isUnset($this->value)) {
 				// TODO add logging
 			}
 			return $this;
