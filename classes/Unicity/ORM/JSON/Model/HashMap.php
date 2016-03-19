@@ -60,7 +60,7 @@ namespace Unicity\ORM\Model\JSON {
 		 */
 		public function __construct($schema, $case_sensitive = true) {
 			parent::__construct();
-			$this->schema = ORM\Model\JSON\Helper::resolveJSONSchema($schema);
+			$this->schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
 			$this->case_sensitive = Core\Convert::toBoolean($case_sensitive);
 		}
 
@@ -123,11 +123,11 @@ namespace Unicity\ORM\Model\JSON {
 				if (isset($definition['type'])) {
 					switch ($definition['type']) {
 						case 'array':
-							$value = new ORM\Model\JSON\ArrayList($definition, $this->case_sensitive);
+							$value = new ORM\JSON\Model\ArrayList($definition, $this->case_sensitive);
 							$this->elements[$field] = $value;
 							return $value;
 						case 'object':
-							$value = new ORM\Model\JSON\HashMap($definition, $this->case_sensitive);
+							$value = new ORM\JSON\Model\HashMap($definition, $this->case_sensitive);
 							$this->elements[$field] = $value;
 							return $value;
 					}
@@ -179,25 +179,25 @@ namespace Unicity\ORM\Model\JSON {
 						if (isset($definition['type'])) {
 							switch ($definition['type']) {
 								case 'array':
-									$value = ORM\Model\JSON\Helper::resolveArrayValue($value, $definition, $this->case_sensitive);
+									$value = ORM\JSON\Model\Helper::resolveArrayValue($value, $definition, $this->case_sensitive);
 									break;
 								case 'boolean':
-									$value = ORM\Model\JSON\Helper::resolveBooleanValue($value, $definition);
+									$value = ORM\JSON\Model\Helper::resolveBooleanValue($value, $definition);
 									break;
 								case 'integer':
-									$value = ORM\Model\JSON\Helper::resolveIntegerValue($value, $definition);
+									$value = ORM\JSON\Model\Helper::resolveIntegerValue($value, $definition);
 									break;
 								case 'number':
-									$value = ORM\Model\JSON\Helper::resolveNumberValue($value, $definition);
+									$value = ORM\JSON\Model\Helper::resolveNumberValue($value, $definition);
 									break;
 								case 'null':
-									$value = ORM\Model\JSON\Helper::resolveNullValue($value, $definition);
+									$value = ORM\JSON\Model\Helper::resolveNullValue($value, $definition);
 									break;
 								case 'object':
-									$value = ORM\Model\JSON\Helper::resolveObjectValue($value, $definition, $this->case_sensitive);
+									$value = ORM\JSON\Model\Helper::resolveObjectValue($value, $definition, $this->case_sensitive);
 									break;
 								case 'string':
-									$value = ORM\Model\JSON\Helper::resolveStringValue($value, $definition);
+									$value = ORM\JSON\Model\Helper::resolveStringValue($value, $definition);
 									break;
 							}
 						}

@@ -54,14 +54,14 @@ namespace Unicity\ORM\Model\Dynamic {
 		private static function useCollections($data, $case_sensitive) {
 			if (is_object($data)) {
 				if (($data instanceof Common\IList) || ($data instanceof Common\ISet)) {
-					$buffer = new ORM\Model\Dynamic\ArrayList(null, $case_sensitive);
+					$buffer = new ORM\Dynamic\Model\ArrayList(null, $case_sensitive);
 					foreach ($data as $value) {
 						$buffer->addValue(static::useCollections($value, $case_sensitive));
 					}
 					return $buffer;
 				}
 				else if ($data instanceof Common\IMap) {
-					$buffer = new ORM\Model\Dynamic\HashMap(null, $case_sensitive);
+					$buffer = new ORM\Dynamic\Model\HashMap(null, $case_sensitive);
 					foreach ($data as $key => $value) {
 						$buffer->putEntry($key, static::useCollections($value, $case_sensitive));
 					}
@@ -69,7 +69,7 @@ namespace Unicity\ORM\Model\Dynamic {
 				}
 				else if ($data instanceof \stdClass) {
 					$data = get_object_vars($data);
-					$buffer = new ORM\Model\Dynamic\HashMap(null, $case_sensitive);
+					$buffer = new ORM\Dynamic\Model\HashMap(null, $case_sensitive);
 					foreach ($data as $key => $value) {
 						$buffer->putEntry($key, static::useCollections($value, $case_sensitive));
 					}
@@ -78,14 +78,14 @@ namespace Unicity\ORM\Model\Dynamic {
 			}
 			if (is_array($data)) {
 				if (Common\Collection::isDictionary($data)) {
-					$buffer = new ORM\Model\Dynamic\HashMap(null, $case_sensitive);
+					$buffer = new ORM\Dynamic\Model\HashMap(null, $case_sensitive);
 					foreach ($data as $key => $value) {
 						$buffer->putEntry($key, static::useCollections($value, $case_sensitive));
 					}
 					return $buffer;
 				}
 				else {
-					$buffer = new ORM\Model\Dynamic\ArrayList(null, $case_sensitive);
+					$buffer = new ORM\Dynamic\Model\ArrayList(null, $case_sensitive);
 					foreach ($data as $value) {
 						$buffer->addValue(static::useCollections($value, $case_sensitive));
 					}

@@ -44,7 +44,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 					));
 
 					$map = new Common\Mutable\HashMap();
-					$map->putEntry('Order', ORM\Model\JSON\Marshaller::unmarshal($reader, array(
+					$map->putEntry('Order', ORM\JSON\Model\Marshaller::unmarshal($reader, array(
 						'case_sensitive' => true,
 						'schema' => '\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\Order',
 					)));

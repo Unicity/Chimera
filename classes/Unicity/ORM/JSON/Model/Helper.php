@@ -57,9 +57,9 @@ namespace Unicity\ORM\Model\JSON {
 				return $value;
 			}
 
-			if (!($value instanceof ORM\Model\JSON\ArrayList)) {
+			if (!($value instanceof ORM\JSON\Model\ArrayList)) {
 				if (is_object($value) || is_array($value)) {
-					$model = new ORM\Model\JSON\ArrayList($definition, $case_sensitive);
+					$model = new ORM\JSON\Model\ArrayList($definition, $case_sensitive);
 					$model->addValues(Core\Convert::toArray($value));
 					$value = $model;
 				}
@@ -139,7 +139,7 @@ namespace Unicity\ORM\Model\JSON {
 			}
 			$schema = Core\Convert::toDictionary($schema);
 			if (isset($schema['$ref'])) {
-				$result = ORM\Model\JSON\Helper::resolveJSONSchema($schema['$ref']);
+				$result = ORM\JSON\Model\Helper::resolveJSONSchema($schema['$ref']);
 				if (isset($schema['properties'])) {
 					$result = array_merge($result, $schema['properties']);
 				}
@@ -318,9 +318,9 @@ namespace Unicity\ORM\Model\JSON {
 				return $value;
 			}
 
-			if (!($value instanceof ORM\Model\JSON\HashMap)) {
+			if (!($value instanceof ORM\JSON\Model\HashMap)) {
 				if (is_object($value) || is_array($value)) {
-					$model = new ORM\Model\JSON\HashMap($definition, $case_sensitive);
+					$model = new ORM\JSON\Model\HashMap($definition, $case_sensitive);
 					$model->putEntries(Core\Convert::toDictionary($value));
 					$value = $model;
 				}

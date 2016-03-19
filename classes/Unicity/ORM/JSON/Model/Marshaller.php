@@ -42,15 +42,15 @@ namespace Unicity\ORM\Model\JSON {
 			if (($path !== null) && !$case_sensitive) {
 				$path = strtolower($path);
 			}
-			$schema = ORM\Model\JSON\Helper::resolveJSONSchema($policy['schema']);
+			$schema = ORM\JSON\Model\Helper::resolveJSONSchema($policy['schema']);
 			$type = isset($schema['type']) ? $schema['type'] : 'object';
 			switch ($type) {
 				case 'array':
-					$array = new ORM\Model\JSON\ArrayList($schema, $case_sensitive);
+					$array = new ORM\JSON\Model\ArrayList($schema, $case_sensitive);
 					$array->addValues($reader->read($path));
 					return $array;
 				default:
-					$object = new ORM\Model\JSON\HashMap($schema, $case_sensitive);
+					$object = new ORM\JSON\Model\HashMap($schema, $case_sensitive);
 					$object->putEntries($reader->read($path));
 					return $object;
 			}
