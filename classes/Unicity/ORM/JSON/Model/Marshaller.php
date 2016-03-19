@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Unicity\ORM\Model\JSON {
+namespace Unicity\ORM\JSON\Model {
 
 	use \Unicity\Common;
 	use \Unicity\Config;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Unicity\ORM\Model\Dynamic {
+namespace Unicity\ORM\Dynamic\Model {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
