@@ -1,0 +1,14 @@
+sudo: required
+services:
+  - docker
+language: php
+php:
+ - '7.0'
+before_install:
+  - make start-docker
+install:
+  - make run-docker
+  - make install-composer
+  - make install-phpunit
+script:
+  - make unit-test GROUP=OrderCalc

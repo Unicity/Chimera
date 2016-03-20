@@ -84,7 +84,7 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method appends the specified object to this object's list.
+		 * This method appends all objects in the specified list to this object's list.
 		 *
 		 * @access public
 		 * @static
@@ -557,7 +557,7 @@ namespace Unicity\FP {
 		 */
 		public static function pluck(Common\Mutable\IList $xss, $k) {
 			return FP\IList::foldLeft($xss, function(Common\Mutable\IList $ys, Common\Mutable\IMap $xs) use ($k) {
-				if ($xs->hasValue($k)) {
+				if ($xs->hasKey($k)) {
 					$ys->addValue($xs->getValue($k));
 				}
 				return $ys;
