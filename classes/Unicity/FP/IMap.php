@@ -51,7 +51,7 @@ namespace Unicity\FP {
 				}
 				$i++;
 			}
-			return true; // yes, an empty array returns "true"
+			return true; // yes, empty returns "true"
 		}
 
 		/**

@@ -311,7 +311,7 @@ namespace Unicity\FP {
 		 * @static
 		 * @param Common\Mutable\IList $xs                          the left operand
 		 * @param callable $subroutine                              the subroutine to be used
-		 * @return Common\Mutable\IMap                                    a hash map of lists of items that
+		 * @return Common\Mutable\IMap                              a hash map of lists of items that
 		 *                                                          are considered in the same group
 		 */
 		public static function group(Common\Mutable\IList $xs, callable $subroutine) {
@@ -556,9 +556,12 @@ namespace Unicity\FP {
 		 *                                                          key
 		 */
 		public static function pluck(Common\Mutable\IList $xss, $k) {
-			return FP\IList::map($xss, function(Common\Mutable\IMap $xs) use ($k) {
-				return $xs->getValue($k);
-			});
+			return FP\IList::foldLeft($xss, function(Common\Mutable\IList $ys, Common\Mutable\IMap $xs) use ($k) {
+				if ($xs->hasValue($k)) {
+					$ys->addValue($xs->getValue($k));
+				}
+				return $ys;
+			}, new Common\Mutable\ArrayList());
 		}
 
 		/**
