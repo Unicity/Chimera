@@ -290,6 +290,8 @@ namespace Unicity\FP {
 		 * @static
 		 * @param Common\Mutable\ISet $xs                           the left operand
 		 * @return Common\Mutable\ISet                              the power set
+		 *
+		 * @see http://rosettacode.org/wiki/Power_Set
 		 */
 		public static function powerset(Common\Mutable\ISet $xs) {
 			$css = new Common\Mutable\HashSet();
@@ -386,12 +388,12 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method returns the size of this collection.
+		 * This method returns the size / cardinality of the set.
 		 *
 		 * @access public
 		 * @static
 		 * @param Common\Mutable\ISet $xs                           the left operand
-		 * @return integer                                          the size of the set
+		 * @return integer                                          the size / cardinality of the set
 		 */
 		public static function size(Common\Mutable\ISet $xs) {
 			return $xs->count();
