@@ -31,6 +31,15 @@ namespace Unicity\Common\Mutable {
 	interface ISet extends Common\Mutable\ICollection, Common\ISet {
 
 		/**
+		 * This method returns an array of arguments for constructing another collection
+		 * via function programming.
+		 *
+		 * @access public
+		 * @return array                                            the argument array for initialization
+		 */
+		public function __constructor_args();
+
+		/**
 		 * This method will add the element specified.
 		 *
 		 * @access public

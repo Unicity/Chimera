@@ -64,7 +64,7 @@ namespace Unicity\ORM\JSON\Model {
 					$value = $model;
 				}
 				else {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected an array of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\OrderCalc\\Data\\Model\\JSON\\ArrayList', ':type1' => Core\DataType::info($value)->type));
+					throw new Throwable\Runtime\Exception('Invalid value defined. Expected an array of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\ORM\\JSON\\Model\\ArrayList', ':type1' => Core\DataType::info($value)->type));
 				}
 			}
 
@@ -325,7 +325,7 @@ namespace Unicity\ORM\JSON\Model {
 					$value = $model;
 				}
 				else {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected an object of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\OrderCalc\\Data\\Model\\JSON\\HashMap', ':type1' => Core\DataType::info($value)->type));
+					throw new Throwable\Runtime\Exception('Invalid value defined. Expected an object of type ":type0", but got a value of type ":type1".', array(':type0' => '\\Unicity\\ORM\\JSON\\Model\\HashMap', ':type1' => Core\DataType::info($value)->type));
 				}
 			}
 

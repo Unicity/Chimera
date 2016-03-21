@@ -97,8 +97,7 @@ namespace Unicity\FP {
 		 * @access public
 		 * @static
 		 * @param Common\Mutable\IMap $xs                           the map
-		 * @return Common\Mutable\IList                             all key/value pairs in the
-		 *                                                          collection
+		 * @return Common\Mutable\IList                             all key/value pairs in the map
 		 */
 		public static function entries(Common\Mutable\IMap $xs) {
 			$ys = new Common\Mutable\ArrayList();
@@ -226,8 +225,7 @@ namespace Unicity\FP {
 		 * @return Common\Mutable\IMap                              the map
 		 */
 		public static function map(Common\Mutable\IMap $xs, callable $subroutine) {
-			$class = new \ReflectionClass(get_class($xs));
-			$ys = $class->newInstanceArgs($xs->__constructor_args());
+			$ys = new Common\Mutable\HashMap();
 			$i = 0;
 			foreach ($xs as $k => $v) {
 				$e = $subroutine(Common\Tuple::box2($k, $v), $i);
@@ -300,12 +298,12 @@ namespace Unicity\FP {
 		}
 
 		/**
-		 * This method returns the size of this collection.
+		 * This method returns the size of the map.
 		 *
 		 * @access public
 		 * @static
 		 * @param Common\Mutable\IMap $xs                           the map
-		 * @return integer                                          the size of this collection
+		 * @return integer                                          the size of the map
 		 */
 		public static function size(Common\Mutable\IMap $xs) {
 			return $xs->count();

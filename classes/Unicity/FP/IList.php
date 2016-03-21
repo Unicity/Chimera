@@ -400,8 +400,7 @@ namespace Unicity\FP {
 		 * @return Common\Mutable\IList                             the list
 		 */
 		public static function intersperse(Common\Mutable\IList $xs, $y) {
-			$class = new \ReflectionClass(get_class($xs));
-			$ys = $class->newInstanceArgs($xs->__constructor_args());
+			$ys = new Common\Mutable\ArrayList();
 			$length = $xs->count();
 			if ($length > 0) {
 				$ys->addValue($xs->getValue(0));
@@ -473,8 +472,7 @@ namespace Unicity\FP {
 		 * @return Common\Mutable\IList                             the list
 		 */
 		public static function map(Common\Mutable\IList $xs, callable $subroutine) {
-			$class = new \ReflectionClass(get_class($xs));
-			$ys = $class->newInstanceArgs($xs->__constructor_args());
+			$ys = new Common\Mutable\ArrayList();
 			foreach ($xs as $i => $x) {
 				$ys->addValue($subroutine($x, $i));
 			}
