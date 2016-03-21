@@ -350,12 +350,9 @@ namespace Unicity\FP {
 		 *                                                          or otherwise -1
 		 */
 		public static function indexOf(Common\Mutable\IList $xs, $y) {
-			foreach ($xs as $i => $x) {
-				if ($x == $y) {
-					return $i;
-				}
-			}
-			return -1;
+			return FP\IList::indexWhere($xs, function($x) use ($y) {
+				return ($x == $y);
+			});
 		}
 
 		/**
@@ -717,13 +714,9 @@ namespace Unicity\FP {
 		 * @return Common\Mutable\IList                             the list
 		 */
 		public static function take(Common\Mutable\IList $xs, $n) {
-			$class = new \ReflectionClass(get_class($xs));
-			$ys = $class->newInstanceArgs($xs->__constructor_args());
-			$length = min($n, $xs->count());
-			for ($i = 0; $i < $length; $i++) {
-				$ys->addValue($xs->getValue($i));
-			}
-			return $ys;
+			return FP\IList::takeWhile($xs, function($x, $i) use ($n) {
+				return ($i < $n);
+			});
 		}
 
 		/**
