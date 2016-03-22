@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 
-	class IsPretotalGreaterThanAmount extends BT\Task\Condition {
+	class IsPretotalLessThanAmount extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -35,7 +35,7 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 
 			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
-			if ($order->terms->pretotal > $amount) {
+			if ($order->terms->pretotal < $amount) {
 				return BT\State\Success::with($entity);
 			}
 

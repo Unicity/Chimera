@@ -238,40 +238,6 @@ Example:
 
 --------------------------------------------------------------------------------------------------------------------------
 
-#### <i>\<spring-bt:condition /></i>
-
-Description:
-
-- This represents a `\Unicity\BT\Task\Condition` object. A condition acts a predicate to evaluate a particular state.  It
-  is a leaf node.
-
-Attributes:
-
-| Attribute | Type   | Values                        | Description                                           | Required   |
-| :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
-| `id`      | string |                               | Used to assign a unique selector to the node.         | No         |
-| `name`    | string |                               | Used to assign a set of alias selector for the node.  | No         |
-| `scope`   | enum   | <b>singleton</b>, prototype, session | Defines how the object is to be instantiated.  | No         |
-| `title`   | string |                               | Used to assign a title to the node.                   | No         |
-| `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
-
-Policy:
-
-- None.
-
-Children:
-
-- May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:policy />` node.
-
-Example:
-
-````
-<spring-bt:condition title="custom_condition" type="\Unicity\BT\Task\Ext\CustomCondition" />
-````
-
---------------------------------------------------------------------------------------------------------------------------
-
 #### <i>\<spring-bt:decorator /></i>
 
 Description:
@@ -651,6 +617,7 @@ Children:
 - May contain 1 `<spring-bt:composite />` node.
 - May contain 1 `<spring-bt:condition />` node.
 - May contain 1 `<spring-bt:decorator />` node.
+- May contain 1 `<spring-bt:guard />` node.
 - May contain 1 `<spring-bt:leaf />` node.
 - May contain 1 `<spring-bt:logger />` node.
 - May contain 1 `<spring-bt:parallel />` node.
@@ -674,6 +641,40 @@ Example:
 	</spring-bt:entry>
 	<spring-bt:entry key="key3" value-ref="" />
 </spring-bt:blackboard>
+````
+
+--------------------------------------------------------------------------------------------------------------------------
+
+#### <i>\<spring-bt:guard /></i>
+
+Description:
+
+- This represents a `\Unicity\BT\Task\Guard` object. A guard acts a predicate to evaluate a particular state.  It
+  is a leaf node.
+
+Attributes:
+
+| Attribute | Type   | Values                        | Description                                           | Required   |
+| :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
+| `id`      | string |                               | Used to assign a unique selector to the node.         | No         |
+| `name`    | string |                               | Used to assign a set of alias selector for the node.  | No         |
+| `scope`   | enum   | <b>singleton</b>, prototype, session | Defines how the object is to be instantiated.  | No         |
+| `title`   | string |                               | Used to assign a title to the node.                   | No         |
+| `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
+
+Policy:
+
+- None.
+
+Children:
+
+- May contain 1 `<spring:blackboard />` node.
+- May contain 1 `<spring:policy />` node.
+
+Example:
+
+````
+<spring-bt:guard title="custom_guard" type="\Unicity\BT\Task\Ext\CustomGuard" />
 ````
 
 --------------------------------------------------------------------------------------------------------------------------
@@ -784,7 +785,7 @@ Example:
 <spring-bt:parallel>
 	<spring-bt:tasks>
 		<spring-bt:selector title="custom_selector" type="\Unicity\BT\Task\Ext\CustomSelector" />
-		<spring-bt:condition title="custom_condition" type="\Unicity\BT\Task\Ext\CustomCondition" />
+		<spring-bt:guard title="custom_guard" type="\Unicity\BT\Task\Ext\CustomGuard" />
 		<spring-bt:action title="custom_action" type="\Unicity\BT\Task\Ext\CustomAction" />
 	</spring-bt:tasks>
 </spring-bt:parallel>
@@ -828,7 +829,7 @@ Example:
 <spring-bt:picker>
 	<spring-bt:tasks>
 		<spring-bt:sequence title="custom_sequence" type="\Unicity\BT\Task\Ext\CustomSequence" />
-		<spring-bt:condition title="custom_condition" type="\Unicity\BT\Task\Ext\CustomCondition" />
+		<spring-bt:guard title="custom_guard" type="\Unicity\BT\Task\Ext\CustomGuard" />
 		<spring-bt:action title="custom_action" type="\Unicity\BT\Task\Ext\CustomAction" />
 	</spring-bt:tasks>
 </spring-bt:picker>
@@ -935,7 +936,7 @@ Example:
 <spring-bt:selector>
 	<spring-bt:tasks>
 		<spring-bt:sequence title="custom_sequence" type="\Unicity\BT\Task\Ext\CustomSequence" />
-		<spring-bt:condition title="custom_condition" type="\Unicity\BT\Task\Ext\CustomCondition" />
+		<spring-bt:guard title="custom_guard" type="\Unicity\BT\Task\Ext\CustomGuard" />
 		<spring-bt:action title="custom_action" type="\Unicity\BT\Task\Ext\CustomAction" />
 	</spring-bt:tasks>
 </spring-bt:selector>
@@ -1015,7 +1016,7 @@ Example:
 <spring-bt:sequence>
 	<spring-bt:tasks>
 		<spring-bt:selector title="custom_selector" type="\Unicity\BT\Task\Ext\CustomSelector" />
-		<spring-bt:condition title="custom_condition" type="\Unicity\BT\Task\Ext\CustomCondition" />
+		<spring-bt:guard title="custom_guard" type="\Unicity\BT\Task\Ext\CustomGuard" />
 		<spring-bt:action title="custom_action" type="\Unicity\BT\Task\Ext\CustomAction" />
 	</spring-bt:tasks>
 </spring-bt:sequence>
@@ -1119,6 +1120,7 @@ Children:
 - May contain 1 or more `<spring-bt:composite />` nodes.
 - May contain 1 or more `<spring-bt:condition />` nodes.
 - May contain 1 or more `<spring-bt:decorator />` nodes.
+- May contain 1 or more `<spring-bt:guard />` nodes.
 - May contain 1 or more `<spring-bt:leaf />` nodes.
 - May contain 1 or more `<spring-bt:logger />` nodes.
 - May contain 1 or more `<spring-bt:parallel />` nodes.
@@ -1138,7 +1140,7 @@ Example:
 <spring-bt:sequence>
 	<spring-bt:tasks>
 		<spring-bt:selector title="custom_selector" type="\Unicity\BT\Task\Ext\CustomSelector" />
-		<spring-bt:condition title="custom_condition" type="\Unicity\BT\Task\Ext\CustomCondition" />
+		<spring-bt:guard title="custom_guard" type="\Unicity\BT\Task\Ext\CustomGuard" />
 		<spring-bt:action title="custom_action" type="\Unicity\BT\Task\Ext\CustomAction" />
 	</spring-bt:tasks>
 </spring-bt:sequence>

@@ -15,11 +15,11 @@
 	<xsd:element name="composite" type="composite" />
 	<xsd:element name="condition" type="condition" />
 	<xsd:element name="decorator" type="decorator" />
+	<xsd:element name="guard" type="guard" />
 	<xsd:element name="leaf" type="leaf" />
 	<xsd:element name="logger" type="logger" />
 	<xsd:element name="parallel" type="parallel" />
 	<xsd:element name="picker" type="picker" />
-	<xsd:element name="predicate" type="predicate" />
 	<xsd:element name="ref" type="ref" />
 	<xsd:element name="resetter" type="resetter" />
 	<xsd:element name="selector" type="selector" />
@@ -69,7 +69,9 @@
 	</xsd:complexType>
 	<xsd:complexType name="condition">
 		<xsd:complexContent>
-			<xsd:extension base="leaf" />
+			<xsd:extension base="composite-base">
+				<xsd:attribute name="type" type="spring:class" use="required" />
+			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 	<xsd:complexType name="decorator">
@@ -94,11 +96,11 @@
 				<xsd:element name="composite" type="composite" />
 				<xsd:element name="condition" type="condition" />
 				<xsd:element name="decorator" type="decorator" />
+				<xsd:element name="guard" type="guard" />
 				<xsd:element name="leaf" type="leaf" />
 				<xsd:element name="logger" type="logger" />
 				<xsd:element name="parallel" type="parallel" />
 				<xsd:element name="picker" type="picker" />
-				<xsd:element name="predicate" type="predicate" />
 				<xsd:element name="ref" type="ref" />
 				<xsd:element name="resetter" type="resetter" />
 				<xsd:element name="selector" type="selector" />
@@ -117,6 +119,11 @@
 		<xsd:attribute name="value" type="xsd:string" use="optional" />
 		<xsd:attribute name="value-ref" type="spring:identifier" use="optional" />
 		<xsd:attribute name="value-type" type="spring:primitive" use="optional" default="string" />
+	</xsd:complexType>
+	<xsd:complexType name="guard">
+		<xsd:complexContent>
+			<xsd:extension base="leaf" />
+		</xsd:complexContent>
 	</xsd:complexType>
 	<xsd:complexType name="leaf">
 		<xsd:complexContent>
@@ -156,13 +163,6 @@
 		<xsd:complexContent>
 			<xsd:extension base="composite-base">
 				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Picker" />
-			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-	<xsd:complexType name="predicate">
-		<xsd:complexContent>
-			<xsd:extension base="composite-base">
-				<xsd:attribute name="type" type="spring:class" use="required" />
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

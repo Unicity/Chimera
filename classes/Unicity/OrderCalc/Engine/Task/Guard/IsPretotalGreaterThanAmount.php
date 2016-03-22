@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
-	use Unicity\Core;
+	use \Unicity\Core;
 
-	class HasItemDescription extends BT\Task\Condition {
+	class IsPretotalGreaterThanAmount extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -33,13 +33,10 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$pattern = $this->policy->getValue('pattern');
+			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
-			foreach ($order->lines->items as $line) {
-				$description = trim(Core\Convert::toString($line->catalogSlide->content->description));
-				if (preg_match($pattern, $description) && ($line->quantity > 0)) {
-					return BT\State\Success::with($entity);
-				}
+			if ($order->terms->pretotal > $amount) {
+				return BT\State\Success::with($entity);
 			}
 
 			return BT\State\Failed::with($entity);

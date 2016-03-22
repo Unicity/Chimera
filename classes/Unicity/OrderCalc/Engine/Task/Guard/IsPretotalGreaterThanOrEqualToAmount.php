@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 
-	class IsPretotalGreaterThanOrEqualToAmount extends BT\Task\Condition {
+	class IsPretotalGreaterThanOrEqualToAmount extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.

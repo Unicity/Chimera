@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
 
-	class IsPretotalLessThanAmount extends BT\Task\Condition {
+	class IsShippingToCity extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -33,9 +32,9 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
+			$districts = $this->policy->getValue('cities');
 
-			if ($order->terms->pretotal < $amount) {
+			if ($districts->hasValue($order->shipToAddress->city)) {
 				return BT\State\Success::with($entity);
 			}
 

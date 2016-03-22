@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
+	use Unicity\Core;
 
-	class IsShippingToPostalCode extends BT\Task\Condition {
+	class HasItemDescription extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,10 +33,13 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$zip_codes = $this->policy->getValue('zip-codes');
+			$pattern = $this->policy->getValue('pattern');
 
-			if ($zip_codes->hasValue($order->shipToAddress->zip)) {
-				return BT\State\Success::with($entity);
+			foreach ($order->lines->items as $line) {
+				$description = trim(Core\Convert::toString($line->catalogSlide->content->description));
+				if (preg_match($pattern, $description) && ($line->quantity > 0)) {
+					return BT\State\Success::with($entity);
+				}
 			}
 
 			return BT\State\Failed::with($entity);

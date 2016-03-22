@@ -24,9 +24,28 @@ namespace Unicity\BT\Task {
 	 * This class represents a task condition.
 	 *
 	 * @access public
-	 * @abstract
 	 * @class
+	 * @see https://docs.unrealengine.com/latest/INT/Engine/AI/BehaviorTrees/HowUE4BehaviorTreesDiffer/index.html
+	 * @see https://sourcemaking.com/refactoring/replace-nested-conditional-with-guard-clauses
+	 * @see http://www.tutisani.com/software-architecture/nested-if-vs-guard-condition.html
 	 */
-	abstract class Condition extends BT\Task\Leaf { }
+	final class Condition extends BT\Task\Composite {
+
+		/**
+		 * This method processes the models and returns the status.
+		 *
+		 * @access public
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
+		 */
+		public function process(BT\Entity $entity) {
+			$state = BT\Task\Handler::process($this->tasks->getValue(0), $entity);
+			if ($state instanceof BT\State\Success) {
+				return BT\Task\Handler::process($this->tasks->getValue(1), $entity);
+			}
+			return $state;
+		}
+
+	}
 
 }

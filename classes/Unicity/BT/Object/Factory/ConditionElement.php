@@ -58,15 +58,27 @@ namespace Unicity\BT\Object\Factory {
 
 			$object = new $type($blackboard, $policy);
 
-			if (!($object instanceof BT\Task\Condition)) {
-				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task condition, but got an element of type ":type" instead.', array(':type' => $type));
+			if (!($object instanceof BT\Task\Guard)) {
+				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task guard, but got an element of type ":type" instead.', array(':type' => $type));
 			}
 
+			$predicate = new BT\Task\Condition($blackboard, $policy);
+			$predicate->addTask($object);
+
 			if (isset($attributes['title'])) {
+				$predicate->setTitle($parser->valueOf($attributes['title']));
 				$object->setTitle($parser->valueOf($attributes['title']));
 			}
 
-			return $object;
+			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
+			$children = $element->xpath('./spring-bt:tasks');
+			if (!empty($children)) {
+				foreach ($children as $child) {
+					$predicate->addTasks($parser->getObjectFromElement($child));
+				}
+			}
+
+			return $predicate;
 		}
 
 	}

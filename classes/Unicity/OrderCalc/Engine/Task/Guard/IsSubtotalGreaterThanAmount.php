@@ -16,19 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\BT\Task {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
-	use \Unicity\Common;
+	use \Unicity\Core;
 
-	/**
-	 * This class represents a task predicate.
-	 *
-	 * @access public
-	 * @class
-	 * @see https://docs.unrealengine.com/latest/INT/Engine/AI/BehaviorTrees/HowUE4BehaviorTreesDiffer/index.html
-	 */
-	final class Predicate extends BT\Task\Composite {
+	class IsSubtotalGreaterThanAmount extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -38,11 +31,15 @@ namespace Unicity\BT\Task {
 		 * @return BT\State                                         the state
 		 */
 		public function process(BT\Entity $entity) {
-			$state = BT\Task\Handler::process($this->tasks->getValue(0), $entity);
-			if ($state instanceof BT\State\Success) {
-				return BT\Task\Handler::process($this->tasks->getValue(1), $entity);
+			$order = $entity->getBody()->Order;
+
+			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
+
+			if ($order->terms->subtotal > $amount) {
+				return BT\State\Success::with($entity);
 			}
-			return $state;
+
+			return BT\State\Failed::with($entity);
 		}
 
 	}

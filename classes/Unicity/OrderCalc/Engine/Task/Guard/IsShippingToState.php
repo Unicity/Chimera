@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 
-	class IsShippingToState extends BT\Task\Condition {
+	class IsShippingToState extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.

@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
+	use \Unicity\FP;
 
-	class IsCustomerActive extends BT\Task\Condition {
+	class HasItems extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,17 +33,11 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$status = $order->customer->status;
-			if (in_array($status, array('Suspended', 'Terminated'))) { // TODO abstract out to a config file
-				return BT\State\Error::with($entity);
+			if (FP\IList::length($order->lines->items) > 0) {
+				return BT\State\Success::with($entity);
 			}
 
-			$type = $order->customer->type;
-			if (in_array($type, array('LegacySuspended', 'LegacyTerminated'))) { // TODO abstract out to a config file
-				return BT\State\Error::with($entity);
-			}
-
-			return BT\State\Success::with($entity);
+			return BT\State\Failed::with($entity);
 		}
 
 	}

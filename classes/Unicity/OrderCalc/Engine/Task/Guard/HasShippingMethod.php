@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 
-	class IsSubtotalGreaterThanAmount extends BT\Task\Condition {
+	class HasShippingMethod extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -33,9 +33,9 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
+			$shippingMethods = $this->policy->getValue('methods');
 
-			if ($order->terms->subtotal > $amount) {
+			if ($shippingMethods->hasValue($order->shippingMethod->type) && Core\Data\ToolKit::isEmpty($order->shippingMethod->location)) {
 				return BT\State\Success::with($entity);
 			}
 

@@ -75,11 +75,11 @@ namespace Unicity\BT {
 			$registry->putEntry(array('condition', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ConditionElement());
 			$registry->putEntry(array('decorator', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\DecoratorElement());
 			$registry->putEntry(array('entry', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\EntryElement);
+			$registry->putEntry(array('guard', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\GuardElement());
 			$registry->putEntry(array('leaf', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\LeafElement());
 			$registry->putEntry(array('logger', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\LoggerElement());
 			$registry->putEntry(array('parallel', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ParallelElement());
 			$registry->putEntry(array('picker', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\PickerElement());
-			$registry->putEntry(array('predicate', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\PredicateElement());
 			$registry->putEntry(array('ref', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\RefElement());
 			$registry->putEntry(array('resetter', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ResetterElement());
 			$registry->putEntry(array('selector', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SelectorElement());

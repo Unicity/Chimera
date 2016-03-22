@@ -16,34 +16,28 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
-	use \Unicity\UnitTest;
+	use \Unicity\BT;
 
-	/**
-	 * @group OrderCalc
-	 */
-	class HasItemDescriptionTest extends UnitTest\TestCase {
+	class IsCurrencyValid extends BT\Task\Guard {
 
 		/**
-		 * This method provides the data for testing the "process" method.
+		 * This method processes the models and returns the status.
 		 *
-		 * @return array
+		 * @access public
+		 * @param BT\Entity $entity                                 the entity to be processed
+		 * @return BT\State                                         the state
 		 */
-		public function data_process() {
-			$data = array(
-				array(array(1), array(1)),
-			);
-			return $data;
-		}
+		public function process(BT\Entity $entity) {
+			$order = $entity->getBody()->Order;
 
-		/**
-		 * This method tests the "process" method.
-		 *
-		 * @dataProvider data_process
-		 */
-		public function test_process(array $provided, array $expected) {
-			$this->assertSame($expected[0], $provided[0]);
+			$currency = $this->policy->getValue('currency');
+			if ($order->currency == $currency) {
+				return BT\State\Success::with($entity);
+			}
+
+			return BT\State\Failed::with($entity);
 		}
 
 	}

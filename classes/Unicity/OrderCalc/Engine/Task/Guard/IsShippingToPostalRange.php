@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
+	use \Unicity\Core;
 
-	class IsShippingDomestic extends BT\Task\Condition {
+	class IsShippingToPostalRange extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,8 +33,12 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$country = $this->policy->getValue('country');
-			if (($order->market == $country) && ($order->shipToAddress->country == $country)) {
+			$zip = Core\Convert::toInteger($order->shipToAddress->zip);
+
+			$begin = Core\Convert::toInteger($this->policy->getValue('begin'));
+			$end = Core\Convert::toInteger($this->policy->getValue('end'));
+
+			if (($zip >= $begin) && ($zip <= $end)) {
 				return BT\State\Success::with($entity);
 			}
 

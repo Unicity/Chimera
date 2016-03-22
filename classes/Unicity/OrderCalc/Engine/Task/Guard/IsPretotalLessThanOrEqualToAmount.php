@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 
-	class HasShippingMethod extends BT\Task\Condition {
+	class IsPretotalLessThanOrEqualToAmount extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -33,9 +33,9 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$shippingMethods = $this->policy->getValue('methods');
+			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
-			if ($shippingMethods->hasValue($order->shippingMethod->type) && Core\Data\ToolKit::isEmpty($order->shippingMethod->location)) {
+			if ($order->terms->pretotal <= $amount) {
 				return BT\State\Success::with($entity);
 			}
 

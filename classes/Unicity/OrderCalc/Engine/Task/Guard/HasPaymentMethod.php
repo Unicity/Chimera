@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 
-	class IsCurrencyValid extends BT\Task\Condition {
+	class HasPaymentMethod extends BT\Task\Guard {
 
 		/**
 		 * This method processes the models and returns the status.
@@ -32,8 +32,9 @@ namespace Unicity\OrderCalc\Engine\Task\Condition {
 		public function process(BT\Entity $entity) {
 			$order = $entity->getBody()->Order;
 
-			$currency = $this->policy->getValue('currency');
-			if ($order->currency == $currency) {
+			$shippingMethods = $this->policy->getValue('methods');
+
+			if (($order->transactions->items->count() > 0) && $shippingMethods->hasValue($order->transactions->items[0]->method)) {
 				return BT\State\Success::with($entity);
 			}
 

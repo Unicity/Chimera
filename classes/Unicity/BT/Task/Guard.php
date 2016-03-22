@@ -16,30 +16,20 @@
  * limitations under the License.
  */
 
-namespace Unicity\OrderCalc\Engine\Task\Condition {
+namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
-	use \Unicity\FP;
 
-	class HasItems extends BT\Task\Condition {
-
-		/**
-		 * This method processes the models and returns the status.
-		 *
-		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
-		 */
-		public function process(BT\Entity $entity) {
-			$order = $entity->getBody()->Order;
-
-			if (FP\IList::length($order->lines->items) > 0) {
-				return BT\State\Success::with($entity);
-			}
-
-			return BT\State\Failed::with($entity);
-		}
-
-	}
+	/**
+	 * This class represents a task guard.
+	 *
+	 * @access public
+	 * @abstract
+	 * @class
+	 *
+	 * @see https://sourcemaking.com/refactoring/replace-nested-conditional-with-guard-clauses
+	 * @see http://www.tutisani.com/software-architecture/nested-if-vs-guard-condition.html
+	 */
+	abstract class Guard extends BT\Task\Leaf { }
 
 }
