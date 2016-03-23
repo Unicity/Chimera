@@ -61,11 +61,11 @@ namespace Unicity\BT {
 		 * This method executes the tasks define in the pipeline.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @param string $id                                        the id of behavior tree to run
-		 * @return BT\State                                         the state
+		 * @param BT\Application $application                       the application running
+		 * @param string $treeId                                    the id of behavior tree to run
+		 * @return integer                                          the status
 		 */
-		public function run(BT\Entity $entity, $id = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
+		public function run(Application $application, string $treeId = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
 			$factory = new Spring\XMLObjectFactory(Spring\Data\XML::load($this->file));
 
 			$registry = $factory->getParser()->getRegistry();
@@ -93,10 +93,25 @@ namespace Unicity\BT {
 			$registry->putEntry(array('ticker', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TickerElement());
 			$registry->putEntry(array('timer', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TimerElement());
 
-			if ($factory->hasObject($id)) {
-				$object = $factory->getObject($id);
+			if ($factory->hasObject($treeId)) {
+				$object = $factory->getObject($treeId);
 				if ($object instanceof BT\Task) {
-					return BT\Task\Handler::process($object, $entityId, $application);
+					while (true) {
+						$entities = $application->getEntities();
+						$inactives = 0;
+						foreach ($entities as $entity) {
+							$status = BT\Task\Handler::process($object, $entity->getId(), $application);
+							if (in_array($status, array(BT\Status::ERROR, BT\Status::FAILED, BT\Status::QUIT))) {
+								return $status;
+							}
+							if ($status == BT\Status::INACTIVE) {
+								$inactives++;
+								if ($inactives == $entities->count()) {
+									return BT\Status::INACTIVE;
+								}
+							}
+						}
+					}
 				}
 			}
 

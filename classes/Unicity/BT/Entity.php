@@ -71,6 +71,27 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method returns the component associated with the specified name.
+		 *
+		 * @access public
+		 * @param string $name                                      the name of the component
+		 * @return Common\Mutable\ICollection                       the component
+		 */
+		public function getComponent($name) {
+			return $this->component->getValue($name);
+		}
+
+		/**
+		 * This method returns the id associated with this entitiy.
+		 *
+		 * @access public
+		 * @return integer                                          the entity's id
+		 */
+		public function getId() {
+			return $this->id;
+		}
+
+		/**
 		 * This method returns whether this entity has a component with the specified name.
 		 *
 		 * @access public
@@ -99,17 +120,6 @@ namespace Unicity\BT {
 				return true;
 			}
 			return false;
-		}
-
-		/**
-		 * This method returns the component associated with the specified name.
-		 *
-		 * @access public
-		 * @param string $name                                      the name of the component
-		 * @return Common\Mutable\ICollection                       the component
-		 */
-		public function getComponent($name) {
-			return $this->component->getValue($name);
 		}
 
 		/**
