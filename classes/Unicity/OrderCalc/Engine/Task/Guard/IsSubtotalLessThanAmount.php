@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
@@ -24,22 +26,23 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 	class IsSubtotalLessThanAmount extends BT\Task\Guard {
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
-			$order = $entity->getBody()->Order;
+		public function process(int $entityId, BT\Application $application) {
+			$order = $application->getEntity($entityId)->getComponent('Order');
 
 			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
 			if ($order->terms->subtotal < $amount) {
-				return BT\State\Success::with($entity);
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\State\Failed::with($entity);
+			return BT\Status::FAILED;
 		}
 
 	}

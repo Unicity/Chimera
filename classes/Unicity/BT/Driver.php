@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT {
 
 	use \Unicity\BT;
@@ -94,11 +96,11 @@ namespace Unicity\BT {
 			if ($factory->hasObject($id)) {
 				$object = $factory->getObject($id);
 				if ($object instanceof BT\Task) {
-					return BT\Task\Handler::process($object, $entity);
+					return BT\Task\Handler::process($object, $entityId, $application);
 				}
 			}
 
-			return BT\State\Error::with($entity);
+			return BT\Status::ERROR;
 		}
 
 	}

@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -52,28 +54,15 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
-			$status = $this->policy->getValue('status');
-			switch ($status) {
-				case BT\Status::ACTIVE:
-					return BT\State\Active::with($entity);
-				case BT\Status::ERROR:
-					return BT\State\Error::with($entity);
-				case BT\Status::FAILED:
-					return BT\State\Failed::with($entity);
-				case BT\Status::INACTIVE:
-					return BT\State\Inactive::with($entity);
-				case BT\Status::QUIT:
-					return BT\State\Quit::with($entity);
-				default: // BT\Status::SUCCESS
-					return BT\State\Success::with($entity);
-			}
+		public function process(int $entityId, BT\Application $application) {
+			return $this->policy->getValue('status');
 		}
 
 	}

@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -69,13 +71,14 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
+		public function process(int $entityId, BT\Application $application) {
 			$delay = Core\Convert::toInteger($this->policy->getValue('delay')) / 1000; // milliseconds => seconds
 
 			$deltaT = microtime(true) - $this->start_time;
@@ -83,11 +86,11 @@ namespace Unicity\BT\Task {
 				$duration = Core\Convert::toInteger($this->policy->getValue('duration')) / 1000; // milliseconds => seconds
 
 				if ($deltaT < ($delay + $duration)) {
-					return BT\Task\Handler::process($this->task, $entity);
+					return BT\Task\Handler::process($this->task, $entityId, $application);
 				}
 			}
 
-			return BT\State\Inactive::with($entity);
+			return BT\Status::INACTIVE;
 		}
 
 		/**

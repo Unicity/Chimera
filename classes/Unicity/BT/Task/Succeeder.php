@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -54,27 +56,28 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
-			$state = BT\Task\Handler::process($this->task, $entity);
-			if (($state instanceof BT\State\Active) && $this->policy->getValue('active')) {
-				return BT\State\Success::with($state->getEntity());
+		public function process(int $entityId, BT\Application $application) {
+			$status = BT\Task\Handler::process($this->task, $entityId, $application);
+			if (($status == BT\Status::ACTIVE) && $this->policy->getValue('active')) {
+				return BT\Status::SUCCESS;
 			}
-			if (($state instanceof BT\State\Error) && $this->policy->getValue('error')) {
-				return BT\State\Success::with($state->getEntity());
+			if (($status == BT\Status::ERROR) && $this->policy->getValue('error')) {
+				return BT\Status::SUCCESS;
 			}
-			if (($state instanceof BT\State\Failed) && $this->policy->getValue('failed')) {
-				return BT\State\Success::with($state->getEntity());
+			if (($status == BT\Status::FAILED) && $this->policy->getValue('failed')) {
+				return BT\Status::SUCCESS;
 			}
-			if (($state instanceof BT\State\Inactive) && $this->policy->getValue('inactive')) {
-				return BT\State\Success::with($state->getEntity());
+			if (($status == BT\Status::INACTIVE) && $this->policy->getValue('inactive')) {
+				return BT\Status::SUCCESS;
 			}
-			return $state;
+			return $status;
 		}
 
 	}

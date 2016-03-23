@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
+	//use \Unicity\Log;
 	use Unicity\MappingService\Data\Model\Entity;
 
 	/**
@@ -42,12 +45,21 @@ namespace Unicity\BT {
 		protected $entities;
 
 		/**
+		 * This variable stores a reference to the log writer.
+		 *
+		 * @access protected
+		 * @var Log\Manager
+		 */
+		protected $log;
+
+		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
 		 */
-		public function __construct() {
+		public function __construct(/*Log\Manager*/ $log = null) {
 			$this->entities = new Common\Mutable\HashMap();
+			$this->log = $log;
 		}
 
 		/**
@@ -82,6 +94,16 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method returns a reference to a log manager.
+		 *
+		 * @access public
+		 * @return Log\Manager                                      a reference to a log manager
+		 */
+		public function getLog() {
+			return $this->log;
+		}
+
+		/**
 		 * This method creates an entity id.
 		 *
 		 * @access public
@@ -96,7 +118,7 @@ namespace Unicity\BT {
 				$entityId++;
 			}
 			$entity = new Entity($entityId);
-			$application->entities->putEntry($entityId, $entity);
+			$application->entities->putEntry($entityId, $entityId, $application);
 			return $entityId;
 		}
 

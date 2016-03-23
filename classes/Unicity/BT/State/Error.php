@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\State {
 
 	use \Unicity\BT;
@@ -38,7 +40,7 @@ namespace Unicity\BT\State {
 		 * @return BT\State                                         the state
 		 */
 		public static function with(BT\Entity $entity) {
-			return new BT\State\Error(BT\Status::ERROR, $entity);
+			return new BT\State\Error(BT\Status::ERROR, $entityId, $application);
 		}
 
 	}

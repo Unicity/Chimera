@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -46,32 +48,33 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
+		public function process(int $entityId, BT\Application $application) {
 			$id = Core\Convert::toString($this->policy->getValue('id'));
 
 			if ($this->blackboard->hasKey($id)) {
 				$hashCode = $this->blackboard->getValue($id);
 				if ($hashCode == $this->task->__hashCode()) {
-					$state = BT\Task\Handler::process($this->task, $entity);
-					if ($state->getStatus() != BT\Status::ACTIVE) {
+					$status = BT\Task\Handler::process($this->task, $entityId, $application);
+					if ($status != BT\Status::ACTIVE) {
 						$this->blackboard->removeKey($id);
 					}
-					return $state;
+					return $status;
 				}
-				return BT\State\Active::with($entity);
+				return BT\Status::ACTIVE;
 			}
 			else {
-				$state = BT\Task\Handler::process($this->task, $entity);
-				if ($state->getStatus() == BT\Status::ACTIVE) {
+				$status = BT\Task\Handler::process($this->task, $entityId, $application);
+				if ($status == BT\Status::ACTIVE) {
 					$this->blackboard->putEntry($id, $this->task->__hashCode());
 				}
-				return $state;
+				return $status;
 			}
 		}
 

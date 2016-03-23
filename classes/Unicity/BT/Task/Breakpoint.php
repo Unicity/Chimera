@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -29,14 +31,15 @@ namespace Unicity\BT\Task {
 	class Breakpoint extends BT\Task\Action {
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
-			return BT\State\Quit::with($entity);
+		public function process(int $entityId, BT\Application $application) {
+			return BT\Status::QUIT;
 		}
 
 	}

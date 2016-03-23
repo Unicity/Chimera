@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -36,7 +38,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @var integer
 		 */
-		protected $state;
+		protected $status;
 
 		/**
 		 * This constructor initializes the class with the specified parameters.
@@ -61,32 +63,31 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
+		public function process(int $entityId, BT\Application $application) {
 			$inactives = 0;
 			while ($this->state < $this->tasks->count()) {
-				$response = BT\Task\Handler::process($this->tasks->getValue($this->state), $entity);
-				$status = $response->getStatus();
+				$status = BT\Task\Handler::process($this->tasks->getValue($this->state), $entityId, $application);
 				if ($status == BT\Status::INACTIVE) {
 					$inactives++;
 				}
 				else if ($status == BT\Status::ACTIVE) {
-					return $response;
+					return $status;
 				}
 				else if ($status != BT\Status::SUCCESS) {
 					$this->state = 0;
-					return $response;
+					return $status;
 				}
-				$entity = $response->getEntity();
 				$this->state++;
 			}
 			$this->state = 0;
-			return ($inactives < $this->tasks->count()) ? BT\State\Success::with($entity) : BT\State\Inactive::with($entity);
+			return ($inactives < $this->tasks->count()) ? BT\Status::SUCCESS : BT\Status::INACTIVE;
 		}
 
 		/**

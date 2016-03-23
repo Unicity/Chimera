@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT {
 
 	use \Unicity\BT;
@@ -147,14 +149,15 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
 		 * @abstract
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public abstract function process(BT\Entity $entity);
+		public abstract function process(int $entityId, BT\Application $application);
 
 		/**
 		 * This method resets the task.

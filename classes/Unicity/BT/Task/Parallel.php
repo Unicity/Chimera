@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -54,13 +56,14 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
+		public function process(int $entityId, BT\Application $application) {
 			$count = $this->tasks->count();
 			if ($count > 0) {
 				$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
@@ -73,8 +76,8 @@ namespace Unicity\BT\Task {
 				$failuresCt = 0;
 				$failuresMax = min(Core\Convert::toInteger($this->policy->getValue('failures')), $count);
 				foreach ($this->tasks as $task) {
-					$state = BT\Task\Handler::process($task, $entity);
-					switch ($state->getStatus()) {
+					$status = BT\Task\Handler::process($task, $entityId, $application);
+					switch ($status) {
 						case BT\Status::INACTIVE:
 							$inactivesCt++;
 							break;
@@ -83,26 +86,25 @@ namespace Unicity\BT\Task {
 						case BT\Status::SUCCESS:
 							$successesCt++;
 							if ($successesCt >= $successesMax) {
-								return $state;
+								return $status;
 							}
 							break;
 						case BT\Status::FAILED:
 							$failuresCt++;
 							if ($failuresCt >= $failuresMax) {
-								return $state;
+								return $status;
 							}
 							break;
 						case BT\Status::ERROR:
 						case BT\Status::QUIT:
-							return $state;
+							return $status;
 					}
-					$entity = $state->getEntity();
 				}
 				if ($inactivesCt != $count) {
-					return BT\State\Active::with($entity);
+					return BT\Status::ACTIVE;
 				}
 			}
-			return BT\State\Inactive::with($entity);
+			return BT\Status::INACTIVE;
 		}
 
 	}

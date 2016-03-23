@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -30,24 +32,26 @@ namespace Unicity\BT\Task {
 	class Handler extends Core\Object {
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
 		 * @static
 		 * @param BT\Task $task                                     the task to do the processing
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public static function process(BT\Task $task, BT\Entity $entity) {
+		public static function process(BT\Task $task, int $entityId, BT\Application $application) {
 			$task->before();
 			try {
-				$state = $task->process($entity);
+				$status = $task->process($entityId, $application);
 			}
 			catch (\Exception $ex) {
-				$state = BT\State\Error::with(new BT\Entity($ex->getMessage()));
+				//$application->getLog()->add(Log\Level::WARNING, $ex->getMessage());
+				$status = BT\Status::ERROR;
 			}
 			$task->after();
-			return $state;
+			return $status;
 		}
 
 	}

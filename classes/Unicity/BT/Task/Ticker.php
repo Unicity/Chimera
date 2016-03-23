@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
@@ -66,22 +68,23 @@ namespace Unicity\BT\Task {
 		}
 
 		/**
-		 * This method processes the models and returns the status.
+		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the entity to be processed
-		 * @return BT\State                                         the state
+		 * @param integer $entityId                                 the entity id being processed
+		 * @param BT\Application $application                       the application running
+		 * @return integer                                          the status
 		 */
-		public function process(BT\Entity $entity) {
+		public function process(int $entityId, BT\Application $application) {
 			$interval = Core\Convert::toInteger($this->policy->getValue('interval')) / 1000; // milliseconds => seconds
 
 			if (microtime(true) >= $this->next_time) {
-				$state = BT\Task\Handler::process($this->task, $entity);
+				$status = BT\Task\Handler::process($this->task, $entityId, $application);
 				$this->next_time += $interval;
-				return $state;
+				return $status;
 			}
 
-			return BT\State\Active::with($entity);
+			return BT\Status::ACTIVE;
 		}
 
 		/**
