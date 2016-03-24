@@ -37,7 +37,7 @@ namespace Unicity\BT {
 		 * This variable stores the components associated with this entity.
 		 *
 		 * @access protected
-		 * @var Common\Mutable\HashMap
+		 * @var Common\Mutable\IMap
 		 */
 		protected $component;
 
@@ -50,13 +50,24 @@ namespace Unicity\BT {
 		protected $id;
 
 		/**
+		 * This variable stores the task id of the tree's root.
+		 *
+		 * @access protected
+		 * @var string
+		 */
+		protected $taskId;
+
+		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
+		 * @param integer $id                                       the entity's id
+		 * @param string $taskId                                    a task id
 		 */
-		public function __construct($id) {
+		public function __construct(int $id, string $taskId) {
 			$this->component = new Common\Mutable\HashMap();
 			$this->id = $id;
+			$this->taskId = $taskId;
 		}
 
 		/**
@@ -77,8 +88,18 @@ namespace Unicity\BT {
 		 * @param string $name                                      the name of the component
 		 * @return Common\Mutable\ICollection                       the component
 		 */
-		public function getComponent($name) {
+		public function getComponent(string $name) {
 			return $this->component->getValue($name);
+		}
+
+		/**
+		 * This method returns the component associated with the specified name.
+		 *
+		 * @access public
+		 * @return Common\Mutable\IMap                              the components
+		 */
+		public function getComponents() {
+			return $this->component;
 		}
 
 		/**
@@ -92,13 +113,23 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method returns a task id for the entity.
+		 *
+		 * @access public
+		 * @return string                                           a task id
+		 */
+		public function getTaskId() {
+			return $this->taskId;
+		}
+
+		/**
 		 * This method returns whether this entity has a component with the specified name.
 		 *
 		 * @access public
 		 * @param string $name                                      the name of the component
 		 * @return boolean                                          whether this entity has the component
 		 */
-		public function hasComponent($name) {
+		public function hasComponent(string $name) {
 			return $this->component->hasKey($name);
 		}
 
@@ -128,7 +159,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param string $name                                      the name of the component
 		 */
-		public function removeComponent($name) {
+		public function removeComponent(string $name) {
 			$this->component->removeKey($name);
 		}
 
@@ -149,8 +180,18 @@ namespace Unicity\BT {
 		 * @param string $name                                      the name of the component
 		 * @param Common\Mutable\ICollection $component             the component to be set
 		 */
-		public function setComponent($name, Common\Mutable\ICollection $component) {
+		public function setComponent(string $name, Common\Mutable\ICollection $component) {
 			$this->component->putEntry($name, $component);
+		}
+
+		/**
+		 * This method sets the task id of the tree's root.
+		 *
+		 * @access public
+		 * @param string $taskId                                    the task id to be set
+		 */
+		public function setTaskId(string $taskId = null) {
+			$this->taskId = $taskId;
 		}
 
 	}

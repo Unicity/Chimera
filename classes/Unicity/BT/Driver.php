@@ -62,10 +62,9 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @param BT\Application $application                       the application running
-		 * @param string $treeId                                    the id of behavior tree to run
 		 * @return integer                                          the status
 		 */
-		public function run(Application $application, string $treeId = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
+		public function run(Application $application) {
 			$factory = new Spring\XMLObjectFactory(Spring\Data\XML::load($this->file));
 
 			$registry = $factory->getParser()->getRegistry();
@@ -93,29 +92,32 @@ namespace Unicity\BT {
 			$registry->putEntry(array('ticker', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TickerElement());
 			$registry->putEntry(array('timer', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\TimerElement());
 
-			if ($factory->hasObject($treeId)) {
-				$object = $factory->getObject($treeId);
-				if ($object instanceof BT\Task) {
-					while (true) {
-						$entities = $application->getEntities();
-						$inactives = 0;
-						foreach ($entities as $entity) {
-							$status = BT\Task\Handler::process($object, $entity->getId(), $application);
-							if (in_array($status, array(BT\Status::ERROR, BT\Status::FAILED, BT\Status::QUIT))) {
+			do {
+				$active = 0;
+				$entities = $application->getEntities();
+				foreach ($entities as $entity) {
+					$taskId = $entity->getTaskId();
+					if ($taskId !== null) {
+						$status = BT\Task\Handler::process($factory->getObject($taskId), $entity->getId(), $application);
+						switch ($status) {
+							case BT\Status::SUCCESS:
+							case BT\Status::FAILED:
+							case BT\Status::INACTIVE:
+								$entity->setTaskId(null);
+								break;
+							case BT\Status::ACTIVE:
+								$active++;
+								break;
+							case BT\Status::ERROR:
+							case BT\Status::QUIT:
 								return $status;
-							}
-							if ($status == BT\Status::INACTIVE) {
-								$inactives++;
-								if ($inactives == $entities->count()) {
-									return BT\Status::INACTIVE;
-								}
-							}
 						}
 					}
 				}
 			}
+			while ($active > 0);
 
-			return BT\Status::ERROR;
+			return BT\Status::QUIT;
 		}
 
 	}

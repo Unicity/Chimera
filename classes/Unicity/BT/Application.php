@@ -53,13 +53,22 @@ namespace Unicity\BT {
 		protected $log;
 
 		/**
+		 * This variable stores a reference to the response message.
+		 *
+		 * @access protected
+		 * @var Core\Message
+		 */
+		protected $response;
+
+		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
 		 */
-		public function __construct(/*Log\Manager*/ $log = null) {
+		public function __construct() {
 			$this->entities = new Common\Mutable\HashMap();
-			$this->log = $log;
+			$this->log = null;
+			$this->response = new Core\Message();
 		}
 
 		/**
@@ -76,10 +85,10 @@ namespace Unicity\BT {
 		 * This method returns the value associated with the specified key.
 		 *
 		 * @access public
-		 * @param string $entityId                                  the id of the entity
+		 * @param integer $entityId                                 the id of the entity
 		 * @return BT\Entity                                        the entity
 		 */
-		public function getEntity($entityId) {
+		public function getEntity(int $entityId) {
 			return $this->entities->getValue($entityId);
 		}
 
@@ -90,7 +99,8 @@ namespace Unicity\BT {
 		 * @return Common\ArrayList                                 an array list of entities
 		 */
 		public function getEntities() {
-			return new Common\ArrayList($this->entities->getValues());
+			$entities = new Common\ArrayList($this->entities->getValues());
+			return $entities;
 		}
 
 		/**
@@ -104,21 +114,31 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method returns a reference to the response message.
+		 *
+		 * @access public
+		 * @return Core\Message                                     a reference to the response
+		 *                                                          message
+		 */
+		public function getResponse() {
+			return $this->response;
+		}
+
+		/**
 		 * This method creates an entity id.
 		 *
 		 * @access public
 		 * @static
 		 * @param Application $application                          the application for which the entity
 		 *                                                          is being created
-		 * @return entity                                           the entity id
+		 * @return integer                                          the entity id
 		 */
-		public static function createEntity(BT\Application $application) {
+		public static function createEntity(BT\Application $application, string $taskId = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
 			$entityId = 0;
 			while ($application->entities->hasKey($entityId)) {
 				$entityId++;
 			}
-			$entity = new Entity($entityId);
-			$application->entities->putEntry($entityId, $entityId, $application);
+			$application->entities->putEntry($entityId, new Entity($entityId, $taskId));
 			return $entityId;
 		}
 
@@ -127,10 +147,11 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @static
-		 * @param Application $application
-		 * @param integer $entityId
+		 * @param Application $application                          the application for which the entity
+		 *                                                          is being destroyed
+		 * @param integer $entityId                                 the entity to be destroyed
 		 */
-		public static function destroyEntity(BT\Application $application, $entityId) {
+		public static function removeEntity(BT\Application $application, int $entityId) {
 			unset($application->entities[$entityId]);
 		}
 

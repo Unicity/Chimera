@@ -24,7 +24,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\Common;
 	use \Unicity\Config;
 
-	class Marshal extends BT\Task\Action {
+	class Marshaller extends BT\Task\Responder {
 
 		/**
 		 * This method processes an entity.
@@ -35,14 +35,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(int $entityId, BT\Application $application) {
-			$body = $entity->getBody();
-			if ($body instanceof Common\Mutable\HashMap) {
-				$writer = new Config\JSON\Writer($body);
-				$writer->config($this->policy->toDictionary());
-				$writer->export($entity);
-				return BT\Status::SUCCESS;
-			}
-			return BT\Status::FAILED;
+			$components = $application->getEntity($entityId)->getComponents();
+			$writer = new Config\JSON\Writer($components);
+			$writer->config($this->policy->toDictionary());
+			$writer->export($application->getResponse());
+			return BT\Status::QUIT;
 		}
 
 	}

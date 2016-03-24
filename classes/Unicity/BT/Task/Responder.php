@@ -18,16 +18,17 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Engine\Task\Action {
+namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\IO;
-	use \Unicity\ORM;
-	use \Unicity\Throwable;
 
-	class Unmarshal extends BT\Task\Action {
+	/**
+	 * This class represents a task responder.
+	 *
+	 * @access public
+	 * @class
+	 */
+	class Responder extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -38,27 +39,12 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(int $entityId, BT\Application $application) {
-			$body = $entity->getBody();
-			if ($body instanceof IO\File) {
-				try {
-					$reader = new Config\JSON\Reader($body, array_merge(
-						$this->policy->toDictionary(),
-						array('assoc' => false)
-					));
+			$response = $application->getResponse();
 
-					$map = new Common\Mutable\HashMap();
-					$map->putEntry('Order', ORM\JSON\Model\Marshaller::unmarshal($reader, array(
-						'case_sensitive' => true,
-						'schema' => '\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\Order',
-					)));
+			$response->setStatus($this->policy->getValue('status'));
+			$response->setBody($this->policy->getValue('body'));
 
-					return BT\State\Success::with(new BT\Entity($map));
-				}
-				catch (Throwable\Runtime\Exception $ex) {
-					return BT\State\Error::with(new BT\Entity($ex));
-				}
-			}
-			return BT\Status::FAILED;
+			return BT\Status::QUIT;
 		}
 
 	}
