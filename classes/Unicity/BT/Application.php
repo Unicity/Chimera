@@ -24,7 +24,6 @@ namespace Unicity\BT {
 	use \Unicity\Common;
 	use \Unicity\Core;
 	//use \Unicity\Log;
-	use Unicity\MappingService\Data\Model\Entity;
 
 	/**
 	 * This class represents an exchange.
