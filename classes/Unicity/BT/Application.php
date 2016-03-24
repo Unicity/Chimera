@@ -130,15 +130,16 @@ namespace Unicity\BT {
 		 * @static
 		 * @param Application $application                          the application for which the entity
 		 *                                                          is being created
-		 * @return integer                                          the entity id
+		 * @return BT\Entity                                        the entity
 		 */
 		public static function createEntity(BT\Application $application, string $taskId = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
 			$entityId = 0;
 			while ($application->entities->hasKey($entityId)) {
 				$entityId++;
 			}
-			$application->entities->putEntry($entityId, new Entity($entityId, $taskId));
-			return $entityId;
+			$entity = new Entity($entityId, $taskId);
+			$application->entities->putEntry($entityId, $entity);
+			return $entity;
 		}
 
 		/**
@@ -148,10 +149,10 @@ namespace Unicity\BT {
 		 * @static
 		 * @param Application $application                          the application for which the entity
 		 *                                                          is being destroyed
-		 * @param integer $entityId                                 the entity to be destroyed
+		 * @param BT\Entity $entity                                 the entity to be destroyed
 		 */
-		public static function removeEntity(BT\Application $application, int $entityId) {
-			unset($application->entities[$entityId]);
+		public static function removeEntity(BT\Application $application, BT\Entity $entity) {
+			unset($application->entities[$entity->getId()]);
 		}
 
 	}
