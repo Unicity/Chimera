@@ -26,14 +26,14 @@ namespace Unicity\BT {
 	//use \Unicity\Log;
 
 	/**
-	 * This class represents an exchange.
+	 * This class represents a behavior tree engine.
 	 *
 	 * @access public
 	 * @class
 	 * @see http://www.gamedev.net/page/resources/_/technical/game-programming/understanding-component-entity-systems-r3013
 	 * @see http://www.gamedev.net/page/resources/_/technical/game-programming/implementing-component-entity-systems-r3382
 	 */
-	class Application extends Core\Object {
+	class Engine extends Core\Object {
 
 		/**
 		 * This variable stores a map of id/entity pairs.
@@ -63,9 +63,15 @@ namespace Unicity\BT {
 		 * This constructor initializes the class.
 		 *
 		 * @access public
+		 * @param Common\ArrayList $entities                        a list of entities to be added
 		 */
-		public function __construct() {
+		public function __construct(Common\ArrayList $entities = null) {
 			$this->entities = new Common\Mutable\HashMap();
+			if ($entities !== null) {
+				foreach ($entities as $entity) {
+					$this->putEntity($entity);
+				}
+			}
 			$this->log = null;
 			$this->response = new Core\Message();
 		}
@@ -78,6 +84,8 @@ namespace Unicity\BT {
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->entities);
+			unset($this->log);
+			unset($this->response);
 		}
 
 		/**
@@ -98,8 +106,7 @@ namespace Unicity\BT {
 		 * @return Common\ArrayList                                 an array list of entities
 		 */
 		public function getEntities() {
-			$entities = new Common\ArrayList($this->entities->getValues());
-			return $entities;
+			return $this->entities->toList();
 		}
 
 		/**
@@ -124,35 +131,24 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method creates an entity id.
+		 * This method adds the given entity.
 		 *
 		 * @access public
-		 * @static
-		 * @param Application $application                          the application for which the entity
-		 *                                                          is being created
-		 * @return BT\Entity                                        the entity
+		 * @param BT\Entity $entity                                 the entity to be added
 		 */
-		public static function createEntity(BT\Application $application, string $taskId = 'BEHAVE') { // http://aigamedev.com/open/article/popular-behavior-tree-design/
-			$entityId = 0;
-			while ($application->entities->hasKey($entityId)) {
-				$entityId++;
-			}
-			$entity = new Entity($entityId, $taskId);
-			$application->entities->putEntry($entityId, $entity);
-			return $entity;
+		public function putEntity(BT\Entity $entity) {
+			$this->entities->putEntry($entity->getId(), $entity);
 		}
 
 		/**
-		 * This method removes an entity id.
+		 * This method removes the given entity.
 		 *
 		 * @access public
 		 * @static
-		 * @param Application $application                          the application for which the entity
-		 *                                                          is being destroyed
-		 * @param BT\Entity $entity                                 the entity to be destroyed
+		 * @param BT\Entity $entity                                 the entity to be removed
 		 */
-		public static function removeEntity(BT\Application $application, BT\Entity $entity) {
-			unset($application->entities[$entity->getId()]);
+		public function removeEntity(BT\Entity $entity) {
+			$this->entities->removeKey($entity->getId());
 		}
 
 	}

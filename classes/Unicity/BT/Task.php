@@ -153,11 +153,11 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @abstract
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public abstract function process(int $entityId, BT\Application $application);
+		public abstract function process(string $entityId, BT\Engine $engine);
 
 		/**
 		 * This method resets the task.

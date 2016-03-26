@@ -30,15 +30,15 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
-			$components = $application->getEntity($entityId)->getComponents();
+		public function process(string $entityId, BT\Engine $engine) {
+			$components = $engine->getEntity($entityId)->getComponents();
 			$writer = new Config\JSON\Writer($components);
 			$writer->config($this->policy->toDictionary());
-			$writer->export($application->getResponse());
+			$writer->export($engine->getResponse());
 			return BT\Status::QUIT;
 		}
 

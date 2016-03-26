@@ -58,16 +58,16 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
+		public function process(string $entityId, BT\Engine $engine) {
 			$callable = explode(',', $this->policy->getValue('callable'));
 			$options = Core\Convert::toInteger($this->policy->getValue('options'));
 			$probability = Core\Convert::toDouble($this->policy->hasKey('odds')) * $options;
 			if (call_user_func($callable, array(1, $options)) <= $probability) {
-				return BT\Task\Handler::process($this->task, $entityId, $application);
+				return BT\Task\Handler::process($this->task, $entityId, $engine);
 			}
 			return BT\Status::ACTIVE;
 		}

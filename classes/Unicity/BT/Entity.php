@@ -22,6 +22,7 @@ namespace Unicity\BT {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
+	use \Unicity\FP;
 
 	/**
 	 * This class represents an entity.
@@ -41,10 +42,10 @@ namespace Unicity\BT {
 		protected $component;
 
 		/**
-		 * This variables stores the components associated with this entity.
+		 * This variables stores the entity's id.
 		 *
 		 * @access protected
-		 * @var integer
+		 * @var string
 		 */
 		protected $id;
 
@@ -60,10 +61,10 @@ namespace Unicity\BT {
 		 * This constructor initializes the class.
 		 *
 		 * @access public
-		 * @param integer $id                                       the entity's id
+		 * @param string $id                                        the entity's id
 		 * @param string $taskId                                    a task id
 		 */
-		public function __construct(int $id, string $taskId) {
+		public function __construct(string $id, string $taskId = null) {
 			$this->component = new Common\Mutable\HashMap();
 			$this->id = $id;
 			$this->taskId = $taskId;
@@ -78,6 +79,7 @@ namespace Unicity\BT {
 			parent::__destruct();
 			unset($this->component);
 			unset($this->id);
+			unset($this->taskId);
 		}
 
 		/**
@@ -95,24 +97,31 @@ namespace Unicity\BT {
 		 * This method returns the component associated with the specified name.
 		 *
 		 * @access public
+		 * @param string $type                                      the type of components to be
+		 *                                                          returned
 		 * @return Common\Mutable\IMap                              the components
 		 */
-		public function getComponents() {
+		public function getComponents(string $type = null) {
+			if ($type !== null) {
+				return FP\IMap::filter($this->component, function($v, $k) use ($type) {
+					return ($v instanceof $type);
+				});
+			}
 			return $this->component;
 		}
 
 		/**
-		 * This method returns the id associated with this entitiy.
+		 * This method returns entity's id.
 		 *
 		 * @access public
-		 * @return integer                                          the entity's id
+		 * @return string                                           the entity's id
 		 */
 		public function getId() {
 			return $this->id;
 		}
 
 		/**
-		 * This method returns a task id for the entity.
+		 * This method returns a task id assigned to the entity.
 		 *
 		 * @access public
 		 * @return string                                           a task id

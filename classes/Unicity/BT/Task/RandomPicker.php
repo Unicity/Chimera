@@ -50,17 +50,17 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
+		public function process(string $entityId, BT\Engine $engine) {
 			$callable = explode(',', $this->policy->getValue('callable'));
 			$count = $this->tasks->count();
 			if ($count > 0) {
 				$index = call_user_func($callable, array(0, $count));
 				$task = $this->tasks->getValue($index);
-				return BT\Task\Handler::process($task, $entityId, $application);
+				return BT\Task\Handler::process($task, $entityId, $engine);
 			}
 			return BT\Status::ERROR;
 		}

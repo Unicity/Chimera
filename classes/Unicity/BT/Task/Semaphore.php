@@ -51,17 +51,17 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
+		public function process(string $entityId, BT\Engine $engine) {
 			$id = Core\Convert::toString($this->policy->getValue('id'));
 
 			if ($this->blackboard->hasKey($id)) {
 				$hashCode = $this->blackboard->getValue($id);
 				if ($hashCode == $this->task->__hashCode()) {
-					$status = BT\Task\Handler::process($this->task, $entityId, $application);
+					$status = BT\Task\Handler::process($this->task, $entityId, $engine);
 					if ($status != BT\Status::ACTIVE) {
 						$this->blackboard->removeKey($id);
 					}
@@ -70,7 +70,7 @@ namespace Unicity\BT\Task {
 				return BT\Status::ACTIVE;
 			}
 			else {
-				$status = BT\Task\Handler::process($this->task, $entityId, $application);
+				$status = BT\Task\Handler::process($this->task, $entityId, $engine);
 				if ($status == BT\Status::ACTIVE) {
 					$this->blackboard->putEntry($id, $this->task->__hashCode());
 				}

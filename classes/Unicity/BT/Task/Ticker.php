@@ -71,15 +71,15 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
+		public function process(string $entityId, BT\Engine $engine) {
 			$interval = Core\Convert::toInteger($this->policy->getValue('interval')) / 1000; // milliseconds => seconds
 
 			if (microtime(true) >= $this->next_time) {
-				$status = BT\Task\Handler::process($this->task, $entityId, $application);
+				$status = BT\Task\Handler::process($this->task, $entityId, $engine);
 				$this->next_time += $interval;
 				return $status;
 			}

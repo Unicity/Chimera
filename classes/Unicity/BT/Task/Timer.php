@@ -74,11 +74,11 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
+		public function process(string $entityId, BT\Engine $engine) {
 			$delay = Core\Convert::toInteger($this->policy->getValue('delay')) / 1000; // milliseconds => seconds
 
 			$deltaT = microtime(true) - $this->start_time;
@@ -86,7 +86,7 @@ namespace Unicity\BT\Task {
 				$duration = Core\Convert::toInteger($this->policy->getValue('duration')) / 1000; // milliseconds => seconds
 
 				if ($deltaT < ($delay + $duration)) {
-					return BT\Task\Handler::process($this->task, $entityId, $application);
+					return BT\Task\Handler::process($this->task, $entityId, $engine);
 				}
 			}
 

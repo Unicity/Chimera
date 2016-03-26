@@ -69,18 +69,18 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
+		public function process(string $entityId, BT\Engine $engine) {
 			$max_count = Core\Convert::toInteger($this->policy->getValue('max_count'));
 			if ($this->counter < $max_count) {
 				$this->counter++;
 				return BT\Status::ACTIVE;
 			}
 			$this->counter = 0;
-			return BT\Task\Handler::process($this->task, $entityId, $application);
+			return BT\Task\Handler::process($this->task, $entityId, $engine);
 		}
 
 		/**

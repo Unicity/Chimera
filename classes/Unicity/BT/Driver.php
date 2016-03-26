@@ -59,10 +59,10 @@ namespace Unicity\BT {
 		 * This method executes the tasks define in the pipeline.
 		 *
 		 * @access public
-		 * @param BT\Application $application                       the application running
+		 * @param BT\Engine $engine                                 the engine to be run
 		 * @return integer                                          the status
 		 */
-		public function run(Application $application) {
+		public function run(BT\Engine $engine) {
 			$factory = new Spring\XMLObjectFactory(Spring\Data\XML::load($this->file));
 
 			$registry = $factory->getParser()->getRegistry();
@@ -92,11 +92,11 @@ namespace Unicity\BT {
 
 			do {
 				$active = 0;
-				$entities = $application->getEntities();
+				$entities = $engine->getEntities();
 				foreach ($entities as $entity) {
 					$taskId = $entity->getTaskId();
 					if ($taskId !== null) {
-						$status = BT\Task\Handler::process($factory->getObject($taskId), $entity->getId(), $application);
+						$status = BT\Task\Handler::process($factory->getObject($taskId), $entity->getId(), $engine);
 						switch ($status) {
 							case BT\Status::SUCCESS:
 							case BT\Status::FAILED:

@@ -28,12 +28,12 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
-			$order = $application->getEntity($entityId)->getComponent('Order');
+		public function process(string $entityId, BT\Engine $engine) {
+			$order = $engine->getEntity($entityId)->getComponent('Order');
 
 			$districts = $this->policy->getValue('states');
 

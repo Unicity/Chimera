@@ -37,14 +37,14 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the entity id being processed
-		 * @param BT\Application $application                       the application running
+		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(int $entityId, BT\Application $application) {
-			$status = BT\Task\Handler::process($this->tasks->getValue(0), $entityId, $application);
+		public function process(string $entityId, BT\Engine $engine) {
+			$status = BT\Task\Handler::process($this->tasks->getValue(0), $entityId, $engine);
 			if ($status == BT\Status::SUCCESS) {
-				return BT\Task\Handler::process($this->tasks->getValue(1), $entityId, $application);
+				return BT\Task\Handler::process($this->tasks->getValue(1), $entityId, $engine);
 			}
 			return $status;
 		}
