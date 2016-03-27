@@ -39,7 +39,7 @@ namespace Unicity\BT {
 		 * @access protected
 		 * @var Common\Mutable\IMap
 		 */
-		protected $component;
+		protected $components;
 
 		/**
 		 * This variables stores the entity's id.
@@ -65,7 +65,7 @@ namespace Unicity\BT {
 		 * @param string $taskId                                    a task id
 		 */
 		public function __construct(string $id, string $taskId = null) {
-			$this->component = new Common\Mutable\HashMap();
+			$this->components = new Common\Mutable\HashMap();
 			$this->id = $id;
 			$this->taskId = $taskId;
 		}
@@ -77,7 +77,7 @@ namespace Unicity\BT {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->component);
+			unset($this->components);
 			unset($this->id);
 			unset($this->taskId);
 		}
@@ -90,7 +90,7 @@ namespace Unicity\BT {
 		 * @return Common\Mutable\ICollection                       the component
 		 */
 		public function getComponent(string $name) {
-			return $this->component->getValue($name);
+			return $this->components->getValue($name);
 		}
 
 		/**
@@ -103,11 +103,11 @@ namespace Unicity\BT {
 		 */
 		public function getComponents(string $type = null) {
 			if ($type !== null) {
-				return FP\IMap::filter($this->component, function($v, $k) use ($type) {
+				return FP\IMap::filter($this->components, function($v, $k) use ($type) {
 					return ($v instanceof $type);
 				});
 			}
-			return $this->component;
+			return $this->components;
 		}
 
 		/**
@@ -138,7 +138,7 @@ namespace Unicity\BT {
 		 * @return boolean                                          whether this entity has the component
 		 */
 		public function hasComponent(string $name) {
-			return $this->component->hasKey($name);
+			return $this->components->hasKey($name);
 		}
 
 		/**
@@ -152,7 +152,7 @@ namespace Unicity\BT {
 		public function hasComponents(array $names) {
 			if (count($names) > 0) {
 				foreach ($names as $name) {
-					if (!$this->component->hasKey($name)) {
+					if (!$this->components->hasKey($name)) {
 						return false;
 					}
 				}
@@ -168,7 +168,7 @@ namespace Unicity\BT {
 		 * @param string $name                                      the name of the component
 		 */
 		public function removeComponent(string $name) {
-			$this->component->removeKey($name);
+			$this->components->removeKey($name);
 		}
 
 		/**
@@ -178,7 +178,7 @@ namespace Unicity\BT {
 		 * @param array $names                                      the names of the components
 		 */
 		public function removeComponents(array $names) {
-			$this->component->removeKeys($names);
+			$this->components->removeKeys($names);
 		}
 
 		/**
@@ -189,7 +189,7 @@ namespace Unicity\BT {
 		 * @param Common\Mutable\ICollection $component             the component to be set
 		 */
 		public function setComponent(string $name, Common\Mutable\ICollection $component) {
-			$this->component->putEntry($name, $component);
+			$this->components->putEntry($name, $component);
 		}
 
 		/**

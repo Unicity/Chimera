@@ -92,10 +92,10 @@ namespace Unicity\BT {
 		 * This method returns the value associated with the specified key.
 		 *
 		 * @access public
-		 * @param integer $entityId                                 the id of the entity
+		 * @param string $entityId                                  the id of the entity
 		 * @return BT\Entity                                        the entity
 		 */
-		public function getEntity(int $entityId) {
+		public function getEntity(string $entityId) {
 			return $this->entities->getValue($entityId);
 		}
 
