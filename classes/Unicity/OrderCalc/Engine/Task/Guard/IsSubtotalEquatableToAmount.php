@@ -23,7 +23,7 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 	use \Unicity\BT;
 	use \Unicity\Core;
 
-	class IsPretotalGreaterThanOrEqualToAmount extends BT\Task\Guard {
+	class IsSubtotalEquatableToAmount extends BT\Task\Guard {
 
 		/**
 		 * This method processes an entity.
@@ -36,9 +36,10 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 		public function process(string $entityId, BT\Engine $engine) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
+			$operator = Core\Convert::toString($this->policy->getValue('operator'));
 			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
-			if ($order->terms->pretotal >= $amount) {
+			if (Core\Operator::isEquatable($order->terms->subtotal, $operator, $amount)) {
 				return BT\Status::SUCCESS;
 			}
 
