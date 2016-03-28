@@ -21,7 +21,7 @@ namespace Unicity\Core {
 	use \Unicity\Core;
 
 	/**
-	 * This class converts a base data type to another base data type.
+	 * This class provides helper methods for processing operands.
 	 *
 	 * @access public
 	 * @class
@@ -29,6 +29,18 @@ namespace Unicity\Core {
 	 */
 	class Operator extends Core\Object {
 
+		/**
+		 * This method returns whether the given expression is valid.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $x                                          the "x" operand
+		 * @param string $op                                        the operator
+		 * @param mixed $y                                          the "y" operand
+		 * @return boolean                                          whether the expression is valid
+		 *
+		 * @see https://en.wikipedia.org/wiki/Relational_operator
+		 */
 		public static function isEquatable($x, $op, $y) {
 			switch (strtolower($op)) {
 				case '<':
