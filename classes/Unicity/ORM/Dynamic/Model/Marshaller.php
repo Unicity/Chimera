@@ -31,11 +31,14 @@ namespace Unicity\ORM\Dynamic\Model {
 		 * @access public
 		 * @static
 		 * @param Config\Reader $reader                             the config reader to use
-		 * @param boolean $case_sensitive                           whether keys are to be case sensitive
-		 * @param string $path                                      the path to the value to be returned
-		 * @return mixed                                            the resource as a collection
+		 * @param array $policy                                     the policy for reading in the data
+		 * @return ORM\IModel                                       the model
 		 */
-		public static function unmarshal(Config\Reader $reader, $case_sensitive = true, $path = null) {
+		public static function unmarshal(Config\Reader $reader, array $policy = array()) {
+			$case_sensitive = isset($policy['case_sensitive'])
+				? Core\Convert::toBoolean($policy['case_sensitive'])
+				: true;
+			$path = isset($policy['path']) ? $policy['path'] : null;
 			if (($path !== null) && !$case_sensitive) {
 				$path = strtolower($path);
 			}
