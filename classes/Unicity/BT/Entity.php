@@ -61,13 +61,12 @@ namespace Unicity\BT {
 		 * This constructor initializes the class.
 		 *
 		 * @access public
-		 * @param string $id                                        the entity's id
-		 * @param string $taskId                                    a task id
+		 * @param array $properties                                 the default properties
 		 */
-		public function __construct(string $id, string $taskId = null) {
-			$this->components = new Common\Mutable\HashMap();
-			$this->id = $id;
-			$this->taskId = $taskId;
+		public function __construct(array $properties) {
+			$this->components = $properties['components'] ?? new Common\Mutable\HashMap();
+			$this->id = $properties['entity_id'];
+			$this->taskId = $properties['task_id'] ?? null;
 		}
 
 		/**
