@@ -21,6 +21,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\MappingService;
+	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
 	/**
@@ -32,7 +33,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 	 *
 	 * @see http://json-schema.org/
 	 */
-	class ArrayList extends Common\Mutable\ArrayList {
+	class ArrayList extends Common\Mutable\ArrayList implements ORM\IModel {
 
 		/**
 		 * This variable stores whether field names are case sensitive.
@@ -88,7 +89,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 				if (isset($definition['type'])) {
 					switch ($definition['type']) {
 						case 'array':
-							$value = MappingService\Data\Model\JSON\Helper::resolveArrayValue($value, $definition);
+							$value = MappingService\Data\Model\JSON\Helper::resolveArrayValue($value, $definition, $this->case_sensitive);
 							break;
 						case 'boolean':
 							$value = MappingService\Data\Model\JSON\Helper::resolveBooleanValue($value, $definition);
@@ -103,7 +104,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 							$value = MappingService\Data\Model\JSON\Helper::resolveNullValue($value, $definition);
 							break;
 						case 'object':
-							$value = MappingService\Data\Model\JSON\Helper::resolveObjectValue($value, $definition);
+							$value = MappingService\Data\Model\JSON\Helper::resolveObjectValue($value, $definition, $this->case_sensitive);
 							break;
 						case 'string':
 							$value = MappingService\Data\Model\JSON\Helper::resolveStringValue($value, $definition);
@@ -119,7 +120,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 * This method will add the elements in the specified array to the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of values to be added
+		 * @param mixed $values                                     an array of values to be added
 		 * @return boolean                                          whether any elements were added
 		 */
 		public function addValues($values) {
@@ -256,7 +257,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 						if (isset($definition['type'])) {
 							switch ($definition['type']) {
 								case 'array':
-									$value = MappingService\Data\Model\JSON\Helper::resolveArrayValue($value, $definition);
+									$value = MappingService\Data\Model\JSON\Helper::resolveArrayValue($value, $definition, $this->case_sensitive);
 									break;
 								case 'boolean':
 									$value = MappingService\Data\Model\JSON\Helper::resolveBooleanValue($value, $definition);
@@ -271,7 +272,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 									$value = MappingService\Data\Model\JSON\Helper::resolveNullValue($value, $definition);
 									break;
 								case 'object':
-									$value = MappingService\Data\Model\JSON\Helper::resolveObjectValue($value, $definition);
+									$value = MappingService\Data\Model\JSON\Helper::resolveObjectValue($value, $definition, $this->case_sensitive);
 									break;
 								case 'string':
 									$value = MappingService\Data\Model\JSON\Helper::resolveStringValue($value, $definition);
