@@ -45,6 +45,23 @@ namespace Unicity\Common\Mutable {
 		}
 
 		/**
+		 * This method will add the elements in the specified array to the collection.
+		 *
+		 * @access public
+		 * @param mixed $values                                     an array of values to be added
+		 * @return boolean                                          whether any elements were added
+		 */
+		public function addValues($values) {
+			if (!empty($values)) {
+				foreach ($values as $value) {
+					$this->addValue($value);
+				}
+				return true;
+			}
+			return false;
+		}
+
+			/**
 		 * This method will remove all elements from the collection.
 		 *
 		 * @access public
