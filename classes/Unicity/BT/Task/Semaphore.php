@@ -37,11 +37,10 @@ namespace Unicity\BT\Task {
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
-			parent::__construct($blackboard, $policy);
+		public function __construct(Common\Mutable\IMap $policy = null) {
+			parent::__construct($policy);
 			if (!$this->policy->hasKey('id')) {
 				$this->policy->putEntry('id', __CLASS__);
 			}
@@ -51,28 +50,29 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(string $entityId, BT\Engine $engine) {
-			$id = Core\Convert::toString($this->policy->getValue('id'));
+		public function process(BT\Engine $engine, string $entityId) {
+			$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
+			$id = $this->policy->getValue('id');
 
-			if ($this->blackboard->hasKey($id)) {
-				$hashCode = $this->blackboard->getValue($id);
+			if ($blackboard->hasKey($id)) {
+				$hashCode = $blackboard->getValue($id);
 				if ($hashCode == $this->task->__hashCode()) {
-					$status = BT\Task\Handler::process($this->task, $entityId, $engine);
+					$status = BT\Task\Handler::process($this->task, $engine, $entityId);
 					if ($status != BT\Status::ACTIVE) {
-						$this->blackboard->removeKey($id);
+						$blackboard->removeKey($id);
 					}
 					return $status;
 				}
 				return BT\Status::ACTIVE;
 			}
 			else {
-				$status = BT\Task\Handler::process($this->task, $entityId, $engine);
+				$status = BT\Task\Handler::process($this->task, $engine, $entityId);
 				if ($status == BT\Status::ACTIVE) {
-					$this->blackboard->putEntry($id, $this->task->__hashCode());
+					$blackboard->putEntry($id, $this->task->__hashCode());
 				}
 				return $status;
 			}
@@ -82,12 +82,11 @@ namespace Unicity\BT\Task {
 		 * This method resets the task.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset() {
-			$id = Core\Convert::toString($this->policy->getValue('id'));
-			if ($this->blackboard->hasKey($id)) {
-				$this->blackboard->removeKey($id);
-			}
+		public function reset(BT\Engine $engine) {
+			$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
+			$blackboard->removeKey($this->policy->getValue('id'));
 		}
 
 	}

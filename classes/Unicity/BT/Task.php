@@ -36,14 +36,6 @@ namespace Unicity\BT {
 	abstract class Task extends Core\Object {
 
 		/**
-		 * This variable stores a reference to the blackboard.
-		 *
-		 * @access protected
-		 * @var Common\Mutable\IMap
-		 */
-		protected $blackboard;
-
-		/**
 		 * This variable stores the policy associated with the task.
 		 *
 		 * @access protected
@@ -63,13 +55,9 @@ namespace Unicity\BT {
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
-			$this->blackboard = ($blackboard !== null)
-				? $blackboard
-				: new Common\Mutable\HashMap();
+		public function __construct(Common\Mutable\IMap $policy = null) {
 			$this->title = '';
 			$this->policy = ($policy !== null)
 				? $policy
@@ -83,7 +71,6 @@ namespace Unicity\BT {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->blackboard);
 			unset($this->policy);
 			unset($this->title);
 		}
@@ -104,16 +91,6 @@ namespace Unicity\BT {
 		 */
 		public function before() {
 			// do nothing
-		}
-
-		/**
-		 * This method returns a reference to the blackboard used by the task.
-		 *
-		 * @access public
-		 * @return Common\Mutable\IMap                              the blackboard used by the task
-		 */
-		public function getBlackboard() {
-			return $this->blackboard;
 		}
 
 		/**
@@ -153,29 +130,20 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @abstract
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public abstract function process(string $entityId, BT\Engine $engine);
+		public abstract function process(BT\Engine $engine, string $entityId);
 
 		/**
 		 * This method resets the task.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset() {
+		public function reset(BT\Engine $engine) {
 			// do nothing
-		}
-
-		/**
-		 * This method sets the task's blackboard.
-		 *
-		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be set
-		 */
-		public function setBlackboard(Common\Mutable\IMap $blackboard) {
-			$this->blackboard = $blackboard;
 		}
 
 		/**

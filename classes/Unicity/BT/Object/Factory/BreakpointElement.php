@@ -46,18 +46,12 @@ namespace Unicity\BT\Object\Factory {
 				: '\\Unicity\\BT\\Task\\Breakpoint';
 
 			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
-			$children = $element->xpath('./spring-bt:blackboard');
-			$blackboard = (!empty($children))
-				? $parser->getObjectFromElement($children[0])
-				: null;
-
-			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:policy');
 			$policy = (!empty($children))
 				? $parser->getObjectFromElement($children[0])
 				: null;
 
-			$object = new $type($blackboard, $policy);
+			$object = new $type($policy);
 
 			if (!($object instanceof BT\Task\Breakpoint)) {
 				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task breakpoint, but got an element of type ":type" instead.', array(':type' => $type));

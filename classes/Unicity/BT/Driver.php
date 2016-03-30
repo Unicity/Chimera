@@ -67,7 +67,6 @@ namespace Unicity\BT {
 
 			$registry = $factory->getParser()->getRegistry();
 			$registry->putEntry(array('action', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ActionElement());
-			$registry->putEntry(array('blackboard', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BlackboardElement());
 			$registry->putEntry(array('branch', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BranchElement());
 			$registry->putEntry(array('breakpoint', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BreakpointElement());
 			$registry->putEntry(array('composite', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\CompositeElement());
@@ -96,7 +95,7 @@ namespace Unicity\BT {
 				foreach ($entities as $entity) {
 					$taskId = $entity->getTaskId();
 					if ($taskId !== null) {
-						$status = BT\Task\Handler::process($factory->getObject($taskId), $entity->getId(), $engine);
+						$status = BT\Task\Handler::process($factory->getObject($taskId), $engine, $entity->getId());
 						switch ($status) {
 							case BT\Status::SUCCESS:
 							case BT\Status::FAILED:

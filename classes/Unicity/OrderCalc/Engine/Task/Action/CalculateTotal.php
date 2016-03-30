@@ -29,11 +29,11 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * This method processes an entity.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(string $entityId, BT\Engine $engine) {
+		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
 			$order->terms->total = $order->terms->pretotal;

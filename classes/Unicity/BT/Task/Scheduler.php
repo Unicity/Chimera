@@ -34,11 +34,11 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(string $entityId, BT\Engine $engine) {
+		public function process(BT\Engine $engine, string $entityId) {
 			$engine->getEntity($entityId)->setTaskId($this->policy->getValue('task'));
 			return BT\Status::ACTIVE;
 		}

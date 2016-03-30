@@ -37,11 +37,10 @@ namespace Unicity\BT\Task {
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
-			parent::__construct($blackboard, $policy);
+		public function __construct(Common\Mutable\IMap $policy = null) {
+			parent::__construct($policy);
 			// frequency: once, each
 			// order: shuffle, weight, fixed
 			if (!$this->policy->hasKey('shuffle')) {
@@ -53,18 +52,18 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(string $entityId, BT\Engine $engine) {
+		public function process(BT\Engine $engine, string $entityId) {
 			$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
 			if ($shuffle) {
 				$this->tasks->shuffle();
 			}
 			$inactives = 0;
 			foreach ($this->tasks as $task) {
-				$status = BT\Task\Handler::process($task, $entityId, $engine);
+				$status = BT\Task\Handler::process($task, $engine, $entityId);
 				if (in_array($status, array(BT\Status::ACTIVE, BT\Status::SUCCESS, BT\Status::ERROR, BT\Status::QUIT))) {
 					return $status;
 				}

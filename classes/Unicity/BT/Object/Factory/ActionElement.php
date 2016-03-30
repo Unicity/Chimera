@@ -47,18 +47,12 @@ namespace Unicity\BT\Object\Factory {
 			$type = $parser->valueOf($attributes['type']);
 
 			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
-			$children = $element->xpath('./spring-bt:blackboard');
-			$blackboard = (!empty($children))
-				? $parser->getObjectFromElement($children[0])
-				: null;
-
-			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:policy');
 			$policy = (!empty($children))
 				? $parser->getObjectFromElement($children[0])
 				: null;
 
-			$object = new $type($blackboard, $policy);
+			$object = new $type($policy);
 
 			if (!($object instanceof BT\Task\Action)) {
 				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task action, but got an element of type ":type" instead.', array(':type' => $type));

@@ -36,15 +36,23 @@ namespace Unicity\BT {
 	class Engine extends Core\Object {
 
 		/**
+		 * This variable stores a map of blackboards.
+		 *
+		 * @access protected
+		 * @var Common\Mutable\IMap
+		 */
+		protected $blackboards;
+
+		/**
 		 * This variable stores a map of id/entity pairs.
 		 *
 		 * @access protected
-		 * @var array
+		 * @var Common\Mutable\IMap
 		 */
 		protected $entities;
 
 		/**
-		 * This variable stores a reference to the log writer.
+		 * This variable stores a reference to the error log.
 		 *
 		 * @access protected
 		 * @var Log\Manager
@@ -66,13 +74,14 @@ namespace Unicity\BT {
 		 * @param Common\ArrayList $entities                        a list of entities to be added
 		 */
 		public function __construct(Common\ArrayList $entities = null) {
+			$this->blackboards = new Common\Mutable\HashMap();
 			$this->entities = new Common\Mutable\HashMap();
 			if ($entities !== null) {
 				foreach ($entities as $entity) {
 					$this->putEntity($entity);
 				}
 			}
-			$this->log = null;
+			$this->log = null; // TODO set a reference to the error log
 			$this->response = new Core\Message();
 		}
 
@@ -83,9 +92,24 @@ namespace Unicity\BT {
 		 */
 		public function __destruct() {
 			parent::__destruct();
+			unset($this->blackboards);
 			unset($this->entities);
 			unset($this->log);
 			unset($this->response);
+		}
+
+		/**
+		 * This method returns a reference to a blackboard matching the specified id.
+		 *
+		 * @access public
+		 * @param string $bbId                                      the blackboard's id
+		 * @return Common\Mutable\IMap                              a reference to the blackboard
+		 */
+		public function getBlackboard(string $bbId = 'global') {
+			if (!$this->blackboards->hasKey($bbId)) {
+				$this->blackboards->putEntry($bbId, new Common\Mutable\HashMap());
+			}
+			return $this->blackboards->getValue($bbId);
 		}
 
 		/**
@@ -110,24 +134,35 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method returns a reference to a log manager.
+		 * This method returns a reference to the error log.
 		 *
 		 * @access public
-		 * @return Log\Manager                                      a reference to a log manager
+		 * @return Log\Manager                                      a reference to the error log
 		 */
-		public function getLog() {
+		public function getErrorLog() {
 			return $this->log;
 		}
 
 		/**
-		 * This method returns a reference to the response message.
+		 * This method returns a reference to the response object.
 		 *
 		 * @access public
 		 * @return Core\Message                                     a reference to the response
-		 *                                                          message
+		 *                                                          object
 		 */
 		public function getResponse() {
 			return $this->response;
+		}
+
+		/**
+		 * This method returns a reference to the request object.
+		 *
+		 * @access public
+		 * @return Core\Message                                     a reference to the request
+		 *                                                          object
+		 */
+		public function getRequest() {
+			return null; // TODO return a request object
 		}
 
 		/**
@@ -138,6 +173,17 @@ namespace Unicity\BT {
 		 */
 		public function putEntity(BT\Entity $entity) {
 			$this->entities->putEntry($entity->getId(), $entity);
+		}
+
+		/**
+		 * This method removes the blackboard matching the given id.
+		 *
+		 * @access public
+		 * @param string $bbId                                      the id of the blackboard to be
+		 *                                                          removed
+		 */
+		public function removeBlackboard(string $bbId) {
+			$this->blackboards->removeKey($bbId);
 		}
 
 		/**

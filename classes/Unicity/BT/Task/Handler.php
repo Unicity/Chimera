@@ -37,17 +37,17 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @static
 		 * @param BT\Task $task                                     the task to do the processing
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public static function process(BT\Task $task, string $entityId, BT\Engine $engine) {
+		public static function process(BT\Task $task, BT\Engine $engine, string $entityId) {
 			$task->before();
 			try {
-				$status = $task->process($entityId, $engine);
+				$status = $task->process($engine, $entityId);
 			}
 			catch (\Exception $ex) {
-				//$engine->getLog()->add(Log\Level::WARNING, $ex->getMessage());
+				//$engine->getErrorLog()->add(Log\Level::WARNING, $ex->getMessage());
 				$status = BT\Status::ERROR;
 			}
 			$task->after();

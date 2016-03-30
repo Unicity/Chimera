@@ -44,11 +44,10 @@ namespace Unicity\BT\Task {
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
-			parent::__construct($blackboard, $policy);
+		public function __construct(Common\Mutable\IMap $policy = null) {
+			parent::__construct($policy);
 			$this->tasks = new Common\Mutable\ArrayList();
 		}
 

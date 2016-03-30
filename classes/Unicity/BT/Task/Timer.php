@@ -46,11 +46,10 @@ namespace Unicity\BT\Task {
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
-			parent::__construct($blackboard, $policy);
+		public function __construct(Common\Mutable\IMap $policy = null) {
+			parent::__construct($policy);
 			if (!$this->policy->hasKey('delay')) {
 				$this->policy->putEntry('delay', 0); // 1 millisecond = 1/1000 of a second
 			}
@@ -74,11 +73,11 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(string $entityId, BT\Engine $engine) {
+		public function process(BT\Engine $engine, string $entityId) {
 			$delay = Core\Convert::toInteger($this->policy->getValue('delay')) / 1000; // milliseconds => seconds
 
 			$deltaT = microtime(true) - $this->start_time;
@@ -86,7 +85,7 @@ namespace Unicity\BT\Task {
 				$duration = Core\Convert::toInteger($this->policy->getValue('duration')) / 1000; // milliseconds => seconds
 
 				if ($deltaT < ($delay + $duration)) {
-					return BT\Task\Handler::process($this->task, $entityId, $engine);
+					return BT\Task\Handler::process($this->task, $engine, $entityId);
 				}
 			}
 
@@ -97,8 +96,9 @@ namespace Unicity\BT\Task {
 		 * This method resets the task.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset() {
+		public function reset(BT\Engine $engine) {
 			$this->start_time = microtime(true);
 		}
 

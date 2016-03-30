@@ -35,11 +35,10 @@ namespace Unicity\BT\Task {
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
-		 * @param Common\Mutable\IMap $blackboard                   the blackboard to be used
-		 * @param Common\Mutable\IMap $policy                       the policy associated with the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
-		public function __construct(Common\Mutable\IMap $blackboard = null, Common\Mutable\IMap $policy = null) {
-			parent::__construct($blackboard, $policy);
+		public function __construct(Common\Mutable\IMap $policy = null) {
+			parent::__construct($policy);
 			if (!$this->policy->hasKey('active')) {
 				$this->policy->putEntry('acitve', false);
 			}
@@ -58,12 +57,12 @@ namespace Unicity\BT\Task {
 		 * This method processes an entity.
 		 *
 		 * @access public
+		 * @param BT\Engine $engine                                 the engine running
 		 * @param string $entityId                                  the entity id being processed
-		 * @param BT\Engine $engine                                 the engine
 		 * @return integer                                          the status
 		 */
-		public function process(string $entityId, BT\Engine $engine) {
-			$status = BT\Task\Handler::process($this->task, $entityId, $engine);
+		public function process(BT\Engine $engine, string $entityId) {
+			$status = BT\Task\Handler::process($this->task, $engine, $entityId);
 			if (($status == BT\Status::ACTIVE) && $this->policy->getValue('active')) {
 				return BT\Status::ERROR;
 			}
