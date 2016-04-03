@@ -23,6 +23,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\MappingService;
+	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
 	/**
@@ -98,16 +99,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveBooleanValue($value, $definition) {
-			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a boolean, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
-				return $value;
-			}
-
-			$value = Core\Convert::toBoolean($value);
-
-			return $value;
+			return ORM\JSON\Model\Helper::resolveBooleanValue($value, $definition);
 		}
 
 		/**
@@ -119,33 +111,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 * @return array                                            the JSON schema
 		 */
 		public static function resolveJSONSchema($schema) {
-			if (is_string($schema)) {
-				$components = preg_split('/(\\\|_)+/', trim($schema, '\\'));
-
-				$fileName = implode(DIRECTORY_SEPARATOR, $components) . '.json';
-
-				foreach (Bootstrap::$classpaths as $directory) {
-					$uri = Bootstrap::rootPath() . $directory . $fileName;
-					if (file_exists($uri)) {
-						$schema = Config\JSON\Reader::load(new IO\File($uri))->read();
-						break;
-					}
-					$uri = $directory . $fileName;
-					if (file_exists($uri)) {
-						$schema = Config\JSON\Reader::load(new IO\File($uri))->read();
-						break;
-					}
-				}
-			}
-			$schema = Core\Convert::toDictionary($schema);
-			if (isset($schema['$ref'])) {
-				$result = MappingService\Data\Model\JSON\Helper::resolveJSONSchema($schema['$ref']);
-				if (isset($schema['properties'])) {
-					$result = array_merge($result, $schema['properties']);
-				}
-				return $result;
-			}
-			return $schema;
+			return ORM\JSON\Model\Helper::resolveJSONSchema($schema);
 		}
 
 		/**
@@ -161,58 +127,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveIntegerValue($value, $definition) {
-			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an integer, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
-				return $value;
-			}
-
-			$value = Core\Convert::toInteger($value);
-
-			if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
-				if ($value <= $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
-			}
-			else if (isset($definition['minimum'])) {
-				if ($value < $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
-				if ($value >= $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
-				}
-			}
-			else if (isset($definition['maximum'])) {
-				if ($value > $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['divisibleBy'])) {
-				if (($value % $definition['divisibleBy']) == 0) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['pad']['length'])) {
-				$value = Core\Convert::toString($value);
-				if (strlen($value) < $definition['pad']['length']) {
-					$char = isset($definition['pad']['char']) ? $definition['pad']['char'] : '0';
-					$value = str_pad($value, $definition['pad']['length'], $char, STR_PAD_LEFT);
-				}
-			}
-
-			if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
-				if (!in_array($value, $definition['enum'])) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
-				}
-			}
-
-			return $value;
+			return ORM\JSON\Model\Helper::resolveIntegerValue($value, $definition);
 		}
 
 		/**
@@ -228,50 +143,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveNumberValue($value, $definition) {
-			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a number, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
-				return $value;
-			}
-
-			$value = Core\Convert::toDouble($value);
-
-			if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
-				if ($value <= $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
-			}
-			else if (isset($definition['minimum'])) {
-				if ($value < $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
-				if ($value >= $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
-				}
-			}
-			else if (isset($definition['maximum'])) {
-				if ($value > $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['divisibleBy'])) {
-				if (fmod($value, $definition['divisibleBy']) == 0.0) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
-				if (!in_array($value, $definition['enum'])) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
-				}
-			}
-
-			return $value;
+			return ORM\JSON\Model\Helper::resolveNumberValue($value, $definition);
 		}
 
 		/**
@@ -287,13 +159,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveNullValue($value, $definition) {
-			if (Core\Data\ToolKit::isUndefined($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a null, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
-				return $value;
-			}
-			return null;
+			return ORM\JSON\Model\Helper::resolveNullValue($value, $definition);
 		}
 
 		/**
@@ -345,47 +211,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 *                                                          to meet a requirement
 		 */
 		public static function resolveStringValue($value, $definition) {
-			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a string, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
-				return $value;
-			}
-
-			$value = Core\Convert::toString($value);
-
-			if (isset($definition['filters'])) {
-				foreach ($definition['filters'] as $filter) {
-					$value = Core\Convert::toString(call_user_func($filter, $value));
-				}
-			}
-
-			if (isset($definition['pattern'])) {
-				if (!preg_match($definition['pattern'], $value)) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value matching pattern ":pattern", but got :value.', array(':pattern' => $definition['pattern'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['minLength'])) {
-				if (strlen($value) < $definition['minLength']) {
-					$value = str_pad($value, $definition['minLength'], ' ', STR_PAD_RIGHT);
-				}
-			}
-
-			if (isset($definition['maxLength'])) {
-				if (strlen($value) > $definition['maxLength']) {
-					$value = substr($value, 0, $definition['maxLength']);
-					// TODO log string was truncated
-				}
-			}
-
-			if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
-				if (!in_array($value, $definition['enum'])) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
-				}
-			}
-
-			return $value;
+			return ORM\JSON\Model\Helper::resolveStringValue($value, $definition);
 		}
 
 	}

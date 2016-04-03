@@ -111,6 +111,15 @@ namespace Unicity\ORM\JSON\Model {
 		}
 
 		/**
+		 * This method stores the JSON schemas already loaded.
+		 *
+		 * @access private
+		 * @static
+		 * @var array
+		 */
+		private static $schemas = array();
+
+		/**
 		 * This method returns the JSON schema for the specified input.
 		 *
 		 * @access public
@@ -119,6 +128,24 @@ namespace Unicity\ORM\JSON\Model {
 		 * @return array                                            the JSON schema
 		 */
 		public static function resolveJSONSchema($schema) {
+			$key = md5(serialize($schema));
+
+			if (!array_key_exists($key, static::$schemas[$key])) {
+				static::$schemas[$key] = static::_resolveJSONSchema($schema);
+			}
+
+			return static::$schemas[$key];
+		}
+
+		/**
+		 * This method returns the JSON schema for the specified input.
+		 *
+		 * @access private
+		 * @static
+		 * @param mixed $schema                                     the JSON schema to be loaded
+		 * @return array                                            the JSON schema
+		 */
+		private static function _resolveJSONSchema($schema) {
 			if (is_string($schema)) {
 				$components = preg_split('/(\\\|_)+/', trim($schema, '\\'));
 
@@ -139,7 +166,7 @@ namespace Unicity\ORM\JSON\Model {
 			}
 			$schema = Core\Convert::toDictionary($schema);
 			if (isset($schema['$ref'])) {
-				$result = ORM\JSON\Model\Helper::resolveJSONSchema($schema['$ref']);
+				$result = static::_resolveJSONSchema($schema['$ref']);
 				if (isset($schema['properties'])) {
 					$result = array_merge($result, $schema['properties']);
 				}
