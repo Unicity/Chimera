@@ -68,7 +68,6 @@ namespace Unicity\BT {
 			$registry = $factory->getParser()->getRegistry();
 			$registry->putEntry(array('action', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ActionElement());
 			$registry->putEntry(array('branch', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BranchElement());
-			$registry->putEntry(array('breakpoint', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BreakpointElement());
 			$registry->putEntry(array('composite', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\CompositeElement());
 			$registry->putEntry(array('condition', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ConditionElement());
 			$registry->putEntry(array('decorator', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\DecoratorElement());
@@ -80,6 +79,7 @@ namespace Unicity\BT {
 			$registry->putEntry(array('picker', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\PickerElement());
 			$registry->putEntry(array('ref', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\RefElement());
 			$registry->putEntry(array('resetter', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ResetterElement());
+			$registry->putEntry(array('responder', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ResponderElement());
 			$registry->putEntry(array('selector', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SelectorElement());
 			$registry->putEntry(array('semaphore', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SemaphoreElement());
 			$registry->putEntry(array('sequence', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\SequenceElement());

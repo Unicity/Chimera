@@ -96,15 +96,13 @@ namespace Unicity\BT {
 		 * This method returns the component associated with the specified name.
 		 *
 		 * @access public
-		 * @param string $type                                      the type of components to be
-		 *                                                          returned
+		 * @param callable $predicate                               a predicate for determining which
+		 *                                                          components to return
 		 * @return Common\Mutable\IMap                              the components
 		 */
-		public function getComponents(string $type = null) {
-			if ($type !== null) {
-				return FP\IMap::filter($this->components, function($v, $k) use ($type) {
-					return ($v instanceof $type);
-				});
+		public function getComponents(callable $predicate = null) {
+			if ($predicate !== null) {
+				return FP\IMap::filter($this->components, $predicate);
 			}
 			return $this->components;
 		}
@@ -158,6 +156,17 @@ namespace Unicity\BT {
 				return true;
 			}
 			return false;
+		}
+
+		/**
+		 * This method notifies the entity with a message using the specified handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the handler to be called
+		 * @param mixed $message                                    the message to be passed
+		 */
+		public function notify(callable $handler, $message = null) {
+			$handler($this, $message);
 		}
 
 		/**

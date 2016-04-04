@@ -166,6 +166,19 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method notifies all entities with a message using the specified handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the handler to be called
+		 * @param mixed $message                                    the message to be passed
+		 */
+		public function notifyAll(callable $handler, $message = null) {
+			foreach ($this->entities as $entity) {
+				$entity->notify($handler, $message);
+			}
+		}
+
+		/**
 		 * This method adds the given entity.
 		 *
 		 * @access public

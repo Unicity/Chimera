@@ -169,40 +169,6 @@ Example:
 
 --------------------------------------------------------------------------------------------------------------------------
 
-#### <i>\<spring-bt:breakpoint /></i>
-
-Description:
-
-- This represents a `\Unicity\BT\Task\Breakpoint` object. A breakpoint is typically used to quit processing the tree. It is
-  a leaf node.
-
-Attributes:
-
-| Attribute | Type   | Values                        | Description                                           | Required   |
-| :-------: | :----: | :---------------------------: | :---------------------------------------------------: | :--------: |
-| `id`      | string |                               | Used to assign a unique selector to the node.         | No         |
-| `name`    | string |                               | Used to assign a set of alias selector for the node.  | No         |
-| `scope`   | enum   | <b>singleton</b>, prototype, session | Defines how the object is to be instantiated.  | No         |
-| `title`   | string |                               | Used to assign a title to the node.                   | No         |
-| `type`    | string |                               | Defines the fully qualified class name of the object. | No         |
-
-Policy:
-
-- None.
-
-Children:
-
-- May contain 1 `<spring:blackboard />` node.
-- May contain 1 `<spring:policy />` node.
-
-Example:
-
-````
-<spring-bt:stub title="custom_breakpoint" type="\Unicity\BT\Task\Ext\CustomBreakpoint" />
-````
-
---------------------------------------------------------------------------------------------------------------------------
-
 #### <i>\<spring-bt:composite /></i>
 
 Description:
@@ -613,7 +579,6 @@ Children:
 - May contain 1 `<spring:value />` node.
 - May contain 1 `<spring-bt:action />` node.
 - May contain 1 `<spring-bt:branch />` node.
-- May contain 1 `<spring-bt:breakpoint />` node.
 - May contain 1 `<spring-bt:composite />` node.
 - May contain 1 `<spring-bt:condition />` node.
 - May contain 1 `<spring-bt:decorator />` node.
@@ -624,6 +589,7 @@ Children:
 - May contain 1 `<spring-bt:picker />` node.
 - May contain 1 `<spring-bt:ref />` node.
 - May contain 1 `<spring-bt:resetter />` node.
+- May contain 1 `<spring-bt:responder />` node.
 - May contain 1 `<spring-bt:selector />` node.
 - May contain 1 `<spring-bt:semaphore />` node.
 - May contain 1 `<spring-bt:sequence />` node.
@@ -1116,7 +1082,6 @@ Children:
 
 - May contain 1 or more `<spring-bt:action />` nodes.
 - May contain 1 or more `<spring-bt:branch />` nodes.
-- May contain 1 or more `<spring-bt:breakpoint />` nodes.
 - May contain 1 or more `<spring-bt:composite />` nodes.
 - May contain 1 or more `<spring-bt:condition />` nodes.
 - May contain 1 or more `<spring-bt:decorator />` nodes.
@@ -1127,6 +1092,7 @@ Children:
 - May contain 1 or more `<spring-bt:picker />` nodes.
 - May contain 1 or more `<spring-bt:ref />` nodes.
 - May contain 1 or more `<spring-bt:resetter />` nodes.
+- May contain 1 or more `<spring-bt:responder />` nodes.
 - May contain 1 or more `<spring-bt:selector />` nodes.
 - May contain 1 or more `<spring-bt:semaphore />` nodes.
 - May contain 1 or more `<spring-bt:sequence />` nodes.

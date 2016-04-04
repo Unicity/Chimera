@@ -23,7 +23,6 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\Trade;
-	use \Unicity\OrderCalc;
 
 	class CalculateFreightUsingKilograms extends BT\Task\Action {
 

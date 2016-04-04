@@ -25,7 +25,7 @@ namespace Unicity\BT\Object\Factory {
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 
-	class BreakpointElement extends Spring\Object\Factory {
+	class ResponderElement extends Spring\Object\Factory {
 
 		/**
 		 * This method returns an object matching the description specified by the element.
@@ -43,7 +43,7 @@ namespace Unicity\BT\Object\Factory {
 
 			$type = (isset($attributes['type']))
 				? $parser->valueOf($attributes['type'])
-				: '\\Unicity\\BT\\Task\\Breakpoint';
+				: '\\Unicity\\BT\\Task\\Responder';
 
 			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
 			$children = $element->xpath('./spring-bt:policy');
@@ -53,8 +53,8 @@ namespace Unicity\BT\Object\Factory {
 
 			$object = new $type($policy);
 
-			if (!($object instanceof BT\Task\Breakpoint)) {
-				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task breakpoint, but got an element of type ":type" instead.', array(':type' => $type));
+			if (!($object instanceof BT\Task\Responder)) {
+				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task responder, but got an element of type ":type" instead.', array(':type' => $type));
 			}
 
 			if (isset($attributes['title'])) {

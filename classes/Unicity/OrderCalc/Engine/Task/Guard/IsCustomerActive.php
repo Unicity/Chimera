@@ -37,12 +37,12 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 			$status = $order->customer->status;
 			if (in_array($status, array('Suspended', 'Terminated'))) { // TODO abstract out to a config file
-				return BT\Status::ERROR;
+				return BT\Status::FAILED;
 			}
 
 			$type = $order->customer->type;
 			if (in_array($type, array('LegacySuspended', 'LegacyTerminated'))) { // TODO abstract out to a config file
-				return BT\Status::ERROR;
+				return BT\Status::FAILED;
 			}
 
 			return BT\Status::SUCCESS;

@@ -11,7 +11,6 @@
 	<!-- Root Elements -->
 	<xsd:element name="action" type="action" />
 	<xsd:element name="branch" type="branch" />
-	<xsd:element name="breakpoint" type="breakpoint" />
 	<xsd:element name="composite" type="composite" />
 	<xsd:element name="condition" type="condition" />
 	<xsd:element name="decorator" type="decorator" />
@@ -22,6 +21,7 @@
 	<xsd:element name="picker" type="picker" />
 	<xsd:element name="ref" type="ref" />
 	<xsd:element name="resetter" type="resetter" />
+	<xsd:element name="responder" type="responder" />
 	<xsd:element name="selector" type="selector" />
 	<xsd:element name="semaphore" type="semaphore" />
 	<xsd:element name="sequence" type="sequence" />
@@ -37,13 +37,6 @@
 	<xsd:complexType name="branch">
 		<xsd:complexContent>
 			<xsd:extension base="composite" />
-		</xsd:complexContent>
-	</xsd:complexType>
-	<xsd:complexType name="breakpoint">
-		<xsd:complexContent>
-			<xsd:extension base="leaf-base">
-				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Breakpoint" />
-			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 	<xsd:complexType name="composite">
@@ -87,7 +80,6 @@
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="action" type="action" />
 				<xsd:element name="branch" type="branch" />
-				<xsd:element name="breakpoint" type="breakpoint" />
 				<xsd:element name="composite" type="composite" />
 				<xsd:element name="condition" type="condition" />
 				<xsd:element name="decorator" type="decorator" />
@@ -98,6 +90,7 @@
 				<xsd:element name="picker" type="picker" />
 				<xsd:element name="ref" type="ref" />
 				<xsd:element name="resetter" type="resetter" />
+				<xsd:element name="responder" type="responder" />
 				<xsd:element name="selector" type="selector" />
 				<xsd:element name="semaphore" type="semaphore" />
 				<xsd:element name="sequence" type="sequence" />
@@ -175,6 +168,13 @@
 		<xsd:complexContent>
 			<xsd:extension base="composite-base">
 				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Resetter" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="responder">
+		<xsd:complexContent>
+			<xsd:extension base="leaf-base">
+				<xsd:attribute name="type" type="spring:class" use="optional" default="\Unicity\BT\Task\Responder" />
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

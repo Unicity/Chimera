@@ -22,7 +22,6 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
-	use \Unicity\Trade;
 
 	class RoundTotalToNearestInteger extends BT\Task\Action {
 
