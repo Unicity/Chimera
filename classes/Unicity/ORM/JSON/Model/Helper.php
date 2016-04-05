@@ -130,7 +130,7 @@ namespace Unicity\ORM\JSON\Model {
 		public static function resolveJSONSchema($schema) {
 			$key = md5(serialize($schema));
 
-			if (!array_key_exists($key, static::$schemas[$key])) {
+			if (!array_key_exists($key, static::$schemas)) {
 				static::$schemas[$key] = static::_resolveJSONSchema($schema);
 			}
 
