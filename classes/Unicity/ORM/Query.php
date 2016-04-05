@@ -40,21 +40,22 @@ namespace Unicity\ORM {
 		 *
 		 * @access public
 		 * @param string $needle
-		 * @param Common\ICollection $collection                    the collection to be searched
+		 * @param mixed $collection                                 the collection to be searched
 		 * @param mixed $needle                                     the needle
 		 * @return string                                           the path to the needle
 		 */
-		public static function getPath(Common\ICollection $collection, $needle) : string {
+		public static function getPath($collection, $needle) : string {
 			$queue = new Common\Mutable\Queue();
-			foreach ($collection as $k => $v) {
-				$queue->enqueue([$k, $v, $k]);
+			if (is_array($collection) || ($collection instanceof \stdClass) || ($collection instanceof Common\ICollection)) {
+				foreach ($collection as $k => $v) {
+					$queue->enqueue([$k, $v, $k]);
+				}
 			}
 			while (!$queue->isEmpty()) {
 				$tuple = $queue->dequeue();
 				if ($tuple[0] == $needle) {
 					return $tuple[2];
 				}
-
 				if (is_array($tuple[1]) || ($tuple[1] instanceof \stdClass) || ($tuple[1] instanceof Common\ICollection)) {
 					foreach ($tuple[1] as $k => $v) {
 						$queue->enqueue([$k, $v, $tuple[2] . '.' . $k]);
@@ -69,12 +70,12 @@ namespace Unicity\ORM {
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\ICollection $collection                    the collection to be searched
+		 * @param mixed $collection                                 the collection to be searched
 		 * @param string $path                                      the path to the value to be returned
 		 * @return mixed                                            the element associated with the specified path
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
-		public static function getValue(Common\ICollection $collection, string $path) : string {
+		public static function getValue($collection, string $path) : string {
 			$segments = explode('.', $path);
 			if (count($segments) > 0) {
 				$element = $collection;
@@ -114,11 +115,11 @@ namespace Unicity\ORM {
 		 *
 		 * @access public
 		 * @static
-		 * @param Common\ICollection $collection                    the collection to be searched
+		 * @param mixed $collection                                 the collection to be searched
 		 * @param string $path                                      the path to be tested
 		 * @return boolean                                          whether the specified path exists
 		 */
-		public static function hasPath(Common\ICollection $collection, string $path) : boolean {
+		public static function hasPath($collection, string $path) : boolean {
 			return !Core\Data\Toolkit::isUndefined(static::getValue($collection, $path));
 		}
 
