@@ -24,7 +24,7 @@ namespace Unicity\BT\Task {
 	use \Unicity\Core;
 	use \Unicity\ORM;
 
-	class PathFinder extends BT\Task\Action {
+	class HasPath extends BT\Task\Guard {
 
 		/**
 		 * This method processes an entity.
@@ -35,14 +35,15 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$components = $engine->getEntity($entityId)->getComponents();
 			$name = Core\Convert::toString($this->policy->getValue('component'));
+			$key = $entityId . '.' . $name;
 
-			$path = ORM\Query::getPath($components, $name);
-			if (is_string($path) && ($path != '')) {
-				$key = $entityId . '.' . $name;
-				$engine->getBlackboard('components')->putEntry($key, $path);
-				return BT\Status::SUCCESS;
+			$blackboard = $engine->getBlackboard('components');
+			if ($blackboard->hasKey($key)) {
+				$path = $blackboard->getValue($key);
+				if (is_string($path) && ($path != '')) {
+					return BT\Status::SUCCESS;
+				}
 			}
 
 			return BT\Status::FAILED;
