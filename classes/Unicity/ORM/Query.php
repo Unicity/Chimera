@@ -75,7 +75,7 @@ namespace Unicity\ORM {
 		 * @return mixed                                            the element associated with the specified path
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
-		public static function getValue($collection, string $path) : string {
+		public static function getValue($collection, string $path) {
 			$segments = explode('.', $path);
 			if (count($segments) > 0) {
 				$element = $collection;
