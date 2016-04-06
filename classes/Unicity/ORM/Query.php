@@ -41,10 +41,10 @@ namespace Unicity\ORM {
 		 * @access public
 		 * @param string $needle
 		 * @param mixed $collection                                 the collection to be searched
-		 * @param mixed $needle                                     the needle
+		 * @param string $needle                                    the needle
 		 * @return string                                           the path to the needle
 		 */
-		public static function getPath($collection, $needle) : string {
+		public static function getPath($collection, string $needle) : string {
 			$queue = new Common\Mutable\Queue();
 			if (is_array($collection) || ($collection instanceof \stdClass) || ($collection instanceof Common\ICollection)) {
 				foreach ($collection as $k => $v) {
@@ -53,7 +53,7 @@ namespace Unicity\ORM {
 			}
 			while (!$queue->isEmpty()) {
 				$tuple = $queue->dequeue();
-				if ($tuple[0] == $needle) {
+				if (strval($tuple[0]) == $needle) {
 					return $tuple[2];
 				}
 				if (is_array($tuple[1]) || ($tuple[1] instanceof \stdClass) || ($tuple[1] instanceof Common\ICollection)) {
