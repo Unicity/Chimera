@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Config;
+	use \Unicity\Trade;
 
-	class Marshaller extends BT\Task\Responder {
+	class NormalizeValues extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -34,11 +34,14 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$components = $engine->getEntity($entityId)->getComponents();
-			$writer = new Config\JSON\Writer($components);
-			$writer->config($this->policy->toDictionary());
-			$writer->export($engine->getResponse());
-			return BT\Status::QUIT;
+			$order = $engine->getEntity($entityId)->getComponent('Order');
+
+			$order->market = strtoupper($order->market);
+			$order->shipToAddress->country = strtoupper($order->shipToAddress->country);
+			$order->currency = strtoupper($order->currency);
+			$order->terms->subtotal = Trade\Money::make($order->terms->subtotal, $order->currency)->getConvertedAmount();
+
+			return BT\Status::SUCCESS;
 		}
 
 	}

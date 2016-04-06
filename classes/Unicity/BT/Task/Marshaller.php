@@ -18,12 +18,13 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Engine\Task\Action {
+namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
-	use \Unicity\Trade;
+	use \Unicity\Config;
+	use \Unicity\Core;
 
-	class NormalizeTerms extends BT\Task\Action {
+	class Marshaller extends BT\Task\Responder {
 
 		/**
 		 * This method processes an entity.
@@ -34,14 +35,16 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$response = $engine->getResponse();
 
-			$order->market = strtoupper($order->market);
-			$order->shipToAddress->country = strtoupper($order->shipToAddress->country);
-			$order->currency = strtoupper($order->currency);
-			$order->terms->subtotal = Trade\Money::make($order->terms->subtotal, $order->currency)->getConvertedAmount();
+			$components = $engine->getEntity($entityId)->getComponents();
+			$policy = Core\Convert::toDictionary($this->policy);
 
-			return BT\Status::SUCCESS;
+			$writer = new Config\JSON\Writer($components);
+			$writer->config($policy);
+			$writer->export($response);
+
+			return BT\Status::QUIT;
 		}
 
 	}
