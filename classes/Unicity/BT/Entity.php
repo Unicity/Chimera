@@ -235,6 +235,17 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method sets the component at the specified path.
+		 *
+		 * @access public
+		 * @param string $path                                      the path to the component
+		 * @param mixed $component                                  the component to be set
+		 */
+		public function setComponentAtPath(string $path, $component) {
+			ORM\Query::setValue($this->components, $path, $component);
+		}
+
+		/**
 		 * This method sets the task id of the tree's root.
 		 *
 		 * @access public

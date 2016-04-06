@@ -73,7 +73,6 @@ namespace Unicity\ORM {
 		 * @param mixed $collection                                 the collection to be searched
 		 * @param string $path                                      the path to the value to be returned
 		 * @return mixed                                            the element associated with the specified path
-		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
 		public static function getValue($collection, string $path) {
 			$segments = explode('.', $path);
@@ -121,6 +120,60 @@ namespace Unicity\ORM {
 		 */
 		public static function hasPath($collection, string $path) : boolean {
 			return !Core\Data\Toolkit::isUndefined(static::getValue($collection, $path));
+		}
+
+		/**
+		 * This method sets the value at the specified path.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $collection                                 the collection in which the value will
+		 *                                                          be set
+		 * @param string $path                                      the path where the value will be set
+		 * @param mixed $value                                      the value to be set
+		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not accessible
+		 */
+		public static function setValue($collection, string $path, $value) {
+			$segments = explode('.', $path);
+			$lastSegment = count($segments) - 1;
+			$i = 0;
+			$element = $collection;
+			foreach ($segments as $segment) {
+				if (preg_match('/^(0|[1-9][0-9]*)$/', $segment)) {
+					$index = Core\Convert::toInteger($segment);
+					if (is_array($element) || ($element instanceof Common\Mutable\IList)) {
+						if ($i < $lastSegment) {
+							$element = $element[$index];
+						}
+						else {
+							$element[$index] = $value;
+						}
+					}
+					else if (is_object($element)) {
+						if ($i < $lastSegment) {
+							$element = $element->$segment;
+						}
+						else {
+							$element->$segment = $value;
+						}
+					}
+					else {
+						throw new Throwable\InvalidArgument\Exception('Invalid path specified. Path references a non-collection.');
+					}
+				}
+				else if (is_object($element)) {
+					if ($i < $lastSegment) {
+						$element = $element->$segment;
+					}
+					else {
+						$element->$segment = $value;
+					}
+				}
+				else {
+					throw new Throwable\InvalidArgument\Exception('Invalid path specified. Path references a non-collection.');
+				}
+				$i++;
+			}
 		}
 
 	}
