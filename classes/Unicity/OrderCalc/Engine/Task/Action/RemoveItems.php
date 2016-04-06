@@ -18,11 +18,13 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Engine\Task\Guard {
+namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
+	use \Unicity\Core;
+	use \Unicity\FP;
 
-	class IsShippingToCity extends BT\Task\Guard {
+	class RemoveItems extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -35,13 +37,14 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$cities = $this->policy->getValue('cities');
+			$items = $this->policy->getValue('items');
 
-			if ($cities->hasValue($order->shipToAddress->city)) {
-				return BT\Status::SUCCESS;
-			}
+			$order->lines->items = FP\IList::filter($order->lines->items, function($line) use($items) {
+				$item = trim(Core\Convert::toString($line->item->id->unicity));
+				return $items->hasValue($item);
+			});
 
-			return BT\Status::FAILED;
+			return BT\Status::SUCCESS;
 		}
 
 	}

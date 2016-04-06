@@ -35,9 +35,9 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$districts = $this->policy->getValue('states');
+			$states = $this->policy->getValue('states');
 
-			if ($districts->hasValue($order->shipToAddress->state)) {
+			if ($states->hasValue($order->shipToAddress->state)) {
 				return BT\Status::SUCCESS;
 			}
 
