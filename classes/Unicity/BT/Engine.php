@@ -105,7 +105,7 @@ namespace Unicity\BT {
 		 * @param string $bbId                                      the blackboard's id
 		 * @return Common\Mutable\IMap                              a reference to the blackboard
 		 */
-		public function getBlackboard(string $bbId = 'global') {
+		public function getBlackboard(string $bbId = 'global') : Common\Mutable\IMap {
 			if (!$this->blackboards->hasKey($bbId)) {
 				$this->blackboards->putEntry($bbId, new Common\Mutable\HashMap());
 			}
@@ -119,7 +119,7 @@ namespace Unicity\BT {
 		 * @param string $entityId                                  the id of the entity
 		 * @return BT\Entity                                        the entity
 		 */
-		public function getEntity(string $entityId) {
+		public function getEntity(string $entityId) : BT\Entity {
 			return $this->entities->getValue($entityId);
 		}
 
@@ -129,7 +129,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @return Common\ArrayList                                 an array list of entities
 		 */
-		public function getEntities() {
+		public function getEntities() : Common\ArrayList {
 			return $this->entities->toList();
 		}
 
@@ -150,7 +150,7 @@ namespace Unicity\BT {
 		 * @return Core\Message                                     a reference to the response
 		 *                                                          object
 		 */
-		public function getResponse() {
+		public function getResponse() : Core\Message {
 			return $this->response;
 		}
 

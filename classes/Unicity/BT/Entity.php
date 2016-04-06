@@ -23,6 +23,7 @@ namespace Unicity\BT {
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\FP;
+	use \Unicity\ORM;
 
 	/**
 	 * This class represents an entity.
@@ -86,10 +87,32 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @param string $name                                      the name of the component
-		 * @return Common\Mutable\ICollection                       the component
+		 * @return mixed                                            the component
 		 */
 		public function getComponent(string $name) {
 			return $this->components->getValue($name);
+		}
+
+		/**
+		 * This method returns the component at the specified path.
+		 *
+		 * @access public
+		 * @param string $path                                      the path to the component
+		 * @return mixed                                            the component
+		 */
+		public function getComponentAtPath(string $path) {
+			return ORM\Query::getValue($this->components, $path);
+		}
+
+		/**
+		 * This method returns the component's path for the specified name.
+		 *
+		 * @access public
+		 * @param string $name                                      the name of the component
+		 * @return string                                           the component's path
+		 */
+		public function getComponentPath(string $name) : string {
+			return ORM\Query::getPath($this->components, $name);
 		}
 
 		/**
@@ -100,7 +123,7 @@ namespace Unicity\BT {
 		 *                                                          components to return
 		 * @return Common\Mutable\IMap                              the components
 		 */
-		public function getComponents(callable $predicate = null) {
+		public function getComponents(callable $predicate = null) : Common\Mutable\IMap {
 			if ($predicate !== null) {
 				return FP\IMap::filter($this->components, $predicate);
 			}
@@ -113,7 +136,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @return string                                           the entity's id
 		 */
-		public function getId() {
+		public function getId() : string {
 			return $this->id;
 		}
 
@@ -134,8 +157,19 @@ namespace Unicity\BT {
 		 * @param string $name                                      the name of the component
 		 * @return boolean                                          whether this entity has the component
 		 */
-		public function hasComponent(string $name) {
+		public function hasComponent(string $name) : bool {
 			return $this->components->hasKey($name);
+		}
+
+		/**
+		 * This method returns whether this entity has a component at the specified path.
+		 *
+		 * @access public
+		 * @param string $path                                      the path to the component
+		 * @return boolean                                          whether this entity has the component
+		 */
+		public function hasComponentAtPath(string $path) : bool {
+			return ORM\Query::hasPath($this->components, $path);
 		}
 
 		/**
@@ -146,7 +180,7 @@ namespace Unicity\BT {
 		 * @return boolean                                          whether this entity has all of the
 		 *                                                          components
 		 */
-		public function hasComponents(array $names) {
+		public function hasComponents(array $names) : bool {
 			if (count($names) > 0) {
 				foreach ($names as $name) {
 					if (!$this->components->hasKey($name)) {
@@ -194,9 +228,9 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @param string $name                                      the name of the component
-		 * @param Common\Mutable\ICollection $component             the component to be set
+		 * @param mixed $component                                  the component to be set
 		 */
-		public function setComponent(string $name, Common\Mutable\ICollection $component) {
+		public function setComponent(string $name, $component) {
 			$this->components->putEntry($name, $component);
 		}
 

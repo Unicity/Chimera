@@ -22,31 +22,28 @@ namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
-	use \Unicity\ORM;
 
-	class HasPath extends BT\Task\Guard {
+	class GetComponentPath extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Engine $engine the engine running
-		 * @param string $entityId the entity id being processed
+		 * @param BT\Engine $engine                                 the engine running
+		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
 			$name = Core\Convert::toString($this->policy->getValue('component'));
-			$key = $entityId . '.' . $name;
 
-			$blackboard = $engine->getBlackboard('components');
-			if ($blackboard->hasKey($key)) {
-				$path = $blackboard->getValue($key);
-				if (is_string($path) && ($path != '')) {
-					return BT\Status::SUCCESS;
-				}
+			$path = $engine->getEntity($entityId)->getComponentPath($name);
+			if (is_string($path) && ($path != '')) {
+				$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
+				$key = $entityId . '.' . $name;
+				$blackboard->putEntry($key, $path);
 			}
 
-			return BT\Status::FAILED;
+			return BT\Status::SUCCESS;
 		}
 
 	}
