@@ -51,9 +51,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveArrayValue($value, $definition, $case_sensitive) {
 			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an array, but got ":type".', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 
@@ -99,9 +96,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveBooleanValue($value, $definition) {
 			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a boolean, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 
@@ -189,9 +183,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveIntegerValue($value, $definition) {
 			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an integer, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 
@@ -256,9 +247,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveNumberValue($value, $definition) {
 			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a number, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 
@@ -315,9 +303,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveNullValue($value, $definition) {
 			if (Core\Data\ToolKit::isUndefined($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a null, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 			return null;
@@ -339,9 +324,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveObjectValue($value, $definition, $case_sensitive) {
 			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is an object, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 
@@ -373,9 +355,6 @@ namespace Unicity\ORM\JSON\Model {
 		 */
 		public static function resolveStringValue($value, $definition) {
 			if (Core\Data\ToolKit::isUnset($value)) {
-				if (isset($definition['required']) && $definition['required']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is a string, but got :type.', array(':type' => Core\DataType::info($value)->type));
-				}
 				return $value;
 			}
 
