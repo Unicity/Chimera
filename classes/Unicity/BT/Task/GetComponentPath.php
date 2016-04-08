@@ -34,7 +34,7 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$names = Core\Convert::toString($this->policy->getValue('components'));
+			$names = $this->policy->getValue('components');
 
 			foreach ($names as $name) {
 				$path = $engine->getEntity($entityId)->getComponentPath($name);
