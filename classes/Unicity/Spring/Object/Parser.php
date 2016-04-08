@@ -146,6 +146,25 @@ namespace Unicity\Spring\Object {
 		}
 
 		/**
+		 * This method returns the element's attributes.
+		 *
+		 * @access public
+		 * @param \SimpleXMLElement $element                        the element to be parsed
+		 * @param string $namespace                                 the namespace associated with
+		 *                                                          the attributes
+		 * @return array                                            the attributes
+		 */
+		public function getElementAttributes(\SimpleXMLElement $element, $namespace = '') {
+			if (is_string($namespace)) {
+				if ($namespace != '') {
+					return $element->attributes($namespace);
+				}
+				return $element->attributes();
+			}
+			return $element->attributes(); // TODO make like "getElementChildren"
+		}
+
+		/**
 		 * This method returns the element's children.
 		 *
 		 * @access public
@@ -172,13 +191,6 @@ namespace Unicity\Spring\Object {
 					$children[$key] = $child;
 				}
 			}
-			/*
-			$elements = $element->children();
-			foreach ($elements as $child) {
-				$key = $child->getName();
-				$children[$key] = $child;
-			}
-			*/
 			$children = array_values($children);
 			return $children;
 		}

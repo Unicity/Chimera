@@ -21,6 +21,7 @@ namespace Unicity\Spring {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
+	use \Unicity\IO;
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 
@@ -63,11 +64,11 @@ namespace Unicity\Spring {
 		 * @param \SimpleXMLElement $resource                       the resource to be used
 		 */
 		public function __construct(\SimpleXMLElement $resource = null) {
+			$this->parser = new Spring\Object\Parser($this);
 			$this->resources = new Common\Mutable\ArrayList();
 			if ($resource !== null) {
-				$this->resources->addValue($resource);
+				$this->addResource($resource);
 			}
-			$this->parser = new Spring\Object\Parser($this);
 		}
 
 		/**
@@ -78,6 +79,7 @@ namespace Unicity\Spring {
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->resources);
+			//unset($this->parser);
 		}
 
 		/**
@@ -87,7 +89,7 @@ namespace Unicity\Spring {
 		 * @param \SimpleXMLElement $resource                       the resource to be added
 		 */
 		public function addResource(\SimpleXMLElement $resource) {
-			$this->resources->addValue($resource);
+			$this->resources->addValue($this->import($resource, new Common\Mutable\HashSet()));
 		}
 
 		/**
@@ -185,6 +187,49 @@ namespace Unicity\Spring {
 		 */
 		public function hasObject($id) {
 			return $this->parser->hasObject($id);
+		}
+
+		/**
+		 * This method will include any additional Spring XML resources.
+		 *
+		 * @access protected
+		 * @param \SimpleXMLElement $xml                            the XML resource to expand
+		 * @param Common\Mutable\ISet $set                          a set of paths already loaded
+		 * @return \SimpleXMLElement                                the expanded XML resource
+		 * @throws Throwable\FileNotFound\Exception                 indicates that a file could not be
+		 *                                                          located
+		 */
+		protected function import(\SimpleXMLElement $xml, Common\Mutable\ISet $set) {
+			$xml->registerXPathNamespace('spring', Spring\Data\XML::NAMESPACE_URI);
+			$elements = $xml->xpath('//spring:object/spring:import');
+			foreach ($elements as $element) {
+				$attributes = $this->parser->getElementAttributes($element, null);
+				if (isset($attributes['resource'])) {
+					$resource = $this->parser->valueOf($attributes['resource']);
+					$import = Spring\Data\XML::load(new IO\File($resource));
+					$this->append($xml, $import);
+				}
+			}
+			return $xml;
+		}
+
+		/**
+		 * This method appends the elements in the source to the target.
+		 *
+		 * @access protected
+		 * @param \SimpleXMLElement $target                         the target XML
+		 * @param \SimpleXMLElement $source                         the source XML
+		 */
+		protected function append(\SimpleXMLElement $target, \SimpleXMLElement $source) {
+			$nodes = $this->parser->getElementChildren($source, null);
+			foreach ($nodes as $node) {
+				$child = $target->addChild($node->getName(), (string) $node);
+				$attributes = $this->parser->getElementAttributes($child, null);
+				foreach ($attributes as $key => $value) {
+					$target->addAttribute($key, $value);
+				}
+				$this->append($child, $node);
+			}
 		}
 
 	}
