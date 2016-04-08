@@ -34,13 +34,15 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$name = Core\Convert::toString($this->policy->getValue('component'));
+			$names = Core\Convert::toString($this->policy->getValue('components'));
 
-			$path = $engine->getEntity($entityId)->getComponentPath($name);
-			if (is_string($path) && ($path != '')) {
-				$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
-				$key = $entityId . '.' . $name;
-				$blackboard->putEntry($key, $path);
+			foreach ($names as $name) {
+				$path = $engine->getEntity($entityId)->getComponentPath($name);
+				if (is_string($path) && ($path != '')) {
+					$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
+					$key = $entityId . '.' . $name;
+					$blackboard->putEntry($key, $path);
+				}
 			}
 
 			return BT\Status::SUCCESS;
