@@ -381,6 +381,74 @@ namespace Unicity\Core {
 		}
 
 		/**
+		 * This method converts the specified value to a list.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be converted
+		 * @return Common\IList                                     a list
+		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
+		 *                                                          be converted
+		 */
+		public static function toList($value) {
+			$type = gettype($value);
+			switch ($type) {
+				case 'array':
+					return new Common\Mutable\ArrayList($value);
+				case 'object':
+					if (method_exists($value, 'toList')) {
+						return $value->toList();
+					}
+					if (method_exists($value, 'toArray')) {
+						return new Common\Mutable\ArrayList($value->toArray());
+					}
+					if (method_exists($value, 'toMap')) {
+						return $value->toMap()->toList();
+					}
+					if (method_exists($value, 'toDictionary')) {
+						return new Common\Mutable\ArrayList($value->toDictionary());
+					}
+					return new Common\Mutable\ArrayList(get_object_vars($value));
+				default:
+					throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a list.', array(':type' => $type));
+			}
+		}
+
+		/**
+		 * This method converts the specified value to a map.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be converted
+		 * @return Common\IMap                                      a map
+		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
+		 *                                                          be converted
+		 */
+		public static function toMap($value) {
+			$type = gettype($value);
+			switch ($type) {
+				case 'array':
+					return new Common\Mutable\HashMap($value);
+				case 'object':
+					if (method_exists($value, 'toMap')) {
+						return $value->toMap();
+					}
+					if (method_exists($value, 'toDictionary')) {
+						return new Common\Mutable\HashMap($value->toDictionary());
+					}
+					if (method_exists($value, 'toList')) {
+						return $value->toList()->toMap();
+					}
+					if (method_exists($value, 'toArray')) {
+						return new Common\Mutable\HashMap($value->toArray());
+					}
+					return new Common\Mutable\HashMap(get_object_vars($value));
+				default:
+					throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a map.', array(':type' => $type));
+			}
+		}
+
+		/**
 		 * This method converts the specified value to an object.
 		 *
 		 * @access public
@@ -444,6 +512,40 @@ namespace Unicity\Core {
 					return ord($value);
 				default:
 					throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to an ordinal.', array(':type' => $type));
+			}
+		}
+
+		/**
+		 * This method converts the specified value to a set.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be converted
+		 * @return Common\ISet                                      a set
+		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
+		 *                                                          be converted
+		 */
+		public static function toSet($value) {
+			$type = gettype($value);
+			switch ($type) {
+				case 'array':
+					return new Common\Mutable\ArrayList($value);
+				case 'object':
+					if (method_exists($value, 'toArray')) {
+						return new Common\Mutable\HashSet($value->toArray());
+					}
+					if (method_exists($value, 'toList')) {
+						return new Common\Mutable\HashSet($value->toList());
+					}
+					if (method_exists($value, 'toDictionary')) {
+						return new Common\Mutable\HashSet($value->toDictionary());
+					}
+					if (method_exists($value, 'toMap')) {
+						return new Common\Mutable\HashSet($value->toMap());
+					}
+					return new Common\Mutable\HashSet(get_object_vars($value));
+				default:
+					throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a set.', array(':type' => $type));
 			}
 		}
 

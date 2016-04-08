@@ -48,6 +48,7 @@ namespace Unicity\BT\Task {
 			}
 			catch (\Exception $ex) {
 				//$engine->getErrorLog()->add(Log\Level::WARNING, $ex->getMessage());
+				//var_dump($ex->getMessage()); exit();
 				$status = BT\Status::ERROR;
 			}
 			$task->after();
