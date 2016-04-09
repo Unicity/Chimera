@@ -206,8 +206,10 @@ namespace Unicity\Spring {
 				$attributes = $this->parser->getElementAttributes($element, null);
 				if (isset($attributes['resource'])) {
 					$resource = $this->parser->valueOf($attributes['resource']);
-					$import = Spring\Data\XML::load(new IO\File($resource));
-					$this->append($xml, $import);
+					if (!$set->hasValue($resource)) {
+						$set->putValue($resource);
+						$this->append($xml, Spring\Data\XML::load(new IO\File($resource)));
+					}
 				}
 			}
 			return $xml;
