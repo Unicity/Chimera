@@ -37,7 +37,7 @@ namespace Unicity\Spring\Object\Factory {
 		 *                                                          when parsing
 		 */
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $element->attributes();
+			$attributes = $parser->getElementAttributes($element);
 			$expression = $parser->valueOf($element[0]);
 			$value = null;
 			/*

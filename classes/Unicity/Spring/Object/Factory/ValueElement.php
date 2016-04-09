@@ -57,8 +57,8 @@ namespace Unicity\Spring\Object\Factory {
 				return $value;
 			}
 			else {
-				$attributes = $element->attributes();
-				$value = dom_import_simplexml($element)->textContent;
+				$attributes = $parser->getElementAttributes($element);
+				$value = $parser->getElementTextContent($element);
 				if (isset($attributes['type'])) {
 					$type = $parser->valueOf($attributes['type']);
 					if (!$parser->isPrimitiveType($type)) {

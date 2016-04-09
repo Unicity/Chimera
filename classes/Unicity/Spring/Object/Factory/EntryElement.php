@@ -38,7 +38,7 @@ namespace Unicity\Spring\Object\Factory {
 		 */
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
 			$object = array();
-			$attributes = $element->attributes();
+			$attributes = $parser->getElementAttributes($element);
 
 			if (!isset($attributes['key'])) {
 				throw new Throwable\Parse\Exception('Unable to process Spring XML. Tag ":tag" is missing ":attribute" attribute.', array(':tag' => $parser->getElementPrefixedName($element), ':attribute' => 'key'));

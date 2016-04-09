@@ -40,7 +40,7 @@ namespace Unicity\Spring\Object\Factory {
 			$element->registerXPathNamespace('spring', Spring\Data\XML::NAMESPACE_URI);
 			$constructors = $element->xpath('./spring:constructor-arg');
 			foreach ($constructors as $constructor) {
-				$attributes = $constructor->attributes();
+				$attributes = $parser->getElementAttributes($constructor);
 				$children = $parser->getElementChildren($constructor, null);
 				if (!empty($children)) {
 					foreach ($children as $child) {
@@ -101,7 +101,7 @@ namespace Unicity\Spring\Object\Factory {
 		 * @see https://vcfvct.wordpress.com/2012/12/03/init-method%E3%80%81postconstruct%E3%80%81afterpropertiesset/
 		 */
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $element->attributes();
+			$attributes = $parser->getElementAttributes($element);
 			$class = $object = null;
 			if (isset($attributes['factory-object']) && isset($attributes['factory-method'])) {
 				$factory_object = $parser->valueOf($attributes['factory-object']);
@@ -207,7 +207,7 @@ namespace Unicity\Spring\Object\Factory {
 			$element->registerXPathNamespace('spring', Spring\Data\XML::NAMESPACE_URI);
 			$fields = $element->xpath('./spring:property');
 			foreach ($fields as $field) {
-				$attributes = $field->attributes();
+				$attributes = $parser->getElementAttributes($field);
 				if (!isset($attributes['name'])) {
 					throw new Throwable\Parse\Exception('Unable to process Spring XML. Tag ":tag" is missing ":attribute" attribute.', array(':tag' => 'property', ':attribute' => 'name'));
 				}

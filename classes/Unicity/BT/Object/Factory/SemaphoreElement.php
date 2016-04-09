@@ -39,7 +39,7 @@ namespace Unicity\BT\Object\Factory {
 		 *                                                          when parsing
 		 */
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $element->attributes();
+			$attributes = $parser->getElementAttributes($element);
 
 			$type = (isset($attributes['type']))
 				? $parser->valueOf($attributes['type'])

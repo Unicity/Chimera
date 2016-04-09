@@ -139,7 +139,7 @@ namespace Unicity\Spring\Object {
 			$resource->registerXPathNamespace('spring', Spring\Data\XML::NAMESPACE_URI);
 			$elements = $resource->xpath("/spring:objects/*[@id='{$idref}' or contains(@name,'{$idref}')]");
 			$elements = array_filter($elements, function(\SimpleXMLElement $element) use ($idref) {
-				$attributes = $element->attributes();
+				$attributes = $this->getElementAttributes($element);
 				return ((isset($attributes['id']) && ($this->valueOf($attributes['id']) == $idref)) || (isset($attributes['name']) && in_array($idref, preg_split('/(,|;|\s)+/', $this->valueOf($attributes['name'])))));
 			});
 			return $elements;
@@ -243,6 +243,17 @@ namespace Unicity\Spring\Object {
 		}
 
 		/**
+		 * This method returns the element's text content.
+		 *
+		 * @access public
+		 * @param \SimpleXMLElement $element                        the element to be parsed
+		 * @return string                                           the text content
+		 */
+		public function getElementTextContent(\SimpleXMLElement $element) {
+			return dom_import_simplexml($element)->textContent;
+		}
+
+		/**
 		 * This method returns the encoding for the character set used by the resource.
 		 *
 		 * @access public
@@ -268,7 +279,7 @@ namespace Unicity\Spring\Object {
 		public function getObjectDefinition($id) {
 			$elements = $this->find($id);
 			if (!empty($elements)) {
-				$attributes = $elements[0]->attributes();
+				$attributes = $this->getElementAttributes($elements[0]);
 				$definition = array();
 				foreach ($attributes as $name => $value) {
 					$definition[$name] = $this->valueOf($value);
@@ -333,7 +344,7 @@ namespace Unicity\Spring\Object {
 					$this->idrefs[$idref] = count($this->idrefs); // stack level
 					$element = $elements[0];
 					$object = $this->getObjectFromElement($element);
-					$attributes = $element->attributes();
+					$attributes = $this->getElementAttributes($element);
 					unset($this->idrefs[$idref]);
 					if (isset($attributes['scope'])) {
 						$scope = $this->valueOf($attributes['scope']);
@@ -396,7 +407,7 @@ namespace Unicity\Spring\Object {
 		public function getObjectScope($id) {
 			$elements = $this->find($id);
 			if (!empty($elements)) {
-				$attributes = $elements[0]->attributes();
+				$attributes = $this->getElementAttributes($elements[0]);
 				if (isset($attributes['scope'])) {
 					$scope = $this->valueOf($attributes['scope']);
 					if (!$this->isScopeType($scope)) {
@@ -422,7 +433,7 @@ namespace Unicity\Spring\Object {
 		public function getObjectType($id) {
 			$elements = $this->find($id);
 			if (!empty($elements)) {
-				$attributes = $elements[0]->attributes();
+				$attributes = $this->getElementAttributes($elements[0]);
 				if (isset($attributes['type'])) {
 					$type = $this->valueOf($attributes['type']);
 					if ($this->isClassName($type)) {
@@ -513,7 +524,7 @@ namespace Unicity\Spring\Object {
 				$resource->registerXPathNamespace('spring', Spring\Data\XML::NAMESPACE_URI);
 				$elements = $resource->xpath("/spring:objects/*[@id='{$token}' or contains(@name,'{$token}')]");
 				$elements = array_filter($elements, function(\SimpleXMLElement $element) use ($token) {
-					$attributes = $element->attributes();
+					$attributes = $this->getElementAttributes($element);
 					return ((isset($attributes['id']) && ($this->valueOf($attributes['id']) == $token)) || (isset($attributes['name']) && in_array($token, preg_split('/(,|;|\s)+/', $this->valueOf($attributes['name'])))));
 				});
 				return !empty($elements);

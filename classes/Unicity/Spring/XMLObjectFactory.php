@@ -209,17 +209,15 @@ namespace Unicity\Spring {
 					if (!$set->hasValue($resource)) {
 						$set->putValue($resource);
 
-						$dom0 = dom_import_simplexml($xml);
-						$node = Spring\Data\XML::load(new IO\File($resource));
-						$this->import($node, $set);
+						$target = dom_import_simplexml($xml);
+						$import = Spring\Data\XML::load(new IO\File($resource));
+						$this->import($import, $set);
 
-						$nodes = $this->parser->getElementChildren($node, null);
+						$nodes = $this->parser->getElementChildren($import, null);
 						foreach ($nodes as $node) {
-							$dom1 = dom_import_simplexml($node);
-
-							$dom1 = $dom0->ownerDocument->importNode($dom1, true);
-
-							$dom0->appendChild($dom1);
+							$source = dom_import_simplexml($node);
+							$source = $target->ownerDocument->importNode($source, true);
+							$target->appendChild($source);
 						}
 					}
 				}

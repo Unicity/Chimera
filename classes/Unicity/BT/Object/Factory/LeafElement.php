@@ -39,7 +39,7 @@ namespace Unicity\BT\Object\Factory {
 		 *                                                          when parsing
 		 */
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $element->attributes();
+			$attributes = $parser->getElementAttributes($element);
 
 			if (!isset($attributes['type'])) {
 				throw new Throwable\Parse\Exception('Unable to process Spring XML. Tag ":tag" is missing ":attribute" attribute.', array(':tag' => $parser->getElementPrefixedName($element), ':attribute' => 'type'));
