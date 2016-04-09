@@ -208,30 +208,23 @@ namespace Unicity\Spring {
 					$resource = $this->parser->valueOf($attributes['resource']);
 					if (!$set->hasValue($resource)) {
 						$set->putValue($resource);
-						$this->append($xml, Spring\Data\XML::load(new IO\File($resource)));
+
+						$dom0 = dom_import_simplexml($xml);
+						$node = Spring\Data\XML::load(new IO\File($resource));
+						$this->import($node, $set);
+
+						$nodes = $this->parser->getElementChildren($node, null);
+						foreach ($nodes as $node) {
+							$dom1 = dom_import_simplexml($node);
+
+							$dom1 = $dom0->ownerDocument->importNode($dom1, true);
+
+							$dom0->appendChild($dom1);
+						}
 					}
 				}
 			}
 			return $xml;
-		}
-
-		/**
-		 * This method appends the elements in the source to the target.
-		 *
-		 * @access protected
-		 * @param \SimpleXMLElement $target                         the target XML
-		 * @param \SimpleXMLElement $source                         the source XML
-		 */
-		protected function append(\SimpleXMLElement $target, \SimpleXMLElement $source) {
-			$nodes = $this->parser->getElementChildren($source, null);
-			foreach ($nodes as $node) {
-				$child = $target->addChild($node->getName(), (string) $node);
-				$attributes = $this->parser->getElementAttributes($child, null);
-				foreach ($attributes as $key => $value) {
-					$target->addAttribute($key, $value);
-				}
-				$this->append($child, $node);
-			}
 		}
 
 	}

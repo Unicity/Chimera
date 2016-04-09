@@ -67,6 +67,10 @@
 		<xsd:attribute name="object" type="identifier" use="optional"/>
 		<xsd:attribute name="local" type="identifier" use="optional"/>
 	</xsd:complexType>
+	<xsd:complexType name="import">
+		<xsd:choice minOccurs="0" maxOccurs="0"/>
+		<xsd:attribute name="resource" type="xsd:string" use="required"/>
+	</xsd:complexType>
 	<xsd:complexType name="list">
 		<xsd:group ref="elements"/>
 	</xsd:complexType>
@@ -94,8 +98,9 @@
 	<xsd:complexType name="objects">
 		<xsd:sequence>
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="import" type="import" />
 				<xsd:element name="object" type="object" />
-				<xsd:any namespace="##other" processContents="strict" />
+				<xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:choice>
 		</xsd:sequence>
 	</xsd:complexType>
