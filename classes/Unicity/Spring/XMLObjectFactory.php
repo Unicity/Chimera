@@ -201,7 +201,7 @@ namespace Unicity\Spring {
 		 */
 		protected function import(\SimpleXMLElement $xml, Common\Mutable\ISet $set) {
 			$xml->registerXPathNamespace('spring', Spring\Data\XML::NAMESPACE_URI);
-			$elements = $xml->xpath('//spring:object/spring:import');
+			$elements = $xml->xpath('//spring:import');
 			foreach ($elements as $element) {
 				$attributes = $this->parser->getElementAttributes($element, null);
 				if (isset($attributes['resource'])) {
