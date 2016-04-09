@@ -39,7 +39,7 @@ namespace Unicity\Spring\Object\Factory {
 		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
 			$object = new Common\Mutable\ArrayList();
 
-			$children = $parser->getElementChildren($element);
+			$children = $parser->getElementChildren($element, null);
 			foreach ($children as $child) {
 				$object->addValue($parser->getObjectFromElement($child));
 			}
