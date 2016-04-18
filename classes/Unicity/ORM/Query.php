@@ -118,7 +118,7 @@ namespace Unicity\ORM {
 		 * @param string $path                                      the path to be tested
 		 * @return boolean                                          whether the specified path exists
 		 */
-		public static function hasPath($collection, string $path) : boolean {
+		public static function hasPath($collection, string $path) : bool {
 			return !Core\Data\Toolkit::isUndefined(static::getValue($collection, $path));
 		}
 
