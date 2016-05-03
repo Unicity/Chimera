@@ -38,7 +38,7 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 			$shippingMethods = $this->policy->getValue('methods');
 
-			if ($shippingMethods->hasValue($order->shippingMethod->type) && Core\Data\ToolKit::isEmpty($order->shippingMethod->location)) {
+			if ($shippingMethods->hasValue($order->shippingMethod->type)) {
 				return BT\Status::SUCCESS;
 			}
 
