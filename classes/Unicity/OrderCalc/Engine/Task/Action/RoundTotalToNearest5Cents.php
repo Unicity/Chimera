@@ -21,8 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\Trade;
+	use \Unicity\OrderCalc;
 
 	class RoundTotalToNearest5Cents extends BT\Task\Action {
 
@@ -37,28 +36,9 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$order->terms->total = $this->roundToNearest5Cents($order->terms->total, $order->currency);
+			$order->terms->total = OrderCalc\Engine\Service\Money::roundToNearest5Cents($order->terms->total, $order->currency);
 
 			return BT\Status::SUCCESS;
-		}
-
-		/**
-		 * This method rounds the value to the nearest 5 cents' place.
-		 *
-		 * @access public
-		 * @param double $value                                     the value to be rounded
-		 * @return double                                           the rounded value
-		 *
-		 * @see http://forums.devshed.com/php-development-5/round-nearest-5-cents-537959.html
-		 */
-		protected function roundToNearest5Cents($value, $currency) {
-			$currency = new Trade\Currency($currency);
-
-			return round(
-				Core\Convert::toDouble($value) / 5,
-				$currency->getDefaultFractionDigits(),
-				PHP_ROUND_HALF_UP
-			) * 5;
 		}
 
 	}

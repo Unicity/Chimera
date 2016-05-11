@@ -23,7 +23,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\OrderCalc;
 
-	class RoundTotalToNearestInteger extends BT\Task\Action {
+	class RoundFreightToNearestInteger extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -36,7 +36,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$order->terms->total = OrderCalc\Engine\Service\Money::roundToNearestInteger($order->terms->total, $order->currency);
+			$order->terms->freight->amount = OrderCalc\Engine\Service\Money::roundToNearestInteger($order->terms->freight->amount, $order->currency);
 
 			return BT\Status::SUCCESS;
 		}
