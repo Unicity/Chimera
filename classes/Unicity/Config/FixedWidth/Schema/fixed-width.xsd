@@ -15,8 +15,10 @@
 				<xsd:element name="lines" type="lines" />
 			</xsd:choice>
 		</xsd:sequence>
+		<xsd:attribute name="doctype" type="doctype" use="required" />
 		<xsd:attribute name="eol" type="eol" use="optional" default="crlf" />
 		<xsd:attribute name="mime" type="xsd:string" use="optional" default="text/plain" />
+		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="field">
 		<xsd:simpleContent>
@@ -40,7 +42,7 @@
 			<xsd:element name="field" type="field" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="index" type="xsd:integer" use="optional" />
-		<xsd:attribute name="length" type="xsd:integer" use="optional" />
+		<xsd:attribute name="length" type="xsd:integer" use="required" />
 		<xsd:attribute name="name" type="xsd:string" use="optional" />
 		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>
@@ -60,6 +62,11 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="left" />
 			<xsd:enumeration value="right" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="doctype">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="fixed-width" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	<xsd:simpleType name="eol">

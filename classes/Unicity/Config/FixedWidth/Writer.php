@@ -157,6 +157,8 @@ namespace Unicity\Config\FixedWidth {
 		protected function getLine(\SimpleXMLElement $node, $data, string $eol) {
 			$attributes = $this->getElementAttributes($node);
 
+			$length = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']));
+
 			if (isset($attributes['path'])) {
 				$path = Core\Data\XML::valueOf($attributes['path']);
 				$data = ORM\Query::getValue($data, $path);
@@ -176,6 +178,10 @@ namespace Unicity\Config\FixedWidth {
 						break;
 				}
 			}
+
+			$line = (strlen($line) > $length)
+				? substr($line, 0, $length)
+				: str_pad($line, $length, ' ', STR_PAD_RIGHT);
 
 			echo $line . $eol;
 		}
@@ -244,6 +250,11 @@ namespace Unicity\Config\FixedWidth {
 			}
 			else {
 				$eol = $this->metadata['eol'];
+			}
+
+			if (isset($attributes['path'])) {
+				$path = Core\Data\XML::valueOf($attributes['path']);
+				$data = ORM\Query::getValue($data, $path);
 			}
 
 			$children = $this->getElementChildren($root);
