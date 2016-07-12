@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema
-	xmlns="http://static.unicity.com/modules/xsd/fixedwidth.xsd"
+	xmlns="http://static.unicity.com/modules/xsd/fixed-width.xsd"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://static.unicity.com/modules/xsd/fixedwidth.xsd"
+	targetNamespace="http://static.unicity.com/modules/xsd/fixed-width.xsd"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 	<!-- Root Element -->
-	<xsd:element name="document" type="document" />
+	<xsd:element name="template" type="template" />
 	<!-- Node Definitions -->
-	<xsd:complexType name="document">
+	<xsd:complexType name="template">
 		<xsd:sequence>
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="line" type="line" />
-				<xsd:element name="repeater" type="repeater" />
+				<xsd:element name="lines" type="lines" />
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="eol" type="eol" use="optional" default="crlf" />
@@ -22,6 +22,7 @@
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="align" type="align" use="optional" default="left" />
+				<xsd:attribute name="index" type="xsd:integer" use="optional" />
 				<xsd:attribute name="length" type="xsd:integer" use="required" />
 				<xsd:attribute name="name" type="xsd:string" use="optional" />
 				<xsd:attribute name="offset" type="xsd:integer" use="required" />
@@ -38,17 +39,19 @@
 		<xsd:sequence>
 			<xsd:element name="field" type="field" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
+		<xsd:attribute name="index" type="xsd:integer" use="optional" />
 		<xsd:attribute name="length" type="xsd:integer" use="optional" />
 		<xsd:attribute name="name" type="xsd:string" use="optional" />
 		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="repeater">
+	<xsd:complexType name="lines">
 		<xsd:sequence>
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="line" type="line" />
-				<xsd:element name="repeater" type="repeater" />
+				<xsd:element name="lines" type="lines" />
 			</xsd:choice>
 		</xsd:sequence>
+		<xsd:attribute name="index" type="xsd:integer" use="optional" />
 		<xsd:attribute name="name" type="xsd:string" use="optional" />
 		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>

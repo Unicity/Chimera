@@ -70,54 +70,6 @@ namespace Unicity\Config\FixedWidth {
 		}
 
 		/**
-		 * This method parses the "document" node.
-		 *
-		 * @access protected
-		 * @param \SimpleXMLElement $root                           a reference to the "document" node
-		 * @param mixed $data                                       the data to be written
-		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
-		 *                                                          parsing
-		 */
-		protected function getDocument(\SimpleXMLElement $root, $data) {
-			$attributes = $this->getElementAttributes($root);
-
-			if (isset($attributes['eol'])) {
-				$eol = Core\Convert::toString(Core\Data\XML::valueOf($attributes['eol']));
-				switch ($eol) {
-					case 'lf':
-						$eol = "\n";
-						break;
-					case 'cr':
-						$eol = "\r";
-						break;
-					case 'crlf':
-					default:
-						$eol = "\r\n";
-						break;
-				}
-			}
-			else {
-				$eol = $this->metadata['eol'];
-			}
-
-			$children = $this->getElementChildren($root);
-			foreach ($children as $child) {
-				$name = $this->getElementName($child);
-				switch ($name) {
-					case 'repeater':
-						$this->getRepeater($child, $data, $eol);
-						break;
-					case 'line':
-						$this->getLine($child, $data, $eol);
-						break;
-					default:
-						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => 'document', ':child' => $name));
-						break;
-				}
-			}
-		}
-
-		/**
 		 * This method parses the "field" node.
 		 *
 		 * @access protected
@@ -229,16 +181,16 @@ namespace Unicity\Config\FixedWidth {
 		}
 
 		/**
-		 * This method parses the "repeater" node.
+		 * This method parses the "lines" node.
 		 *
 		 * @access protected
-		 * @param \SimpleXMLElement $node                           a reference to the "repeater" node
+		 * @param \SimpleXMLElement $node                           a reference to the "lines" node
 		 * @param mixed $data                                       the data to be written
 		 * @param string $eol                                       the EOL to be used
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getRepeater(\SimpleXMLElement $node, $data, string $eol) {
+		protected function getLines(\SimpleXMLElement $node, $data, string $eol) {
 			$attributes = $this->getElementAttributes($node);
 
 			if (isset($attributes['path'])) {
@@ -250,14 +202,62 @@ namespace Unicity\Config\FixedWidth {
 			foreach ($children as $child) {
 				$name = $this->getElementName($child);
 				switch ($name) {
-					case 'repeater':
-						$this->getRepeater($child, $data, $eol);
-						break;
 					case 'line':
 						$this->getLine($child, $data, $eol);
 						break;
+					case 'lines':
+						$this->getLines($child, $data, $eol);
+						break;
 					default:
 						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => $node->getName(), ':child' => $name));
+						break;
+				}
+			}
+		}
+
+		/**
+		 * This method parses the "template" node.
+		 *
+		 * @access protected
+		 * @param \SimpleXMLElement $root                           a reference to the "template" node
+		 * @param mixed $data                                       the data to be written
+		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
+		 *                                                          parsing
+		 */
+		protected function getTemplate(\SimpleXMLElement $root, $data) {
+			$attributes = $this->getElementAttributes($root);
+
+			if (isset($attributes['eol'])) {
+				$eol = Core\Convert::toString(Core\Data\XML::valueOf($attributes['eol']));
+				switch ($eol) {
+					case 'lf':
+						$eol = "\n";
+						break;
+					case 'cr':
+						$eol = "\r";
+						break;
+					case 'crlf':
+					default:
+						$eol = "\r\n";
+						break;
+				}
+			}
+			else {
+				$eol = $this->metadata['eol'];
+			}
+
+			$children = $this->getElementChildren($root);
+			foreach ($children as $child) {
+				$name = $this->getElementName($child);
+				switch ($name) {
+					case 'line':
+						$this->getLine($child, $data, $eol);
+						break;
+					case 'lines':
+						$this->getLines($child, $data, $eol);
+						break;
+					default:
+						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => 'template', ':child' => $name));
 						break;
 				}
 			}
@@ -277,11 +277,11 @@ namespace Unicity\Config\FixedWidth {
 				$root = Core\Data\XML::load($this->metadata['template']);
 				$name = $root->getName();
 				switch ($name) {
-					case 'document':
-						$this->getDocument($root, $this->data);
+					case 'template':
+						$this->getTemplate($root, $this->data);
 						break;
 					default:
-						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" cannot be found.', array(':tag' => 'document'));
+						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" cannot be found.', array(':tag' => 'template'));
 						break;
 				}
 			}
