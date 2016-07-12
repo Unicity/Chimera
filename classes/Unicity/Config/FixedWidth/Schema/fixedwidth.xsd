@@ -16,6 +16,7 @@
 				<xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:choice>
 		</xsd:sequence>
+		<xsd:attribute name="eol" type="eol" use="optional" default="crlf" />
 	</xsd:complexType>
 	<xsd:complexType name="field">
 		<xsd:simpleContent>
@@ -50,9 +51,11 @@
 			<xsd:enumeration value="right" />
 		</xsd:restriction>
 	</xsd:simpleType>
-	<xsd:simpleType name="identifier">
+	<xsd:simpleType name="eol">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="[a-zA-Z0-9_]+"/>
+			<xsd:enumeration value="cr" />
+			<xsd:enumeration value="crlf" />
+			<xsd:enumeration value="lf" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	<xsd:simpleType name="primitive">

@@ -43,7 +43,7 @@ namespace Unicity\Config\FixedWidth {
 			$this->data = static::useArrays($data);
 			$this->metadata = array(
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
-				'eol' => "\n",
+				'eol' => "\r\n", // default to CRLF because this is the most common EOL for the file type
 				'ext' => '.txt',
 				'mime' => 'text/plain',
 				'template' => '',
@@ -61,15 +61,33 @@ namespace Unicity\Config\FixedWidth {
 		 *                                                          parsing
 		 */
 		protected function getDocument(\SimpleXMLElement $root, $data) {
+			if (isset($attributes['eol'])) {
+				$eol = Core\Convert::toString(Core\Data\XML::valueOf($attributes['eol']));
+				switch ($eol) {
+					case "lf":
+						$eol = "\n";
+						break;
+					case "cr":
+						$eol = "\r";
+						break;
+					default:
+						$eol = "\r\n";
+						break;
+				}
+			}
+			else {
+				$eol = $this->metadata['eol'];
+			}
+
 			$children = $this->getElementChildren($root);
 			foreach ($children as $child) {
 				$name = $this->getElementName($child);
 				switch ($name) {
 					case 'repeater':
-						$this->getRepeater($child, $data);
+						$this->getRepeater($child, $data, $eol);
 						break;
 					case 'line':
-						$this->getLine($child, $data);
+						$this->getLine($child, $data, $eol);
 						break;
 					default:
 						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => 'document', ':child' => $name));
@@ -95,7 +113,10 @@ namespace Unicity\Config\FixedWidth {
 			$offset = (isset($attributes['offset']))
 				? Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['offset']))
 				: 0;
-			$length = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']));
+
+			$length = (isset($attributes['length']))
+				? Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']))
+				: 1;
 
 			$padding = (isset($attributes['padding'])) ? Core\Data\XML::valueOf($attributes['padding']) : ' ';
 			if (isset($attributes['align'])) {
@@ -113,8 +134,8 @@ namespace Unicity\Config\FixedWidth {
 				$value = $this->getElementTextContent($node);
 			}
 			$value = Core\Convert::toString($value);
-			if (isset($attributes['space'])) {
-				$space = $this->valueOf($attributes['space']);
+			if (isset($attributes['xml:space'])) {
+				$space = $this->valueOf($attributes['xml:space']);
 				if (!$this->isSpacePreserved($space)) {
 					throw new Throwable\Parse\Exception('Unable to process template. Expected a valid space token, but got ":token".', array(':token' => $space));
 				}
@@ -141,10 +162,11 @@ namespace Unicity\Config\FixedWidth {
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "line" node
 		 * @param mixed $data                                       the data to be written
+		 * @param string $eol                                       the EOL to be used
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getLine(\SimpleXMLElement $node, $data) {
+		protected function getLine(\SimpleXMLElement $node, $data, string $eol) {
 			$attributes = $this->getElementAttributes($node);
 
 			if (isset($attributes['path'])) {
@@ -167,7 +189,7 @@ namespace Unicity\Config\FixedWidth {
 				}
 			}
 
-			echo $line . $this->metadata['eol'];
+			echo $line . $eol;
 		}
 
 		/**
@@ -176,10 +198,11 @@ namespace Unicity\Config\FixedWidth {
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "repeater" node
 		 * @param mixed $data                                       the data to be written
+		 * @param string $eol                                       the EOL to be used
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getRepeater(\SimpleXMLElement $node, $data) {
+		protected function getRepeater(\SimpleXMLElement $node, $data, string $eol) {
 			$attributes = $this->getElementAttributes($node);
 
 			if (isset($attributes['path'])) {
@@ -192,7 +215,7 @@ namespace Unicity\Config\FixedWidth {
 				$name = $this->getElementName($child);
 				switch ($name) {
 					case 'line':
-						$this->getLine($child, $data);
+						$this->getLine($child, $data, $eol);
 						break;
 					default:
 						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => $node->getName(), ':child' => $name));
