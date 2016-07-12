@@ -79,15 +79,18 @@ namespace Unicity\Config\FixedWidth {
 		 *                                                          parsing
 		 */
 		protected function getDocument(\SimpleXMLElement $root, $data) {
+			$attributes = $this->getElementAttributes($root);
+
 			if (isset($attributes['eol'])) {
 				$eol = Core\Convert::toString(Core\Data\XML::valueOf($attributes['eol']));
 				switch ($eol) {
-					case "lf":
+					case 'lf':
 						$eol = "\n";
 						break;
-					case "cr":
+					case 'cr':
 						$eol = "\r";
 						break;
+					case 'crlf':
 					default:
 						$eol = "\r\n";
 						break;
@@ -128,13 +131,9 @@ namespace Unicity\Config\FixedWidth {
 		protected function getField(\SimpleXMLElement $node, $data, string $line) {
 			$attributes = $this->getElementAttributes($node);
 
-			$offset = (isset($attributes['offset']))
-				? Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['offset']))
-				: 0;
+			$offset = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['offset']));
 
-			$length = (isset($attributes['length']))
-				? Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']))
-				: 1;
+			$length = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']));
 
 			$padding = (isset($attributes['padding'])) ? Core\Data\XML::valueOf($attributes['padding']) : ' ';
 			if (isset($attributes['align'])) {
@@ -161,6 +160,13 @@ namespace Unicity\Config\FixedWidth {
 				}
 				else {
 					$value = $this->getElementTextContent($node);
+					if (isset($attributes['type'])) {
+						$type = $this->valueOf($attributes['type']);
+						if (!$this->isPrimitiveType($type)) {
+							throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid primitive type, but got ":type".', array(':type' => $type));
+						}
+						$value = Core\Convert::changeType($value, $type);
+					}
 				}
 			}
 			$value = Core\Convert::toString($value);
@@ -244,6 +250,9 @@ namespace Unicity\Config\FixedWidth {
 			foreach ($children as $child) {
 				$name = $this->getElementName($child);
 				switch ($name) {
+					case 'repeater':
+						$this->getRepeater($child, $data, $eol);
+						break;
 					case 'line':
 						$this->getLine($child, $data, $eol);
 						break;

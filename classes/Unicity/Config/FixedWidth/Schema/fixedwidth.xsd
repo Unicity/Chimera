@@ -13,17 +13,17 @@
 			<xsd:choice minOccurs="0" maxOccurs="unbounded">
 				<xsd:element name="line" type="line" />
 				<xsd:element name="repeater" type="repeater" />
-				<xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="eol" type="eol" use="optional" default="crlf" />
+		<xsd:attribute name="mime" type="xsd:string" use="optional" default="text/plain" />
 	</xsd:complexType>
 	<xsd:complexType name="field">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="align" type="align" use="optional" default="left" />
-				<xsd:attribute name="length" type="xsd:integer" use="optional" />
-				<xsd:attribute name="offset" type="xsd:integer" use="optional" default="0" />
+				<xsd:attribute name="length" type="xsd:integer" use="required" />
+				<xsd:attribute name="offset" type="xsd:integer" use="required" />
 				<xsd:attribute name="padding" type="xsd:string" use="optional" default=" " />
 				<xsd:attribute name="path" type="xsd:string" use="optional" />
 				<xsd:attribute name="space" type="space" use="optional" />
@@ -42,7 +42,10 @@
 	</xsd:complexType>
 	<xsd:complexType name="repeater">
 		<xsd:sequence>
-			<xsd:element name="line" type="line" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="line" type="line" />
+				<xsd:element name="repeater" type="repeater" />
+			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>
