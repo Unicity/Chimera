@@ -23,6 +23,7 @@
 			<xsd:extension base="xsd:string">
 				<xsd:attribute name="align" type="align" use="optional" default="left" />
 				<xsd:attribute name="length" type="xsd:integer" use="required" />
+				<xsd:attribute name="name" type="xsd:string" use="optional" />
 				<xsd:attribute name="offset" type="xsd:integer" use="required" />
 				<xsd:attribute name="padding" type="xsd:string" use="optional" default=" " />
 				<xsd:attribute name="path" type="xsd:string" use="optional" />
@@ -38,6 +39,7 @@
 			<xsd:element name="field" type="field" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="length" type="xsd:integer" use="optional" />
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
 		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="repeater">
@@ -47,6 +49,7 @@
 				<xsd:element name="repeater" type="repeater" />
 			</xsd:choice>
 		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
 		<xsd:attribute name="path" type="xsd:string" use="optional" />
 	</xsd:complexType>
 	<!-- Rule Definitions -->
