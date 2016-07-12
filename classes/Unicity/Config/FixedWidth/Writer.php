@@ -34,6 +34,24 @@ namespace Unicity\Config\FixedWidth {
 	class Writer extends Config\Writer {
 
 		/**
+		 * This variable stores a list of valid primitive types.
+		 *
+		 * @access protected
+		 * @static
+		 * @var array
+		 */
+		protected static $primitives = array(
+			'bool', 'boolean',
+			'char',
+			'date', 'datetime', 'time', 'timestamp',
+			'decimal', 'double', 'float', 'money', 'number', 'real', 'single',
+			'bit', 'byte', 'int', 'int8', 'int16', 'int32', 'int64', 'long', 'short', 'uint', 'uint8', 'uint16', 'uint32', 'uint64', 'integer', 'word',
+			'ord', 'ordinal',
+			'nil', 'null',
+			'nvarchar', 'string', 'varchar', 'undefined'
+		);
+
+		/**
 		 * This constructor initializes the class with the specified data.
 		 *
 		 * @access public
@@ -131,11 +149,23 @@ namespace Unicity\Config\FixedWidth {
 
 			$value = ORM\Query::getValue($data, $path);
 			if (Core\Data\ToolKit::isUnset($value)) {
-				$value = $this->getElementTextContent($node);
+				if (isset($attributes['value'])) {
+					$value = $this->valueOf($attributes['value']);
+					if (isset($attributes['type'])) {
+						$type = $this->valueOf($attributes['type']);
+						if (!$this->isPrimitiveType($type)) {
+							throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid primitive type, but got ":type".', array(':type' => $type));
+						}
+						$value = Core\Convert::changeType($value, $type);
+					}
+				}
+				else {
+					$value = $this->getElementTextContent($node);
+				}
 			}
 			$value = Core\Convert::toString($value);
-			if (isset($attributes['xml:space'])) {
-				$space = $this->valueOf($attributes['xml:space']);
+			if (isset($attributes['space'])) {
+				$space = $this->valueOf($attributes['space']);
 				if (!$this->isSpacePreserved($space)) {
 					throw new Throwable\Parse\Exception('Unable to process template. Expected a valid space token, but got ":token".', array(':token' => $space));
 				}
@@ -343,6 +373,19 @@ namespace Unicity\Config\FixedWidth {
 		 */
 		public function getElementTextContent(\SimpleXMLElement $element) {
 			return dom_import_simplexml($element)->textContent;
+		}
+
+		/**
+		 * This method evaluates whether the specified string matches the syntax for a primitive
+		 * type.
+		 *
+		 * @access public
+		 * @param string $token                                     the string to be evaluated
+		 * @return boolean                                          whether the specified string matches the syntax
+		 *                                                          for a primitive type
+		 */
+		public function isPrimitiveType($token) {
+			return is_string($token) && in_array(strtolower($token), static::$primitives);
 		}
 
 		/**

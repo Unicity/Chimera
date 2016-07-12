@@ -21,10 +21,12 @@
 	<xsd:complexType name="field">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
+				<xsd:attribute name="align" type="align" use="optional" default="left" />
 				<xsd:attribute name="length" type="xsd:integer" use="optional" />
 				<xsd:attribute name="offset" type="xsd:integer" use="optional" default="0" />
 				<xsd:attribute name="padding" type="xsd:string" use="optional" default=" " />
 				<xsd:attribute name="path" type="xsd:string" use="optional" />
+				<xsd:attribute name="space" type="space" use="optional" />
 				<xsd:attribute name="type" type="primitive" use="optional" default="string" />
 				<xsd:attribute name="value" type="xsd:string" use="optional" />
 				<!--<xsd:attribute name="xml:space" type="space" use="optional" />-->
