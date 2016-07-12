@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema
+	xmlns="http://static.unicity.com/modules/xsd/fixedwidth.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://static.unicity.com/modules/xsd/fixedwidth.xsd"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Root Element -->
+	<xsd:element name="document" type="document" />
+	<!-- Node Definitions -->
+	<xsd:complexType name="document">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="line" type="line" />
+				<xsd:element name="repeater" type="repeater" />
+				<xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="field">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="length" type="xsd:integer" use="optional" />
+				<xsd:attribute name="offset" type="xsd:integer" use="optional" default="0" />
+				<xsd:attribute name="padding" type="xsd:string" use="optional" default=" " />
+				<xsd:attribute name="path" type="xsd:string" use="optional" />
+				<xsd:attribute name="type" type="primitive" use="optional" default="string" />
+				<xsd:attribute name="value" type="xsd:string" use="optional" />
+				<!--<xsd:attribute name="xml:space" type="space" use="optional" />-->
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="line">
+		<xsd:sequence>
+			<xsd:element name="field" type="field" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="length" type="xsd:integer" use="optional" />
+		<xsd:attribute name="path" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="repeater">
+		<xsd:sequence>
+			<xsd:element name="line" type="line" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="path" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<!-- Rule Definitions -->
+	<xsd:simpleType name="align">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="left" />
+			<xsd:enumeration value="right" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="identifier">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z0-9_]+"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="primitive">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="bool" />
+			<xsd:enumeration value="boolean" />
+			<xsd:enumeration value="char" />
+			<xsd:enumeration value="date" />
+			<xsd:enumeration value="datetime" />
+			<xsd:enumeration value="time" />
+			<xsd:enumeration value="timestamp" />
+			<xsd:enumeration value="decimal" />
+			<xsd:enumeration value="double" />
+			<xsd:enumeration value="float" />
+			<xsd:enumeration value="money" />
+			<xsd:enumeration value="number" />
+			<xsd:enumeration value="real" />
+			<xsd:enumeration value="single" />
+			<xsd:enumeration value="bit" />
+			<xsd:enumeration value="byte" />
+			<xsd:enumeration value="int" />
+			<xsd:enumeration value="int8" />
+			<xsd:enumeration value="int16" />
+			<xsd:enumeration value="int32" />
+			<xsd:enumeration value="int64" />
+			<xsd:enumeration value="long" />
+			<xsd:enumeration value="short" />
+			<xsd:enumeration value="uint" />
+			<xsd:enumeration value="uint8" />
+			<xsd:enumeration value="uint16" />
+			<xsd:enumeration value="uint32" />
+			<xsd:enumeration value="uint64" />
+			<xsd:enumeration value="integer" />
+			<xsd:enumeration value="word" />
+			<xsd:enumeration value="ord" />
+			<xsd:enumeration value="ordinal" />
+			<xsd:enumeration value="nil" />
+			<xsd:enumeration value="null" />
+			<xsd:enumeration value="nvarchar" />
+			<xsd:enumeration value="string" />
+			<xsd:enumeration value="varchar" />
+			<xsd:enumeration value="undefined" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="space">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="preserve" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

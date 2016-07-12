@@ -122,8 +122,8 @@
 	<xsd:complexType name="value">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
-				<!--<xsd:attribute name="xml:space" type="space" use="optional" />-->
 				<xsd:attribute name="type" type="primitive" use="optional" default="string" />
+				<!--<xsd:attribute name="xml:space" type="space" use="optional" />-->
 			</xsd:extension>
 		</xsd:simpleContent>
 	</xsd:complexType>
