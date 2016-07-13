@@ -105,6 +105,7 @@ namespace Unicity\Config\FixedWidth {
 			if (Core\Data\ToolKit::isUnset($value)) {
 				if (isset($attributes['value'])) {
 					$value = $this->valueOf($attributes['value']);
+					/*
 					if (isset($attributes['type'])) {
 						$type = $this->valueOf($attributes['type']);
 						if (!$this->isPrimitiveType($type)) {
@@ -112,9 +113,11 @@ namespace Unicity\Config\FixedWidth {
 						}
 						$value = Core\Convert::changeType($value, $type);
 					}
+					*/
 				}
 				else {
 					$value = $this->getElementTextContent($node);
+					/*
 					if (isset($attributes['type'])) {
 						$type = $this->valueOf($attributes['type']);
 						if (!$this->isPrimitiveType($type)) {
@@ -122,6 +125,7 @@ namespace Unicity\Config\FixedWidth {
 						}
 						$value = Core\Convert::changeType($value, $type);
 					}
+					*/
 				}
 			}
 			$value = Core\Convert::toString($value);
