@@ -62,6 +62,9 @@ namespace Unicity\Config\FixedWidth {
 			$this->metadata = array(
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
 				'eol' => "\r\n", // defaults to CRLF because this is the most common EOL for the file type
+				'escape' => function($value) {
+					return preg_replace('/\R/', '', $value);
+				},
 				'ext' => '.txt',
 				'mime' => 'text/plain',
 				'template' => '',
@@ -131,6 +134,10 @@ namespace Unicity\Config\FixedWidth {
 			else {
 				$value = trim($value);
 			}
+
+			$escape = $this->metadata['escape'];
+			$value = $escape($value);
+
 			$value = (strlen($value) > $length)
 				? substr($value, 0, $length)
 				: str_pad($value, $length, $padding, $align);
@@ -205,18 +212,20 @@ namespace Unicity\Config\FixedWidth {
 			}
 
 			$children = $this->getElementChildren($node);
-			foreach ($children as $child) {
-				$name = $this->getElementName($child);
-				switch ($name) {
-					case 'line':
-						$this->getLine($child, $data, $eol);
-						break;
-					case 'lines':
-						$this->getLines($child, $data, $eol);
-						break;
-					default:
-						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => $node->getName(), ':child' => $name));
-						break;
+			foreach ($data as $value) {
+				foreach ($children as $child) {
+					$name = $this->getElementName($child);
+					switch ($name) {
+						case 'line':
+							$this->getLine($child, $value, $eol);
+							break;
+						case 'lines':
+							$this->getLines($child, $value, $eol);
+							break;
+						default:
+							throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => $node->getName(), ':child' => $name));
+							break;
+					}
 				}
 			}
 		}
