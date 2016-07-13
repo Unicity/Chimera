@@ -18,9 +18,9 @@
 
 namespace Unicity\Config\FixedWidth {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
+	use \Unicity\IO;
 	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
@@ -294,7 +294,8 @@ namespace Unicity\Config\FixedWidth {
 		public function render() {
 			ob_start();
 			try {
-				$root = Core\Data\XML::load($this->metadata['template']);
+				$file = new IO\File($this->metadata['template']);
+				$root = Core\Data\XML::load($file);
 				$name = $root->getName();
 				switch ($name) {
 					case 'template':
