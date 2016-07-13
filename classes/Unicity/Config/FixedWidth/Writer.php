@@ -61,7 +61,7 @@ namespace Unicity\Config\FixedWidth {
 			$this->data = static::useArrays($data);
 			$this->metadata = array(
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
-				'eol' => "\r\n", // default to CRLF because this is the most common EOL for the file type
+				'eol' => "\r\n", // defaults to CRLF because this is the most common EOL for the file type
 				'ext' => '.txt',
 				'mime' => 'text/plain',
 				'template' => '',
@@ -105,7 +105,7 @@ namespace Unicity\Config\FixedWidth {
 					if (isset($attributes['type'])) {
 						$type = $this->valueOf($attributes['type']);
 						if (!$this->isPrimitiveType($type)) {
-							throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid primitive type, but got ":type".', array(':type' => $type));
+							throw new Throwable\Parse\Exception('Unable to process template. Expected a valid primitive type, but got ":type".', array(':type' => $type));
 						}
 						$value = Core\Convert::changeType($value, $type);
 					}
@@ -115,7 +115,7 @@ namespace Unicity\Config\FixedWidth {
 					if (isset($attributes['type'])) {
 						$type = $this->valueOf($attributes['type']);
 						if (!$this->isPrimitiveType($type)) {
-							throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid primitive type, but got ":type".', array(':type' => $type));
+							throw new Throwable\Parse\Exception('Unable to process template. Expected a valid primitive type, but got ":type".', array(':type' => $type));
 						}
 						$value = Core\Convert::changeType($value, $type);
 					}
