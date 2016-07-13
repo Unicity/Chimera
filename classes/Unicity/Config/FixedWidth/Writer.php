@@ -148,7 +148,7 @@ namespace Unicity\Config\FixedWidth {
 
 			$lnsize = $offset + $length;
 			if (strlen($line) < $lnsize) {
-				$value = str_pad($value, $lnsize, ' ', STR_PAD_RIGHT);
+				$line = str_pad($line, $lnsize, ' ', STR_PAD_RIGHT);
 			}
 			$value = substr_replace($line, $value, $offset, $length);
 
