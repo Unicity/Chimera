@@ -73,7 +73,7 @@ namespace Unicity\Config\FixedWidth {
 		}
 
 		/**
-		 * This method parses the "field" node.
+		 * This method processes a "field" node.
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "field" node
@@ -83,14 +83,28 @@ namespace Unicity\Config\FixedWidth {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getField(\SimpleXMLElement $node, $data, string $line) {
+		protected function buildField(\SimpleXMLElement $node, $data, string $line) {
 			$attributes = $this->getElementAttributes($node);
 
 			$offset = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['offset']));
 
 			$length = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']));
 
-			$padding = (isset($attributes['padding'])) ? Core\Data\XML::valueOf($attributes['padding']) : ' ';
+			if (isset($attributes['filler'])) {
+				$filler = Core\Data\XML::valueOf($attributes['filler']);
+				if (strlen($filler) != 1) {
+					throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" defines an invalid filler character.', array(':tag' => $node->getName()));
+				}
+			}
+			else {
+				$filler = ' ';
+			}
+
+			$malloc = $offset + $length;
+			if (strlen($line) < $malloc) {
+				$line = str_pad($line, $malloc, $filler, STR_PAD_RIGHT);
+			}
+
 			if (isset($attributes['align'])) {
 				$align = Core\Data\XML::valueOf($attributes['align']);
 				$align = ($align == 'left') ? STR_PAD_LEFT : STR_PAD_RIGHT;
@@ -142,21 +156,21 @@ namespace Unicity\Config\FixedWidth {
 			$escape = $this->metadata['escape'];
 			$value = $escape($value);
 
-			$value = (strlen($value) > $length)
-				? substr($value, 0, $length)
-				: str_pad($value, $length, $padding, $align);
-
-			$lnsize = $offset + $length;
-			if (strlen($line) < $lnsize) {
-				$line = str_pad($line, $lnsize, ' ', STR_PAD_RIGHT);
+			$strlen = strlen($value);
+			if ($strlen > $length) {
+				$value = substr($value, 0, $length);
 			}
+			else if ($strlen < $length) {
+				$value = str_pad($value, $length, $filler, $align);
+			}
+
 			$value = substr_replace($line, $value, $offset, $length);
 
 			return $value;
 		}
 
 		/**
-		 * This method parses the "line" node.
+		 * This method processes a "line" node.
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "line" node
@@ -165,24 +179,34 @@ namespace Unicity\Config\FixedWidth {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getLine(\SimpleXMLElement $node, $data, string $eol) {
+		protected function buildLine(\SimpleXMLElement $node, $data, string $eol) {
 			$attributes = $this->getElementAttributes($node);
 
 			$length = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['length']));
+
+			if (isset($attributes['filler'])) {
+				$filler = Core\Data\XML::valueOf($attributes['filler']);
+				if (strlen($filler) != 1) {
+					throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" defines an invalid filler character.', array(':tag' => $node->getName()));
+				}
+			}
+			else {
+				$filler = ' ';
+			}
+
+			$line = str_repeat($filler, $length);
 
 			if (isset($attributes['path'])) {
 				$path = Core\Data\XML::valueOf($attributes['path']);
 				$data = ORM\Query::getValue($data, $path);
 			}
 
-			$line = '';
-
 			$children = $this->getElementChildren($node);
 			foreach ($children as $child) {
 				$name = $this->getElementName($child);
 				switch ($name) {
 					case 'field':
-						$line = $this->getField($child, $data, $line);
+						$line = $this->buildField($child, $data, $line);
 						break;
 					default:
 						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => $node->getName(), ':child' => $name));
@@ -190,15 +214,15 @@ namespace Unicity\Config\FixedWidth {
 				}
 			}
 
-			$line = (strlen($line) > $length)
-				? substr($line, 0, $length)
-				: str_pad($line, $length, ' ', STR_PAD_RIGHT);
+			if (strlen($line) > $length) {
+				$line = substr($line, 0, $length);
+			}
 
 			echo $line . $eol;
 		}
 
 		/**
-		 * This method parses the "lines" node.
+		 * This method processes a "lines" node.
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "lines" node
@@ -207,7 +231,7 @@ namespace Unicity\Config\FixedWidth {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getLines(\SimpleXMLElement $node, $data, string $eol) {
+		protected function buildLines(\SimpleXMLElement $node, $data, string $eol) {
 			$attributes = $this->getElementAttributes($node);
 
 			if (isset($attributes['path'])) {
@@ -221,10 +245,10 @@ namespace Unicity\Config\FixedWidth {
 					$name = $this->getElementName($child);
 					switch ($name) {
 						case 'line':
-							$this->getLine($child, $value, $eol);
+							$this->buildLine($child, $value, $eol);
 							break;
 						case 'lines':
-							$this->getLines($child, $value, $eol);
+							$this->buildLines($child, $value, $eol);
 							break;
 						default:
 							throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => $node->getName(), ':child' => $name));
@@ -235,7 +259,7 @@ namespace Unicity\Config\FixedWidth {
 		}
 
 		/**
-		 * This method parses the "template" node.
+		 * This method processes a "template" node.
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $root                           a reference to the "template" node
@@ -243,7 +267,7 @@ namespace Unicity\Config\FixedWidth {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		protected function getTemplate(\SimpleXMLElement $root, $data) {
+		protected function buildTemplate(\SimpleXMLElement $root, $data) {
 			$attributes = $this->getElementAttributes($root);
 
 			if (isset($attributes['eol'])) {
@@ -275,10 +299,10 @@ namespace Unicity\Config\FixedWidth {
 				$name = $this->getElementName($child);
 				switch ($name) {
 					case 'line':
-						$this->getLine($child, $data, $eol);
+						$this->buildLine($child, $data, $eol);
 						break;
 					case 'lines':
-						$this->getLines($child, $data, $eol);
+						$this->buildLines($child, $data, $eol);
 						break;
 					default:
 						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" has invalid child node ":child".', array(':tag' => 'template', ':child' => $name));
@@ -303,7 +327,7 @@ namespace Unicity\Config\FixedWidth {
 				$name = $root->getName();
 				switch ($name) {
 					case 'template':
-						$this->getTemplate($root, $this->data);
+						$this->buildTemplate($root, $this->data);
 						break;
 					default:
 						throw new Throwable\Parse\Exception('Unable to process template. Tag ":tag" cannot be found.', array(':tag' => 'template'));
