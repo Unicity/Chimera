@@ -147,7 +147,7 @@ namespace Unicity\Config\XML {
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to the "root" node
-		 * @return array                                            a key/value map
+		 * @return \Unicity\Common\Mutable\HashMap                  a key/value map
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
 		 *                                                          parsing
 		 */

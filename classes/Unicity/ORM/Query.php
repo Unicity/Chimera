@@ -119,7 +119,7 @@ namespace Unicity\ORM {
 		 * @return boolean                                          whether the specified path exists
 		 */
 		public static function hasPath($collection, string $path) : bool {
-			return !Core\Data\Toolkit::isUndefined(static::getValue($collection, $path));
+			return !Core\Data\ToolKit::isUndefined(static::getValue($collection, $path));
 		}
 
 		/**

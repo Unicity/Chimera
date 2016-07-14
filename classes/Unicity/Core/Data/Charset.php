@@ -18,10 +18,7 @@
 
 namespace Unicity\Core\Data {
 
-	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
 	use \Unicity\Throwable;
 
 	/**

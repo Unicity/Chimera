@@ -18,9 +18,7 @@
 
 namespace Unicity\IO {
 
-	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\IO;
 	use \Unicity\Throwable;
 
 	/**

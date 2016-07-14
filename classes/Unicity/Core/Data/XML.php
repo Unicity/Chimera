@@ -19,7 +19,6 @@
 
 namespace Unicity\Core\Data {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;

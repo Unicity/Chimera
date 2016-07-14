@@ -21,7 +21,6 @@ namespace Unicity\Config\CSV {
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
-	use \Unicity\Minify;
 
 	/**
 	 * This class is used to write a collection to a CSV file.

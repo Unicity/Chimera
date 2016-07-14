@@ -18,7 +18,6 @@
 
 namespace Unicity\Config\Properties {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 

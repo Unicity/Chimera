@@ -19,8 +19,6 @@
 
 namespace Unicity\Spring {
 
-	use \Unicity\Core;
-
 	/**
 	 * This interface provides the contract for an initializing object.
 	 *

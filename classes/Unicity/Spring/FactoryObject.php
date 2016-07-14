@@ -19,8 +19,6 @@
 
 namespace Unicity\Spring {
 
-	use \Unicity\Spring;
-
 	/**
 	 * This class provides the contract for an object factory that will read a container
 	 * with object definitions.

@@ -20,7 +20,6 @@ namespace Unicity\IO {
 
 	use \Unicity\Bootstrap;
 	use \Unicity\Common;
-	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Throwable;
@@ -118,7 +117,7 @@ namespace Unicity\IO {
 			$this->path = null;
 			$this->ext = null;
 
-			if ( ! Common\StringRef::isTypeOf($uri)) {
+			if (!Common\StringRef::isTypeOf($uri)) {
 				throw new Throwable\InvalidArgument\Exception('Unable to handle argument. Argument must be a string, but got :type.', array(':type' => gettype($uri)));
 			}
 

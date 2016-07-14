@@ -21,7 +21,6 @@ namespace Unicity\Config\Spring {
 	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
-	use \Unicity\IO;
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 

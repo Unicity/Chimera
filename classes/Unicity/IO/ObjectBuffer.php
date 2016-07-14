@@ -18,7 +18,6 @@
 
 namespace Unicity\IO {
 
-	use \Unicity\Core;
 	use \Unicity\IO;
 
 	/**

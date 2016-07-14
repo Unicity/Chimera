@@ -22,7 +22,7 @@ namespace Unicity\Config\WDDX {
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
-	use Unicity\MappingService\Impl\InfoTrax\Shared\Master\Data\Charset;
+	use \Unicity\MappingService\Impl\InfoTrax\Shared\Master\Data\Charset;
 	use \Unicity\Throwable;
 
 	/**
@@ -442,7 +442,7 @@ namespace Unicity\Config\WDDX {
 		 *
 		 * @access protected
 		 * @param \DOMDocument $document                            a reference to the "wddxPacket" node
-		 * @return \Unicity\Common\StringRef                        the value as a string
+		 * @return \Unicity\Common\Mutable\HashMap                  the value as a string
 		 */
 		protected function parseWDDXPacketElement(\DOMDocument $document) {
 			$map = new Common\Mutable\HashMap();

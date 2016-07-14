@@ -18,9 +18,7 @@
 
 namespace Unicity\Config\JSON {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
-	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Throwable;
 

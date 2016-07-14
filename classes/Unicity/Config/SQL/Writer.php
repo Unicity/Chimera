@@ -21,7 +21,6 @@ namespace Unicity\Config\SQL {
 	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
-	use \Unicity\Spring;
 
 	/**
 	 * This class is used to write a collection to an SQL export file.

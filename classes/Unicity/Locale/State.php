@@ -19,7 +19,6 @@
 namespace Unicity\Locale {
 
 	use \Leap\Core\DB;
-	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\Locale;
 

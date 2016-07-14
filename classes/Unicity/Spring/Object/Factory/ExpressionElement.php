@@ -19,7 +19,6 @@
 
 namespace Unicity\Spring\Object\Factory {
 
-	use \Unicity\Core;
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 

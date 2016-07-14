@@ -18,10 +18,7 @@
 
 namespace Unicity\Config\Inc {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
 	use \Unicity\Throwable;
 
 	/**

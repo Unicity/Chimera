@@ -18,7 +18,6 @@
 
 namespace Unicity\ORM\JSON\Model {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\ORM;
