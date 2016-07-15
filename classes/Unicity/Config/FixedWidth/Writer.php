@@ -107,7 +107,7 @@ namespace Unicity\Config\FixedWidth {
 
 			if (isset($attributes['align'])) {
 				$align = Core\Data\XML::valueOf($attributes['align']);
-				$align = ($align == 'left') ? STR_PAD_LEFT : STR_PAD_RIGHT;
+				$align = ($align == 'left') ? STR_PAD_RIGHT : STR_PAD_LEFT;
 			}
 			else {
 				$align = STR_PAD_RIGHT;
