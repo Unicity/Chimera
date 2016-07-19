@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\SOAP {
 
 	use \Unicity\Core;
