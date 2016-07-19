@@ -60,7 +60,7 @@ namespace Unicity\ORM\JSON\Model {
 		 * @param boolean $case_sensitive                           whether field names are case
 		 *                                                          sensitive
 		 */
-		public function __construct($schema, $case_sensitive = true) {
+		public function __construct($schema, bool $case_sensitive = true) {
 			parent::__construct();
 			$this->schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
 			$this->case_sensitive = Core\Convert::toBoolean($case_sensitive);

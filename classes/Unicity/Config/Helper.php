@@ -81,7 +81,7 @@ namespace Unicity\Config {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
 		public function getValue($path) {
-			$segments = explode('.', $path);
+			$segments = explode('.', (string) $path);
 			if (count($segments) > 0) {
 				$element = $this->collection;
 				foreach ($segments as $segment) {

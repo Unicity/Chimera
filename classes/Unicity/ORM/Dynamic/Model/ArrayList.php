@@ -50,8 +50,8 @@ namespace Unicity\ORM\Dynamic\Model {
 		 * @param boolean $case_sensitive                           whether field names are case
 		 *                                                          sensitive
 		 */
-		public function __construct($elements = null, $case_sensitive = true) {
-			$this->case_sensitive = Core\Convert::toBoolean($case_sensitive);
+		public function __construct($elements = null, bool $case_sensitive = true) {
+			$this->case_sensitive = $case_sensitive;
 			parent::__construct($elements);
 		}
 

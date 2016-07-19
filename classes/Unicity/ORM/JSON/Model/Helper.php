@@ -51,7 +51,7 @@ namespace Unicity\ORM\JSON\Model {
 		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
 		 *                                                          to meet a requirement
 		 */
-		public static function resolveArrayValue($value, $definition, $case_sensitive) {
+		public static function resolveArrayValue($value, $definition, bool $case_sensitive) {
 			if (Core\Data\ToolKit::isUnset($value)) {
 				return $value;
 			}
@@ -324,7 +324,7 @@ namespace Unicity\ORM\JSON\Model {
 		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
 		 *                                                          to meet a requirement
 		 */
-		public static function resolveObjectValue($value, $definition, $case_sensitive) {
+		public static function resolveObjectValue($value, $definition, bool $case_sensitive) {
 			if (Core\Data\ToolKit::isUnset($value)) {
 				return $value;
 			}

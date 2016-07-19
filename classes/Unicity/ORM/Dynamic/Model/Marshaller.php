@@ -56,7 +56,7 @@ namespace Unicity\ORM\Dynamic\Model {
 		 * @param boolean $case_sensitive                           whether keys are to be case sensitive
 		 * @return mixed                                            the converted data
 		 */
-		private static function useCollections($data, $case_sensitive) {
+		private static function useCollections($data, bool $case_sensitive) {
 			if (is_object($data)) {
 				if (($data instanceof Common\IList) || ($data instanceof Common\ISet)) {
 					$buffer = new ORM\Dynamic\Model\ArrayList(null, $case_sensitive);
