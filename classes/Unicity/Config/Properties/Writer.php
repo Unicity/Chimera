@@ -56,7 +56,7 @@ namespace Unicity\Config\Properties {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			$buffer = '';
 			foreach ($this->data as $key => $value) {
 				$this->addProperty($buffer, Core\Convert::toString($key), $value);

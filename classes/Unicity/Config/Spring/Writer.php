@@ -59,7 +59,7 @@ namespace Unicity\Config\Spring {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			$object_exporter = new Spring\XMLObjectExporter($this->data);
 			$object_exporter->encoding = $this->metadata['encoding'];
 			$object_exporter->prototype = $this->metadata['prototype'];

@@ -60,7 +60,7 @@ namespace Unicity\Config\SQL {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			switch ($this->metadata['command']) {
 				case 'update':
 					return call_user_func($this->metadata['builder'] . "::toUpdateStatement", $this);

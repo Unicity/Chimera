@@ -164,7 +164,7 @@ namespace Unicity\Config\SOAP {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			$xml = SOAP\Data\XML::declaration($this->metadata['encoding'][1]);
 			$xml .= '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />';
 			$root = new SOAP\Data\XML($xml);

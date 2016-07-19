@@ -196,9 +196,9 @@ namespace Unicity\Config {
 		 *
 		 * @access public
 		 * @abstract
-		 * @return mixed                                            the processed data
+		 * @return string                                           the processed data
 		 */
-		public abstract function render();
+		public abstract function render() : string;
 
 		/**
 		 * This method saves the data to disk.

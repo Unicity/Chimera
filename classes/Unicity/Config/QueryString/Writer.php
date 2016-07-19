@@ -108,7 +108,7 @@ namespace Unicity\Config\QueryString {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			if (isset($this->metadata['builder'])) {
 				return call_user_func($this->metadata['builder'] . '::toQueryString', $this);
 			}

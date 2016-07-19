@@ -59,7 +59,7 @@ namespace Unicity\Config\HTML {
 		 * @throws \Exception                                       indicates a problem occurred
 		 *                                                          when generating the template
 		 */
-		public function render() {
+		public function render() : string {
 			$declaration = ($this->metadata['declaration'])
 				? '<!DOCTYPE html>' . "\n"
 				: '';

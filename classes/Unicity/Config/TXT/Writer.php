@@ -56,7 +56,7 @@ namespace Unicity\Config\TXT {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			if (isset($this->metadata['builder'])) {
 				return call_user_func($this->metadata['builder'] . "::toTXT", $this);
 			}

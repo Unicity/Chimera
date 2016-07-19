@@ -64,7 +64,7 @@ namespace Unicity\Config\CSV {
 		 * @throws \Exception                                       indicates a problem occurred
 		 *                                                          when generating the template
 		 */
-		public function render() {
+		public function render() : string {
 			$delimiter = $this->metadata['delimiter'];
 			$enclosure = $this->metadata['enclosure'];
 			$escape = $this->metadata['escape'];

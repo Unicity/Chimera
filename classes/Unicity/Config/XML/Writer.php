@@ -64,7 +64,7 @@ namespace Unicity\Config\XML {
 		 * @throws \Exception                                       indicates a problem occurred
 		 *                                                          when generating the template
 		 */
-		public function render() {
+		public function render() : string {
 			$metadata = $this->metadata;
 			$declaration = ($metadata['declaration'])
 				? Core\Data\XML::declaration($metadata['encoding'][1], $metadata['standalone']) . $metadata['eol']

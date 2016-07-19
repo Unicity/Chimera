@@ -52,7 +52,7 @@ namespace Unicity\Config\Object {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			return (string) serialize($this->data);
 		}
 

@@ -321,7 +321,7 @@ namespace Unicity\Config\FixedWidth {
 		 * @throws \Exception                                       indicates that an error occurred
 		 *                                                          when trying to render data
 		 */
-		public function render() {
+		public function render() : string {
 			ob_start();
 			try {
 				$file = new IO\File($this->metadata['template']);

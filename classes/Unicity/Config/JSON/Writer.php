@@ -55,7 +55,7 @@ namespace Unicity\Config\JSON {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			$prefix = (isset($this->metadata['prefix'])) ? $this->metadata['prefix'] : '';
 			$suffix = (isset($this->metadata['suffix'])) ? $this->metadata['suffix'] : '';
 			$options = 0;

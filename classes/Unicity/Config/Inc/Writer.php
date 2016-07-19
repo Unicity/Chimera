@@ -107,7 +107,7 @@ namespace Unicity\Config\Inc {
 		 * @access public
 		 * @return string                                           the processed data
 		 */
-		public function render() {
+		public function render() : string {
 			$buffer  = '<?php' . $this->metadata['eol'] . $this->metadata['eol'];
 			ob_start();
 			echo $this->getSerializedValue($this->data);
