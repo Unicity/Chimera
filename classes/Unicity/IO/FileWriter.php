@@ -136,7 +136,7 @@ namespace Unicity\IO {
 		 */
 		public function open() {
 			if ($this->handle === null) {
-				$this->handle = @fopen($this->file, $this->mode);
+				$this->handle = @fopen((string) $this->file, $this->mode);
 			}
 			return $this;
 		}

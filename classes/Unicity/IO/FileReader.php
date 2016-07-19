@@ -135,7 +135,7 @@ namespace Unicity\IO {
 		 */
 		public function open() {
 			if ($this->handle === null) {
-				$this->handle = @fopen($this->file, 'r');
+				$this->handle = @fopen((string) $this->file, 'r');
 				$this->mark = 0;
 			}
 		}
@@ -182,7 +182,7 @@ namespace Unicity\IO {
 		 * @param integer $position                                 the position from which to read
 		 * @param boolean $advance                                  whether to advance the position
 		 *                                                          after the read
-		 * @return char                                             the next character in the resource
+		 * @return string                                           the next character in the resource
 		 */
 		public function readChar($position = null, $advance = true) {
 			if (is_integer($position)) {
