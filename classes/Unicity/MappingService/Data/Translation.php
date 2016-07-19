@@ -83,7 +83,7 @@ namespace Unicity\MappingService\Data {
 		 * @return \Unicity\MappingService\Data\Metadata            the metadata associated with the
 		 *                                                          translation
 		 */
-		public function getMetadata() {
+		public function getMetadata() : MappingService\Data\Metadata {
 			if ($this->metadata === null) {
 				$this->metadata = new MappingService\Data\Metadata();
 			}
@@ -97,7 +97,7 @@ namespace Unicity\MappingService\Data {
 		 * @access public
 		 * @return \Unicity\MappingService\Data\Field               the data in the canonical format
 		 */
-		public function toCanonicalFormat() {
+		public function toCanonicalFormat() : MappingService\Data\Field {
 			$field = new MappingService\Data\Field(MappingService\Data\FormatType::canonical(), $this->field);
 			$field->setInfo($this->field->getInfo());
 			return $field;
@@ -110,7 +110,7 @@ namespace Unicity\MappingService\Data {
 		 * @access public
 		 * @return \Unicity\MappingService\Data\Field               the data in the model's format
 		 */
-		public function toModelFormat() {
+		public function toModelFormat() : MappingService\Data\Field {
 			$field = new MappingService\Data\Field(MappingService\Data\FormatType::model(), $this->field);
 			$field->setInfo($this->field->getInfo());
 			return $field;
@@ -126,7 +126,7 @@ namespace Unicity\MappingService\Data {
 		 *                                                          translation
 		 * @return \Unicity\MappingService\Data\Translation         a new instance of this class
 		 */
-		public static function factory(MappingService\Data\Field $field, MappingService\Data\Metadata $metadata = null) {
+		public static function factory(MappingService\Data\Field $field, MappingService\Data\Metadata $metadata = null) : MappingService\Data\Translation {
 			return new static($field, $metadata);
 		}
 

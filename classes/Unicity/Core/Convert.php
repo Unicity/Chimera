@@ -118,7 +118,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toArray($value) {
+		public static function toArray($value) : array {
 			$type = gettype($value);
 			switch ($type) {
 				case 'array':
@@ -150,7 +150,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toBoolean($value) {
+		public static function toBoolean($value) : bool {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':
@@ -184,11 +184,11 @@ namespace Unicity\Core {
 		 * @access public
 		 * @static
 		 * @param mixed $value                                      the value to be converted
-		 * @return char                                             the equivalent char representation
+		 * @return string                                           the equivalent char representation
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toChar($value) {
+		public static function toChar($value) : string {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':
@@ -231,7 +231,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toDateTime($value, $format = 'c') {
+		public static function toDateTime($value, $format = 'c') : string {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':
@@ -273,7 +273,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toDictionary($value) {
+		public static function toDictionary($value) : array {
 			$type = gettype($value);
 			switch ($type) {
 				case 'array':
@@ -303,7 +303,7 @@ namespace Unicity\Core {
 		 *
 		 * @see http://php.net/manual/en/numberformatter.parse.php
 		 */
-		public static function toDouble($value) {
+		public static function toDouble($value) : float {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':
@@ -350,7 +350,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toInteger($value) {
+		public static function toInteger($value) : int {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':
@@ -392,7 +392,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toList($value) {
+		public static function toList($value) : Common\IList {
 			$type = gettype($value);
 			switch ($type) {
 				case 'array':
@@ -426,7 +426,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toMap($value) {
+		public static function toMap($value) : Common\IMap {
 			$type = gettype($value);
 			switch ($type) {
 				case 'array':
@@ -486,7 +486,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toOrdinal($value) {
+		public static function toOrdinal($value) : int {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':
@@ -527,11 +527,11 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toSet($value) {
+		public static function toSet($value) : Common\ISet {
 			$type = gettype($value);
 			switch ($type) {
 				case 'array':
-					return new Common\Mutable\ArrayList($value);
+					return new Common\Mutable\HashSet($value);
 				case 'object':
 					if (method_exists($value, 'toArray')) {
 						return new Common\Mutable\HashSet($value->toArray());
@@ -561,7 +561,7 @@ namespace Unicity\Core {
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the value could not
 		 *                                                          be converted
 		 */
-		public static function toString($value) {
+		public static function toString($value) : string {
 			$type = gettype($value);
 			switch ($type) {
 				case 'boolean':

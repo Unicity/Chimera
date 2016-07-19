@@ -166,7 +166,7 @@ namespace Unicity\MappingService\Data {
 		 * @param string $method                                    the name of the method
 		 * @return boolean                                          whether the specified method exists
 		 */
-		public function __hasMethod($method) {
+		public function __hasMethod(string $method) : bool {
 			if (method_exists($this, $method)) {
 				$reflection = new \ReflectionMethod($this, $method);
 				return $reflection->isPublic();

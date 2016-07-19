@@ -113,7 +113,7 @@ namespace Unicity\Core {
 		 * @static
 		 * @return string
 		 */
-		public static function now() {
+		public static function now() : string {
 			return date('Y-m-d H:i:s');
 		}
 
@@ -124,7 +124,7 @@ namespace Unicity\Core {
 		 * @static
 		 * @return string
 		 */
-		public static function timeOfDay() {
+		public static function timeOfDay() : string {
 			return date('H:i:s');
 		}
 
@@ -135,7 +135,7 @@ namespace Unicity\Core {
 		 * @static
 		 * @return string
 		 */
-		public static function today() {
+		public static function today() : string {
 			return date('Y-m-d 00:00:00');
 		}
 
@@ -147,7 +147,7 @@ namespace Unicity\Core {
 		 * @param string &$output                                   the output after parsing the value
 		 * @return boolean                                          whether the value could be parsed
 		 */
-		public static function tryParse($value, &$output) {
+		public static function tryParse($value, &$output) : bool {
 			$info = date_parse($value);
 			if (($info['error_count'] > 0) /*|| ($info['warning_count'] > 0)*/) {
 				return false;

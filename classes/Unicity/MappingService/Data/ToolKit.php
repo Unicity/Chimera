@@ -183,7 +183,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value is "empty"
 		 */
-		public static function isEmpty($value) {
+		public static function isEmpty($value) : bool {
 			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (Common\StringRef::isTypeOf($value) && ($value == '')));
 		}
 
@@ -196,7 +196,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value is "false"
 		 */
-		public static function isFalse($value) {
+		public static function isFalse($value) : bool {
 			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || !$value);
 		}
 
@@ -208,7 +208,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value is "null"
 		 */
-		public static function isNull($value) {
+		public static function isNull($value) : bool {
 			return ($value === null);
 		}
 
@@ -220,7 +220,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value is "undefined"
 		 */
-		public static function isUndefined($value) {
+		public static function isUndefined($value) : bool {
 			return Core\Data\Undefined::instance()->__equals($value);
 		}
 
@@ -232,7 +232,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value is "unset"
 		 */
-		public static function isUnset($value) {
+		public static function isUnset($value) : bool {
 			return (($value === null) || Core\Data\Undefined::instance()->__equals($value));
 		}
 
@@ -245,7 +245,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value is "zero"
 		 */
-		public static function isZero($value) {
+		public static function isZero($value) : bool {
 			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (is_numeric($value) && ($value == 0)));
 		}
 
@@ -258,7 +258,7 @@ namespace Unicity\MappingService\Data {
 		 * @param integer $length                                   the length to truncate at
 		 * @return string                                           the processed value
 		 */
-		public static function truncate($value, $length) {
+		public static function truncate(string $value, int $length) : string {
 			return (strlen($value) <= $length) ? $value : substr($value, 0, $length);
 		}
 
