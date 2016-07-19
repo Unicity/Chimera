@@ -55,7 +55,7 @@ namespace Unicity\Config\Object {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$buffer = file_get_contents($this->file);
+			$buffer = file_get_contents((string) $this->file);
 
 			if ($this->metadata['bom']) {
 				$buffer = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $buffer);

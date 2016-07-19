@@ -40,7 +40,6 @@ namespace Unicity\Config\WDDX {
 	 */
 	class Reader extends Config\Reader {
 
-
 		/**
 		 * This constructor initializes the class with the specified resource.
 		 *
@@ -472,7 +471,7 @@ namespace Unicity\Config\WDDX {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$buffer = file_get_contents($this->file);
+			$buffer = file_get_contents((string) $this->file);
 
 			if ($this->metadata['bom']) {
 				$buffer = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $buffer);
