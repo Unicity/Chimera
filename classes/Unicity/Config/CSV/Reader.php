@@ -73,7 +73,7 @@ namespace Unicity\Config\CSV {
 			$headers = array();
 
 			IO\FileReader::read($this->file, function($reader, $data, $index) use ($self, $procedure, &$headers) {
-				$line = trim($data);
+				$line = trim((string) $data);
 				if (strlen($line) > 0) {
 					if ($index == 0) {
 						if ($self->bom) {
