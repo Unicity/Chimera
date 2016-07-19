@@ -209,7 +209,7 @@ namespace Unicity\IO {
 		 */
 		public function readLine() {
 			if (!$this->isDone()) {
-				ini_set('auto_detect_line_endings', true);
+				ini_set('auto_detect_line_endings', '1');
 				return fgets($this->handle);
 			}
 			return null;
