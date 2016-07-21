@@ -404,7 +404,7 @@ namespace Unicity\Common {
 		 */
 		public function replaceRegex($regex, $replacement, $limit = null) {
 			$buffer = ($limit !== null)
-				? preg_replace($regex, $replacement, $this->string, $limit)
+				? preg_replace($regex, $replacement, $this->string, (int) $limit)
 				: preg_replace($regex, $replacement, $this->string);
 			$object = new static($buffer);
 			return $object;
