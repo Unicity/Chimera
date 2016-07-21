@@ -48,6 +48,7 @@ namespace Unicity\Config\CSV {
 				'eol' => "\n",
 				'escape' => '\\',
 				'ext' => '.csv',
+				'filter' => null, // callable
 				'header' => true,
 				'headings' => array(),
 				'mime' => 'text/csv',
@@ -74,17 +75,17 @@ namespace Unicity\Config\CSV {
 			try {
 				if (!empty($this->metadata['template'])) {
 					$file = new IO\File($this->metadata['template']);
-					$mustache = new \Mustache_Engine(array(
-						'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
-						'escape' => function ($field) use ($delimiter, $enclosure, $escape, $encoding) {
+					if (!is_callable($this->metadata['filter'])) {
+						$filter = function ($field) use ($delimiter, $enclosure, $escape, $encoding) {
 							$value = Core\Data\Charset::encode($field, $encoding[0], $encoding[1]);
 							if (($enclosure != '') &&
 								((strpos($value, $delimiter) !== false) ||
-								(strpos($value, $enclosure) !== false) ||
-								(strpos($value, "\n") !== false) ||
-								(strpos($value, "\r") !== false) ||
-								(strpos($value, "\t") !== false) ||
-								(strpos($value, ' ') !== false))) {
+									(strpos($value, $enclosure) !== false) ||
+									(strpos($value, "\n") !== false) ||
+									(strpos($value, "\r") !== false) ||
+									(strpos($value, "\t") !== false) ||
+									(strpos($value, ' ') !== false))
+							) {
 								$literal = $enclosure;
 								$escaped = 0;
 								$length = strlen($value);
@@ -106,7 +107,14 @@ namespace Unicity\Config\CSV {
 							else {
 								return Core\Convert::toString($value);
 							}
-						},
+						};
+					}
+					else {
+						$filter = $this->metadata['filter'];
+					}
+					$mustache = new \Mustache_Engine(array(
+						'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
+						'escape' => $filter,
 					));
 					echo $mustache->render($file->getFileName(), $this->data);
 				}
@@ -156,11 +164,11 @@ namespace Unicity\Config\CSV {
 				$value = Core\Data\Charset::encode($field, $encoding[0], $encoding[1]);
 				if (($enclosure != '') &&
 					((strpos($value, $delimiter) !== false) ||
-					(strpos($value, $enclosure) !== false) ||
-					(strpos($value, "\n") !== false) ||
-					(strpos($value, "\r") !== false) ||
-					(strpos($value, "\t") !== false) ||
-					(strpos($value, ' ') !== false))) {
+						(strpos($value, $enclosure) !== false) ||
+						(strpos($value, "\n") !== false) ||
+						(strpos($value, "\r") !== false) ||
+						(strpos($value, "\t") !== false) ||
+						(strpos($value, ' ') !== false))) {
 					$literal = $enclosure;
 					$escaped = 0;
 					$length = strlen($value);
