@@ -171,7 +171,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 					$this->elements[$index] = $value;
 					return $value;
 				}
-				throw new Throwable\OutOfBounds\Exception('Unable to get element. Undefined index at ":index" specified', array(':index' => $index));
+				return Core\Data\Undefined::instance();
 			}
 			throw new Throwable\InvalidArgument\Exception('Unable to get element. ":type" is of the wrong data type.', array(':type' => Core\DataType::info($index)->type));
 		}

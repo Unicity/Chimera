@@ -76,6 +76,25 @@ namespace Unicity\MappingService\Data\Model\Dynamic {
 			unset($this->case_sensitive);
 		}
 
+		/**
+		 * This method returns the element at the the specified index.
+		 *
+		 * @access public
+		 * @param integer $index                                    the index of the element
+		 * @return mixed                                            the element at the specified index
+		 * @throws Throwable\InvalidArgument\Exception              indicates that an index must be an integer
+		 * @throws Throwable\OutOfBounds\Exception                  indicates that the index is out of bounds
+		 */
+		public function getValue($index) {
+			if (!is_integer($index)) {
+				throw new Throwable\InvalidArgument\Exception('Unable to get element. :type is of the wrong data type.', array(':type' => Core\DataType::info($index)->type));
+			}
+			if (array_key_exists($index, $this->elements)) {
+				return $this->elements[$index];
+			}
+			return Core\Data\Undefined::instance();
+		}
+
 	}
 
 }
