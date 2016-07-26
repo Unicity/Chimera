@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\MappingService\Data\Model\Dynamic {
 
 	use \Unicity\Common;
-	use \Unicity\Config;
 	use \Unicity\Core;
-	use \Unicity\IO;
 	use \Unicity\MappingService;
 	use \Unicity\Throwable;
 
