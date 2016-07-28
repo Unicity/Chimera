@@ -62,7 +62,7 @@ namespace Unicity\IO {
 		 * This variable stores the mode at which to access the resource.
 		 *
 		 * @access protected
-		 * @var char
+		 * @var string
 		 */
 		protected $mode;
 

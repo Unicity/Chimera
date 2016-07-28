@@ -46,7 +46,7 @@ namespace Unicity\Barcode\Code128 {
 		 * string.
 		 *
 		 * @access protected
-		 * @var char
+		 * @var string
 		 */
 		protected $charset; // A, B, C
 

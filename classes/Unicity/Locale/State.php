@@ -107,12 +107,22 @@ namespace Unicity\Locale {
 				$state = Core\Convert::toString($state);
 				$state = preg_replace('/\s+/', ' ', trim($state));
 
-				$records = DB\SQL::select('locale')
+				$sql = DB\SQL::select('locale')
 					->from('States')
-					->where('StateCode', '=', strtoupper($state))
 					->where('CountryNumeric3', '=', $country)
-					->limit(1)
-					->query();
+					->limit(1);
+
+				if (preg_match('/^[A-Z]{3}$/i', $state)) {
+					$sql = $sql->where('StateAlpha3', '=', strtoupper($state));
+				}
+				else if (preg_match('/^[A-Z]{2}$/i', $state)) {
+					$sql = $sql->where('StateAlpha2', '=', strtoupper($state));
+				}
+				else {
+					$sql = $sql->where('StateCode', '=', strtoupper($state));
+				}
+
+				$records = $sql->query();
 
 				if ($records->is_loaded()) {
 					return $records->current();

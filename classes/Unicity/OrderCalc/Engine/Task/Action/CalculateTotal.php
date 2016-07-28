@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Trade;
 
 	class CalculateTotal extends BT\Task\Action {
 

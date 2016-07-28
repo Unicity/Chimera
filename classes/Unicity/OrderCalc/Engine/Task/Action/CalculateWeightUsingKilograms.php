@@ -21,8 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Engine\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\Trade;
 
 	class CalculateWeightUsingKilograms extends BT\Task\Action {
 
