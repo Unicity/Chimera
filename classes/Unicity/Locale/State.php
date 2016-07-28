@@ -112,14 +112,16 @@ namespace Unicity\Locale {
 					->where('CountryNumeric3', '=', $country)
 					->limit(1);
 
-				if (preg_match('/^[A-Z]{3}$/i', $state)) {
-					$sql = $sql->where('StateAlpha3', '=', strtoupper($state));
+				$code = preg_replace('/[:punct:]|+/', '', $state);
+
+				if (preg_match('/^[A-Z]{3}$/i', $code)) {
+					$sql = $sql->where('StateAlpha3', '=', strtoupper($code));
 				}
-				else if (preg_match('/^[A-Z]{2}$/i', $state)) {
-					$sql = $sql->where('StateAlpha2', '=', strtoupper($state));
+				else if (preg_match('/^[A-Z]{2}$/i', $code)) {
+					$sql = $sql->where('StateAlpha2', '=', strtoupper($code));
 				}
 				else {
-					$sql = $sql->where('StateCode', '=', strtoupper($state));
+					$sql = $sql->where('StateCode', '=', strtoupper($code));
 				}
 
 				$records = $sql->query();
