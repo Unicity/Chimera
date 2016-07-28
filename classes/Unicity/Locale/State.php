@@ -112,7 +112,13 @@ namespace Unicity\Locale {
 					->where('CountryNumeric3', '=', $country)
 					->limit(1);
 
-				$code = preg_replace('/[:punct:]+/', '', $state);
+				$code = preg_replace_callback('/./u', function (array $match) {
+					$char = $match[0];
+					if (ctype_punct($char)) {
+						return '';
+					}
+					return $char;
+				}, $state);
 
 				if (preg_match('/^[A-Z]{3}$/i', $code)) {
 					$sql = $sql->where('StateAlpha3', '=', strtoupper($code));
