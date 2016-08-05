@@ -168,6 +168,9 @@ namespace Unicity\Core {
 					else if ($value instanceof Common\StringRef) {
 						return static::toBoolean($value->__toString());
 					}
+					else if ($value instanceof Core\Data\Undefined) {
+						return false;
+					}
 					else {
 						throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a boolean.', array(':type' => get_class($value)));
 					}
