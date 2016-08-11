@@ -22,7 +22,7 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 
 	use \Unicity\BT;
 
-	class HasPaymentMethod extends BT\Task\Guard {
+	class HasPaymentMethodMissing extends BT\Task\Guard {
 
 		/**
 		 * This method processes an entity.
