@@ -36,7 +36,7 @@ namespace Unicity\Spring\Data {
 		 *
 		 * @const string
 		 */
-		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/spring.xsd';
+		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/php/spring.xsd';
 
 		/**
 		 * This method retypes any objects matching either the type mappings or name mappings.

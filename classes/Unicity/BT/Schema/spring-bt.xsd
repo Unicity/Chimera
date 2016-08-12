@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema
-	xmlns="http://static.unicity.com/modules/xsd/spring-bt.xsd"
+	xmlns="http://static.unicity.com/modules/xsd/php/spring-bt.xsd"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:spring="http://static.unicity.com/modules/xsd/spring.xsd"
-	targetNamespace="http://static.unicity.com/modules/xsd/spring-bt.xsd"
+	xmlns:spring="http://static.unicity.com/modules/xsd/php/spring.xsd"
+	targetNamespace="http://static.unicity.com/modules/xsd/php/spring-bt.xsd"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 	<!-- Import Schema -->
-	<xsd:import namespace="http://static.unicity.com/modules/xsd/spring.xsd" schemaLocation="http://static.unicity.com/modules/xsd/spring.xsd" />
+	<xsd:import namespace="http://static.unicity.com/modules/xsd/php/spring.xsd" schemaLocation="http://static.unicity.com/modules/xsd/php/spring.xsd" />
 	<!-- Root Elements -->
 	<xsd:element name="action" type="action" />
 	<xsd:element name="branch" type="branch" />

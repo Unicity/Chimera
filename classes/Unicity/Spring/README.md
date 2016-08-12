@@ -423,10 +423,10 @@ Attributes:
 
 | Attribute  | Type   | Values                         | Description                                           | Required   |
 | :--------: | :----: | :----------------------------: | :---------------------------------------------------: | :--------: |
-| `xmlns`    | string | http://static.unicity.com/modules/xsd/spring.xsd | Defines the default namespace for Spring XML. | Yes |
+| `xmlns`    | string | http://static.unicity.com/modules/xsd/php/spring.xsd | Defines the default namespace for Spring XML. | Yes |
 | `xmlns:xsi` | string | http://www.w3.org/2001/XMLSchema-instance | Defines the namespace for an XML schema instance. | Yes |
-| `xmlns:spring` | string | http://static.unicity.com/modules/xsd/spring.xsd | Defines the namespace for Spring XML. | Yes  |
-| `xsi:schemaLocation` | string | http://static.unicity.com/modules/xsd/spring.xsd http://static.unicity.com/modules/xsd/spring.xsd | Yes |
+| `xmlns:spring` | string | http://static.unicity.com/modules/xsd/php/spring.xsd | Defines the namespace for Spring XML. | Yes  |
+| `xsi:schemaLocation` | string | http://static.unicity.com/modules/xsd/php/spring.xsd http://static.unicity.com/modules/xsd/php/spring.xsd | Yes |
 
 Children:
 

@@ -37,7 +37,7 @@ namespace Unicity\BT {
 		 *
 		 * @const string
 		 */
-		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/spring-bt.xsd';
+		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/php/spring-bt.xsd';
 
 	}
 

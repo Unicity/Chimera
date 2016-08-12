@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema
-	xmlns="http://static.unicity.com/modules/xsd/spring.xsd"
+	xmlns="http://static.unicity.com/modules/xsd/php/spring.xsd"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://static.unicity.com/modules/xsd/spring.xsd"
+	targetNamespace="http://static.unicity.com/modules/xsd/php/spring.xsd"
 	elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
 	<!-- Root Element -->
