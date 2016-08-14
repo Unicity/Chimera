@@ -42,7 +42,7 @@ namespace Unicity\BT\Task {
 		public function process(BT\Engine $engine, string $entityId) {
 			$status = BT\Task\Handler::process($this->task, $engine, $entityId);
 			if ($status == BT\Status::SUCCESS) {
-				$this->task->reset();
+				$this->task->reset($engine);
 			}
 			return $status;
 		}

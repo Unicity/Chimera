@@ -38,7 +38,7 @@ namespace Unicity\BT\Task {
 		 * This variable stores the time of when the ticker will tick next.
 		 *
 		 * @access protected
-		 * @var mixed
+		 * @var float
 		 */
 		protected $next_time;
 
@@ -93,7 +93,7 @@ namespace Unicity\BT\Task {
 		 * @param BT\Engine $engine                                 the engine
 		 */
 		public function reset(BT\Engine $engine) {
-			$this->start_time = microtime(true) + (Core\Convert::toInteger($this->policy->getValue('interval')) / 1000);
+			$this->next_time = microtime(true) + (Core\Convert::toInteger($this->policy->getValue('interval')) / 1000);
 		}
 
 	}

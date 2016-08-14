@@ -22,7 +22,6 @@ namespace Unicity\BT\Object\Factory {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
-	use \Unicity\Core;
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 

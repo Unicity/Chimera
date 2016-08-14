@@ -38,7 +38,7 @@ namespace Unicity\BT\Task {
 		 * This variable stores the time of when the timer started.
 		 *
 		 * @access protected
-		 * @var mixed
+		 * @var float
 		 */
 		protected $start_time;
 

@@ -38,7 +38,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @var integer
 		 */
-		protected $status;
+		protected $state;
 
 		/**
 		 * This constructor initializes the class with the specified parameters.

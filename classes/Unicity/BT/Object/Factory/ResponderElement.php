@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\BT\Object\Factory {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 

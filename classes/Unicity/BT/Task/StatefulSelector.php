@@ -22,7 +22,6 @@ namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
-	use \Unicity\Core;
 
 	/**
 	 * This class represents a task stateful selector.
@@ -38,7 +37,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @var integer
 		 */
-		protected $status;
+		protected $state;
 
 		/**
 		 * This constructor initializes the class with the specified parameters.

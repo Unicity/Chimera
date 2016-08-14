@@ -40,14 +40,14 @@ namespace Unicity\BT\Task {
 		 */
 		public function __construct(Common\Mutable\IMap $policy = null) {
 			parent::__construct($policy);
+			if (!$this->policy->hasKey('active')) {
+				$this->policy->putEntry('acitve', false);
+			}
 			if (!$this->policy->hasKey('error')) {
 				$this->policy->putEntry('error', false);
 			}
 			if (!$this->policy->hasKey('inactive')) {
 				$this->policy->putEntry('inactive', false);
-			}
-			if (!$this->policy->hasKey('active')) {
-				$this->policy->putEntry('acitve', false);
 			}
 			if (!$this->policy->hasKey('success')) {
 				$this->policy->putEntry('success', true);

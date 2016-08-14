@@ -118,7 +118,7 @@ namespace Unicity\BT {
 		/**
 		 * This method return the weight given to this task.
 		 *
-		 * @acces public
+		 * @access public
 		 * @return double                                           the weight given to this task
 		 */
 		public function getWeight() {
@@ -171,7 +171,7 @@ namespace Unicity\BT {
 		/**
 		 * This method returns a string representing this task.
 		 *
-		 * @acces public
+		 * @access public
 		 * @return string                                           a string representing this task
 		 */
 		public function __toString() {

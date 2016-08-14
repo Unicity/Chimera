@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\BT\Task {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
 
 	class GetComponentPath extends BT\Task\Action {
 

@@ -80,7 +80,7 @@ namespace Unicity\BT\Task {
 		 */
 		public function isEnabled() {
 			if ($this->policy->hasKey('enabled')) {
-				Core\Convert::toBoolean($this->policy->getValue('enabled'));
+				return Core\Convert::toBoolean($this->policy->getValue('enabled'));
 			}
 			return true;
 		}
