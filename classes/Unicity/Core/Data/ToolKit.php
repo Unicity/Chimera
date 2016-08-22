@@ -245,7 +245,7 @@ namespace Unicity\Core\Data {
 		 * @return boolean                                          whether the value is "zero"
 		 */
 		public static function isZero($value) : bool {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (is_numeric($value) && ($value == 0)));
+			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (is_numeric($value) && ((float) $value == 0.0)));
 		}
 
 		/**
