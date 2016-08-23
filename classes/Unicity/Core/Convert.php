@@ -324,6 +324,9 @@ namespace Unicity\Core {
 					else if ($value instanceof Common\StringRef) {
 						return static::toDouble($value->__toString());
 					}
+					else if ($value instanceof Core\Data\Undefined) {
+						return 0.0;
+					}
 					else {
 						throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a double.', array(':type' => get_class($value)));
 					}
@@ -370,6 +373,9 @@ namespace Unicity\Core {
 					}
 					else if ($value instanceof Common\StringRef) {
 						return static::toInteger($value->__toString());
+					}
+					else if ($value instanceof Core\Data\Undefined) {
+						return 0;
 					}
 					else {
 						throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to an integer.', array(':type' => get_class($value)));
