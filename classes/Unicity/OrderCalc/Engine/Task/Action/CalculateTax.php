@@ -40,6 +40,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$tax_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 
 			$order->terms->tax->amount = Trade\Money::make($order->terms->subtotal, $order->currency)
+				->subtract(Trade\Money::make($order->terms->discount->amount, $order->currency))
 				->add(Trade\Money::make($order->terms->freight->amount, $order->currency))
 				->multiply($tax_rate)
 				->getConvertedAmount();
