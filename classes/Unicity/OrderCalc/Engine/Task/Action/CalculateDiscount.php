@@ -24,7 +24,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\Core;
 	use \Unicity\Trade;
 
-	class CalculatePretotal extends BT\Task\Action {
+	class CalculateDiscount extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
