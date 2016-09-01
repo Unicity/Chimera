@@ -37,6 +37,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
 			$order->terms->pretotal = Trade\Money::make($order->terms->subtotal, $order->currency)
+				->subtract(Trade\Money::make($order->terms->discount->amount, $order->currency))
 				->add(Trade\Money::make($order->terms->freight->amount, $order->currency))
 				->add(Trade\Money::make($order->terms->tax->amount, $order->currency))
 				->getConvertedAmount();
