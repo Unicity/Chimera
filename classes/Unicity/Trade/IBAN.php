@@ -109,9 +109,11 @@ namespace Unicity\Trade {
 		 * @param string $value                                     the value to be evaluated
 		 * @return boolean                                          whether the specified value
 		 *                                                          is a valid IBAN
+		 *
+		 * @see https://en.wikipedia.org/wiki/International_Bank_Account_Number
 		 */
 		public static function isValid($value) {
-			return (is_string($value) && preg_match('/^[a-z]{2}[0-9]{2}[a-z0-9]{4}[0-9]{7}([a-z0-9]?){0,16}$/i', $value));
+			return (is_string($value) && preg_match('/^[a-z]{2}[0-9]{2}[a-z0-9]{8,27}$/i', $value));
 		}
 
 	}
