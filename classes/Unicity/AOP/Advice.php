@@ -149,14 +149,14 @@ namespace Unicity\AOP {
 		}
 
 		/**
-		 * This method binds the concern to the advice.
+		 * This method execute the concern.
 		 *
 		 * @access public
 		 * @param callable $concern                                 the concern to be bound
 		 * @param boolean $enabled                                  whether the advice is applied
 		 * @return mixed                                            the returned result of the concern
 		 */
-		public function bind($concern, $enabled = true) {
+		public function execute($concern, $enabled = true) {
 			$joinPoint = &$this->joinPoint;
 
 			if ($enabled) {

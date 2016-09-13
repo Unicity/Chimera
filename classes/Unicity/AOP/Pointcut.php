@@ -50,6 +50,16 @@ namespace Unicity\AOP {
 		}
 
 		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->expression);
+		}
+
+		/**
 		 * This method returns the expression to be processed.
 		 *
 		 * @access public

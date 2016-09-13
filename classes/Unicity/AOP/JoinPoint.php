@@ -209,7 +209,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param callable $closure                                 the closure to be called
 		 */
-		public function setAroundClosure(callable $closure) {
+		public function setAroundClosure(callable $closure = null) {
 			$this->closure = $closure;
 		}
 
@@ -229,7 +229,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param \Exception $exception                             the exception to be set
 		 */
-		public function setException(\Exception $exception) {
+		public function setException(\Exception $exception = null) {
 			$this->exception = $exception;
 		}
 
