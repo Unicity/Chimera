@@ -33,9 +33,9 @@ namespace Unicity\AOP {
 	class Pointcut extends Core\Object {
 
 		/**
-		 * This variable stores the expression
+		 * This variable stores the expression.
 		 *
-		 * @var string
+		 * @var mixed
 		 */
 		protected $expression;
 
@@ -43,9 +43,9 @@ namespace Unicity\AOP {
 		 * This constructor initializes the class with an expression.
 		 *
 		 * @access public
-		 * @param string $expression                                the expression to be processed
+		 * @param mixed $expression                                 the expression to be processed
 		 */
-		public function __construct(string $expression) {
+		public function __construct($expression) {
 			$this->expression = $expression;
 		}
 
@@ -53,7 +53,7 @@ namespace Unicity\AOP {
 		 * This method returns the expression to be processed.
 		 *
 		 * @access public
-		 * @return string                                           the expression to be processed
+		 * @return mixed                                            the expression to be processed
 		 */
 		public function getExpression() {
 			return $this->expression;
