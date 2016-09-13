@@ -302,7 +302,7 @@ namespace Unicity\Spring\Object {
 			$key = array($this->getElementName($element), $this->getElementNamespace($element));
 
 			if (!$this->registry->hasKey($key)) {
-				throw new Throwable\Parse\Exception('Unable to parse Spring XML. Element has not been registered.', array(':name' => $this->getElementPrefixedName($element)));
+				throw new Throwable\Parse\Exception('Unable to parse Spring XML. Element ":name" has not been registered.', array(':name' => $this->getElementPrefixedName($element)));
 			}
 
 			$factory = $this->registry->getValue($key);
