@@ -38,7 +38,7 @@ namespace Unicity\AOP {
 		 * This variable stores a reference to the join point.
 		 *
 		 * @access protected
-		 * @var \Unicity\AOP\JoinPoint                              the join point being used
+		 * @var AOP\JoinPoint                                       the join point being used
 		 */
 		protected $joinPoint;
 
@@ -55,7 +55,7 @@ namespace Unicity\AOP {
 		 * This constructor initializes the class with a join point.
 		 *
 		 * @access public
-		 * @param \Unicity\AOP\JoinPoint $joinPoint                 the join point being used
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function __construct(AOP\JoinPoint $joinPoint) {
 			$this->joinPoint = $joinPoint;
@@ -78,10 +78,10 @@ namespace Unicity\AOP {
 		 * the concern's execution.
 		 *
 		 * @access public
-		 * @param array $pointcut                                   the pointcut to be used
-		 * @return \Unicity\AOP\Advice                              a reference to the current instance
+		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
+		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function before(array $pointcut) {
+		public function before(AOP\Pointcut $pointcut) {
 			if ($pointcut !== null) {
 				$this->pointcuts['Before'][] = $pointcut;
 			}
@@ -93,10 +93,10 @@ namespace Unicity\AOP {
 		 * when the concern's execution is successful (and a result is returned).
 		 *
 		 * @access public
-		 * @param array $pointcut                                   the pointcut to be used
-		 * @return \Unicity\AOP\Advice                              a reference to the current instance
+		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
+		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function afterReturning(array $pointcut) {
+		public function afterReturning(AOP\Pointcut $pointcut) {
 			if ($pointcut !== null) {
 				$this->pointcuts['AfterReturning'][] = $pointcut;
 			}
@@ -108,10 +108,10 @@ namespace Unicity\AOP {
 		 * when the concern's throws an exception.
 		 *
 		 * @access public
-		 * @param array $pointcut                                   the pointcut to be used
-		 * @return \Unicity\AOP\Advice                              a reference to the current instance
+		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
+		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function afterThrowing(array $pointcut) {
+		public function afterThrowing(AOP\Pointcut $pointcut) {
 			if ($pointcut !== null) {
 				$this->pointcuts['AfterThrowing'][] = $pointcut;
 			}
@@ -123,10 +123,10 @@ namespace Unicity\AOP {
 		 * concern's execution is finished (even if an exception was thrown).
 		 *
 		 * @access public
-		 * @param array $pointcut                                   the pointcut to be used
-		 * @return \Unicity\AOP\Advice                              a reference to the current instance
+		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
+		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function after(array $pointcut) {
+		public function after(AOP\Pointcut $pointcut) {
 			if ($pointcut !== null) {
 				$this->pointcuts['After'][] = $pointcut;
 			}
@@ -138,10 +138,10 @@ namespace Unicity\AOP {
 		 * (i.e before and after) the other advice types and the concern's execution.
 		 *
 		 * @access public
-		 * @param array $pointcut                                   the pointcut to be used
-		 * @return \Unicity\AOP\Advice                              a reference to the current instance
+		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
+		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function around(array $pointcut) {
+		public function around(AOP\Pointcut $pointcut) {
 			if ($pointcut !== null) {
 				$this->pointcuts['Around'][] = $pointcut;
 			}
@@ -167,10 +167,9 @@ namespace Unicity\AOP {
 			
 					if (isset($pointcuts['Before'])) {			
 						foreach ($pointcuts['Before'] as $pointcut) {
-								$joinPoint->setAdviceType(AOP\AdviceType::before());
-								$joinPoint->setPointcut($pointcut);
-								$method = $pointcut['method'];
-								$method($joinPoint);
+							$joinPoint->setAdviceType(AOP\AdviceType::before());
+							$joinPoint->setPointcut($pointcut);
+							$pointcut($joinPoint);
 						}
 					}
 
@@ -183,8 +182,7 @@ namespace Unicity\AOP {
 							foreach ($pointcuts['AfterReturning'] as $pointcut) {
 								$joinPoint->setAdviceType(AOP\AdviceType::afterReturning());
 								$joinPoint->setPointcut($pointcut);
-								$method = $pointcut['method'];
-								$method($joinPoint);
+								$pointcut($joinPoint);
 							}
 						}
 	
@@ -196,8 +194,7 @@ namespace Unicity\AOP {
 							foreach ($pointcuts['AfterThrowing'] as $pointcut) {
 								$joinPoint->setAdviceType(AOP\AdviceType::afterThrowing());
 								$joinPoint->setPointcut($pointcut);
-								$method = $pointcut['method'];
-								$method($joinPoint);
+								$pointcut($joinPoint);
 							}
 						}
 
@@ -207,8 +204,7 @@ namespace Unicity\AOP {
 							foreach ($pointcuts['After'] as $pointcut) {
 								$joinPoint->setAdviceType(AOP\AdviceType::after());
 								$joinPoint->setPointcut($pointcut);
-								$method = $pointcut['method'];
-								$method($joinPoint);
+								$pointcut($joinPoint);
 							}
 						}
 					//}
@@ -224,8 +220,7 @@ namespace Unicity\AOP {
 						$joinPoint->setAdviceType(AOP\AdviceType::around());
 						$joinPoint->setAroundClosure($closure);
 						$joinPoint->setPointcut($pointcut);
-						$method = $pointcut['method'];
-						$method($joinPoint);
+						$pointcut($joinPoint);
 					}
 				}
 				else {
@@ -244,8 +239,8 @@ namespace Unicity\AOP {
 		 *
 		 * @access public
 		 * @static
-		 * @param \Unicity\AOP\JoinPoint $joinPoint                 the join point being used
-		 * @return \Unicity\AOP\Advice                              a new instance of this class
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 * @return AOP\Advice                                       a new instance of this class
 		 */
 		public static function factory(AOP\JoinPoint $joinPoint) {
 			return new static($joinPoint);

@@ -71,7 +71,7 @@ namespace Unicity\AOP {
 		 * This variable stores the pointcut currently being used.
 		 *
 		 * @access protected
-		 * @var array                                               the point currently being used
+		 * @var AOP\Pointcut                                        the point currently being used
 		 */
 		protected $pointcut;
 
@@ -135,7 +135,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @return AOP\AdviceType                                   the advice type token
 		 */
-		public function getAdviceType() {
+		public function getAdviceType() : AOP\AdviceType {
 			return $this->adviceType;
 		}
 
@@ -158,7 +158,7 @@ namespace Unicity\AOP {
 		 * @param integer $index                                    the index in the argument array
 		 * @return mixed                                            the value at the specified index
 		 */
-		public function getArgument($index) {
+		public function getArgument(int $index) {
 			if (isset($this->arguments[$index])) {
 				return $this->arguments[$index];
 			}
@@ -173,7 +173,7 @@ namespace Unicity\AOP {
 		 * @param integer $index                                    the index in the argument array
 		 * @param mixed $value                                      the value to be set
 		 */
-		public function setArgument($index, $value) {
+		public function setArgument(int $index, $value) {
 			if (isset($this->arguments[$index])) {
 				$this->arguments[$index] = $value;
 			}
@@ -185,7 +185,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @return array                                            the argument array
 		 */
-		public function getArguments() {
+		public function getArguments() : array {
 			return $this->arguments;
 		}
 
@@ -209,7 +209,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param callable $closure                                 the closure to be called
 		 */
-		public function setAroundClosure($closure) {
+		public function setAroundClosure(callable $closure) {
 			$this->closure = $closure;
 		}
 
@@ -255,9 +255,9 @@ namespace Unicity\AOP {
 		 * This method returns the pointcut currently being evaluated.
 		 *
 		 * @access public
-		 * @return array                                            the current pointcut
+		 * @return AOP\Pointcut                                     the current pointcut
 		 */
-		public function getPointcut() {
+		public function getPointcut() : AOP\Pointcut {
 			return $this->pointcut;
 		}
 
@@ -266,9 +266,9 @@ namespace Unicity\AOP {
 		 * and should not otherwise be used.
 		 *
 		 * @access public
-		 * @param array $pointcut                                   the current pointcut
+		 * @param AOP\Pointcut $pointcut                            the current pointcut
 		 */
-		public function setPointcut(array $pointcut) {
+		public function setPointcut(AOP\Pointcut $pointcut) {
 			$this->pointcut = $pointcut;
 		}
 
@@ -280,7 +280,7 @@ namespace Unicity\AOP {
 		 * @return mixed                                            the value of the property for the
 		 *                                                          given name
 		 */
-		public function getProperty($name) {
+		public function getProperty(string $name) {
 			if (isset($this->properties[$name])) {
 				return $this->properties[$name];
 			}
@@ -294,7 +294,7 @@ namespace Unicity\AOP {
 		 * @param string $name                                      the name of the property to be set
 		 * @param mixed $value                                      the value of the property to be set
 		 */
-		public function setProperty($name, $value) {
+		public function setProperty(string $name, $value) {
 			$this->properties[$name] = $value;
 		}
 
@@ -304,7 +304,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @return array                                            an associated array of properties
 		 */
-		public function getProperties() {
+		public function getProperties() : array {
 			return $this->properties;
 		}
 
