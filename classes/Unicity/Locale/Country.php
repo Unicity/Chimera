@@ -41,10 +41,19 @@ namespace Unicity\Locale {
 		 * This variable stores any countries that are cached.
 		 *
 		 * @access protected
+		 * @static
 		 * @var array
 		 */
 		protected static $countries = array();
 
+		/**
+		 * This variable stores a list of country codes that left over before values were
+		 * standardized using IS0-3166.
+		 *
+		 * @access protected
+		 * @static
+		 * @var array
+		 */
 		protected static $legacy = array(
 			'DR'   => 'DO',
 			'CHEP' => 'CH',
