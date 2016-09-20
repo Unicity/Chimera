@@ -52,6 +52,7 @@ namespace Unicity\Config\CSV {
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
 				'escape' => '\\',
 				'filter' => null, // {{ class_name }}
+				'headers' => array(),
 				'key_case' => null, // null || CASE_LOWER || CASE_UPPER
 				'list_type' => '\\Unicity\\Common\\Mutable\\ArrayList',
 				'schema' => array(),
@@ -70,12 +71,15 @@ namespace Unicity\Config\CSV {
 		 */
 		public function each(callable $procedure) {
 			$self = $this;
-			$headers = array();
+
+			$headers = (isset($this->metadata['headers']) && is_array($this->metadata['headers']))
+				? $this->metadata['headers']
+				: array();
 
 			IO\FileReader::read($this->file, function($reader, $data, $index) use ($self, $procedure, &$headers) {
 				$line = trim((string) $data);
 				if (strlen($line) > 0) {
-					if ($index == 0) {
+					if (($index == 0) && (count($headers) == 0)) {
 						if ($self->bom) {
 							$line = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $line);
 						}
