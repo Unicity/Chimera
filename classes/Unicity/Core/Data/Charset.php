@@ -146,6 +146,10 @@ namespace Unicity\Core\Data {
 					}
 				}
 				if (strcasecmp($target_encoding, static::UTF_8_ENCODING) == 0) { // http://stackoverflow.com/questions/1523460/ensuring-valid-utf-8-in-php
+					if ($string === null) {
+						$string = '';
+					}
+
 					/*
 						[\x09\x0A\x0D\x20-\x7E]            # ASCII
 						[\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
@@ -156,19 +160,28 @@ namespace Unicity\Core\Data {
 						[\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
 						\xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
 					*/
-					$blacklist = array('%E0%B8%BA', '%E2%80%8B'); // known non-printable/hidden characters
 
-					$string = preg_replace_callback('/./u', function (array $match) use ($blacklist) {
+					$blacklist = array('%E0%B8%BA', '%E2%80%8B'); // known non-printable/hidden characters
+					$replacement = '';
+
+					$string = preg_replace_callback('/./u', function (array $match) use ($blacklist, $replacement) {
 						$char = $match[0];
 						if (in_array(urlencode($char), $blacklist)) {
-							return '';
+							return $replacement;
 						}
 						return $char;
 					}, $string);
 
-					if ($string === null) {
-						$string = '';
-					}
+					$blacklist = array('%E2%94%9C', '%E2%94%90'); // known printable/visible characters
+					$replacement = ' ';
+
+					$string = preg_replace_callback('/./u', function (array $match) use ($blacklist, $replacement) {
+						$char = $match[0];
+						if (in_array(urlencode($char), $blacklist)) {
+							return $replacement;
+						}
+						return $char;
+					}, $string);
 				}
 			}
 			return $string;
