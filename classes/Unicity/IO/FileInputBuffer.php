@@ -64,8 +64,6 @@ namespace Unicity\IO {
 		 * @param string $key                                       the key assigned to the file
 		 * @param integer $index                                    the index of the file should the key
 		 *                                                          be defined as an array
-		 * @throws Throwable\InvalidArgument\Exception              indicates that the specified key cannot
-		 *                                                          be matched with an input file
 		 */
 		public function __construct($key, $index = -1) {
 			ini_set('file_uploads', 'On');
@@ -83,8 +81,13 @@ namespace Unicity\IO {
 				$this->key = $key;
 				$this->temporary = false;
 			}
-			else if (isset($_POST[$key])) {
-				$data = ($index > -1) ? $_POST[$key][$index] : $_POST[$key];
+			else {
+				if (isset($_POST[$key])) {
+					$data = ($index > -1) ? $_POST[$key][$index] : $_POST[$key];
+				}
+				else {
+					$data = '';
+				}
 
 				$this->name = null;
 				$this->path = null;
@@ -96,9 +99,6 @@ namespace Unicity\IO {
 				$this->index = $index;
 				$this->key = $key;
 				$this->temporary = true;
-			}
-			else {
-				throw new Throwable\InvalidArgument\Exception('Unable to match key ":key" with an input file.', array(':key' => $key));
 			}
 		}
 
