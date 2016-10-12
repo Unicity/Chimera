@@ -471,27 +471,30 @@ namespace Unicity\Config\WDDX {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$buffer = file_get_contents((string) $this->file);
+			if ($this->file->getFileSize() > 0) {
+				$buffer = file_get_contents((string)$this->file);
 
-			if ($this->metadata['bom']) {
-				$buffer = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $buffer);
+				if ($this->metadata['bom']) {
+					$buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
+				}
+
+				if (!preg_match('/^<\?xml\s+.+\?>/', $buffer)) {
+					$buffer = Core\Data\XML::declaration(Core\Data\Charset::UTF_8_ENCODING) . "\n" . $buffer;
+				}
+
+				$document = new \DOMDocument();
+				$document->substituteEntities = false;
+				$document->loadXML($buffer);
+
+				$collection = $this->parseWDDXPacketElement($document);
+
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			if (!preg_match('/^<\?xml\s+.+\?>/', $buffer)) {
-				$buffer = Core\Data\XML::declaration(Core\Data\Charset::UTF_8_ENCODING) . "\n" . $buffer;
-			}
-
-			$document = new \DOMDocument();
-			$document->substituteEntities = false;
-			$document->loadXML($buffer);
-
-			$collection = $this->parseWDDXPacketElement($document);
-
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
-			}
-
-			return $collection;
+			return null;
 		}
 
 	}

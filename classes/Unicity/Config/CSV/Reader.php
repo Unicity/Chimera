@@ -140,18 +140,21 @@ namespace Unicity\Config\CSV {
 		 *                                                          encountered
 		 */
 		public function read($path = null) {
-			$list = $this->metadata['list_type'];
-			$collection = new $list();
+			if ($this->file->getFileSize() > 0) {
+				$list = $this->metadata['list_type'];
+				$collection = new $list();
 
-			$this->each(function(Common\Mutable\HashMap $record) use ($collection) {
-				$collection->addValue($record);
-			});
+				$this->each(function (Common\Mutable\HashMap $record) use ($collection) {
+					$collection->addValue($record);
+				});
 
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			return $collection;
+			return null;
 		}
 
 		/**

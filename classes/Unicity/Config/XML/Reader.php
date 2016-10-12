@@ -176,20 +176,23 @@ namespace Unicity\Config\XML {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$xml = Core\Data\XML::load($this->file);
+			if ($this->file->getFileSize() > 0) {
+				$xml = Core\Data\XML::load($this->file);
 
-			$directives = $xml->getProcessingInstruction('php-marshal');
-			if (isset($directives['expandableProperties'])) {
-				$this->directives->putEntry('expandableProperties', new Common\HashSet(preg_split('/\s+/', $directives['expandableProperties'])));
+				$directives = $xml->getProcessingInstruction('php-marshal');
+				if (isset($directives['expandableProperties'])) {
+					$this->directives->putEntry('expandableProperties', new Common\HashSet(preg_split('/\s+/', $directives['expandableProperties'])));
+				}
+
+				$collection = $this->parseRootElement($xml);
+
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			$collection = $this->parseRootElement($xml);
-
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
-			}
-
-			return $collection;
+			return null;
 		}
 
 		/**

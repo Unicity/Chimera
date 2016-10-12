@@ -59,27 +59,30 @@ namespace Unicity\Config\JSON {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$buffer = file_get_contents((string) $this->file);
+			if ($this->file->getFileSize() > 0) {
+				$buffer = file_get_contents((string)$this->file);
 
-			if ($this->metadata['bom']) {
-				$buffer = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $buffer);
+				if ($this->metadata['bom']) {
+					$buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
+				}
+
+				$prefix = (isset($this->metadata['prefix'])) ? $this->metadata['prefix'] : '';
+				$suffix = (isset($this->metadata['suffix'])) ? $this->metadata['suffix'] : '';
+				$start = strlen($prefix);
+				$length = strlen($buffer) - ($start + strlen($suffix));
+				if ($length >= 0) {
+					$buffer = substr($buffer, $start, $length);
+				}
+
+				$collection = json_decode($buffer, $this->metadata['assoc'], $this->metadata['depth']);
+
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			$prefix = (isset($this->metadata['prefix'])) ? $this->metadata['prefix'] : '';
-			$suffix = (isset($this->metadata['suffix'])) ? $this->metadata['suffix'] : '';
-			$start = strlen($prefix);
-			$length = strlen($buffer) - ($start + strlen($suffix));
-			if ($length >= 0) {
-				$buffer = substr($buffer, $start, $length);
-			}
-
-			$collection = json_decode($buffer, $this->metadata['assoc'], $this->metadata['depth']);
-
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
-			}
-
-			return $collection;
+			return null;
 		}
 
 	}

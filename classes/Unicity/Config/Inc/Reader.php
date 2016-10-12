@@ -40,15 +40,18 @@ namespace Unicity\Config\Inc {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$file = $this->file;
-			$reader = function() use ($file) {
-				return include($file);
-			};
-			$collection = $reader();
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
+			if ($this->file->getFileSize() > 0) {
+				$file = $this->file;
+				$reader = function () use ($file) {
+					return include($file);
+				};
+				$collection = $reader();
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+				return $collection;
 			}
-			return $collection;
+			return null;
 		}
 
 	}

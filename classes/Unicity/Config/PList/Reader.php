@@ -317,19 +317,22 @@ namespace Unicity\Config\PList {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$buffer = file_get_contents((string) $this->file);
+			if ($this->file->getFileSize() > 0) {
+				$buffer = file_get_contents((string)$this->file);
 
-			if ($this->metadata['bom']) {
-				$buffer = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $buffer);
+				if ($this->metadata['bom']) {
+					$buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
+				}
+
+				$collection = $this->parsePListElement(new Core\Data\XML($buffer));
+
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			$collection = $this->parsePListElement(new Core\Data\XML($buffer));
-
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
-			}
-
-			return $collection;
+			return null;
 		}
 
 	}

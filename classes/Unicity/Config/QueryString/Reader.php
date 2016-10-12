@@ -99,17 +99,20 @@ namespace Unicity\Config\QueryString {
 		 *                                                          encountered
 		 */
 		public function read($path = null) {
-			$collection = new Common\Mutable\HashMap();
+			if ($this->file->getFileSize() > 0) {
+				$collection = new Common\Mutable\HashMap();
 
-			$this->each(function(Common\Mutable\HashMap $record) use ($collection) {
-				$collection->putEntries($record);
-			});
+				$this->each(function (Common\Mutable\HashMap $record) use ($collection) {
+					$collection->putEntries($record);
+				});
 
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			return $collection;
+			return null;
 		}
 
 	}

@@ -693,15 +693,18 @@ namespace Unicity\Config\Spring {
 		 * @return mixed                                            the resource as a collection
 		 */
 		public function read($path = null) {
-			$root = Spring\Data\XML::load($this->file);
+			if ($this->file->getFileSize() > 0) {
+				$root = Spring\Data\XML::load($this->file);
 
-			$collection = $this->parseOuterObjectElements($root, $root);
+				$collection = $this->parseOuterObjectElements($root, $root);
 
-			if ($path !== null) {
-				$collection = Config\Helper::factory($collection)->getValue($path);
+				if ($path !== null) {
+					$collection = Config\Helper::factory($collection)->getValue($path);
+				}
+
+				return $collection;
 			}
-
-			return $collection;
+			return null;
 		}
 
 	}
