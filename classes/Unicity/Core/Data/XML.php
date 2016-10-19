@@ -363,7 +363,7 @@ namespace Unicity\Core\Data {
 			$buffer = file_get_contents($file);
 			$buffer = preg_replace('/^' . pack('H*','EFBBBF') . '/', '', $buffer);
 
-			if (!preg_match('/^<\?xml\s+.+\?>/', $buffer)) {
+			if (!preg_match('/^<\?xml\s+[^?>]+\?>/', $buffer)) {
 				$buffer = static::declaration(Core\Data\Charset::UTF_8_ENCODING) . "\n" . $buffer;
 			}
 

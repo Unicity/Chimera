@@ -300,7 +300,7 @@ namespace Unicity\IO {
 					$buffer .= fgetc($handle);
 				}
 				$buffer = trim($buffer);
-				if (preg_match('/^<\?xml\s+.+\?>/', $buffer)) {
+				if (preg_match('/^<\?xml\s+[^?>]+\?>/', $buffer)) {
 					if (preg_match('/<plist/', $buffer)) {
 						$ext = 'plist';
 					}
