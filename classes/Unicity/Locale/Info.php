@@ -56,7 +56,7 @@ namespace Unicity\Locale {
 						if (count($buffer) > 0) {
 							arsort($buffer);
 							static::$languages = $buffer;
-							return $buffer;
+							return static::$languages;
 						}
 					}
 				}
