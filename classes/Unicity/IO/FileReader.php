@@ -284,8 +284,13 @@ namespace Unicity\IO {
 			$reader = null;
 			try {
 				$reader = new self($file);
-				for ($index = 0; $reader->isReady(); $index++) {
-					$callback($reader, $reader->$mode(), $index);
+				$index = 0;
+				while ($reader->isReady()) {
+					$data = $reader->$mode();
+					if (is_string($data)) {
+						$callback($reader, $data, $index);
+						$index++;
+					}
 				}
 				$reader->close();
 			}
