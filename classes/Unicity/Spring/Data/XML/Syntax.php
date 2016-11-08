@@ -158,7 +158,7 @@ namespace Unicity\Spring\Data\XML {
 		 *                                                          for a property name
 		 */
 		public static function isPropertyName($token) {
-			return is_string($token) && preg_match('/^[a-z_][a-z0-9_]*$/i', $token);
+			return is_string($token) && ($token != ''); // && preg_match('/^[a-z_][a-z0-9_]*$/i', $token);
 		}
 
 		/**

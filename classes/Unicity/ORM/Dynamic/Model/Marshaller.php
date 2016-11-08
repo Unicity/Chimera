@@ -20,12 +20,54 @@ declare(strict_types = 1);
 
 namespace Unicity\ORM\Dynamic\Model {
 
+	use \Unicity\Bootstrap;
 	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
+	use \Unicity\IO;
+	use \Unicity\Locale;
 	use \Unicity\ORM;
 
 	class Marshaller {
+
+		/**
+		 * This method returns the localized version of model.
+		 *
+		 * @access public
+		 * @static
+		 * @param ORM\IModel $source                                the source model to be localized
+		 * @param string $type                                      the data type of the source model
+		 * @return ORM\IModel                                       the target model
+		 */
+		public static function localize(ORM\IModel $source, $type) {
+			$type = Core\Convert::toString($type);
+
+			$components = preg_split('/(\\\|_)+/', trim($type, '\\'));
+
+			$languages = Locale\Info::getLanguages();
+
+			foreach ($languages as $language => $q) {
+				$ext = '_' . str_replace('-', '_', $language) . '.properties';
+
+				$fileName = implode(DIRECTORY_SEPARATOR, $components) . $ext;
+
+				foreach (Bootstrap::$classpaths as $directory) {
+					$uri = Bootstrap::rootPath() . $directory . $fileName;
+
+					if (file_exists($uri)) {
+						$properties = Config\Properties\Reader::load(new IO\File($uri))->read();
+						return static::useLocalization($source, $properties, '');
+					}
+					$uri = $directory . $fileName;
+					if (file_exists($uri)) {
+						$properties = Config\Properties\Reader::load(new IO\File($uri))->read();
+						return static::useLocalization($source, $properties, '');
+					}
+				}
+			}
+
+			return $source;
+		}
 
 		/**
 		 * This method loads the specified file for reading.
@@ -98,6 +140,80 @@ namespace Unicity\ORM\Dynamic\Model {
 				}
 			}
 			return $data;
+		}
+
+		/**
+		 * This method maps the localized keys to the model.
+		 *
+		 * @access private
+		 * @static
+		 * @param mixed $source                                     the data to be localized
+		 * @param Common\IMap $properties                           the localization mappings
+		 * @param string $path                                      the current path
+		 * @return array|ArrayList|HashMap                          the data after being localized
+		 */
+		private static function useLocalization(/*mixed*/ $source, Common\IMap $properties, string $path) {
+			if (is_object($source)) {
+				if (($source instanceof Common\IList) || ($source instanceof Common\ISet)) {
+					$buffer = new ORM\Dynamic\Model\ArrayList(null, true);
+					$id = ORM\Query::path($path, '*');
+					foreach ($source as $value) {
+						$buffer->addValue(static::useLocalization($value, $properties, $id));
+					}
+					return $buffer;
+				}
+				else if ($source instanceof Common\IMap) {
+					$buffer = new ORM\Dynamic\Model\HashMap(null, true);
+					foreach ($source as $key => $value) {
+						$id = ORM\Query::path($path, $key);
+						if ($properties->hasKey($id)) {
+							$buffer->putEntry($properties->getValue($id), static::useLocalization($value, $properties, $id));
+						}
+						else {
+							$buffer->putEntry($key, static::useLocalization($value, $properties, $id));
+						}
+					}
+					return $buffer;
+				}
+				else if ($source instanceof \stdClass) {
+					$source = get_object_vars($source);
+					$buffer = new ORM\Dynamic\Model\HashMap(null, true);
+					foreach ($source as $key => $value) {
+						$id = ORM\Query::path($path, $key);
+						if ($properties->hasKey($id)) {
+							$buffer->putEntry($properties->getValue($id), static::useLocalization($value, $properties, $id));
+						}
+						else {
+							$buffer->putEntry($key, static::useLocalization($value, $properties, $id));
+						}
+					}
+					return $buffer;
+				}
+			}
+			if (is_array($source)) {
+				if (Common\Collection::isDictionary($source)) {
+					$buffer = new ORM\Dynamic\Model\HashMap(null, true);
+					foreach ($source as $key => $value) {
+						$id = ORM\Query::path($path, $key);
+						if ($properties->hasKey($id)) {
+							$buffer->putEntry($properties->getValue($id), static::useLocalization($value, $properties, $id));
+						}
+						else {
+							$buffer->putEntry($key, static::useLocalization($value, $properties, $id));
+						}
+					}
+					return $buffer;
+				}
+				else {
+					$buffer = new ORM\Dynamic\Model\ArrayList(null, true);
+					$id = ORM\Query::path($path, '*');
+					foreach ($source as $value) {
+						$buffer->addValue(static::useLocalization($value, $properties, $id));
+					}
+					return $buffer;
+				}
+			}
+			return $source;
 		}
 
 	}

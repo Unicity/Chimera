@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\ORM\JSON\Model {
 
 	use \Unicity\Bootstrap;
+	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
@@ -124,6 +125,10 @@ namespace Unicity\ORM\JSON\Model {
 		 * @return array                                            the JSON schema
 		 */
 		public static function resolveJSONSchema($schema) {
+			if ($schema instanceof Common\StringRef) {
+				$schema = Core\Convert::toString($schema);
+			}
+
 			$key = md5(serialize($schema));
 
 			if (!array_key_exists($key, static::$schemas)) {

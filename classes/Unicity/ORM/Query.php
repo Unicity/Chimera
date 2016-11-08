@@ -123,6 +123,22 @@ namespace Unicity\ORM {
 		}
 
 		/**
+		 * This method returns the concatenated path.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $path                                      the path to be concatenated
+		 * @param string $field                                     the field to be appended
+		 * @return string                                           the concatenated path
+		 */
+		public static function path(string $path, string $field) : string {
+			if (empty($path)) {
+				return trim($field);
+			}
+			return $path . '.' . trim($field);
+		}
+
+		/**
 		 * This method sets the value at the specified path.
 		 *
 		 * @access public
