@@ -24,6 +24,7 @@ namespace Unicity\ORM\Dynamic\Model {
 	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
+	use \Unicity\FP;
 	use \Unicity\IO;
 	use \Unicity\Locale;
 	use \Unicity\ORM;
@@ -53,20 +54,97 @@ namespace Unicity\ORM\Dynamic\Model {
 
 				foreach (Bootstrap::$classpaths as $directory) {
 					$uri = Bootstrap::rootPath() . $directory . $fileName;
-
 					if (file_exists($uri)) {
-						$properties = Config\Properties\Reader::load(new IO\File($uri))->read();
-						return static::useLocalization($source, $properties, '');
+						return static::_localize($source, $uri);
 					}
 					$uri = $directory . $fileName;
 					if (file_exists($uri)) {
-						$properties = Config\Properties\Reader::load(new IO\File($uri))->read();
-						return static::useLocalization($source, $properties, '');
+						return static::_localize($source, $uri);
 					}
 				}
 			}
 
 			return $source;
+		}
+
+		/**
+		 * This method returns the localized version of model using the property mappings
+		 * at the specificed URI.
+		 *
+		 * @access private
+		 * @static
+		 * @param ORM\IModel $source                                the source model to be localized
+		 * @param string $uri                                       the URI to the property mappings
+		 * @return ORM\IModel                                       the target model
+		 */
+		private static function _localize(ORM\IModel $source, string $uri) {
+			$properties = Config\Properties\Reader::load(new IO\File($uri))->read();
+			return static::useLocalization($source, $properties, '');
+		}
+
+		/**
+		 * This method returns the unlocalized version of model.
+		 *
+		 * @access public
+		 * @static
+		 * @param ORM\IModel $target                                the target model to be unlocalized
+		 * @param string $type                                      the data type of the source model
+		 * @return ORM\IModel                                       the source model
+		 */
+		public static function unlocalize(ORM\IModel $target, $type) {
+			$type = Core\Convert::toString($type);
+
+			$components = preg_split('/(\\\|_)+/', trim($type, '\\'));
+
+			$languages = Locale\Info::getLanguages();
+
+			foreach ($languages as $language => $q) {
+				$ext = '_' . str_replace('-', '_', $language) . '.properties';
+
+				$fileName = implode(DIRECTORY_SEPARATOR, $components) . $ext;
+
+				foreach (Bootstrap::$classpaths as $directory) {
+					$uri = Bootstrap::rootPath() . $directory . $fileName;
+					if (file_exists($uri)) {
+						return static::_unlocalize($target, $uri);
+					}
+					$uri = $directory . $fileName;
+					if (file_exists($uri)) {
+						return static::_unlocalize($target, $uri);
+					}
+				}
+			}
+
+			return $target;
+		}
+
+		/**
+		 * This method returns the unlocalized version of model using the property mappings
+		 * at the specificed URI.
+		 *
+		 * @access private
+		 * @static
+		 * @param ORM\IModel $target                                the target model to be unlocalized
+		 * @param string $uri                                       the URI to the property mappings
+		 * @return ORM\IModel                                       the source model
+		 */
+		private static function _unlocalize(ORM\IModel $target, string $uri) {
+			$properties = Config\Properties\Reader::load(new IO\File($uri))->read();
+			$properties = FP\IMap::map($properties, function(Common\Tuple $tuple) {
+				$k1 = (string) $tuple->first();
+				$k2 = explode('.', $k1);
+
+				$index = count($k2) - 1;
+
+				$v1 = $k2[$index];
+				$v2 = (string) $tuple->second();
+
+				$k2[$index] = $v2;
+				$k1 = implode('.', $k2);
+
+				return Common\Tuple::box2($k1, $v1);
+			});
+			return static::useLocalization($target, $properties, '');
 		}
 
 		/**
@@ -147,24 +225,24 @@ namespace Unicity\ORM\Dynamic\Model {
 		 *
 		 * @access private
 		 * @static
-		 * @param mixed $source                                     the data to be localized
+		 * @param mixed $data                                       the data to be localized
 		 * @param Common\IMap $properties                           the localization mappings
 		 * @param string $path                                      the current path
 		 * @return array|ArrayList|HashMap                          the data after being localized
 		 */
-		private static function useLocalization(/*mixed*/ $source, Common\IMap $properties, string $path) {
-			if (is_object($source)) {
-				if (($source instanceof Common\IList) || ($source instanceof Common\ISet)) {
+		private static function useLocalization(/*mixed*/ $data, Common\IMap $properties, string $path) {
+			if (is_object($data)) {
+				if (($data instanceof Common\IList) || ($data instanceof Common\ISet)) {
 					$buffer = new ORM\Dynamic\Model\ArrayList(null, true);
 					$id = ORM\Query::path($path, '*');
-					foreach ($source as $value) {
+					foreach ($data as $value) {
 						$buffer->addValue(static::useLocalization($value, $properties, $id));
 					}
 					return $buffer;
 				}
-				else if ($source instanceof Common\IMap) {
+				else if ($data instanceof Common\IMap) {
 					$buffer = new ORM\Dynamic\Model\HashMap(null, true);
-					foreach ($source as $key => $value) {
+					foreach ($data as $key => $value) {
 						$id = ORM\Query::path($path, $key);
 						if ($properties->hasKey($id)) {
 							$buffer->putEntry($properties->getValue($id), static::useLocalization($value, $properties, $id));
@@ -175,10 +253,10 @@ namespace Unicity\ORM\Dynamic\Model {
 					}
 					return $buffer;
 				}
-				else if ($source instanceof \stdClass) {
-					$source = get_object_vars($source);
+				else if ($data instanceof \stdClass) {
+					$data = get_object_vars($data);
 					$buffer = new ORM\Dynamic\Model\HashMap(null, true);
-					foreach ($source as $key => $value) {
+					foreach ($data as $key => $value) {
 						$id = ORM\Query::path($path, $key);
 						if ($properties->hasKey($id)) {
 							$buffer->putEntry($properties->getValue($id), static::useLocalization($value, $properties, $id));
@@ -190,10 +268,10 @@ namespace Unicity\ORM\Dynamic\Model {
 					return $buffer;
 				}
 			}
-			if (is_array($source)) {
-				if (Common\Collection::isDictionary($source)) {
+			if (is_array($data)) {
+				if (Common\Collection::isDictionary($data)) {
 					$buffer = new ORM\Dynamic\Model\HashMap(null, true);
-					foreach ($source as $key => $value) {
+					foreach ($data as $key => $value) {
 						$id = ORM\Query::path($path, $key);
 						if ($properties->hasKey($id)) {
 							$buffer->putEntry($properties->getValue($id), static::useLocalization($value, $properties, $id));
@@ -207,13 +285,13 @@ namespace Unicity\ORM\Dynamic\Model {
 				else {
 					$buffer = new ORM\Dynamic\Model\ArrayList(null, true);
 					$id = ORM\Query::path($path, '*');
-					foreach ($source as $value) {
+					foreach ($data as $value) {
 						$buffer->addValue(static::useLocalization($value, $properties, $id));
 					}
 					return $buffer;
 				}
 			}
-			return $source;
+			return $data;
 		}
 
 	}
