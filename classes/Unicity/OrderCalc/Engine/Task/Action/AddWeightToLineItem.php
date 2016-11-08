@@ -41,7 +41,8 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$items = $this->policy->getValue('items');
 			$items = FP\IList::foldLeft($items, function(Common\Mutable\HashMap $c, string $x) {
 				$v = array_map('trim', explode(',', $x));
-				return $c->putEntry($v[0], floatval($v[1]));
+				$c->putEntry($v[0], floatval($v[1]));
+				return $c;
 			}, new Common\Mutable\HashMap());
 			$unit = $this->policy->getValue('unit'); // 'kg' or 'lbs'
 
