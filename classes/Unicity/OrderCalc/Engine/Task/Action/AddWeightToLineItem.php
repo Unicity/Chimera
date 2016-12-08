@@ -24,6 +24,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\FP;
+	use \Unicity\IO;
 
 	class AddWeightToLineItem extends BT\Task\Action {
 
@@ -68,15 +69,16 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			if ($this->policy->hasKey('data-source')) {
 				$data_source = $this->policy->getValue('data-source');
 				$items = new Common\Mutable\ArrayList();
-				if (file_exists($data_source)) {
-					if ($file = @fopen($data_source, 'r')) {
-						while(!feof($file)) {
-							$line = trim(fgets($file));
-							if (($line != '') || ($line[0] == '#')) {
+				$file = new IO\File($data_source);
+				if ($file->exists()) {
+					if ($handle = fopen((string) $file, 'r')) {
+						while(!feof($handle)) {
+							$line = trim(fgets($handle));
+							if (($line != '') && ($line[0] != '#')) {
 								$items->addValue($line);
 							}
 						}
-						fclose($file);
+						fclose($handle);
 					}
 				}
 				return $items;
