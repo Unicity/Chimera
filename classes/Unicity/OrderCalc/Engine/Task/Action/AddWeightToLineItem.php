@@ -38,7 +38,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$items = $this->policy->getValue('items');
+			$items = $this->getItems(); // ['item,weight']
 			$items = FP\IList::foldLeft($items, function(Common\Mutable\HashMap $c, string $x) {
 				$v = array_map('trim', explode(',', $x));
 				$c->putEntry($v[0], floatval($v[1]));
@@ -55,6 +55,33 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			}
 
 			return BT\Status::SUCCESS;
+		}
+
+		/**
+		 * This method returns a list of items with their respective weight.
+		 *
+		 * @access private
+		 * @return Common\Mutable\ArrayList                         the items and their respective
+		 *                                                          weights
+		 */
+		private function getItems() {
+			if ($this->policy->hasKey('data-source')) {
+				$data_source = $this->policy->getValue('data-source');
+				$items = new Common\Mutable\ArrayList();
+				if (file_exists($data_source)) {
+					if ($file = @fopen($data_source, 'r')) {
+						while(!feof($file)) {
+							$line = trim(fgets($file));
+							if (($line != '') || ($line[0] == '#')) {
+								$items->addValue($line);
+							}
+						}
+						fclose($file);
+					}
+				}
+				return $items;
+			}
+			return  $this->policy->getValue('items');
 		}
 
 	}
