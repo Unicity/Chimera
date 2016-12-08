@@ -71,9 +71,9 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				$items = new Common\Mutable\ArrayList();
 				$file = new IO\File($data_source);
 				if ($file->exists()) {
-					if ($handle = fopen((string) $file, 'r')) {
-						while (!feof($handle)) {
-							$line = trim(fgets($handle));
+					if ($handle = @fopen((string) $file, 'r')) {
+						while (($line = fgets($handle)) !== false) {
+							$line = trim($line);
 							if (($line != '') && ($line[0] != '#')) {
 								$items->addValue($line);
 							}
