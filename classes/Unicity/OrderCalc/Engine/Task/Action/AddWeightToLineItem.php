@@ -72,7 +72,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 				$file = new IO\File($data_source);
 				if ($file->exists()) {
 					if ($handle = fopen((string) $file, 'r')) {
-						while(!feof($handle)) {
+						while (!feof($handle)) {
 							$line = trim(fgets($handle));
 							if (($line != '') && ($line[0] != '#')) {
 								$items->addValue($line);
