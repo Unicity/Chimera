@@ -136,6 +136,9 @@ namespace Unicity\Locale {
 					return $records->current();
 				}
 
+				$state_1 = strtolower($state);
+				$state_2 = strtr($state_1, array('saint' => 'st'));
+
 				$records = DB\SQL::select('locale')
 					//->before(function(DB\Connection\Driver $driver) {
 					//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
@@ -144,8 +147,9 @@ namespace Unicity\Locale {
 					//})
 					->from('States')
 					->where_block('(')
-					->where(DB\SQL::expr('LOWER([StateName])'), '=', strtolower($state))
-					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateName]))'), '=', Common\StringRef::transliterate($state)->toLowerCase()->__toString(), 'OR')
+					->where(DB\SQL::expr('LOWER([StateAlias])'), '=', $state_1)
+					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateAlias]))'), '=', Common\StringRef::transliterate($state)->toLowerCase()->__toString(), 'OR')
+					->where(DB\SQL::expr('LOWER([StateAlias])'), '=', $state_2, 'OR')
 					->where_block(')')
 					->where('CountryNumeric3', '=', $country)
 					->limit(1)
@@ -160,7 +164,10 @@ namespace Unicity\Locale {
 						$driver->get_resource()->createFunction('PREG_REPLACE', 'preg_replace', 3);
 					})
 					->from('States')
-					->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateName]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state)))
+					->where_block('(')
+					->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_1)))
+					->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_2)), 'OR')
+					->where_block(')')
 					->where('CountryNumeric3', '=', $country)
 					->limit(1)
 					->query();
@@ -177,8 +184,9 @@ namespace Unicity\Locale {
 					//})
 					->from('States')
 					->where_block('(')
-					->where(DB\SQL::expr('LOWER([StateName])'), 'LIKE', '%' . strtolower($state) . '%')
-					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateName]))'), 'LIKE', '%' . Common\StringRef::transliterate($state)->toLowerCase() . '%', 'OR')
+					->where(DB\SQL::expr('LOWER([StateAlias])'), 'LIKE', '%' . $state_1 . '%')
+					->where(DB\SQL::expr('LOWER([StateAlias])'), 'LIKE', '%' . $state_2 . '%', 'OR')
+					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateAlias]))'), 'LIKE', '%' . Common\StringRef::transliterate($state)->toLowerCase() . '%', 'OR')
 					->where_block(')')
 					->where('CountryNumeric3', '=', $country)
 					->limit(1)
@@ -193,7 +201,7 @@ namespace Unicity\Locale {
 						$driver->get_resource()->createFunction('SOUNDEX', 'soundex', 1);
 					})
 					->from('States')
-					->where(DB\SQL::expr('SOUNDEX([StateName])'), '=', DB\SQL::expr("SOUNDEX('{$state}')"))
+					->where(DB\SQL::expr('SOUNDEX([StateAlias])'), '=', DB\SQL::expr("SOUNDEX('{$state}')"))
 					->where('CountryNumeric3', '=', $country)
 					->limit(1)
 					->query();
