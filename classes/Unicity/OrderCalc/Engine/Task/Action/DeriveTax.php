@@ -39,11 +39,12 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			$tax_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 
-			$order->terms->tax->percentage = $tax_rate * 100;
+			$total = Trade\Money::make($order->terms->total, $order->currency);
 
-			$order->terms->tax->amount = Trade\Money::make($order->terms->total, $order->currency)
-				->divideBy(1 + $tax_rate)
+			$order->terms->tax->amount = $total->subtract($total->divideBy(1.0 + $tax_rate))
 				->getConvertedAmount();
+
+			$order->terms->tax->percentage = $tax_rate * 100;
 
 			return BT\Status::SUCCESS;
 		}
