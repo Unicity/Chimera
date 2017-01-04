@@ -42,7 +42,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 			$order->terms->tax->percentage = $tax_rate * 100;
 
 			$order->terms->tax->amount = Trade\Money::make($order->terms->total, $order->currency)
-				->multiply(1 + $order->terms->tax->percentage)
+				->multiply(1 + $tax_rate)
 				->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
