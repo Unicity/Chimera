@@ -36,11 +36,21 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$order->terms->pretotal = Trade\Money::make($order->terms->subtotal, $order->currency)
-				->subtract(Trade\Money::make($order->terms->discount->amount, $order->currency))
-				->add(Trade\Money::make($order->terms->freight->amount, $order->currency))
-				->add(Trade\Money::make($order->terms->tax->amount, $order->currency))
-				->getConvertedAmount();
+			$pretotal = Trade\Money::make($order->terms->subtotal, $order->currency);
+
+			if ($this->policy->getValue('discount')) {
+				$pretotal = $pretotal->subtract(Trade\Money::make($order->terms->discount->amount, $order->currency));
+			}
+
+			if ($this->policy->getValue('freight')) {
+				$pretotal = $pretotal->add(Trade\Money::make($order->terms->freight->amount, $order->currency));
+			}
+
+			if ($this->policy->getValue('tax')) {
+				$pretotal = $pretotal->add(Trade\Money::make($order->terms->tax->amount, $order->currency));
+			}
+
+			$order->terms->pretotal = $pretotal->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
 		}

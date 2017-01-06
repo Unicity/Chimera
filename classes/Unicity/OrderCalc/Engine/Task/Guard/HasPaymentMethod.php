@@ -35,9 +35,9 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$shippingMethods = $this->policy->getValue('methods');
+			$methods = $this->policy->getValue('methods');
 
-			if (($order->transactions->items->count() > 0) && $shippingMethods->hasValue($order->transactions->items[0]->method)) {
+			if (($order->transactions->items->count() > 0) && $methods->hasValue($order->transactions->items[0]->method)) {
 				return BT\Status::SUCCESS;
 			}
 

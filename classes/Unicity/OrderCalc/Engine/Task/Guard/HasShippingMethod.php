@@ -36,9 +36,9 @@ namespace Unicity\OrderCalc\Engine\Task\Guard {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$shippingMethods = $this->policy->getValue('methods');
+			$methods = $this->policy->getValue('methods');
 
-			if ($shippingMethods->hasValue($order->shippingMethod->type)) {
+			if ($methods->hasValue($order->shippingMethod->type)) {
 				return BT\Status::SUCCESS;
 			}
 
