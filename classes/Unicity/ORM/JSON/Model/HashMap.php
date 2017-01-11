@@ -73,7 +73,7 @@ namespace Unicity\ORM\JSON\Model {
 		 * @access public
 		 * @return array                                            the argument array for initialization
 		 */
-		public function __constructor_args() {
+		public function __constructor_args() : array {
 			return array($this->schema, $this->case_sensitive);
 		}
 
