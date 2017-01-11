@@ -83,7 +83,7 @@ namespace Unicity\MappingService\Data {
 		 * @return \Unicity\MappingService\Data\FormatType          the format type token associated
 		 *                                                          with the data
 		 */
-		public function getFormatType() {
+		public function getFormatType() : \Unicity\MappingService\Data\FormatType {
 			return $this->format;
 		}
 
