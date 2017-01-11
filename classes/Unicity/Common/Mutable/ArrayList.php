@@ -79,7 +79,7 @@ namespace Unicity\Common\Mutable {
 		 * @access public
 		 * @return array                                            the argument array for initialization
 		 */
-		public function __constructor_args() {
+		public function __constructor_args() : array {
 			return array(null);
 		}
 
