@@ -44,7 +44,7 @@ namespace Unicity\MappingService\Data {
 		 *
 		 * @see http://php.net/str_pad
 		 */
-		public static function fixedLength($value, $length, $pad_type = STR_PAD_RIGHT) {
+		public static function fixedLength(string $value, int $length, int $pad_type = STR_PAD_RIGHT) : string {
 			return (strlen($value) <= $length) ? str_pad($value, $length, ' ', $pad_type) : substr($value, 0, $length);
 		}
 

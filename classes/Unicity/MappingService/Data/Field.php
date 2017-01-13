@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\MappingService\Data {
 
-	use \Unicity\Core;
 	use \Unicity\MappingService;
 	use \Unicity\Throwable;
 

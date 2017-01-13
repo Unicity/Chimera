@@ -81,7 +81,7 @@ namespace Unicity\MappingService\Data {
 		 * @static
 		 * @return MappingService\Data\FormatType                   the format type token
 		 */
-		public static function canonical() {
+		public static function canonical() : \Unicity\MappingService\Data\FormatType {
 			return static::__enum(0);
 		}
 
@@ -92,7 +92,7 @@ namespace Unicity\MappingService\Data {
 		 * @static
 		 * @return MappingService\Data\FormatType                   the format type token
 		 */
-		public static function model() {
+		public static function model() : \Unicity\MappingService\Data\FormatType {
 			return static::__enum(1);
 		}
 

@@ -221,12 +221,26 @@ namespace Unicity\MappingService\Data {
 			}
 
 			$methods = $target->__getMethods();
-			foreach ($methods as $method) {
-				if (preg_match("/^{$set}[_a-zA-Z0-9]+$/", $method)) {
-					$getter = $get . substr($method, 3);
-					if ($source->__hasMethod($getter)) {
-						$target->$method($source->$getter());
-					}
+
+			$setters = array_filter($methods, function($method) use ($set) {
+				return preg_match("/^{$set}[_a-zA-Z0-9]+$/", $method);
+			});
+
+			foreach ($setters as $setter) {
+				$getter = $get . substr($setter, 3);
+				if ($source->__hasMethod($getter)) {
+					$target->$setter($source->$getter());
+				}
+			}
+
+			$runners = array_filter($methods, function($method) use ($set) {
+				return preg_match("/^run[_a-zA-Z0-9]+$/", $method);
+			});
+
+			foreach ($runners as $runner) {
+				$command = 'cmd' . substr($runner, 3);
+				if ($source->__hasMethod($command)) {
+					$target->$runner($source->$command());
 				}
 			}
 
