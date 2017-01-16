@@ -234,9 +234,9 @@ namespace Unicity\Locale {
 		 */
 		public static function format($number) {
 			$amount = Core\Convert::toDouble($number);
-			if (function_exists('money_format')) {
-				return money_format('%i', $amount);
-			}
+			//if (function_exists('money_format')) {
+			//	return money_format('%.2n', $amount);
+			//}
 			return sprintf('%0.2f', $amount);
 		}
 
