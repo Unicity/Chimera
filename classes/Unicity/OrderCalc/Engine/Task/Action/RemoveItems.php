@@ -41,7 +41,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			$order->lines->items = FP\IList::filter($order->lines->items, function($line) use($items) {
 				$item = trim(Core\Convert::toString($line->item->id->unicity));
-				return $items->hasValue($item);
+				return !$items->hasValue($item);
 			});
 
 			return BT\Status::SUCCESS;
