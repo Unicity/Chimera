@@ -41,7 +41,7 @@ namespace Unicity\OrderCalc\Engine\Task\Action {
 
 			$order->lines->items = FP\IList::filter($order->lines->items, function($line) use($descriptions) {
 				$description = trim(Core\Convert::toString($line->catalogSlide->content->description));
-				return $descriptions->hasValue($description);
+				return !$descriptions->hasValue($description);
 			});
 
 			return BT\Status::SUCCESS;
