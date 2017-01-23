@@ -213,10 +213,32 @@ namespace Unicity\Locale {
 			}
 			return array(
 				'StateID' => 0,
+				'StateAlpha2' => null,
+				'StateAlpha3' => null,
 				'StateName' => null,
 				'StateCode' => null,
 				'CountryNumeric3' => null,
 			);
+		}
+
+		/**
+		 * This method returns the 2-letter state code as defined in ISO 3166.
+		 *
+		 * @access public
+		 * @return string                                           the state's code
+		 */
+		public function getStateISOAlpha2() {
+			return $this->state['StateAlpha2'];
+		}
+
+		/**
+		 * This method returns the 3-letter state code as defined in ISO 3166.
+		 *
+		 * @access public
+		 * @return string                                           the state's code
+		 */
+		public function getStateISOAlpha3() {
+			return $this->state['StateAlpha3'];
 		}
 
 		/**
