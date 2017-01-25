@@ -142,26 +142,48 @@ namespace Unicity\AOP {
 		 * This method execute the concern.
 		 *
 		 * @access public
-		 * @param callable $concern                                 the concern to be bound
+		 * @param callable $concern                                 the concern to be called
 		 * @param boolean $enabled                                  whether the advice is applied
 		 * @return mixed                                            the returned result of the concern
+		 * @throws \Exception                                       an exception thrown by the concern
 		 */
 		public function execute(callable $concern, bool $enabled = true) {
 			if ($enabled) {
-				$closure = function() use ($concern) {
-					if (isset($this->pointcuts['Before'])) {
-						foreach ($this->pointcuts['Before'] as $pointcut) {
-							$this->joinPoint->setAdviceType(AOP\AdviceType::before());
+				if (isset($this->pointcuts['Before'])) {
+					foreach ($this->pointcuts['Before'] as $pointcut) {
+						$this->joinPoint->setAdviceType(AOP\AdviceType::before());
+						$this->joinPoint->setPointcut($pointcut);
+						$pointcut($this->joinPoint);
+					}
+				}
+
+				try {
+					if (isset($this->pointcuts['Around'])) {
+						foreach ($this->pointcuts['Around'] as $pointcut) {
+							$this->joinPoint->setAdviceType(AOP\AdviceType::around());
+							$this->joinPoint->setAroundClosure(function() use ($concern) {
+								$this->joinPoint->setReturnedValue(
+									call_user_func_array($concern, $this->joinPoint->getArguments())
+								);
+
+								if (isset($this->pointcuts['AfterReturning'])) {
+									foreach ($this->pointcuts['AfterReturning'] as $pointcut) {
+										$this->joinPoint->setAdviceType(AOP\AdviceType::afterReturning());
+										$this->joinPoint->setPointcut($pointcut);
+										$pointcut($this->joinPoint);
+									}
+								}
+							});
 							$this->joinPoint->setPointcut($pointcut);
 							$pointcut($this->joinPoint);
+							$this->joinPoint->setAroundClosure(null);
 						}
 					}
-
-					try {
+					else {
 						$this->joinPoint->setReturnedValue(
 							call_user_func_array($concern, $this->joinPoint->getArguments())
 						);
-				
+
 						if (isset($this->pointcuts['AfterReturning'])) {
 							foreach ($this->pointcuts['AfterReturning'] as $pointcut) {
 								$this->joinPoint->setAdviceType(AOP\AdviceType::afterReturning());
@@ -169,47 +191,33 @@ namespace Unicity\AOP {
 								$pointcut($this->joinPoint);
 							}
 						}
-	
 					}
-					catch (\Exception $exception) {
-						$this->joinPoint->setException($exception);
-				
-						if (isset($this->pointcuts['AfterThrowing'])) {
-							foreach ($this->pointcuts['AfterThrowing'] as $pointcut) {
-								$this->joinPoint->setAdviceType(AOP\AdviceType::afterThrowing());
-								$this->joinPoint->setPointcut($pointcut);
-								$pointcut($this->joinPoint);
-							}
+				}
+				catch (\Exception $exception) {
+					$this->joinPoint->setException($exception);
+
+					if (isset($this->pointcuts['AfterThrowing'])) {
+						foreach ($this->pointcuts['AfterThrowing'] as $pointcut) {
+							$this->joinPoint->setAdviceType(AOP\AdviceType::afterThrowing());
+							$this->joinPoint->setPointcut($pointcut);
+							$pointcut($this->joinPoint);
 						}
-
 					}
-					//finally {
-						if (isset($this->pointcuts['After'])) {
-							foreach ($this->pointcuts['After'] as $pointcut) {
-								$this->joinPoint->setAdviceType(AOP\AdviceType::after());
-								$this->joinPoint->setPointcut($pointcut);
-								$pointcut($this->joinPoint);
-							}
+				}
+				//finally {
+					if (isset($this->pointcuts['After'])) {
+						foreach ($this->pointcuts['After'] as $pointcut) {
+							$this->joinPoint->setAdviceType(AOP\AdviceType::after());
+							$this->joinPoint->setPointcut($pointcut);
+							$pointcut($this->joinPoint);
 						}
-					//}
-
-					$exception = $this->joinPoint->getException();
-					if ($exception instanceof \Exception) {
-						throw $exception;
 					}
-				};
+				//}
 
-				//if (isset($this->pointcuts['Around'])) {
-				//	foreach ($this->pointcuts['Around'] as $pointcut) {
-				//		$this->joinPoint->setAdviceType(AOP\AdviceType::around());
-				//		$this->joinPoint->setAroundClosure($closure);
-				//		$this->joinPoint->setPointcut($pointcut);
-				//		$pointcut($this->joinPoint);
-				//	}
-				//}
-				//else {
-					$closure();
-				//}
+				$exception = $this->joinPoint->getException();
+				if ($exception instanceof \Exception) {
+					throw $exception;
+				}
 
 				return $this->joinPoint->getReturnedValue();
 			}
@@ -225,11 +233,21 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function register(AOP\IAspect $aspect) {
-			$this->before(new AOP\Pointcut(array($aspect, 'before')));
-			$this->afterReturning(new AOP\Pointcut(array($aspect, 'afterReturning')));
-			$this->afterThrowing(new AOP\Pointcut(array($aspect, 'afterThrowing')));
-			$this->after(new AOP\Pointcut(array($aspect, 'after')));
-			$this->around(new AOP\Pointcut(array($aspect, 'around')));
+			if (method_exists($aspect, 'before')) {
+				$this->before(new AOP\Pointcut(array($aspect, 'before')));
+			}
+			if (method_exists($aspect, 'around')) {
+				$this->around(new AOP\Pointcut(array($aspect, 'around')));
+			}
+			if (method_exists($aspect, 'afterReturning')) {
+				$this->afterReturning(new AOP\Pointcut(array($aspect, 'afterReturning')));
+			}
+			if (method_exists($aspect, 'afterThrowing')) {
+				$this->afterThrowing(new AOP\Pointcut(array($aspect, 'afterThrowing')));
+			}
+			if (method_exists($aspect, 'after')) {
+				$this->after(new AOP\Pointcut(array($aspect, 'after')));
+			}
 			return $this;
 		}
 

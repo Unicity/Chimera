@@ -197,9 +197,7 @@ namespace Unicity\AOP {
 		 * @param array $arguments                                  the argument array
 		 */
 		public function setArguments(array $arguments) {
-			if (count($arguments) == count($this->arguments)) {
-				$this->arguments = array_values($arguments);
-			}
+			$this->arguments = array_values($arguments);
 		}
 
 		/**
@@ -209,7 +207,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param callable $closure                                 the closure to be called
 		 */
-		public function setAroundClosure(callable $closure = null) {
+		public function setAroundClosure(?callable $closure) {
 			$this->closure = $closure;
 		}
 
@@ -235,18 +233,18 @@ namespace Unicity\AOP {
 
 		/**
 		 * This method is meant to be used by "around" advice to allow for the direct
-		 * calling of the concern's logic.  This method should only be called when inside
-		 * a pointcut that is administrating "around" advice.
+		 * calling of the concern's logic.
 		 *
 		 * @access public
 		 * @return mixed                                            the returned value by the concern
+		 * @throws \Exception                                       indicates that the concern throws
+		 *                                                          an exception
 		 */
 		public function proceed() {
-			if (AOP\AdviceType::around()->__equals($this->adviceType)) {
-				$closure = $this->closure;
-				if ($closure !== null) {
-					return $closure();
-				}
+			$closure = $this->closure;
+			if (is_callable($closure) && AOP\AdviceType::around()->__equals($this->adviceType)) {
+				$closure();
+				return $this->returnedValue;
 			}
 			return null;
 		}

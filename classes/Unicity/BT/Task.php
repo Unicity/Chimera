@@ -77,26 +77,6 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method runs before the task's execution.
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function before(AOP\JoinPoint $joinPoint) {
-			// do nothing
-		}
-
-		/**
-		 * This method runs when the task's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) {
-			// do nothing
-		}
-
-		/**
 		 * This method runs when the task's throws an exception.
 		 *
 		 * @access public
@@ -108,27 +88,6 @@ namespace Unicity\BT {
 			//var_dump($exception->getMessage()); exit();
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
 			$joinPoint->setException(null);
-		}
-
-		/**
-		 * This method runs when the task's execution is finished (even if an exception was thrown).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function after(AOP\JoinPoint $joinPoint) {
-			// do nothing
-		}
-
-		/**
-		 * This method runs around (i.e before and after) the other advice types and the task's
-		 * execution.
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function around(AOP\JoinPoint $joinPoint) {
-			// do nothing
 		}
 
 		/**
