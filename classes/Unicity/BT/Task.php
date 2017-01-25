@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\BT {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
@@ -33,7 +34,7 @@ namespace Unicity\BT {
 	 * @see http://aigamedev.com/open/article/tasks/
 	 * @see https://en.wikipedia.org/wiki/Behavior-driven_development
 	 */
-	abstract class Task extends Core\Object {
+	abstract class Task extends Core\Object implements AOP\IAspect {
 
 		/**
 		 * This variable stores the policy associated with the task.
@@ -76,20 +77,53 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method is called after each call to the process method.
+		 * This method runs before the task's execution.
 		 *
 		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		public function after() {
+		public function before(AOP\JoinPoint $joinPoint) {
 			// do nothing
 		}
 
 		/**
-		 * This method is called before each call to the process method.
+		 * This method runs when the task's execution is successful (and a result is returned).
 		 *
 		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		public function before() {
+		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			// do nothing
+		}
+
+		/**
+		 * This method runs when the task's throws an exception.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterThrowing(AOP\JoinPoint $joinPoint) {
+			// do nothing
+		}
+
+		/**
+		 * This method runs when the task's execution is finished (even if an exception was thrown).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function after(AOP\JoinPoint $joinPoint) {
+			// do nothing
+		}
+
+		/**
+		 * This method runs around (i.e before and after) the other advice types and the task's
+		 * execution.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function around(AOP\JoinPoint $joinPoint) {
 			// do nothing
 		}
 
@@ -153,7 +187,7 @@ namespace Unicity\BT {
 		 * @param Common\Mutable\IMap $policy                       the policy to be associated
 		 *                                                          with this task
 		 */
-		public function setPolicy(Common\Mutable\IMap $policy  ) {
+		public function setPolicy(Common\Mutable\IMap $policy) {
 			$this->policy = $policy;
 		}
 
@@ -164,7 +198,7 @@ namespace Unicity\BT {
 		 * @param string $title                                     the title to be associated
 		 *                                                          with this task
 		 */
-		public function setTitle($title) {
+		public function setTitle(string $title) {
 			$this->title = Core\Convert::toString($title);
 		}
 

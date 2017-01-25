@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\BT\Task {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Core;
 
@@ -42,16 +43,19 @@ namespace Unicity\BT\Task {
 		 * @return integer                                          the status
 		 */
 		public static function process(BT\Task $task, BT\Engine $engine, string $entityId) {
-			$task->before();
+			$args = func_get_args();
+
 			try {
-				$status = $task->process($engine, $entityId);
+				$status = AOP\Advice::factory(new AOP\JoinPoint(array_shift($args), array('class' => $task->__getClass(), 'method' => 'process')))
+					->register($task)
+					->execute(array($task, 'process'));
 			}
 			catch (\Exception $ex) {
 				//$engine->getErrorLog()->add(Log\Level::WARNING, $ex->getMessage());
 				//var_dump($ex->getMessage()); exit();
 				$status = BT\Status::ERROR;
 			}
-			$task->after();
+
 			return $status;
 		}
 

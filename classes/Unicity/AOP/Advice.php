@@ -234,6 +234,22 @@ namespace Unicity\AOP {
 		}
 
 		/**
+		 * This method registers an aspect with the advice.
+		 *
+		 * @access public
+		 * @param AOP\IAspect $aspect                               the aspect to be registered
+		 * @return AOP\Advice                                       a reference to the current instance
+		 */
+		public function register(AOP\IAspect $aspect) {
+			$this->before(new AOP\Pointcut(array($aspect, 'before')));
+			$this->afterReturning(new AOP\Pointcut(array($aspect, 'afterReturning')));
+			$this->afterThrowing(new AOP\Pointcut(array($aspect, 'afterThrowing')));
+			$this->after(new AOP\Pointcut(array($aspect, 'after')));
+			$this->around(new AOP\Pointcut(array($aspect, 'around')));
+			return $this;
+		}
+
+		/**
 		 * This method creates a new instances of this class so that the fluent design pattern
 		 * can be utilized.
 		 *
