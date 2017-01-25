@@ -125,13 +125,6 @@ namespace Unicity\Config\SOAP {
 					$children[$key] = $child;
 				}
 			}
-			/*
-			$elements = $element->children();
-			foreach ($elements as $child) {
-				$key = $child->getName();
-				$children[$key] = $child;
-			}
-			*/
 			$children = array_values($children);
 			return $children;
 		}
@@ -162,12 +155,15 @@ namespace Unicity\Config\SOAP {
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to a custom node
-		 * @return \Unicity\Common\Mutable\ICollection              a collection representing the data
+		 * @return mixed                                            a collection representing the data
 		 *                                                          in the soap file
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that an unrecognized child
 		 *                                                          node was encountered
 		 */
 		protected function parseCustomElement(\SimpleXMLElement $node) {
+			if (!$node) {
+				return '';
+			}
 			$children = $this->getElementChildren($node, null);
 			if (count($children) > 0) {
 				$list = new Common\Mutable\ArrayList();

@@ -175,7 +175,7 @@ namespace Unicity\Core {
 						throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a boolean.', array(':type' => get_class($value)));
 					}
 				case 'string':
-					return (in_array(strtolower($value), array('false', 'f', 'no', 'n', '0', 'null', 'nil'))) ? false : (bool) $value;
+					return (in_array(strtolower($value), array('false', 'f', 'no', 'n', '0', 'null', 'nil', ''))) ? false : (bool) $value;
 				default:
 					throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a boolean.', array(':type' => $type));
 			}
@@ -332,6 +332,9 @@ namespace Unicity\Core {
 					}
 				case 'string':
 					$value = trim($value);
+					if (empty($value)) {
+						return 0.0;
+					}
 					if (preg_match('/^[+-]?([0-9]+)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))?$/', $value)) {
 						return doubleval($value);
 					}
@@ -382,6 +385,9 @@ namespace Unicity\Core {
 					}
 				case 'string':
 					$value = trim($value);
+					if (empty($value)) {
+						return 0;
+					}
 					if (!preg_match('/^[+-]?([0-9]+)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))?$/', $value)) {
 						throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to an integer.', array(':type' => $type));
 					}
