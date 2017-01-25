@@ -46,18 +46,9 @@ namespace Unicity\BT\Task {
 			$args = func_get_args();
 			array_shift($args);
 
-			try {
-				$status = AOP\Advice::factory(new AOP\JoinPoint($args, ['class' => $task->__getClass(), 'method' => 'process']))
-					->register($task)
-					->execute([$task, 'process']);
-			}
-			catch (\Exception $ex) {
-				//$engine->getErrorLog()->add(Log\Level::WARNING, $ex->getMessage());
-				//var_dump($ex->getMessage()); exit();
-				$status = BT\Status::ERROR;
-			}
-
-			return $status;
+			return AOP\Advice::factory(new AOP\JoinPoint($args, ['class' => $task->__getClass(), 'method' => 'process']))
+				->register($task)
+				->execute([$task, 'process']);
 		}
 
 	}

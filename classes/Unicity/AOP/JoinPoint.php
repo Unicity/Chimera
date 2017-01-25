@@ -219,7 +219,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @return \Exception                                       the exception thrown by the concern
 		 */
-		public function getException() {
+		public function getException() : ?\Exception {
 			return $this->exception;
 		}
 

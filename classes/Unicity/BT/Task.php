@@ -103,7 +103,11 @@ namespace Unicity\BT {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function afterThrowing(AOP\JoinPoint $joinPoint) {
-			// do nothing
+			//$exception = $joinPoint->getException();
+			//$engine->getErrorLog()->add(Log\Level::WARNING, $exception->getMessage());
+			//var_dump($exception->getMessage()); exit();
+			$joinPoint->setReturnedValue(BT\Status::ERROR);
+			$joinPoint->setException(null);
 		}
 
 		/**

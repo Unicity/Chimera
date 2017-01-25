@@ -82,9 +82,7 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function before(AOP\Pointcut $pointcut) {
-			if ($pointcut !== null) {
-				$this->pointcuts['Before'][] = $pointcut;
-			}
+			$this->pointcuts['Before'][] = $pointcut;
 			return $this;
 		}
 
@@ -97,9 +95,7 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function afterReturning(AOP\Pointcut $pointcut) {
-			if ($pointcut !== null) {
-				$this->pointcuts['AfterReturning'][] = $pointcut;
-			}
+			$this->pointcuts['AfterReturning'][] = $pointcut;
 			return $this;
 		}
 
@@ -112,9 +108,7 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function afterThrowing(AOP\Pointcut $pointcut) {
-			if ($pointcut !== null) {
-				$this->pointcuts['AfterThrowing'][] = $pointcut;
-			}
+			$this->pointcuts['AfterThrowing'][] = $pointcut;
 			return $this;
 		}
 
@@ -127,9 +121,7 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function after(AOP\Pointcut $pointcut) {
-			if ($pointcut !== null) {
-				$this->pointcuts['After'][] = $pointcut;
-			}
+			$this->pointcuts['After'][] = $pointcut;
 			return $this;
 		}
 
@@ -142,9 +134,7 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function around(AOP\Pointcut $pointcut) {
-			if ($pointcut !== null) {
-				$this->pointcuts['Around'][] = $pointcut;
-			}
+			$this->pointcuts['Around'][] = $pointcut;
 			return $this;
 		}
 
