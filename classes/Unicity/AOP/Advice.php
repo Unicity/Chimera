@@ -156,81 +156,75 @@ namespace Unicity\AOP {
 		 * @param boolean $enabled                                  whether the advice is applied
 		 * @return mixed                                            the returned result of the concern
 		 */
-		public function execute($concern, $enabled = true) {
-			$joinPoint = &$this->joinPoint;
-
+		public function execute(callable $concern, bool $enabled = true) {
 			if ($enabled) {
-				$pointcuts = &$this->pointcuts;
-
-				$closure = function() use (&$concern, &$pointcuts, &$joinPoint) {
-					$joinPoint->setAroundClosure(null);
-			
-					if (isset($pointcuts['Before'])) {			
-						foreach ($pointcuts['Before'] as $pointcut) {
-							$joinPoint->setAdviceType(AOP\AdviceType::before());
-							$joinPoint->setPointcut($pointcut);
-							$pointcut($joinPoint);
+				$closure = function() use ($concern) {
+					if (isset($this->pointcuts['Before'])) {
+						foreach ($this->pointcuts['Before'] as $pointcut) {
+							$this->joinPoint->setAdviceType(AOP\AdviceType::before());
+							$this->joinPoint->setPointcut($pointcut);
+							$pointcut($this->joinPoint);
 						}
 					}
 
 					try {
-						$joinPoint->setReturnedValue(
-							call_user_func_array($concern, $joinPoint->getArguments())
+						$this->joinPoint->setReturnedValue(
+							call_user_func_array($concern, $this->joinPoint->getArguments())
 						);
 				
-						if (isset($pointcuts['AfterReturning'])) {
-							foreach ($pointcuts['AfterReturning'] as $pointcut) {
-								$joinPoint->setAdviceType(AOP\AdviceType::afterReturning());
-								$joinPoint->setPointcut($pointcut);
-								$pointcut($joinPoint);
+						if (isset($this->pointcuts['AfterReturning'])) {
+							foreach ($this->pointcuts['AfterReturning'] as $pointcut) {
+								$this->joinPoint->setAdviceType(AOP\AdviceType::afterReturning());
+								$this->joinPoint->setPointcut($pointcut);
+								$pointcut($this->joinPoint);
 							}
 						}
 	
 					}
 					catch (\Exception $exception) {
-						$joinPoint->setException($exception);
+						$this->joinPoint->setException($exception);
 				
-						if (isset($pointcuts['AfterThrowing'])) {
-							foreach ($pointcuts['AfterThrowing'] as $pointcut) {
-								$joinPoint->setAdviceType(AOP\AdviceType::afterThrowing());
-								$joinPoint->setPointcut($pointcut);
-								$pointcut($joinPoint);
+						if (isset($this->pointcuts['AfterThrowing'])) {
+							foreach ($this->pointcuts['AfterThrowing'] as $pointcut) {
+								$this->joinPoint->setAdviceType(AOP\AdviceType::afterThrowing());
+								$this->joinPoint->setPointcut($pointcut);
+								$pointcut($this->joinPoint);
 							}
 						}
 
 					}
 					//finally {
-						if (isset($pointcuts['After'])) {
-							foreach ($pointcuts['After'] as $pointcut) {
-								$joinPoint->setAdviceType(AOP\AdviceType::after());
-								$joinPoint->setPointcut($pointcut);
-								$pointcut($joinPoint);
+						if (isset($this->pointcuts['After'])) {
+							foreach ($this->pointcuts['After'] as $pointcut) {
+								$this->joinPoint->setAdviceType(AOP\AdviceType::after());
+								$this->joinPoint->setPointcut($pointcut);
+								$pointcut($this->joinPoint);
 							}
 						}
 					//}
 
-					$exception = $joinPoint->getException();
+					$exception = $this->joinPoint->getException();
 					if ($exception instanceof \Exception) {
 						throw $exception;
 					}
 				};
-		
-				if (isset($pointcuts['Around'])) {
-					foreach ($pointcuts['Around'] as $pointcut) {
-						$joinPoint->setAdviceType(AOP\AdviceType::around());
-						$joinPoint->setAroundClosure($closure);
-						$joinPoint->setPointcut($pointcut);
-						$pointcut($joinPoint);
-					}
-				}
-				else {
-					$closure();
-				}
 
-				return $joinPoint->getReturnedValue();
+				//if (isset($this->pointcuts['Around'])) {
+				//	foreach ($this->pointcuts['Around'] as $pointcut) {
+				//		$this->joinPoint->setAdviceType(AOP\AdviceType::around());
+				//		$this->joinPoint->setAroundClosure($closure);
+				//		$this->joinPoint->setPointcut($pointcut);
+				//		$pointcut($this->joinPoint);
+				//	}
+				//}
+				//else {
+					$closure();
+				//}
+
+				return $this->joinPoint->getReturnedValue();
 			}
 
-			return call_user_func_array($concern, $joinPoint->getArguments());
+			return call_user_func_array($concern, $this->joinPoint->getArguments());
 		}
 
 		/**

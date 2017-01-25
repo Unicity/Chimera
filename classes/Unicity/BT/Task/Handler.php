@@ -44,11 +44,12 @@ namespace Unicity\BT\Task {
 		 */
 		public static function process(BT\Task $task, BT\Engine $engine, string $entityId) {
 			$args = func_get_args();
+			array_shift($args);
 
 			try {
-				$status = AOP\Advice::factory(new AOP\JoinPoint(array_shift($args), array('class' => $task->__getClass(), 'method' => 'process')))
+				$status = AOP\Advice::factory(new AOP\JoinPoint($args, ['class' => $task->__getClass(), 'method' => 'process']))
 					->register($task)
-					->execute(array($task, 'process'));
+					->execute([$task, 'process']);
 			}
 			catch (\Exception $ex) {
 				//$engine->getErrorLog()->add(Log\Level::WARNING, $ex->getMessage());
