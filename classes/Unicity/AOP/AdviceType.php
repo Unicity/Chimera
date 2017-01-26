@@ -52,15 +52,15 @@ namespace Unicity\AOP {
 		 * @return Core\Enum                                        the token
 		 */
 		protected static function __enum($ordinal) {
-			if (!is_array(static::$__enums)) {
-				static::$__enums = array();
-				static::$__enums[] = new AOP\AdviceType('before', 'Before');
-				static::$__enums[] = new AOP\AdviceType('afterReturning', 'AfterReturning');
-				static::$__enums[] = new AOP\AdviceType('afterThrowing', 'AfterThrowing');
-				static::$__enums[] = new AOP\AdviceType('after', 'After');
-				static::$__enums[] = new AOP\AdviceType('around', 'Around');
+			if (!is_array(self::$__enums)) {
+				self::$__enums = array();
+				self::$__enums[] = new AOP\AdviceType('before', 'Before');
+				self::$__enums[] = new AOP\AdviceType('afterReturning', 'AfterReturning');
+				self::$__enums[] = new AOP\AdviceType('afterThrowing', 'AfterThrowing');
+				self::$__enums[] = new AOP\AdviceType('after', 'After');
+				self::$__enums[] = new AOP\AdviceType('around', 'Around');
 			}
-			return static::$__enums[$ordinal];
+			return self::$__enums[$ordinal];
 		}
 
 		/**
@@ -73,7 +73,7 @@ namespace Unicity\AOP {
 		protected function __construct($name, $value) {
 			$this->__name = $name;
 			$this->__value = $value;
-			$this->__ordinal = count(static::$__enums);
+			$this->__ordinal = count(self::$__enums);
 		}
 
 		/**
@@ -83,8 +83,8 @@ namespace Unicity\AOP {
 		 * @static
 		 * @return AOP\AdviceType                                   the advice type token
 		 */
-		public static function before() {
-			return static::__enum(0);
+		public static function before() : AOP\AdviceType {
+			return self::__enum(0);
 		}
 
 		/**
@@ -94,8 +94,8 @@ namespace Unicity\AOP {
 		 * @static
 		 * @return AOP\AdviceType                                   the advice type token
 		 */
-		public static function afterReturning() {
-			return static::__enum(1);
+		public static function afterReturning() : AOP\AdviceType {
+			return self::__enum(1);
 		}
 
 		/**
@@ -105,8 +105,8 @@ namespace Unicity\AOP {
 		 * @static
 		 * @return AOP\AdviceType                                   the advice type token
 		 */
-		public static function afterThrowing() {
-			return static::__enum(2);
+		public static function afterThrowing() : AOP\AdviceType {
+			return self::__enum(2);
 		}
 
 		/**
@@ -116,8 +116,8 @@ namespace Unicity\AOP {
 		 * @static
 		 * @return AOP\AdviceType                                   the advice type token
 		 */
-		public static function after() {
-			return static::__enum(3);
+		public static function after() : AOP\AdviceType {
+			return self::__enum(3);
 		}
 
 		/**
@@ -127,8 +127,8 @@ namespace Unicity\AOP {
 		 * @static
 		 * @return AOP\AdviceType                                   the advice type token
 		 */
-		public static function around() {
-			return static::__enum(4);
+		public static function around() : AOP\AdviceType {
+			return self::__enum(4);
 		}
 
 	}

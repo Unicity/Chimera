@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\AOP {
 
 	use \Unicity\AOP;
+	use \Unicity\Common;
 	use \Unicity\Core;
 
 	/**
@@ -52,6 +53,14 @@ namespace Unicity\AOP {
 		protected $pointcuts;
 
 		/**
+		 * This variable stores a list of which aspects that have been registered.
+		 *
+		 * @access protected
+		 * @var Common\Mutable\HashSet
+		 */
+		protected $registry;
+
+		/**
 		 * This constructor initializes the class with a join point.
 		 *
 		 * @access public
@@ -60,6 +69,7 @@ namespace Unicity\AOP {
 		public function __construct(AOP\JoinPoint $joinPoint) {
 			$this->joinPoint = $joinPoint;
 			$this->pointcuts = array();
+			$this->registry = new Common\Mutable\HashSet();
 		}
 
 		/**
@@ -71,6 +81,7 @@ namespace Unicity\AOP {
 			parent::__destruct();
 			unset($this->joinPoint);
 			unset($this->pointcuts);
+			unset($this->registry);
 		}
 
 		/**
@@ -158,28 +169,7 @@ namespace Unicity\AOP {
 				}
 
 				try {
-					if (isset($this->pointcuts['Around'])) {
-						foreach ($this->pointcuts['Around'] as $pointcut) {
-							$this->joinPoint->setAdviceType(AOP\AdviceType::around());
-							$this->joinPoint->setAroundClosure(function() use ($concern) {
-								$this->joinPoint->setReturnedValue(
-									call_user_func_array($concern, $this->joinPoint->getArguments())
-								);
-
-								if (isset($this->pointcuts['AfterReturning'])) {
-									foreach ($this->pointcuts['AfterReturning'] as $pointcut) {
-										$this->joinPoint->setAdviceType(AOP\AdviceType::afterReturning());
-										$this->joinPoint->setPointcut($pointcut);
-										$pointcut($this->joinPoint);
-									}
-								}
-							});
-							$this->joinPoint->setPointcut($pointcut);
-							$pointcut($this->joinPoint);
-							$this->joinPoint->setAroundClosure(null);
-						}
-					}
-					else {
+					$closure = function() use ($concern) {
 						$this->joinPoint->setReturnedValue(
 							call_user_func_array($concern, $this->joinPoint->getArguments())
 						);
@@ -191,6 +181,19 @@ namespace Unicity\AOP {
 								$pointcut($this->joinPoint);
 							}
 						}
+					};
+
+					if (isset($this->pointcuts['Around'])) {
+						foreach ($this->pointcuts['Around'] as $pointcut) {
+							$this->joinPoint->setAdviceType(AOP\AdviceType::around());
+							$this->joinPoint->setAroundClosure($closure);
+							$this->joinPoint->setPointcut($pointcut);
+							$pointcut($this->joinPoint);
+							$this->joinPoint->setAroundClosure(null);
+						}
+					}
+					else {
+						$closure();
 					}
 				}
 				catch (\Exception $exception) {
@@ -204,15 +207,14 @@ namespace Unicity\AOP {
 						}
 					}
 				}
-				//finally {
-					if (isset($this->pointcuts['After'])) {
-						foreach ($this->pointcuts['After'] as $pointcut) {
-							$this->joinPoint->setAdviceType(AOP\AdviceType::after());
-							$this->joinPoint->setPointcut($pointcut);
-							$pointcut($this->joinPoint);
-						}
+
+				if (isset($this->pointcuts['After'])) {
+					foreach ($this->pointcuts['After'] as $pointcut) {
+						$this->joinPoint->setAdviceType(AOP\AdviceType::after());
+						$this->joinPoint->setPointcut($pointcut);
+						$pointcut($this->joinPoint);
 					}
-				//}
+				}
 
 				$exception = $this->joinPoint->getException();
 				if ($exception instanceof \Exception) {
@@ -233,20 +235,24 @@ namespace Unicity\AOP {
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
 		public function register(AOP\IAspect $aspect) {
-			if (method_exists($aspect, 'before')) {
-				$this->before(new AOP\Pointcut(array($aspect, 'before')));
-			}
-			if (method_exists($aspect, 'around')) {
-				$this->around(new AOP\Pointcut(array($aspect, 'around')));
-			}
-			if (method_exists($aspect, 'afterReturning')) {
-				$this->afterReturning(new AOP\Pointcut(array($aspect, 'afterReturning')));
-			}
-			if (method_exists($aspect, 'afterThrowing')) {
-				$this->afterThrowing(new AOP\Pointcut(array($aspect, 'afterThrowing')));
-			}
-			if (method_exists($aspect, 'after')) {
-				$this->after(new AOP\Pointcut(array($aspect, 'after')));
+			$value = spl_object_hash($aspect);
+			if (!$this->registry->hasValue($value)) {
+				if (method_exists($aspect, 'before')) {
+					$this->before(new AOP\Pointcut(array($aspect, 'before')));
+				}
+				if (method_exists($aspect, 'around')) {
+					$this->around(new AOP\Pointcut(array($aspect, 'around')));
+				}
+				if (method_exists($aspect, 'afterReturning')) {
+					$this->afterReturning(new AOP\Pointcut(array($aspect, 'afterReturning')));
+				}
+				if (method_exists($aspect, 'afterThrowing')) {
+					$this->afterThrowing(new AOP\Pointcut(array($aspect, 'afterThrowing')));
+				}
+				if (method_exists($aspect, 'after')) {
+					$this->after(new AOP\Pointcut(array($aspect, 'after')));
+				}
+				$this->registry->putValue($value);
 			}
 			return $this;
 		}

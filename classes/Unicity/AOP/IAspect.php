@@ -22,6 +22,14 @@ namespace Unicity\AOP {
 
 	use \Unicity\AOP;
 
+	/**
+	 * This interface is used to mark a class as an aspect in Aspect Oriented Programming (AOP).  An aspect
+	 * is a class containing a set of advice methods.
+	 *
+	 * @access public
+	 * @interface
+	 * @package AOP
+	 */
 	interface IAspect {
 
 		/**

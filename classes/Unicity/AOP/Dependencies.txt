@@ -1,3 +1,4 @@
 Packages:
+* \Unicity\Common
 * \Unicity\Core
 * \Unicity\Throwable
