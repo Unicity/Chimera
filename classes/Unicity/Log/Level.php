@@ -62,7 +62,7 @@ namespace Unicity\Log {
 				static::$__enums[LOG_ERR] = new Log\Level('Error', 'Error: error conditions');
 				static::$__enums[LOG_WARNING] = new Log\Level('Warning', 'Warning: warning conditions');
 				static::$__enums[LOG_NOTICE] = new Log\Level('Notice', 'Notice: normal but significant condition');
-				static::$__enums[LOG_INFO] = new Log\Level('Informational', 'Informational: informational messages');
+				static::$__enums[LOG_INFO] = new Log\Level('Info', 'Informational: informational messages');
 				static::$__enums[LOG_DEBUG] = new Log\Level('Debug', 'Debug: debug-level messages');
 			}
 			return static::$__enums[$ordinal];
