@@ -58,7 +58,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			}
 
 			$order->lines->aggregate->weight->unit = 'lbs';
-			$order->lines->aggregate->weight->value = $weight;
+			$order->lines->aggregate->weight->value = round($weight, 6, PHP_ROUND_HALF_UP);
 
 			return BT\Status::SUCCESS;
 		}
