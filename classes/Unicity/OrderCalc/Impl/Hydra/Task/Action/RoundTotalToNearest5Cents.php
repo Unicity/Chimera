@@ -20,10 +20,27 @@ declare(strict_types = 1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Log;
 	use \Unicity\OrderCalc;
 
 	class RoundTotalToNearest5Cents extends BT\Task\Action {
+
+		/**
+		 * This method runs before the concern's execution.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function before(AOP\JoinPoint $joinPoint) {
+			$engine = $joinPoint->getArgument(0);
+			$entityId = $joinPoint->getArgument(1);
+
+			$order = $engine->getEntity($entityId)->getComponent('Order');
+
+			$this->aop['terms']['total'] = $order->terms->total;
+		}
 
 		/**
 		 * This method processes an entity.
@@ -39,6 +56,36 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order->terms->total = OrderCalc\Engine\Service\Money::roundToNearest5Cents($order->terms->total, $order->currency);
 
 			return BT\Status::SUCCESS;
+		}
+
+		/**
+		 * This method runs when the concern's execution is successful (and a result is returned).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			$engine = $joinPoint->getArgument(0);
+			$entityId = $joinPoint->getArgument(1);
+
+			$order = $engine->getEntity($entityId)->getComponent('Order');
+
+			$message = array(
+				'changes' => array(
+					array(
+						'field' => 'terms.total',
+						'from' => $this->aop['terms']['total'],
+						'to' => $order->terms->total,
+					),
+				),
+				'class' => $joinPoint->getProperty('class'),
+				'policy' => $this->policy->toDictionary(),
+				'status' => $joinPoint->getReturnedValue(),
+				'task' => 'action',
+				'title' => $this->getTitle(),
+			);
+
+			Log\Logger::log(Log\Level::informational(), json_encode($message));
 		}
 
 	}

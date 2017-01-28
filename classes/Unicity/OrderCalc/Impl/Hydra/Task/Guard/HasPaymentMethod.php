@@ -20,7 +20,10 @@ declare(strict_types = 1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\FP;
+	use \Unicity\Log;
 
 	class HasPaymentMethod extends BT\Task\Guard {
 
@@ -37,11 +40,40 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 			$methods = $this->policy->getValue('methods');
 
-			if (($order->transactions->items->count() > 0) && $methods->hasValue($order->transactions->items[0]->method)) {
+			if ((FP\IList::length($order->transactions->items) > 0) && $methods->hasValue($order->transactions->items[0]->method)) {
 				return BT\Status::SUCCESS;
 			}
 
 			return BT\Status::FAILED;
+		}
+
+		/**
+		 * This method runs when the concern's execution is successful (and a result is returned).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			$engine = $joinPoint->getArgument(0);
+			$entityId = $joinPoint->getArgument(1);
+
+			$order = $engine->getEntity($entityId)->getComponent('Order');
+
+			$message = array(
+				'class' => $joinPoint->getProperty('class'),
+				//'inputs' => array(
+				//	array(
+				//		'field' => 'transactions.items[0].method',
+				//		'value' => $order->transactions->items[0]->method,
+				//	),
+				//),
+				'policy' => $this->policy->toDictionary(),
+				'status' => $joinPoint->getReturnedValue(),
+				'task' => 'guard',
+				'title' => $this->getTitle(),
+			);
+
+			Log\Logger::log(Log\Level::informational(), json_encode($message));
 		}
 
 	}

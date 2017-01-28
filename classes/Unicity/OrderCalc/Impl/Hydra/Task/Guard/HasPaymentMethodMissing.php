@@ -20,7 +20,10 @@ declare(strict_types = 1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\FP;
+	use \Unicity\Log;
 
 	class HasPaymentMethodMissing extends BT\Task\Guard {
 
@@ -35,11 +38,40 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			if ($order->transactions->items->count() > 0) {
+			if (FP\IList::length($order->transactions->items) > 0) {
 				return BT\Status::FAILED;
 			}
 
 			return BT\Status::SUCCESS;
+		}
+
+		/**
+		 * This method runs when the concern's execution is successful (and a result is returned).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			$engine = $joinPoint->getArgument(0);
+			$entityId = $joinPoint->getArgument(1);
+
+			$order = $engine->getEntity($entityId)->getComponent('Order');
+
+			$message = array(
+				'class' => $joinPoint->getProperty('class'),
+				'inputs' => array(
+					array(
+						'field' => 'transactions.items',
+						'length' => FP\IList::length($order->transactions->items),
+					),
+				),
+				'policy' => $this->policy->toDictionary(),
+				'status' => $joinPoint->getReturnedValue(),
+				'task' => 'guard',
+				'title' => $this->getTitle(),
+			);
+
+			Log\Logger::log(Log\Level::informational(), json_encode($message));
 		}
 
 	}

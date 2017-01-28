@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace Unicity\BT\Task {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Config;
 	use \Unicity\Core;
+	use \Unicity\Log;
 
 	class Marshaller extends BT\Task\Responder {
 
@@ -45,6 +47,24 @@ namespace Unicity\BT\Task {
 			$writer->export($response);
 
 			return BT\Status::QUIT;
+		}
+
+		/**
+		 * This method runs when the concern's execution is successful (and a result is returned).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			$message = array(
+				'class' => $joinPoint->getProperty('class'),
+				'policy' => $this->policy->toDictionary(),
+				'status' => $joinPoint->getReturnedValue(),
+				'task' => 'responder',
+				'title' => $this->getTitle(),
+			);
+
+			Log\Logger::log(Log\Level::informational(), json_encode($message));
 		}
 
 	}

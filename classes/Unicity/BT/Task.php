@@ -24,6 +24,7 @@ namespace Unicity\BT {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
+	use \Unicity\Log;
 
 	/**
 	 * This class represents the base task for any task.
@@ -35,6 +36,14 @@ namespace Unicity\BT {
 	 * @see https://en.wikipedia.org/wiki/Behavior-driven_development
 	 */
 	abstract class Task extends Core\Object implements AOP\IAspect {
+
+		/**
+		 * This variable stores any data used for AOP.
+		 *
+		 * @access protected
+		 * @var array
+		 */
+		protected $aop;
 
 		/**
 		 * This variable stores the policy associated with the task.
@@ -59,10 +68,11 @@ namespace Unicity\BT {
 		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
 		public function __construct(Common\Mutable\IMap $policy = null) {
-			$this->title = '';
+			$this->aop = array();
 			$this->policy = ($policy !== null)
 				? $policy
 				: new Common\Mutable\HashMap();
+			$this->title = '';
 		}
 
 		/**
@@ -72,6 +82,7 @@ namespace Unicity\BT {
 		 */
 		public function __destruct() {
 			parent::__destruct();
+			unset($this->aop);
 			unset($this->policy);
 			unset($this->title);
 		}
@@ -83,9 +94,20 @@ namespace Unicity\BT {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function afterThrowing(AOP\JoinPoint $joinPoint) {
-			//$exception = $joinPoint->getException();
-			//$engine->getErrorLog()->add(Log\Level::WARNING, $exception->getMessage());
-			//var_dump($exception->getMessage()); exit();
+			$exception = $joinPoint->getException();
+
+			$message = array(
+				'class' => $joinPoint->getProperty('class'),
+				'exception' => array(
+					'code' => $exception->getCode(),
+					'message' => $exception->getMessage(),
+				),
+				'policy' => $this->policy->toDictionary(),
+				'status' => $joinPoint->getReturnedValue(),
+				'title' => $this->getTitle(),
+			);
+
+			Log\Logger::log(Log\Level::error(), json_encode($message));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
 			$joinPoint->setException(null);
 		}
