@@ -20,7 +20,10 @@ declare(strict_types = 1);
 
 namespace Unicity\BT\Task {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
+	use \Unicity\Log;
 
 	/**
 	 * This class represents a task responder.
@@ -45,6 +48,24 @@ namespace Unicity\BT\Task {
 			$response->setBody($this->policy->getValue('body'));
 
 			return BT\Status::QUIT;
+		}
+
+		/**
+		 * This method runs when the concern's execution is successful (and a result is returned).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			$message = array(
+				'class' => $joinPoint->getProperty('class'),
+				'policy' => $this->policy,
+				'status' => $joinPoint->getReturnedValue(),
+				'task' => 'responder',
+				'title' => $this->getTitle(),
+			);
+
+			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

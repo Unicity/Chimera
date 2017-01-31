@@ -101,8 +101,9 @@ namespace Unicity\BT {
 				'exception' => array(
 					'code' => $exception->getCode(),
 					'message' => $exception->getMessage(),
+					'trace' => $exception->getTraceAsString(),
 				),
-				'policy' => $this->policy->toDictionary(),
+				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'title' => $this->getTitle(),
 			);
