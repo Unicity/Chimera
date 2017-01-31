@@ -22,6 +22,7 @@ namespace Unicity\BT\Task {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\Log;
@@ -64,7 +65,7 @@ namespace Unicity\BT\Task {
 				'title' => $this->getTitle(),
 			);
 
-			Log\Logger::log(Log\Level::informational(), json_encode($message));
+			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

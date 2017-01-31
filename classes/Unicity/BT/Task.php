@@ -107,7 +107,7 @@ namespace Unicity\BT {
 				'title' => $this->getTitle(),
 			);
 
-			Log\Logger::log(Log\Level::error(), json_encode($message));
+			Log\Logger::log(Log\Level::error(), json_encode(Common\Collection::useArrays($message)));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
 			$joinPoint->setException(null);
 		}
