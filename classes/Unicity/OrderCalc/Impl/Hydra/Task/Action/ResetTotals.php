@@ -42,7 +42,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$this->aop['terms']['freight']['amount'] = $order->terms->freight->amount;
 			$this->aop['terms']['tax']['amount'] = $order->terms->tax->amount;
 			$this->aop['terms']['pretotal'] = $order->terms->pretotal;
-			$this->aop['terms']['timbre']['amount'] = $order->terms->timbre->amount;
+			if ($order->terms->hasKey('timbre')) {
+				$this->aop['terms']['timbre']['amount'] = $order->terms->timbre->amount;
+			}
 			$this->aop['terms']['total'] = $order->terms->total;
 		}
 
@@ -104,11 +106,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						'to' => $order->terms->pretotal,
 					),
 					array(
-						'field' => 'terms.timbre.amount',
-						'from' => $this->aop['terms']['timbre']['amount'],
-						'to' => $order->terms->timbre->amount,
-					),
-					array(
 						'field' => 'terms.total',
 						'from' => $this->aop['terms']['total'],
 						'to' => $order->terms->total,
@@ -120,6 +117,14 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				'task' => 'action',
 				'title' => $this->getTitle(),
 			);
+
+			if ($order->terms->hasKey('timbre')) {
+				$message['changes'][] = array(
+					'field' => 'terms.timbre.amount',
+					'from' => $this->aop['terms']['timbre']['amount'],
+					'to' => $order->terms->timbre->amount,
+				);
+			}
 
 			Log\Logger::log(Log\Level::informational(), json_encode($message));
 		}
