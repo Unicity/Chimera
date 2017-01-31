@@ -89,6 +89,29 @@ namespace Unicity\BT {
 		private static $constants = null;
 
 		/**
+		 * This method returns the name of the constant with the specified value or null.
+		 *
+		 * @access public
+		 * @static
+		 * @param integer $value
+		 * @return string                                           the name of the constant
+		 */
+		public static function getName(int $value) {
+			if (static::$constants === null) {
+				$class = new \ReflectionClass(__CLASS__);
+				static::$constants = new Common\HashMap($class->getConstants());
+			}
+
+			foreach (static::$constants as $k => $v) {
+				if ($v == $value) {
+					return $k;
+				}
+			}
+
+			return null;
+		}
+
+		/**
 		 * This method is used to retrieve the first constant-name in a class that matches the value provided.
 		 *
 		 * @access public
