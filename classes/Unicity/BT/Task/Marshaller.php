@@ -58,7 +58,7 @@ namespace Unicity\BT\Task {
 		public function afterReturning(AOP\JoinPoint $joinPoint) {
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy->toDictionary(),
+				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'task' => 'responder',
 				'title' => $this->getTitle(),

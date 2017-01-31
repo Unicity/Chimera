@@ -91,7 +91,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					),
 				),
 				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy->toDictionary(),
+				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'task' => 'action',
 				'title' => $this->getTitle(),

@@ -68,7 +68,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 						'value' => $order->lines->aggregate->weight->value,
 					),
 				),
-				'policy' => $this->policy->toDictionary(),
+				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'task' => 'guard',
 				'title' => $this->getTitle(),

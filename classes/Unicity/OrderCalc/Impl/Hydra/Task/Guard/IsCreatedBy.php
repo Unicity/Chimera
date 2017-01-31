@@ -66,7 +66,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 						'value' => $order->creator->humanName->fullName,
 					),
 				),
-				'policy' => $this->policy->toDictionary(),
+				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'task' => 'guard',
 				'title' => $this->getTitle(),

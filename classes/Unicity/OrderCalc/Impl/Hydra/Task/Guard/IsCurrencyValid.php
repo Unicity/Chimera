@@ -65,7 +65,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 						'value' => $order->currency,
 					),
 				),
-				'policy' => $this->policy->toDictionary(),
+				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'task' => 'guard',
 				'title' => $this->getTitle(),
