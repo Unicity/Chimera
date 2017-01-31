@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\Log;
 	use \Unicity\Trade;
 
@@ -99,7 +100,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				'title' => $this->getTitle(),
 			);
 
-			Log\Logger::log(Log\Level::informational(), json_encode($message));
+			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\Log;
 
@@ -74,7 +75,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'title' => $this->getTitle(),
 			);
 
-			Log\Logger::log(Log\Level::informational(), json_encode($message));
+			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

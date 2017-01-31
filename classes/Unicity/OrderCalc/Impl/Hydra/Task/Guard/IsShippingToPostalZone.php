@@ -23,6 +23,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 	use \Leap\Core\DB;
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\Log;
 
 	class IsShippingToPostalZone extends BT\Task\Guard {
@@ -81,7 +82,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'title' => $this->getTitle(),
 			);
 
-			Log\Logger::log(Log\Level::informational(), json_encode($message));
+			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

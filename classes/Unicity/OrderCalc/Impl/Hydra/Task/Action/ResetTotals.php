@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\Log;
 
 	class ResetTotals extends BT\Task\Action {
@@ -126,7 +127,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				);
 			}
 
-			Log\Logger::log(Log\Level::informational(), json_encode($message));
+			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}
