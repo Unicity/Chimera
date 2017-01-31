@@ -122,8 +122,15 @@ namespace Unicity\Common {
 			if (is_object($data)) {
 				if ($data instanceof Common\ICollection) {
 					$buffer = array();
-					foreach ($data as $key => $value) {
-						$buffer[$key] = static::useArrays($value);
+					if ($data instanceof Common\IMap) {
+						foreach ($data as $key => $value) {
+							$buffer[$key] = static::useArrays($value);
+						}
+					}
+					else {
+						foreach ($data as $value) {
+							$buffer[] = static::useArrays($value);
+						}
 					}
 					return $buffer;
 				}
@@ -136,10 +143,17 @@ namespace Unicity\Common {
 					return $buffer;
 				}
 			}
-			if (is_array($data)) {
+			else if (is_array($data)) {
 				$buffer = array();
-				foreach ($data as $key => $value) {
-					$buffer[$key] = static::useArrays($value);
+				if (static::isDictionary($data)) {
+					foreach ($data as $key => $value) {
+						$buffer[$key] = static::useArrays($value);
+					}
+				}
+				else {
+					foreach ($data as $value) {
+						$buffer[] = static::useArrays($value);
+					}
 				}
 				return $buffer;
 			}
