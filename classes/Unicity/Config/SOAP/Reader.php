@@ -155,8 +155,7 @@ namespace Unicity\Config\SOAP {
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to a custom node
-		 * @return mixed                                            a collection representing the data
-		 *                                                          in the soap file
+		 * @return mixed                                            the value of the node
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that an unrecognized child
 		 *                                                          node was encountered
 		 */

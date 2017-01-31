@@ -626,7 +626,7 @@ namespace Unicity\Config\Spring {
 		 * @access protected
 		 * @param \SimpleXMLElement $root                           a reference to the root node
 		 * @param \SimpleXMLElement $node                           a reference to the "undefined" node
-		 * @return Common\Mutable\HashMap                           a hash map
+		 * @return Core\Data\Undefined                              an undefined reference
 		 */
 		protected function parseUndefinedElement(\SimpleXMLElement $root, \SimpleXMLElement $node) {
 			return Core\Data\Undefined::instance();
@@ -638,11 +638,14 @@ namespace Unicity\Config\Spring {
 		 * @access protected
 		 * @param \SimpleXMLElement $root                           a reference to the root node
 		 * @param \SimpleXMLElement $node                           a reference to the "value" node
-		 * @return mixed                                            the value
+		 * @return mixed                                            the value of the node
 		 * @throws Throwable\Parse\Exception                        indicates that problem occurred while
 		 *                                                          parsing
 		 */
 		protected function parseValueElement(\SimpleXMLElement $root, \SimpleXMLElement $node) {
+			if (!$node) {
+				return '';
+			}
 			$children = $node->children();
 			if (count($children) > 0) {
 				$value = '';

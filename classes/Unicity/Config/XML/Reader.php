@@ -100,12 +100,15 @@ namespace Unicity\Config\XML {
 		 *
 		 * @access protected
 		 * @param \SimpleXMLElement $node                           a reference to a child node
-		 * @return \Unicity\Common\Mutable\ICollection              a collection representing the data
+		 * @return mixed                                            the value of the node
 		 *                                                          in the soap file
 		 * @throws \Unicity\Throwable\Parse\Exception               indicates that an unrecognized child
 		 *                                                          node was encountered
 		 */
 		protected function parseChildElement(\SimpleXMLElement $node) {
+			if (!$node) {
+				return '';
+			}
 			$children = $node->children();
 			if (count($children) > 0) {
 				$list = new Common\Mutable\ArrayList();
