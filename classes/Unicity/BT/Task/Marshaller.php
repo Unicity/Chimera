@@ -57,6 +57,11 @@ namespace Unicity\BT\Task {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function afterReturning(AOP\JoinPoint $joinPoint) {
+			$engine = $joinPoint->getArgument(0);
+			$entityId = $joinPoint->getArgument(1);
+
+			$entity = $engine->getEntity($entityId);
+
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
 				'policy' => $this->policy,
