@@ -24,6 +24,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Log;
+	use \Unicity\Trade;
 
 	class CalculateTotal extends BT\Task\Action {
 
@@ -53,7 +54,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function process(BT\Engine $engine, string $entityId) {
 			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$order->terms->total = $order->terms->pretotal;
+			$pretotal = Trade\Money::make($order->terms->pretotal, $order->currency);
+
+			if ($this->policy->getValue('timbre')) {
+				$pretotal = $pretotal->add(Trade\Money::make($order->terms->timbre->amount, $order->currency));
+			}
+
+			$order->terms->total = $pretotal->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
 		}
