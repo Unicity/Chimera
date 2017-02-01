@@ -63,7 +63,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				'inputs' => array(
 					array(
-						'field' => 'creator.humanName.fullName',
+						'field' => 'Order.creator.humanName.fullName',
 						'value' => $order->creator->humanName->fullName,
 					),
 				),

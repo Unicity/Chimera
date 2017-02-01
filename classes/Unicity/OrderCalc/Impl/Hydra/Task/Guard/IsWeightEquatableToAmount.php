@@ -65,7 +65,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				'inputs' => array(
 					array(
-						'field' => 'lines.aggregate.weight.value',
+						'field' => 'Order.lines.aggregate.weight.value',
 						'value' => $order->lines->aggregate->weight->value,
 					),
 				),

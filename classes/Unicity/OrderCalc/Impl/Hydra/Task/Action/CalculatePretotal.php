@@ -88,7 +88,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'terms.pretotal',
+						'field' => 'Order.terms.pretotal',
 						'from' => $this->aop['terms']['pretotal'],
 						'to' => $order->terms->pretotal,
 					),

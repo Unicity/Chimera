@@ -80,22 +80,22 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'market',
+						'field' => 'Order.market',
 						'from' => $this->aop['market'],
 						'to' => $order->market,
 					),
 					array(
-						'field' => 'shipToAddress.country',
+						'field' => 'Order.shipToAddress.country',
 						'from' => $this->aop['shipToAddress']['country'],
 						'to' => $order->shipToAddress->country,
 					),
 					array(
-						'field' => 'currency',
+						'field' => 'Order.currency',
 						'from' => $this->aop['currency'],
 						'to' => $order->currency,
 					),
 					array(
-						'field' => 'terms.subtotal',
+						'field' => 'Order.terms.subtotal',
 						'from' => $this->aop['terms']['subtotal'],
 						'to' => $order->terms->subtotal,
 					),

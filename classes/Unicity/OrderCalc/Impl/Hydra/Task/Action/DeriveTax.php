@@ -83,12 +83,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'terms.tax.amount',
+						'field' => 'Order.terms.tax.amount',
 						'from' => $this->aop['terms']['tax']['amount'],
 						'to' => $order->terms->tax->amount,
 					),
 					array(
-						'field' => 'terms.tax.percentage',
+						'field' => 'Order.terms.tax.percentage',
 						'from' => $this->aop['terms']['tax']['percentage'],
 						'to' => $order->terms->tax->percentage,
 					),

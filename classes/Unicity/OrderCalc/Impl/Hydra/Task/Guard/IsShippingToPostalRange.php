@@ -67,7 +67,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				'inputs' => array(
 					array(
-						'field' => 'shipToAddress.zip',
+						'field' => 'Order.shipToAddress.zip',
 						'value' => $order->shipToAddress->zip,
 					),
 				),

@@ -63,7 +63,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				'inputs' => array(
 					array(
-						'field' => 'shipToAddress.state',
+						'field' => 'Order.shipToAddress.state',
 						'value' => $order->shipToAddress->state,
 					),
 				),

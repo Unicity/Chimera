@@ -64,7 +64,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				//'inputs' => array(
 				//	array(
-				//		'field' => 'transactions.items[0].method',
+				//		'field' => 'Order.transactions.items[0].method',
 				//		'value' => $order->transactions->items[0]->method,
 				//	),
 				//),

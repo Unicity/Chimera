@@ -74,7 +74,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'terms.total',
+						'field' => 'Order.terms.total',
 						'from' => $this->aop['terms']['total'],
 						'to' => $order->terms->total,
 					),

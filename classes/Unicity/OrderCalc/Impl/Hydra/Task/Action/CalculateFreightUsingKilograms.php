@@ -108,7 +108,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'terms.freight.amount',
+						'field' => 'Order.terms.freight.amount',
 						'from' => $this->aop['terms']['freight']['amount'],
 						'to' => $order->terms->freight->amount,
 					),

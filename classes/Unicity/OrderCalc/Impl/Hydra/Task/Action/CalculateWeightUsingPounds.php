@@ -97,12 +97,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'lines.aggregate.weight.unit',
+						'field' => 'Order.lines.aggregate.weight.unit',
 						'from' => $this->aop['lines']['aggregate']['weight']['unit'],
 						'to' => $order->lines->aggregate->weight->unit,
 					),
 					array(
-						'field' => 'lines.aggregate.weight->value',
+						'field' => 'Order.lines.aggregate.weight->value',
 						'from' => $this->aop['lines']['aggregate']['weight']['value'],
 						'to' => $order->lines->aggregate->weight->value,
 					),

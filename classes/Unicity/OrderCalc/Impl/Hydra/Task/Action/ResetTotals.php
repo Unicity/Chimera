@@ -87,27 +87,27 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'terms.discount.amount',
+						'field' => 'Order.terms.discount.amount',
 						'from' => $this->aop['terms']['discount']['amount'],
 						'to' => $order->terms->discount->amount,
 					),
 					array(
-						'field' => 'terms.freight.amount',
+						'field' => 'Order.terms.freight.amount',
 						'from' => $this->aop['terms']['freight']['amount'],
 						'to' => $order->terms->freight->amount,
 					),
 					array(
-						'field' => 'terms.tax.amount',
+						'field' => 'Order.terms.tax.amount',
 						'from' => $this->aop['terms']['tax']['amount'],
 						'to' => $order->terms->tax->amount,
 					),
 					array(
-						'field' => 'terms.pretotal',
+						'field' => 'Order.terms.pretotal',
 						'from' => $this->aop['terms']['pretotal'],
 						'to' => $order->terms->pretotal,
 					),
 					array(
-						'field' => 'terms.total',
+						'field' => 'Order.terms.total',
 						'from' => $this->aop['terms']['total'],
 						'to' => $order->terms->total,
 					),
@@ -121,7 +121,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 			if ($order->terms->hasKey('timbre')) {
 				$message['changes'][] = array(
-					'field' => 'terms.timbre.amount',
+					'field' => 'Order.terms.timbre.amount',
 					'from' => $this->aop['terms']['timbre']['amount'],
 					'to' => $order->terms->timbre->amount,
 				);

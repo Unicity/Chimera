@@ -65,7 +65,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				'inputs' => array(
 					array(
-						'field' => 'terms.pretotal',
+						'field' => 'Order.terms.pretotal',
 						'value' => $order->terms->pretotal,
 					),
 				),

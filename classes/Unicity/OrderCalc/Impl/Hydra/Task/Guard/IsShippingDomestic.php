@@ -62,11 +62,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'class' => $joinPoint->getProperty('class'),
 				'inputs' => array(
 					array(
-						'field' => 'market',
+						'field' => 'Order.market',
 						'value' => $order->market,
 					),
 					array(
-						'field' => 'shipToAddress.country',
+						'field' => 'Order.shipToAddress.country',
 						'value' => $order->shipToAddress->country,
 					),
 				),
