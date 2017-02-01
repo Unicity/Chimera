@@ -36,7 +36,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$currency = $this->policy->getValue('currency');
 			if ($order->currency == $currency) {
@@ -56,7 +57,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$engine = $joinPoint->getArgument(0);
 			$entityId = $joinPoint->getArgument(1);
 
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
@@ -68,9 +70,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				),
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
+				'tags' => array(),
 				'task' => 'guard',
 				'title' => $this->getTitle(),
 			);
+
+			$blackboard = $engine->getBlackboard('global');
+			if ($blackboard->hasKey('tags')) {
+				$tags = $blackboard->getValue('tags');
+				foreach ($tags as $path) {
+					$message['tags'][] = array(
+						'name' => $path,
+						'value' => $entity->getComponentAtPath($path),
+					);
+				}
+			}
 
 			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}

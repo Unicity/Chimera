@@ -61,9 +61,21 @@ namespace Unicity\BT\Task {
 				'class' => $joinPoint->getProperty('class'),
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
+				'tags' => array(),
 				'task' => 'responder',
 				'title' => $this->getTitle(),
 			);
+
+			$blackboard = $engine->getBlackboard('global');
+			if ($blackboard->hasKey('tags')) {
+				$tags = $blackboard->getValue('tags');
+				foreach ($tags as $path) {
+					$message['tags'][] = array(
+						'name' => $path,
+						'value' => $entity->getComponentAtPath($path),
+					);
+				}
+			}
 
 			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}

@@ -39,7 +39,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$engine = $joinPoint->getArgument(0);
 			$entityId = $joinPoint->getArgument(1);
 
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$this->aop['terms']['discount']['amount'] = $order->terms->discount->amount;
 			$this->aop['terms']['discount']['percentage'] = $order->terms->discount->percentage;
@@ -54,7 +55,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$discount_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 
@@ -77,7 +79,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$engine = $joinPoint->getArgument(0);
 			$entityId = $joinPoint->getArgument(1);
 
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$message = array(
 				'changes' => array(
@@ -95,9 +98,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				'class' => $joinPoint->getProperty('class'),
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
+				'tags' => array(),
 				'task' => 'action',
 				'title' => $this->getTitle(),
 			);
+
+			$blackboard = $engine->getBlackboard('global');
+			if ($blackboard->hasKey('tags')) {
+				$tags = $blackboard->getValue('tags');
+				foreach ($tags as $path) {
+					$message['tags'][] = array(
+						'name' => $path,
+						'value' => $entity->getComponentAtPath($path),
+					);
+				}
+			}
 
 			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}

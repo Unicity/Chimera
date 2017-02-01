@@ -33,7 +33,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$status = $order->customer->status;
 			if (in_array($status, array('Suspended', 'Terminated'))) { // TODO abstract out to a config file

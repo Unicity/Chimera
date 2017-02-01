@@ -35,7 +35,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$items = $this->policy->getValue('items');
 

@@ -34,7 +34,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) {
-			$order = $engine->getEntity($entityId)->getComponent('Order');
+			$entity = $engine->getEntity($entityId);
+			$order = $entity->getComponent('Order');
 
 			$order->lines->items = FP\IList::filter($order->lines->items, function($line) {
 				return ($line->quantity > 0);
