@@ -61,7 +61,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
-				'inputs' => array(
+				'input' => array(
 					array(
 						'field' => 'Order.shippingMethod.type',
 						'value' => $order->shippingMethod->type,

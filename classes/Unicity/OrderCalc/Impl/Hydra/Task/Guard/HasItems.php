@@ -60,7 +60,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
-				'inputs' => array(
+				'input' => array(
 					array(
 						'field' => 'Order.lines.items',
 						'length' => FP\IList::length($order->lines->items),

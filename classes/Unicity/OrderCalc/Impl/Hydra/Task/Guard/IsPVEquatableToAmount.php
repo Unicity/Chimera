@@ -63,7 +63,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
-				'inputs' => array(
+				'input' => array(
 					array(
 						'field' => 'Order.terms.pv',
 						'value' => $order->terms->pv,
