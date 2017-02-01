@@ -23,7 +23,7 @@ namespace Unicity\BT {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
-	//use \Unicity\Log;
+	use \Unicity\Log;
 
 	/**
 	 * This class represents a behavior tree engine.
@@ -52,14 +52,6 @@ namespace Unicity\BT {
 		protected $entities;
 
 		/**
-		 * This variable stores a reference to the error log.
-		 *
-		 * @access protected
-		 * @var Log\Manager
-		 */
-		protected $log;
-
-		/**
 		 * This variable stores a reference to the response message.
 		 *
 		 * @access protected
@@ -81,7 +73,6 @@ namespace Unicity\BT {
 					$this->putEntity($entity);
 				}
 			}
-			$this->log = null; // TODO set a reference to the error log
 			$this->response = new Core\Message();
 		}
 
@@ -94,7 +85,6 @@ namespace Unicity\BT {
 			parent::__destruct();
 			unset($this->blackboards);
 			unset($this->entities);
-			unset($this->log);
 			unset($this->response);
 		}
 
@@ -134,13 +124,13 @@ namespace Unicity\BT {
 		}
 
 		/**
-		 * This method returns a reference to the error log.
+		 * This method returns a reference to the logger.
 		 *
 		 * @access public
-		 * @return Log\Manager                                      a reference to the error log
+		 * @return Log\Manager                                      a reference to the logger
 		 */
-		public function getErrorLog() {
-			return $this->log;
+		public function getLogger() {
+			return Log\Manager::instance();
 		}
 
 		/**
