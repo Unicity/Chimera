@@ -115,7 +115,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				}
 			}
 
-			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
+			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

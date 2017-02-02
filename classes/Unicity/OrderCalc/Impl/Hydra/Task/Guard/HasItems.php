@@ -87,7 +87,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				}
 			}
 
-			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
+			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}
