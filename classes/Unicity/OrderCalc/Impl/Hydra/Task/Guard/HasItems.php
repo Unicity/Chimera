@@ -78,10 +78,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			if ($blackboard->hasKey('tags')) {
 				$tags = $blackboard->getValue('tags');
 				foreach ($tags as $path) {
-					$message['tags'][] = array(
-						'name' => $path,
-						'value' => $entity->getComponentAtPath($path),
-					);
+					if ($entity->hasComponentAtPath($path)) {
+						$message['tags'][] = array(
+							'name' => $path,
+							'value' => $entity->getComponentAtPath($path),
+						);
+					}
 				}
 			}
 
