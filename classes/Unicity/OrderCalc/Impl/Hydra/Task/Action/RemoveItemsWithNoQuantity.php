@@ -90,7 +90,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$length = FP\IList::length($order->lines->items);
 			for ($i = 0, $j = 0; $i < $length; $i++) {
 				$from = $this->aop['lines']['items'][$i]['item']['id']['unicity'];
-				$to = $order->lines->items[$j]->item->id->unicity;
+				$to = ($order->lines->items->hasIndex($j)) ? $order->lines->items[$j]->item->id->unicity : null;
 				if ($from !== $to) {
 					$message['changes'][] = array(
 						'field' => "Order.lines.items[$i].item.id.unicity",
