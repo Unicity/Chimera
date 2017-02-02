@@ -32,10 +32,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		/**
 		 * This constant represents the conversion rate for converting pounds to kilograms.
 		 *
-		 * @access public
+		 * @access protected
 		 * @const double
 		 */
-		const LBS_TO_KGS_CONVERSION_RATE = 2.2046;
+		protected const LBS_TO_KGS_CONVERSION_RATE = 2.2046;
 
 		/**
 		 * This method runs before the concern's execution.
