@@ -71,7 +71,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'tags' => array(),
-				'task' => 'guard',
 				'title' => $this->getTitle(),
 			);
 

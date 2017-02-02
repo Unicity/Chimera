@@ -67,7 +67,6 @@ namespace Unicity\BT\Task {
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'tags' => array(),
-				'task' => 'responder',
 				'title' => $this->getTitle(),
 			);
 

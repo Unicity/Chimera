@@ -94,6 +94,11 @@ namespace Unicity\BT {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function afterThrowing(AOP\JoinPoint $joinPoint) {
+			$engine = $joinPoint->getArgument(0);
+			$entityId = $joinPoint->getArgument(1);
+
+			$entity = $engine->getEntity($entityId);
+
 			$exception = $joinPoint->getException();
 
 			$message = array(
@@ -105,10 +110,24 @@ namespace Unicity\BT {
 				),
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
+				'tags' => array(),
 				'title' => $this->getTitle(),
 			);
 
-			Log\Logger::log(Log\Level::error(), json_encode(Common\Collection::useArrays($message)));
+			$blackboard = $engine->getBlackboard('global');
+			if ($blackboard->hasKey('tags')) {
+				$tags = $blackboard->getValue('tags');
+				foreach ($tags as $path) {
+					if ($entity->hasComponentAtPath($path)) {
+						$message['tags'][] = array(
+							'name' => $path,
+							'value' => $entity->getComponentAtPath($path),
+						);
+					}
+				}
+			}
+
+			$engine->getLogger()->add(Log\Level::error(), json_encode(Common\Collection::useArrays($message)));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
 			$joinPoint->setException(null);
 		}

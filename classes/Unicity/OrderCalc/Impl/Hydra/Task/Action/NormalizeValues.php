@@ -107,7 +107,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'tags' => array(),
-				'task' => 'action',
 				'title' => $this->getTitle(),
 			);
 

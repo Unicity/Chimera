@@ -114,7 +114,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'tags' => array(),
-				'task' => 'action',
 				'title' => $this->getTitle(),
 			);
 
@@ -122,14 +121,16 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			if ($blackboard->hasKey('tags')) {
 				$tags = $blackboard->getValue('tags');
 				foreach ($tags as $path) {
-					$message['tags'][] = array(
-						'name' => $path,
-						'value' => $entity->getComponentAtPath($path),
-					);
+					if ($entity->hasComponentAtPath($path)) {
+						$message['tags'][] = array(
+							'name' => $path,
+							'value' => $entity->getComponentAtPath($path),
+						);
+					}
 				}
 			}
 
-			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
+			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}
