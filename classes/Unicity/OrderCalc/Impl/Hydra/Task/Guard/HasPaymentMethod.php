@@ -64,17 +64,24 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 			$message = array(
 				'class' => $joinPoint->getProperty('class'),
-				//'input' => array(
-				//	array(
-				//		'field' => 'Order.transactions.items[0].method',
-				//		'value' => $order->transactions->items[0]->method,
-				//	),
-				//),
+				'input' => array(),
 				'policy' => $this->policy,
 				'status' => $joinPoint->getReturnedValue(),
 				'tags' => array(),
 				'title' => $this->getTitle(),
 			);
+
+			$length = FP\IList::length($order->transactions->items);
+			$message['input'][] = array(
+				'field' => 'Order.transactions.items',
+				'length' => $length,
+			);
+			if ($length > 0) {
+				$message['input'][] = array(
+					'field' => 'Order.transactions.items[0].method',
+					'length' => $order->transactions->items[0]->method,
+				);
+			}
 
 			$blackboard = $engine->getBlackboard('global');
 			if ($blackboard->hasKey('tags')) {

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\MappingService\Data {
 
 	use \Unicity\Common;
-	use Unicity\MappingService;
+	use \Unicity\MappingService;
 
 	/**
 	 * This interface provides a contract that defines a model sync.
