@@ -132,12 +132,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 			foreach ($order->lines->items as $index => $line) {
 				$message['changes'][] = array(
-					'field' => "Order.lines.items[$index].item.weightEach.value",
+					'field' => "Order.lines.items[{$index}].item.weightEach.value",
 					'from' => $this->aop['lines']['items'][$index]['item']['weightEach']['value'],
 					'to' => $line->item->weightEach->value,
 				);
 				$message['changes'][] = array(
-					'field' => "Order.lines.items[$index].item.weightEach.unit",
+					'field' => "Order.lines.items[{$index}].item.weightEach.unit",
 					'from' => $this->aop['lines']['items'][$index]['item']['weightEach']['unit'],
 					'to' => $line->item->weightEach->unit,
 				);
