@@ -23,6 +23,7 @@ namespace Unicity\BT\Task {
 	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Common;
+	use \Unicity\Core;
 	use \Unicity\Log;
 
 	/**
@@ -44,7 +45,7 @@ namespace Unicity\BT\Task {
 		public function process(BT\Engine $engine, string $entityId) {
 			$response = $engine->getResponse();
 
-			$response->setStatus($this->policy->getValue('status'));
+			$response->setStatus(Core\Convert::toInteger($this->policy->getValue('status')));
 			$response->setBody($this->policy->getValue('body'));
 
 			return BT\Status::QUIT;
