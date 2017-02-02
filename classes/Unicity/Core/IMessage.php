@@ -38,7 +38,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return IO\File                                          the message's body
 		 */
-		public function getBody();
+		public function getBody() : ?IO\File ;
 
 		/**
 		 * This method returns the message header mapped to the given name.
@@ -47,7 +47,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the header
 		 * @return string                                           the value of the header
 		 */
-		public function getHeader($name);
+		public function getHeader(string $name) : string;
 
 		/**
 		 * This method returns the message's id.
@@ -55,7 +55,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return string                                           the message's id
 		 */
-		public function getMessageId();
+		public function getMessageId() : string;
 		/**
 		 * This method sets the body with the contents in the standard input stream
 		 * buffer.
@@ -63,7 +63,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return IO\File                                          the message's body
 		 */
-		public function receive();
+		public function receive() : IO\File;
 
 		/**
 		 * This method sends the message.
@@ -87,7 +87,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the header
 		 * @param string $value                                     the value of the header
 		 */
-		public function setHeader($name, $value);
+		public function setHeader(string $name, ?string $value);
 
 		/**
 		 * This method sets the headers with the specified name/value pairs.
@@ -104,7 +104,7 @@ namespace Unicity\Core {
 		 * @param string $id
 		 * @throws Throwable\Parse\Exception                        the message id
 		 */
-		public function setMessageId($id);
+		public function setMessageId(?string $id);
 
 	}
 

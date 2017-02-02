@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\Lexer\Scanner\TokenRule {
 
 	use \Unicity\Common;
@@ -42,7 +44,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
 		 *                                                          discovered
 		 */
-		public function process(IO\Reader $reader) {
+		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$char = $reader->readChar($reader->position(), false);
 			if ($char !== null) {
 				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::unknown(), new Common\StringRef($char));

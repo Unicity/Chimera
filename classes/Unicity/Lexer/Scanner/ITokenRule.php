@@ -17,9 +17,12 @@
  * limitations under the License.
  */
 
+declare(strict_types = 1);
+
 namespace Unicity\Lexer\Scanner {
 
 	use \Unicity\IO;
+	use \Unicity\Lexer;
 
 	/**
 	 * This interface defines the contract for a rule definition of a token.
@@ -38,7 +41,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
 		 *                                                          discovered
 		 */
-		public function process(IO\Reader $reader);
+		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple;
 
 	}
 

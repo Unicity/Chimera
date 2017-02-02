@@ -62,7 +62,7 @@ namespace Unicity\Core {
 		 * @param boolean $resolve                                  whether to resolve the class's
 		 *                                                          name
 		 */
-		public function __construct($className, $resolve = false) {
+		public function __construct(string $className, bool $resolve = false) {
 			$this->className = $className;
 			$this->resolve = $resolve;
 		}
@@ -106,7 +106,7 @@ namespace Unicity\Core {
 		 * @return mixed                                            any result that the method might
 		 *                                                          return
 		 */
-		public function invoke($methodName, array $args = null) {
+		public function invoke(string $methodName, array $args = null) {
 			return call_user_func_array(array(static::className($this->className, $this->resolve), $methodName), $args);
 		}
 
@@ -120,7 +120,7 @@ namespace Unicity\Core {
 		 *                                                          name
 		 * @return string                                           the class's name
 		 */
-		public static function className($className, $resolve = false) {
+		public static function className(string $className, bool $resolve = false) : string {
 			$className = trim($className, '\\_.');
 			if ($resolve) {
 				$segments = preg_split('/(\\\|_|\\.)/', $className);
@@ -146,7 +146,7 @@ namespace Unicity\Core {
 		 * @return mixed                                            a new instance of the specified
 		 *                                                          class
 		 */
-		public static function factory($className, $resolve = false) {
+		public static function factory(string $className, bool $resolve = false) {
 			return new static($className, $resolve);
 		}
 

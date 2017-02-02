@@ -104,7 +104,7 @@ namespace Unicity\Common {
 		 *                                                          if this string is lexicographically greater
 		 *                                                          than the string argument
 		 */
-		public function compareTo($string) {
+		public function compareTo($string) : int {
 			$r = strcmp($this->string, $string);
 			if ($r != 0) {
 				return ($r < 0) ? -1 : 1;

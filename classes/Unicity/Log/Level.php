@@ -51,9 +51,9 @@ namespace Unicity\Log {
 		 * @access public
 		 * @static
 		 * @param integer $ordinal                                  the ordinal index of the token
-		 * @return Core\Enum                                        the token
+		 * @return Log\Level                                        the token
 		 */
-		public static function __enum($ordinal) {
+		public static function __enum(int $ordinal) : Log\Level {
 			if (!is_array(static::$__enums)) {
 				static::$__enums = array();
 				static::$__enums[LOG_EMERG] = new Log\Level('Emergency', 'Emergency: system is unusable');
@@ -88,7 +88,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function emergency() {
+		public static function emergency() : Log\Level {
 			return static::__enum(LOG_EMERG);
 		}
 
@@ -99,7 +99,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function alert() {
+		public static function alert() : Log\Level {
 			return static::__enum(LOG_ALERT);
 		}
 
@@ -110,7 +110,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function critical() {
+		public static function critical() : Log\Level {
 			return static::__enum(LOG_CRIT);
 		}
 
@@ -121,7 +121,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function error() {
+		public static function error() : Log\Level {
 			return static::__enum(LOG_ERR);
 		}
 
@@ -132,7 +132,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function warning() {
+		public static function warning() : Log\Level {
 			return static::__enum(LOG_WARNING);
 		}
 
@@ -143,7 +143,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function notice() {
+		public static function notice() : Log\Level {
 			return static::__enum(LOG_NOTICE);
 		}
 
@@ -154,7 +154,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function informational() {
+		public static function informational() : Log\Level {
 			return static::__enum(LOG_INFO);
 		}
 
@@ -165,7 +165,7 @@ namespace Unicity\Log {
 		 * @static
 		 * @return Log\Level                                        the log level token
 		 */
-		public static function debug() {
+		public static function debug() : Log\Level {
 			return static::__enum(LOG_DEBUG);
 		}
 

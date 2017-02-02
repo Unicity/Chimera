@@ -38,7 +38,7 @@ namespace Unicity\Spring {
 		 * @param string $id                                        the object's id
 		 * @return mixed                                            an instance of the class
 		 */
-		public function getObject($id);
+		public function getObject(string $id);
 
 		/**
 		 * This method returns the definition of an object matching the specified id.
@@ -47,7 +47,7 @@ namespace Unicity\Spring {
 		 * @param string $id                                        the object's id
 		 * @return Spring\Object\Definition                         the object's definition
 		 */
-		public function getObjectDefinition($id);
+		public function getObjectDefinition(string $id);
 
 		/**
 		 * This method returns an array of object ids that match the specified type (or if no type is specified
@@ -57,7 +57,7 @@ namespace Unicity\Spring {
 		 * @param string $type                                      the type of objects
 		 * @return array                                            an array object ids
 		 */
-		public function getObjectIds($type = null);
+		public function getObjectIds(string $type = null);
 
 		/**
 		 * This function returns the scope of the object with the specified id.
@@ -67,7 +67,7 @@ namespace Unicity\Spring {
 		 * @return string                                           the scope of the the object with the
 		 *                                                          specified id
 		 */
-		public function getObjectScope($id);
+		public function getObjectScope(string $id);
 
 		/**
 		 * This function returns either the object's type for the specified id or NULL if the object's
@@ -77,7 +77,7 @@ namespace Unicity\Spring {
 		 * @param string $id                                        the object's id
 		 * @return string                                           the object's type
 		 */
-		public function getObjectType($id);
+		public function getObjectType(string $id);
 
 		/**
 		 * This function determines whether an object with the specified id has been defined
@@ -88,7 +88,7 @@ namespace Unicity\Spring {
 		 * @return boolean                                          whether an object with the specified id has
 		 *                                                          been defined in the container
 		 */
-		public function hasObject($id);
+		public function hasObject(string $id) : bool;
 
 	}
 

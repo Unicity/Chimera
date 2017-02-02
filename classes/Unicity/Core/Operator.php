@@ -43,7 +43,7 @@ namespace Unicity\Core {
 		 *
 		 * @see https://en.wikipedia.org/wiki/Relational_operator
 		 */
-		public static function isEquatable($x, $op, $y) {
+		public static function isEquatable($x, $op, $y) : bool {
 			switch (strtolower($op)) {
 				case '<':
 				case 'lt':

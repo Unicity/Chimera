@@ -44,7 +44,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const BIG5_ENCODING = 'BIG5';
+		public const BIG5_ENCODING = 'BIG5';
 
 		/**
 		 * This constant defines the encoding for CP437.
@@ -52,7 +52,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const CP437_ENCODING = 'CP437';
+		public const CP437_ENCODING = 'CP437';
 
 		/**
 		 * This constant defines the encoding for EUC-KR.
@@ -60,7 +60,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const EUC_KR_ENCODING = 'EUC-KR';
+		public const EUC_KR_ENCODING = 'EUC-KR';
 
 		/**
 		 * This constant defines the encoding for ISO-8859-1.
@@ -68,7 +68,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const ISO_8859_1_ENCODING = 'ISO-8859-1';
+		public const ISO_8859_1_ENCODING = 'ISO-8859-1';
 
 		/**
 		 * This constant defines the encoding for SHIFT_JIS.
@@ -76,7 +76,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const SHIFT_JIS_ENCODING = 'SHIFT_JIS';
+		public const SHIFT_JIS_ENCODING = 'SHIFT_JIS';
 
 		/**
 		 * This constant defines the encoding for UCS-4BE.
@@ -84,7 +84,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const UCS_4BE_ENCODING = 'UCS-4BE';
+		public const UCS_4BE_ENCODING = 'UCS-4BE';
 
 		/**
 		 * This constant defines the encoding for UTF-8.
@@ -92,7 +92,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const UTF_8_ENCODING = 'UTF-8';
+		public const UTF_8_ENCODING = 'UTF-8';
 
 		/**
 		 * This constant defines the encoding for Windows-874.
@@ -100,7 +100,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const WINDOWS_874_ENCODING = 'Windows-874';
+		public const WINDOWS_874_ENCODING = 'Windows-874';
 
 		/**
 		 * This constant defines the encoding for Windows-1252.
@@ -108,7 +108,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const WINDOWS_1252_ENCODING = 'Windows-1252';
+		public const WINDOWS_1252_ENCODING = 'Windows-1252';
 
 		/**
 		 * This constant defines the encoding for Windows-1254.
@@ -116,7 +116,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const WINDOWS_1254_ENCODING = 'Windows-1254';
+		public const WINDOWS_1254_ENCODING = 'Windows-1254';
 
 		/**
 		 * This constant defines the encoding for Windows-1252.
@@ -124,7 +124,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @const string
 		 */
-		const WINDOWS_1258_ENCODING = 'Windows-1258';
+		public const WINDOWS_1258_ENCODING = 'Windows-1258';
 
 		/**
 		 * This method encodes a string into the specified encoding from another encoding system.
@@ -135,7 +135,7 @@ namespace Unicity\Core\Data {
 		 * @param string $target_encoding                           the target encoding
 		 * @return string                                           the encoded string
 		 */
-		public static function encode($string, $source_encoding, $target_encoding) {
+		public static function encode($string, string $source_encoding, string $target_encoding) {
 			if (is_string($string) && ($string != '')) {
 				if (strcasecmp($source_encoding, $target_encoding) != 0) {
 					if (function_exists('iconv')) {

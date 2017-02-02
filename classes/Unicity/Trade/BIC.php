@@ -47,7 +47,7 @@ namespace Unicity\Trade {
 		 * @access public
 		 * @param string $value                                     a valid BIC number
 		 */
-		public function __construct($value) {
+		public function __construct(string $value) {
 			$this->value = strtoupper($value);
 		}
 
@@ -67,7 +67,7 @@ namespace Unicity\Trade {
 		 * @access public
 		 * @return string                                           the country code
 		 */
-		public function getCountry() {
+		public function getCountry() : string {
 			return substr($this->value, 4, 2);
 		}
 
@@ -89,7 +89,7 @@ namespace Unicity\Trade {
 		 * @return boolean                                          whether the specified value
 		 *                                                          is a valid BIC
 		 */
-		public static function isValid($value) {
+		public static function isValid($value) : bool {
 			return (is_string($value) && preg_match('/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/', $value));
 		}
 

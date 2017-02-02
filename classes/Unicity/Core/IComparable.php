@@ -39,7 +39,7 @@ namespace Unicity\Core {
 		 *                                                          equal to, or greater than the specified
 		 *                                                          object
 		 */
-		public function compareTo($object);
+		public function compareTo($object) : int;
 
 	}
 

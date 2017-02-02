@@ -60,7 +60,7 @@ namespace Unicity\Common {
 		 *                                                          equal to, or greater than the specified
 		 *                                                          object
 		 */
-		public function compareTo($object) {
+		public function compareTo($object) : int {
 			$x = $this->value;
 			$y = static::parse($object);
 

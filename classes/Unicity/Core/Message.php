@@ -181,7 +181,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return IO\File                                          the message's body
 		 */
-		public function getBody() {
+		public function getBody() : ?IO\File {
 			return $this->body;
 		}
 
@@ -191,7 +191,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return integer                                          the message's length
 		 */
-		public function getLength() {
+		public function getLength() : int {
 			if ($this->body !== null) {
 				return $this->body->getFileSize();
 			}
@@ -205,7 +205,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the header
 		 * @return string                                           the value of the header
 		 */
-		public function getHeader($name) {
+		public function getHeader(string $name) : string {
 			$name = strtolower($name);
 			if ($this->headers->hasKey($name)) {
 				return $this->headers->getValue($name);
@@ -219,7 +219,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return string                                           the message's id
 		 */
-		public function getMessageId() {
+		public function getMessageId() : string {
 			return $this->id;
 		}
 
@@ -229,7 +229,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return string                                           the HTTP protocol
 		 */
-		public function getProtocol() {
+		public function getProtocol() : string {
 			return $this->protocol;
 		}
 
@@ -239,7 +239,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return integer                                          the HTTP status code
 		 */
-		public function getStatus() {
+		public function getStatus() : int {
 			return $this->status;
 		}
 
@@ -250,7 +250,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return IO\File                                          the message's body
 		 */
-		public function receive() {
+		public function receive() : IO\File {
 			$this->body = new IO\InputBuffer();
 			return $this->body;
 		}
@@ -301,7 +301,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the header
 		 * @param string $value                                     the value of the header
 		 */
-		public function setHeader($name, $value) {
+		public function setHeader(string $name, ?string $value) {
 			$name = strtolower($name);
 			if (!in_array($name, array('content-length'))) {
 				if ($value !== null) {
@@ -332,9 +332,9 @@ namespace Unicity\Core {
 		 * @param string $id
 		 * @throws Throwable\Parse\Exception                        the message id
 		 */
-		public function setMessageId($id) {
+		public function setMessageId(?string $id) {
 			if ($this->id !== null) {
-				$this->id = Core\Convert::toString($id);
+				$this->id = $id;
 			}
 			else {
 				$this->id = $this->__hashCode();
@@ -347,7 +347,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param string $protocol                                  the HTTP protocol to be set
 		 */
-		public function setProtocol($protocol) {
+		public function setProtocol(string $protocol) {
 			$this->protocol = strtoupper($protocol);
 		}
 
@@ -359,7 +359,7 @@ namespace Unicity\Core {
 		 * @throws Throwable\InvalidArgument\Exception              indicates the specified status
 		 *                                                          code is not known
 		 */
-		public function setStatus($status) {
+		public function setStatus(int $status) {
 			if (!isset(static::$statuses[$status])) {
 				throw new Throwable\InvalidArgument\Exception('Invalid status code. Expected an HTTP status code, but got ":status".', array(':status' => $status));
 			}
@@ -373,7 +373,7 @@ namespace Unicity\Core {
 		 * @static
 		 * @return Core\IMessage                                    a reference to the singleton instance
 		 */
-		public static function instance() {
+		public static function instance() : Core\IMessage {
 			if (static::$instance === null) {
 				static::$instance = new static();
 			}

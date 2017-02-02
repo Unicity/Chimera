@@ -101,7 +101,7 @@ namespace Unicity\Spring {
 		 * @throws Throwable\Instantiation\Exception                indicates that a problem occurred
 		 *                                                          during the instantiation
 		 */
-		public function getObject($id) {
+		public function getObject(string $id) {
 			return $this->parser->getObjectFromIdRef($id, array());
 		}
 
@@ -112,7 +112,7 @@ namespace Unicity\Spring {
 		 * @param string $id                                        the object's id
 		 * @return Spring\Object\Definition                         the object's definition
 		 */
-		public function getObjectDefinition($id) {
+		public function getObjectDefinition(string $id) {
 			return $this->parser->getObjectDefinition($id);
 		}
 
@@ -124,7 +124,7 @@ namespace Unicity\Spring {
 		 * @param string $type                                      the type of objects
 		 * @return array                                            an array object ids
 		 */
-		public function getObjectIds($type = null) {
+		public function getObjectIds(string $type = null) {
 			return $this->parser->getObjectIds($type);
 		}
 
@@ -138,7 +138,7 @@ namespace Unicity\Spring {
 		 * @throws Throwable\Parse\Exception                        indicates that problem occurred while
 		 *                                                          parsing
 		 */
-		public function getObjectScope($id) {
+		public function getObjectScope(string $id) {
 			return $this->parser->getObjectScope($id);
 		}
 
@@ -152,7 +152,7 @@ namespace Unicity\Spring {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that an argument is of the
 		 *                                                          incorrect type
 		 */
-		public function getObjectType($id) {
+		public function getObjectType(string $id) {
 			return $this->parser->getObjectType($id);
 		}
 
@@ -162,7 +162,7 @@ namespace Unicity\Spring {
 		 * @access public
 		 * @return Spring\Object\Parser                             a reference to the parser
 		 */
-		public function getParser() {
+		public function getParser() : Spring\Object\Parser {
 			return $this->parser;
 		}
 
@@ -172,7 +172,7 @@ namespace Unicity\Spring {
 		 * @access public
 		 * @return Common\Mutable\IList
 		 */
-		public function getResources() {
+		public function getResources() : Common\Mutable\IList {
 			return $this->resources;
 		}
 
@@ -185,7 +185,7 @@ namespace Unicity\Spring {
 		 * @return boolean                                          whether an object with the specified id has
 		 *                                                          been defined in the container
 		 */
-		public function hasObject($id) {
+		public function hasObject(string $id) : bool {
 			return $this->parser->hasObject($id);
 		}
 

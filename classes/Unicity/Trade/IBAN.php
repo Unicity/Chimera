@@ -47,7 +47,7 @@ namespace Unicity\Trade {
 		 * @access public
 		 * @param string $value                                     a valid IBAN number
 		 */
-		public function __construct($value) {
+		public function __construct(string $value) {
 			$this->value = strtoupper(preg_replace('/\s+/', '', $value));
 		}
 
@@ -67,7 +67,7 @@ namespace Unicity\Trade {
 		 * @access public
 		 * @return string                                           the check-digits
 		 */
-		public function getCheckDigits() {
+		public function getCheckDigits() : string {
 			return substr($this->value, 2, 2);
 		}
 
@@ -77,7 +77,7 @@ namespace Unicity\Trade {
 		 * @access public
 		 * @return string                                           the country code
 		 */
-		public function getCountryISOAlpha2() {
+		public function getCountryISOAlpha2() : string {
 			return substr($this->value, 0, 2);
 		}
 
@@ -88,7 +88,7 @@ namespace Unicity\Trade {
 		 * @return array                                            the components that are used
 		 *                                                          to compose the IBAN
 		 */
-		public function getComponents() {
+		public function getComponents() : array {
 			return array();
 		}
 
@@ -112,7 +112,7 @@ namespace Unicity\Trade {
 		 *
 		 * @see https://en.wikipedia.org/wiki/International_Bank_Account_Number
 		 */
-		public static function isValid($value) {
+		public static function isValid($value) : bool {
 			return (is_string($value) && preg_match('/^[a-z]{2}[0-9]{2}[a-z0-9]{8,27}$/i', $value));
 		}
 

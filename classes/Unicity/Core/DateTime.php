@@ -42,7 +42,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @const string
 		 */
-		const MAX_VALUE = UNICITY_DATETIME_MAX;
+		public const MAX_VALUE = UNICITY_DATETIME_MAX;
 
 		/**
 		 * This constant represents the ISO 8601 pattern for timestamps.
@@ -50,7 +50,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @const regex
 		 */
-		const ISO_8601_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?[+-][0-9]{2}:[0-9]{2})?)?$/'; // 1997-07-16T19:20:30.45+01:00
+		public const ISO_8601_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?[+-][0-9]{2}:[0-9]{2})?)?$/'; // 1997-07-16T19:20:30.45+01:00
 
 		/**
 		 * This constant represents the Universal Sortable pattern for timestamps.
@@ -58,7 +58,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @const regex
 		 */
-		const UNIVERSAL_SORTABLE_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}( [0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?Z?)?)?$/'; // 2004-02-12 15:19:21.000000Z
+		public const UNIVERSAL_SORTABLE_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}( [0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?Z?)?)?$/'; // 2004-02-12 15:19:21.000000Z
 
 		/**
 		 * This variable stores the default timestamp format formatting time.

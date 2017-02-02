@@ -33,7 +33,7 @@ namespace Unicity\Core\Util {
 		 * @param callable $closure                                 the closure to be called
 		 * @return callable                                         the result returned by the closure
 		 */
-		public static function memoize($closure) {
+		public static function memoize(callable $closure) : callable {
 			return function() use ($closure) {
 				static $results = array();
 				$args = func_get_args();

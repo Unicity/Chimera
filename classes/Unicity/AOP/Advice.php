@@ -92,7 +92,7 @@ namespace Unicity\AOP {
 		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function before(AOP\Pointcut $pointcut) {
+		public function before(AOP\Pointcut $pointcut) : AOP\Advice {
 			$this->pointcuts['Before'][] = $pointcut;
 			return $this;
 		}
@@ -105,7 +105,7 @@ namespace Unicity\AOP {
 		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function afterReturning(AOP\Pointcut $pointcut) {
+		public function afterReturning(AOP\Pointcut $pointcut) : AOP\Advice {
 			$this->pointcuts['AfterReturning'][] = $pointcut;
 			return $this;
 		}
@@ -118,7 +118,7 @@ namespace Unicity\AOP {
 		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function afterThrowing(AOP\Pointcut $pointcut) {
+		public function afterThrowing(AOP\Pointcut $pointcut) : AOP\Advice {
 			$this->pointcuts['AfterThrowing'][] = $pointcut;
 			return $this;
 		}
@@ -131,7 +131,7 @@ namespace Unicity\AOP {
 		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function after(AOP\Pointcut $pointcut) {
+		public function after(AOP\Pointcut $pointcut) : AOP\Advice {
 			$this->pointcuts['After'][] = $pointcut;
 			return $this;
 		}
@@ -144,7 +144,7 @@ namespace Unicity\AOP {
 		 * @param AOP\Pointcut $pointcut                            the pointcut to be used
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function around(AOP\Pointcut $pointcut) {
+		public function around(AOP\Pointcut $pointcut) : AOP\Advice {
 			$this->pointcuts['Around'][] = $pointcut;
 			return $this;
 		}
@@ -234,7 +234,7 @@ namespace Unicity\AOP {
 		 * @param AOP\IAspect $aspect                               the aspect to be registered
 		 * @return AOP\Advice                                       a reference to the current instance
 		 */
-		public function register(AOP\IAspect $aspect) {
+		public function register(AOP\IAspect $aspect) : AOP\Advice {
 			$value = spl_object_hash($aspect);
 			if (!$this->registry->hasValue($value)) {
 				if (method_exists($aspect, 'before')) {
@@ -266,7 +266,7 @@ namespace Unicity\AOP {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 * @return AOP\Advice                                       a new instance of this class
 		 */
-		public static function factory(AOP\JoinPoint $joinPoint) {
+		public static function factory(AOP\JoinPoint $joinPoint) : AOP\Advice {
 			return new static($joinPoint);
 		}
 

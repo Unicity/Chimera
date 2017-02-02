@@ -39,7 +39,7 @@ namespace Unicity\Core {
 		 * @see http://paul-m-jones.com/archives/262
 		 * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
 		 */
-		public function dispose($disposing = true);
+		public function dispose(bool $disposing = true);
 
 	}
 

@@ -140,7 +140,7 @@ namespace Unicity\Automaton {
 		 * @throws \Unicity\Throwable\InvalidArgument\Exception     indicates that the object must be of the
 		 *                                                          same type
 		 */
-		public function compareTo($object) {
+		public function compareTo($object) : int {
 			if (!($object instanceof Automaton\IState)) {
 				throw new Throwable\InvalidArgument\Exception('Invalid comparison. Object must be an instance of IState.');
 			}

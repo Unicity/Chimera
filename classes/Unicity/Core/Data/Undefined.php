@@ -93,7 +93,7 @@ namespace Unicity\Core\Data {
 		 * @static
 		 * @return \Unicity\Core\Data\Undefined                     a singleton instance of this class
 		 */
-		public static function instance() {
+		public static function instance() : Core\Data\Undefined {
 			if (static::$instance === null) {
 				static::$instance = new Core\Data\Undefined();
 			}

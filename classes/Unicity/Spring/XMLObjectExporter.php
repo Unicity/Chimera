@@ -228,7 +228,7 @@ namespace Unicity\Spring {
 		 * @return string                                           the string representation of
 		 *                                                          the object as Spring XML
 		 */
-		public function render() {
+		public function render() : string {
 			return $this->toXML()->asXML();
 		}
 
@@ -744,7 +744,7 @@ namespace Unicity\Spring {
 		 * @return boolean                                          whether the specified array is an
 		 *                                                          associated array
 		 */
-		protected static function isDictionary($value) {
+		protected static function isDictionary($value) : bool {
 			if (is_array($value)) {
 				$keys = array_keys($value);
 				return (array_keys($keys) !== $keys);

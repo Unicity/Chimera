@@ -60,7 +60,7 @@ namespace Unicity\IO {
 		 *                                                          disposed in addition to un-managed
 		 *                                                          resources
 		 */
-		public function dispose($disposing = true) {
+		public function dispose(bool $disposing = true) {
 			$this->close();
 		}
 
