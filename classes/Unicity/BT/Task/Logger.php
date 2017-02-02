@@ -42,14 +42,6 @@ namespace Unicity\BT\Task {
 		protected $level;
 
 		/**
-		 * This variable stores a reference to the log manager.
-		 *
-		 * @access protected
-		 * @var Log\Manager
-		 */
-		protected $logger;
-
-		/**
 		 * This constructor initializes the class with the specified parameters.
 		 *
 		 * @access public
@@ -58,7 +50,6 @@ namespace Unicity\BT\Task {
 		public function __construct(Common\Mutable\IMap $policy = null) {
 			parent::__construct($policy);
 			$this->level = Log\Level::informational();
-			$this->logger = Log\Manager::instance();
 		}
 
 		/**
@@ -69,7 +60,6 @@ namespace Unicity\BT\Task {
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->level);
-			unset($this->logger);
 		}
 
 		/**
@@ -98,22 +88,22 @@ namespace Unicity\BT\Task {
 			if ($this->isEnabled()) {
 				switch ($status) {
 					case BT\Status::INACTIVE:
-						$this->logger->add($this->level, 'Task: :task Status: Inactive', array(':task' => $this->task));
+						$engine->getLogger()->add($this->level, 'Task: :task Status: Inactive', array(':task' => $this->task));
 						break;
 					case BT\Status::ACTIVE:
-						$this->logger->add($this->level, 'Task: :task Status: Active', array(':task' => $this->task));
+						$engine->getLogger()->add($this->level, 'Task: :task Status: Active', array(':task' => $this->task));
 						break;
 					case BT\Status::SUCCESS:
-						$this->logger->add($this->level, 'Task: :task Status: Success', array(':task' => $this->task));
+						$engine->getLogger()->add($this->level, 'Task: :task Status: Success', array(':task' => $this->task));
 						break;
 					case BT\Status::FAILED:
-						$this->logger->add($this->level, 'Task: :task Status: Failed', array(':task' => $this->task));
+						$engine->getLogger()->add($this->level, 'Task: :task Status: Failed', array(':task' => $this->task));
 						break;
 					case BT\Status::ERROR:
-						$this->logger->add($this->level, 'Task: :task Status: Error', array(':task' => $this->task));
+						$engine->getLogger()->add($this->level, 'Task: :task Status: Error', array(':task' => $this->task));
 						break;
 					case BT\Status::QUIT:
-						$this->logger->add($this->level, 'Task: :task Status: Quit', array(':task' => $this->task));
+						$engine->getLogger()->add($this->level, 'Task: :task Status: Quit', array(':task' => $this->task));
 						break;
 				}
 			}

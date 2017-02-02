@@ -84,7 +84,7 @@ namespace Unicity\BT\Task {
 				}
 			}
 
-			Log\Logger::log(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
+			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}
