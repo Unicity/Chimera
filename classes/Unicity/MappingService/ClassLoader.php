@@ -50,7 +50,7 @@ namespace Unicity\MappingService {
 		 *                                                          name
 		 * @return string                                           the class's name
 		 */
-		public static function className($className, $resolve = false) {
+		public static function className(string $className, bool $resolve = false) : string {
 			$className = trim(preg_replace('/(\\\|_|\\.)+/', static::NAMESPACE_DELIMITER, $className), static::NAMESPACE_DELIMITER);
 
 			if ($resolve) {
