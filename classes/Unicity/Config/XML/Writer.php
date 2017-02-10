@@ -75,7 +75,7 @@ namespace Unicity\Config\XML {
 					'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
 					'escape' => function($string) use ($metadata) {
 						$string = Core\Data\Charset::encode($string, $metadata['encoding'][0], $metadata['encoding'][1]);
-						$string = Core\Data\XML::entities($string);
+						$string = Core\Data\XML::entities(Core\Convert::toString($string));
 						return $string;
 					},
 				));
