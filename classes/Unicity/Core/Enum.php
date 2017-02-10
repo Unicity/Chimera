@@ -109,7 +109,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return string                                           the name assigned to the enumeration
 		 */
-		public function __name() {
+		public function __name() : string {
 			return $this->__name;
 		}
 
@@ -129,7 +129,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return integer                                          the ordinal value assigned to the enumeration
 		 */
-		public function __ordinal() {
+		public function __ordinal() : int {
 			return $this->__ordinal;
 		}
 

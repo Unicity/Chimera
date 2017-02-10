@@ -32,7 +32,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 

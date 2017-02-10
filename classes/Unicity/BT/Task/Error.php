@@ -61,7 +61,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$status = BT\Task\Handler::process($this->task, $engine, $entityId);
 			if (($status == BT\Status::ACTIVE) && $this->policy->getValue('active')) {
 				return BT\Status::ERROR;

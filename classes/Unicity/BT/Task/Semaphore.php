@@ -54,7 +54,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
 			$id = $this->policy->getValue('id');
 
@@ -84,7 +84,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
 			$blackboard->removeKey($this->policy->getValue('id'));
 		}

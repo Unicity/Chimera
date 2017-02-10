@@ -72,7 +72,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$max_count = Core\Convert::toInteger($this->policy->getValue('max_count'));
 			if ($this->counter < $max_count) {
 				$this->counter++;
@@ -88,7 +88,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			$this->counter = 0;
 		}
 

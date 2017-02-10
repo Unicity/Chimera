@@ -67,7 +67,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Task $task                                     the task to be added
 		 */
-		public function addTask(BT\Task $task) {
+		public function addTask(BT\Task $task) : void {
 			$this->tasks->addValue($task);
 		}
 
@@ -77,7 +77,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param Common\Mutable\IList $tasks                       a list of tasks to be added
 		 */
-		public function addTasks(Common\Mutable\IList $tasks) {
+		public function addTasks(Common\Mutable\IList $tasks) : void {
 			foreach ($tasks as $task) {
 				$this->addTask($task);
 			}
@@ -90,7 +90,7 @@ namespace Unicity\BT\Task {
 		 * @return Common\Mutable\IList                             the tasks associated with this task
 		 *                                                          composite
 		 */
-		public function getTasks() {
+		public function getTasks() : Common\Mutable\IList {
 			return $this->tasks;
 		}
 
@@ -100,7 +100,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Task $task                                     the task to be removed
 		 */
-		public function removeTask(BT\Task $task) {
+		public function removeTask(BT\Task $task) : void {
 			$this->tasks->removeValue($task);
 		}
 
@@ -109,7 +109,7 @@ namespace Unicity\BT\Task {
 		 *
 		 * @access public
 		 */
-		public function removeTasks() {
+		public function removeTasks() : void {
 			$this->tasks->clear();
 		}
 

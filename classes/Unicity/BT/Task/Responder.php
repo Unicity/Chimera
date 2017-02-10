@@ -42,7 +42,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$response = $engine->getResponse();
 
 			$response->setStatus(Core\Convert::toInteger($this->policy->getValue('status')));
@@ -57,7 +57,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) {
+		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
 			$engine = $joinPoint->getArgument(0);
 			$entityId = $joinPoint->getArgument(1);
 

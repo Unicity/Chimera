@@ -36,7 +36,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @const integer
 		 */
-		const QUIT = -3;
+		public const QUIT = -3;
 
 		/**
 		 * This constant represents that the task could not perform the operation, but was
@@ -45,7 +45,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @const integer
 		 */
-		const FAILED = -2;
+		public const FAILED = -2;
 
 		/**
 		 * This constant represents that the task encountered a fatal error (e.g. an exception
@@ -54,7 +54,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @const integer
 		 */
-		const ERROR = -1;
+		public const ERROR = -1;
 
 		/**
 		 * This constant represents that the task does not need evaluation.
@@ -62,7 +62,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @const integer
 		 */
-		const INACTIVE = 0;
+		public const INACTIVE = 0;
 
 		/**
 		 * This constant represents that the task is still being processed.
@@ -70,7 +70,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @const integer
 		 */
-		const ACTIVE = 1;
+		public const ACTIVE = 1;
 
 		/**
 		 * This constant represents that the task completed successfully.
@@ -78,7 +78,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @const integer
 		 */
-		const SUCCESS = 2;
+		public const SUCCESS = 2;
 
 		/**
 		 * This variable stores a map of all constant name/value pairs.
@@ -96,7 +96,7 @@ namespace Unicity\BT {
 		 * @param integer $value
 		 * @return string                                           the name of the constant
 		 */
-		public static function getName(int $value) {
+		public static function getName(int $value) : ?string {
 			if (static::$constants === null) {
 				$class = new \ReflectionClass(__CLASS__);
 				static::$constants = new Common\HashMap($class->getConstants());
@@ -121,7 +121,7 @@ namespace Unicity\BT {
 		 *
 		 * @see http://stackoverflow.com/questions/1880148/how-to-get-name-of-the-constant
 		 */
-		public static function valueOf($name) {
+		public static function valueOf($name) : int {
 			if (static::$constants === null) {
 				$class = new \ReflectionClass(__CLASS__);
 				static::$constants = new Common\HashMap($class->getConstants());

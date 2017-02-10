@@ -146,7 +146,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\AdviceType $adviceType                        the advice type token
 		 */
-		public function setAdviceType(AOP\AdviceType $adviceType) {
+		public function setAdviceType(AOP\AdviceType $adviceType) : void {
 			$this->adviceType = $adviceType;
 		}
 
@@ -173,7 +173,7 @@ namespace Unicity\AOP {
 		 * @param integer $index                                    the index in the argument array
 		 * @param mixed $value                                      the value to be set
 		 */
-		public function setArgument(int $index, $value) {
+		public function setArgument(int $index, $value) : void {
 			if (isset($this->arguments[$index])) {
 				$this->arguments[$index] = $value;
 			}
@@ -196,7 +196,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param array $arguments                                  the argument array
 		 */
-		public function setArguments(array $arguments) {
+		public function setArguments(array $arguments) : void {
 			$this->arguments = array_values($arguments);
 		}
 
@@ -207,7 +207,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param callable $closure                                 the closure to be called
 		 */
-		public function setAroundClosure(?callable $closure) {
+		public function setAroundClosure(?callable $closure) : void {
 			$this->closure = $closure;
 		}
 
@@ -227,7 +227,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param \Exception $exception                             the exception to be set
 		 */
-		public function setException(\Exception $exception = null) {
+		public function setException(\Exception $exception = null) : void {
 			$this->exception = $exception;
 		}
 
@@ -266,7 +266,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\Pointcut $pointcut                            the current pointcut
 		 */
-		public function setPointcut(AOP\Pointcut $pointcut) {
+		public function setPointcut(AOP\Pointcut $pointcut) : void {
 			$this->pointcut = $pointcut;
 		}
 
@@ -292,7 +292,7 @@ namespace Unicity\AOP {
 		 * @param string $name                                      the name of the property to be set
 		 * @param mixed $value                                      the value of the property to be set
 		 */
-		public function setProperty(string $name, $value) {
+		public function setProperty(string $name, $value) : void {
 			$this->properties[$name] = $value;
 		}
 
@@ -312,7 +312,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param array $properties                                 the properties to be set
 		 */
-		public function setProperties(array $properties) {
+		public function setProperties(array $properties) : void {
 			$this->properties = $properties;
 		}
 
@@ -332,7 +332,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param mixed $returnedValue                              the value to be returned
 		 */
-		public function setReturnedValue($returnedValue) {
+		public function setReturnedValue($returnedValue) : void {
 			$this->returnedValue = $returnedValue;
 		}
 

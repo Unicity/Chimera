@@ -36,7 +36,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
@@ -56,7 +56,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) {
+		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
 			$engine = $joinPoint->getArgument(0);
 			$entityId = $joinPoint->getArgument(1);
 

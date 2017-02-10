@@ -49,9 +49,9 @@ namespace Unicity\AOP {
 		 * @access protected
 		 * @static
 		 * @param integer $ordinal                                  the ordinal index of the token
-		 * @return Core\Enum                                        the token
+		 * @return AOP\AdviceType                                   the token
 		 */
-		protected static function __enum($ordinal) {
+		protected static function __enum(int $ordinal) : AOP\AdviceType {
 			if (!is_array(self::$__enums)) {
 				self::$__enums = array();
 				self::$__enums[] = new AOP\AdviceType('before', 'Before');

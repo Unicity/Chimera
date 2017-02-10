@@ -35,9 +35,10 @@ namespace Unicity\BT {
 		 * This constant represents the default namespace used by Spring XML for behavior
 		 * trees.
 		 *
+		 * @access public
 		 * @const string
 		 */
-		const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/php/spring-bt.xsd';
+		public const NAMESPACE_URI = 'http://static.unicity.com/modules/xsd/php/spring-bt.xsd';
 
 	}
 

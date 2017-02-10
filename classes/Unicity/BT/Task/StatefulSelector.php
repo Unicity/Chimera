@@ -68,7 +68,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$inactives = 0;
 			while ($this->state < $this->tasks->count()) {
 				$status = BT\Task\Handler::process($this->tasks->getValue($this->state), $engine, $entityId);
@@ -94,7 +94,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			$this->state = 0;
 		}
 

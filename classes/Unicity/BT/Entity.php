@@ -146,7 +146,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @return string                                           a task id
 		 */
-		public function getTaskId() {
+		public function getTaskId() : ?string {
 			return $this->taskId;
 		}
 
@@ -199,7 +199,7 @@ namespace Unicity\BT {
 		 * @param callable $handler                                 the handler to be called
 		 * @param mixed $message                                    the message to be passed
 		 */
-		public function notify(callable $handler, $message = null) {
+		public function notify(callable $handler, $message = null) : void {
 			$handler($this, $message);
 		}
 
@@ -209,7 +209,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param string $name                                      the name of the component
 		 */
-		public function removeComponent(string $name) {
+		public function removeComponent(string $name) : void {
 			$this->components->removeKey($name);
 		}
 
@@ -219,7 +219,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param array $names                                      the names of the components
 		 */
-		public function removeComponents(array $names) {
+		public function removeComponents(array $names) : void {
 			$this->components->removeKeys($names);
 		}
 
@@ -230,7 +230,7 @@ namespace Unicity\BT {
 		 * @param string $name                                      the name of the component
 		 * @param mixed $component                                  the component to be set
 		 */
-		public function setComponent(string $name, $component) {
+		public function setComponent(string $name, $component) : void {
 			$this->components->putEntry($name, $component);
 		}
 
@@ -241,7 +241,7 @@ namespace Unicity\BT {
 		 * @param string $path                                      the path to the component
 		 * @param mixed $component                                  the component to be set
 		 */
-		public function setComponentAtPath(string $path, $component) {
+		public function setComponentAtPath(string $path, $component) : void {
 			ORM\Query::setValue($this->components, $path, $component);
 		}
 
@@ -251,7 +251,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param string $taskId                                    the task id to be set
 		 */
-		public function setTaskId(string $taskId = null) {
+		public function setTaskId(string $taskId = null) : void {
 			$this->taskId = $taskId;
 		}
 

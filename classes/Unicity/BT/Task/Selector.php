@@ -56,7 +56,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$shuffle = Core\Convert::toBoolean($this->policy->getValue('shuffle'));
 			if ($shuffle) {
 				$this->tasks->shuffle();

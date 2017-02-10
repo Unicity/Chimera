@@ -64,7 +64,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$until = $this->policy->getValue('until');
 			do {
 				$status = BT\Task\Handler::process($this->task, $engine, $entityId);

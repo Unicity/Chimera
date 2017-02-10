@@ -51,7 +51,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Task $task the task to be added
 		 */
-		public function addTask(BT\Task $task) {
+		public function addTask(BT\Task $task) : void {
 			$this->tasks->setValue(0, $task);
 		}
 
@@ -79,7 +79,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @return BT\Task                                          the task
 		 */
-		public function getTask() {
+		public function getTask() : ?BT\Task {
 			return $this->tasks->getValue(0);
 		}
 
@@ -89,7 +89,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Task $task                                     the task to be set
 		 */
-		public function setTask(BT\Task $task = null) {
+		public function setTask(?BT\Task $task) {
 			$this->tasks->setValue(0, $task);
 		}
 

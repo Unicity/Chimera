@@ -129,7 +129,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @return Log\Manager                                      a reference to the logger
 		 */
-		public function getLogger() {
+		public function getLogger() : Log\Manager {
 			return Log\Manager::instance();
 		}
 
@@ -151,7 +151,7 @@ namespace Unicity\BT {
 		 * @return Core\Message                                     a reference to the request
 		 *                                                          object
 		 */
-		public function getRequest() {
+		public function getRequest() : ?Core\Message {
 			return null; // TODO return a request object
 		}
 
@@ -162,7 +162,7 @@ namespace Unicity\BT {
 		 * @param callable $handler                                 the handler to be called
 		 * @param mixed $message                                    the message to be passed
 		 */
-		public function notifyAll(callable $handler, $message = null) {
+		public function notifyAll(callable $handler, $message = null) : void {
 			foreach ($this->entities as $entity) {
 				$entity->notify($handler, $message);
 			}
@@ -174,7 +174,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param BT\Entity $entity                                 the entity to be added
 		 */
-		public function putEntity(BT\Entity $entity) {
+		public function putEntity(BT\Entity $entity) : void {
 			$this->entities->putEntry($entity->getId(), $entity);
 		}
 
@@ -185,7 +185,7 @@ namespace Unicity\BT {
 		 * @param string $bbId                                      the id of the blackboard to be
 		 *                                                          removed
 		 */
-		public function removeBlackboard(string $bbId) {
+		public function removeBlackboard(string $bbId) : void {
 			$this->blackboards->removeKey($bbId);
 		}
 
@@ -196,7 +196,7 @@ namespace Unicity\BT {
 		 * @static
 		 * @param BT\Entity $entity                                 the entity to be removed
 		 */
-		public function removeEntity(BT\Entity $entity) {
+		public function removeEntity(BT\Entity $entity) : void {
 			$this->entities->removeKey($entity->getId());
 		}
 

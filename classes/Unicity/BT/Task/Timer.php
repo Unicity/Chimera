@@ -77,7 +77,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$delay = Core\Convert::toInteger($this->policy->getValue('delay')) / 1000; // milliseconds => seconds
 
 			$deltaT = microtime(true) - $this->start_time;
@@ -98,7 +98,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			$this->start_time = microtime(true);
 		}
 

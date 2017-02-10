@@ -33,7 +33,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$blackboard = $engine->getBlackboard($this->policy->getValue('blackboard'));
 			$name = Core\Convert::toString($this->policy->getValue('component'));
 			$key = $entityId . '.' . $name;

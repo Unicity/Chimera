@@ -38,7 +38,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$engine->getEntity($entityId)->setTaskId($this->policy->getValue('task'));
 			return BT\Status::ACTIVE;
 		}

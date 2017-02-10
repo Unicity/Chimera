@@ -93,7 +93,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		public function afterThrowing(AOP\JoinPoint $joinPoint) {
+		public function afterThrowing(AOP\JoinPoint $joinPoint) : void {
 			$engine = $joinPoint->getArgument(0);
 			$entityId = $joinPoint->getArgument(1);
 
@@ -139,7 +139,7 @@ namespace Unicity\BT {
 		 * @return Common\Mutable\IMap                              the policy associated with the
 		 *                                                          task
 		 */
-		public function getPolicy() {
+		public function getPolicy() : Common\Mutable\IMap {
 			return $this->policy;
 		}
 
@@ -150,7 +150,7 @@ namespace Unicity\BT {
 		 * @return string                                           the title associated with the
 		 *                                                          task
 		 */
-		public function getTitle() {
+		public function getTitle() : ?string {
 			return $this->title;
 		}
 
@@ -160,7 +160,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @return double                                           the weight given to this task
 		 */
-		public function getWeight() {
+		public function getWeight() : float {
 			return 0.0;
 		}
 
@@ -173,7 +173,7 @@ namespace Unicity\BT {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public abstract function process(BT\Engine $engine, string $entityId);
+		public abstract function process(BT\Engine $engine, string $entityId) : int;
 
 		/**
 		 * This method resets the task.
@@ -181,7 +181,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			// do nothing
 		}
 
@@ -192,7 +192,7 @@ namespace Unicity\BT {
 		 * @param Common\Mutable\IMap $policy                       the policy to be associated
 		 *                                                          with this task
 		 */
-		public function setPolicy(Common\Mutable\IMap $policy) {
+		public function setPolicy(Common\Mutable\IMap $policy) : void {
 			$this->policy = $policy;
 		}
 
@@ -203,8 +203,8 @@ namespace Unicity\BT {
 		 * @param string $title                                     the title to be associated
 		 *                                                          with this task
 		 */
-		public function setTitle(string $title) {
-			$this->title = Core\Convert::toString($title);
+		public function setTitle(?string $title) {
+			$this->title = $title;
 		}
 
 		/**

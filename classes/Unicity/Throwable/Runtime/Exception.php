@@ -71,7 +71,7 @@ namespace Unicity\Throwable\Runtime {
 		 *
 		 * @access public
 		 */
-		public function __debug() {
+		public function __debug() : void {
 			var_dump($this);
 		}
 
@@ -93,7 +93,7 @@ namespace Unicity\Throwable\Runtime {
 		 * @access public
 		 * @return string                                           the name of the called class
 		 */
-		public function __getClass() {
+		public function __getClass() : string {
 			return get_called_class();
 		}
 
@@ -103,7 +103,7 @@ namespace Unicity\Throwable\Runtime {
 		 * @access public
 		 * @return string                                           the current object's hash code
 		 */
-		public function __hashCode() {
+		public function __hashCode() : string {
 			return spl_object_hash($this);
 		}
 

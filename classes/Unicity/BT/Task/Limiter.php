@@ -72,7 +72,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$limit = Core\Convert::toInteger($this->policy->getValue('limit'));
 			if ($this->calls < $limit) {
 				$status = BT\Task\Handler::process($this->task, $engine, $entityId);
@@ -88,7 +88,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			$this->calls = 0;
 		}
 

@@ -74,7 +74,7 @@ namespace Unicity\BT\Task {
 		 * @param string $entityId                                  the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) {
+		public function process(BT\Engine $engine, string $entityId) : int {
 			$interval = Core\Convert::toInteger($this->policy->getValue('interval')) / 1000; // milliseconds => seconds
 
 			if (microtime(true) >= $this->next_time) {
@@ -92,7 +92,7 @@ namespace Unicity\BT\Task {
 		 * @access public
 		 * @param BT\Engine $engine                                 the engine
 		 */
-		public function reset(BT\Engine $engine) {
+		public function reset(BT\Engine $engine) : void {
 			$this->next_time = microtime(true) + (Core\Convert::toInteger($this->policy->getValue('interval')) / 1000);
 		}
 

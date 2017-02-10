@@ -33,7 +33,7 @@ namespace Unicity\Core {
 		 *
 		 * @access public
 		 */
-		public function __debug();
+		public function __debug() : void;
 
 		/**
 		 * This method evaluates whether the specified object is equal to the current
@@ -52,7 +52,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return string                                           the name of the called class
 		 */
-		public function __getClass();
+		public function __getClass() : string;
 
 		/**
 		 * This method returns the current object's hash code.
@@ -60,7 +60,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return string                                           the current object's hash code
 		 */
-		public function __hashCode();
+		public function __hashCode() : string;
 
 		/**
 		 * This method returns the current object as a serialized string.

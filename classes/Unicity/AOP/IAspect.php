@@ -38,7 +38,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		//public function before(AOP\JoinPoint $joinPoint);
+		//public function before(AOP\JoinPoint $joinPoint) : void;
 
 		/**
 		 * This method runs around (i.e before and after) the other advice types and the concern's
@@ -47,7 +47,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		//public function around(AOP\JoinPoint $joinPoint);
+		//public function around(AOP\JoinPoint $joinPoint) : void;
 
 		/**
 		 * This method runs when the concern's execution is successful (and a result is returned).
@@ -55,7 +55,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		//public function afterReturning(AOP\JoinPoint $joinPoint);
+		//public function afterReturning(AOP\JoinPoint $joinPoint) : void;
 
 		/**
 		 * This method runs when the concern's throws an exception.
@@ -63,7 +63,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		//public function afterThrowing(AOP\JoinPoint $joinPoint);
+		//public function afterThrowing(AOP\JoinPoint $joinPoint) : void;
 
 		/**
 		 * This method runs when the concern's execution is finished (even if an exception was thrown).
@@ -71,7 +71,7 @@ namespace Unicity\AOP {
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
-		//public function after(AOP\JoinPoint $joinPoint);
+		//public function after(AOP\JoinPoint $joinPoint) : void;
 
 	}
 

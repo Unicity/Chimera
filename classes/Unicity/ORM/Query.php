@@ -149,7 +149,7 @@ namespace Unicity\ORM {
 		 * @param mixed $value                                      the value to be set
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not accessible
 		 */
-		public static function setValue($collection, string $path, $value) {
+		public static function setValue($collection, string $path, $value) : void {
 			$segments = explode('.', $path);
 			$lastSegment = count($segments) - 1;
 			$i = 0;
