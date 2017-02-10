@@ -40,7 +40,7 @@ namespace Unicity\IO {
 		 * @abstract
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public abstract function close();
+		public abstract function close() : IO\Writer;
 
 		/**
 		 * This destructor ensures that any resources are properly disposed.
@@ -60,7 +60,7 @@ namespace Unicity\IO {
 		 *                                                          disposed in addition to un-managed
 		 *                                                          resources
 		 */
-		public function dispose(bool $disposing = true) {
+		public function dispose(bool $disposing = true) : void {
 			$this->close();
 		}
 
@@ -69,9 +69,8 @@ namespace Unicity\IO {
 		 *
 		 * @access public
 		 * @abstract
-		 * @return IO\Writer                                        a reference to this class
 		 */
-		public abstract function open();
+		public abstract function open() : IO\Writer;
 
 		/**
 		 * This method write the data to the resource.
@@ -81,7 +80,7 @@ namespace Unicity\IO {
 		 * @param mixed $data                                       the data to be written
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public abstract function write($data);
+		public abstract function write($data) : IO\Writer;
 
 		/**
 		 * This method write the data, plus an end of line character, to the resource.
@@ -91,7 +90,7 @@ namespace Unicity\IO {
 		 * @param mixed $data                                       the data to be written
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public abstract function writeLine($data);
+		public abstract function writeLine($data) : IO\Writer;
 
 		/**
 		 * This method writes the contents of a collection to the resource.
@@ -101,7 +100,7 @@ namespace Unicity\IO {
 		 * @param mixed $collection                                 a collection of data to be written
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public abstract function writeLines($collection);
+		public abstract function writeLines($collection) : IO\Writer;
 
 	}
 

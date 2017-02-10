@@ -66,7 +66,7 @@ namespace Unicity\Core\Data\XML {
 		 * @access public
 		 * @abstract
 		 */
-		public abstract function invoke();
+		public abstract function invoke() : void;
 
 		/**
 		 * This method processes the XML document using the "php-filter" processing instruction.
@@ -75,7 +75,7 @@ namespace Unicity\Core\Data\XML {
 		 * @static
 		 * @param \Unicity\Core\Data\XML $xml                       the XML document to be processed
 		 */
-		public static function process(Core\Data\XML $xml) {
+		public static function process(Core\Data\XML $xml) : void {
 			$directives = $xml->getProcessingInstruction('php-filter');
 			if (isset($directives['invoke'])) {
 				$filters = array_map('trim', preg_split('/,/', $directives['invoke']));

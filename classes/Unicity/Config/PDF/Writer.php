@@ -59,7 +59,7 @@ namespace Unicity\Config\PDF {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function display(Core\IMessage $message = null) {
+		public function display(Core\IMessage $message = null) : void {
 			ini_set('memory_limit', $this->metadata['memory_limit']);
 
 			$buffer = $this->render();
@@ -76,7 +76,7 @@ namespace Unicity\Config\PDF {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function export(Core\IMessage $message = null) {
+		public function export(Core\IMessage $message = null) : void {
 			ini_set('memory_limit', $this->metadata['memory_limit']);
 
 			if (isset($this->metadata['uri']) && !empty($this->metadata['uri'])) {

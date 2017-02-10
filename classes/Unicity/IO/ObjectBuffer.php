@@ -117,7 +117,7 @@ namespace Unicity\IO {
 		 *
 		 * @see http://www.php.net/manual/en/function.pathinfo.php
 		 */
-		public function getFileExtensionFromName() {
+		public function getFileExtensionFromName() : string {
 			return $this->ext;
 		}
 
@@ -127,7 +127,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return string                                           the extension for the file
 		 */
-		public function getFileExtensionFromStream() {
+		public function getFileExtensionFromStream() : string {
 			return $this->ext;
 		}
 
@@ -137,7 +137,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isExecutable() {
+		public function isExecutable() : bool {
 			return false;
 		}
 
@@ -147,7 +147,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isReadable() {
+		public function isReadable() : bool {
 			return true;
 		}
 
@@ -157,7 +157,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isWritable() {
+		public function isWritable() : bool {
 			return false;
 		}
 

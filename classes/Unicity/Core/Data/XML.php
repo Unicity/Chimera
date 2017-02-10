@@ -79,7 +79,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function display(Core\IMessage $message = null) {
+		public function display(Core\IMessage $message = null) : void {
 			$charset = $this->getEncoding();
 
 			if ($message === null) {
@@ -120,7 +120,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function export(Core\IMessage $message = null) {
+		public function export(Core\IMessage $message = null) : void {
 			if (empty($this->file_name)) {
 				date_default_timezone_set('America/Denver');
 				$this->file_name = date('YmdHis') . '.xml';
@@ -166,7 +166,7 @@ namespace Unicity\Core\Data {
 		 * @access public
 		 * @return string                                           the character encoding being used
 		 */
-		public function getEncoding() {
+		public function getEncoding() : string {
 			$encoding = dom_import_simplexml($this)->ownerDocument->encoding;
 			if (!is_string($encoding)) {
 				$encoding = Core\Data\Charset::UTF_8_ENCODING;
@@ -192,7 +192,7 @@ namespace Unicity\Core\Data {
 		 * @see http://java2s.com/Tutorials/PHP/XML_Functions/PHP_xml_set_processing_instruction_handler_Function.htm
 		 * @see http://www.xml.com/pub/a/2000/09/13/xslt/
 		 */
-		public function getProcessingInstruction($target, $index = 1) {
+		public function getProcessingInstruction(string $target, int $index = 1) : array {
 			$document = dom_import_simplexml($this)->ownerDocument;
 			$xpath = new \DOMXPath($document);
 			$instruction = trim($xpath->evaluate("string(//processing-instruction(\"{$target}\")[{$index}])"));
@@ -246,7 +246,7 @@ namespace Unicity\Core\Data {
 		 *
 		 * @access public
 		 */
-		public function removeFromParent() {
+		public function removeFromParent() : void {
 			$child = dom_import_simplexml($this);
 			$child->parentNode->removeChild($child);
 		}
@@ -286,7 +286,7 @@ namespace Unicity\Core\Data {
 		 *                                                          to be standalone
 		 * @return string                                           the XML declaration
 		 */
-		public static function declaration($encoding = 'UTF-8', $standalone = false) {
+		public static function declaration(string $encoding = 'UTF-8', bool $standalone = false) : string {
 			$encoding = strtoupper($encoding);
 			$standalone = ($standalone) ? 'yes' : 'no';
 			$declaration = "<?xml version=\"1.0\" encoding=\"{$encoding}\" standalone=\"{$standalone}\"?>";
@@ -322,7 +322,7 @@ namespace Unicity\Core\Data {
 		 * @param string $string                                    the string to be modified
 		 * @return string                                           the modified string
 		 */
-		public static function entities($string) {
+		public static function entities(string $string) : string {
 			$flags = (defined('ENT_XML1')) ? ENT_QUOTES | ENT_XML1 : ENT_QUOTES;
 
 			$string = html_entity_decode(stripslashes($string), $flags, Core\Data\Charset::UTF_8_ENCODING); // prevents double-escaping
@@ -355,7 +355,7 @@ namespace Unicity\Core\Data {
 		 * @throws Throwable\InvalidArgument\Exception              indicates a data type mismatch
 		 * @throws Throwable\FileNotFound\Exception                 indicates that the file does not exist
 		 */
-		public static function load(IO\File $file) {
+		public static function load(IO\File $file) : Core\Data\XML {
 			if (!$file->exists()) {
 				throw new Throwable\FileNotFound\Exception('Unable to locate file. File ":file" does not exist.', array(':file' => $file));
 			}
@@ -380,7 +380,7 @@ namespace Unicity\Core\Data {
 		 * @param \SimpleXMLElement $xsl                            the xsl to be used
 		 * @return Core\Data\XML                                    an instance of this class
 		 */
-		public static function transform(\SimpleXMLElement $xml, \SimpleXMLElement $xsl) {
+		public static function transform(\SimpleXMLElement $xml, \SimpleXMLElement $xsl) : Core\Data\XML {
 			$processor = new \XSLTProcessor();
 			$processor->importStylesheet($xsl);
 			return new static($processor->transformToXml($xml));
@@ -393,7 +393,7 @@ namespace Unicity\Core\Data {
 		 * @param string $string                                    the string to be encoded
 		 * @return string                                           the encoded string
 		 */
-		public static function toUnicodeString($string) {
+		public static function toUnicodeString(string $string) : string {
 			$decbytes = static::utf8_to_codepoints($string);
 			$value = implode('', array_map(function($decbyte) {
 				return pack('c', $decbyte);
@@ -408,7 +408,7 @@ namespace Unicity\Core\Data {
 		 * @param string $string                                    the UTF-8 string to be converted
 		 * @return array                                            the unicode codepoint(s)
 		 */
-		protected static function utf8_to_codepoints($string) {
+		protected static function utf8_to_codepoints(string $string) : array {
 			$unicode = array();
 			$values = array();
 			$lookingFor = 1;
@@ -445,7 +445,7 @@ namespace Unicity\Core\Data {
 		 * @return mixed                                            the value that was wrapped by
 		 *                                                          the object
 		 */
-		public static function valueOf($value, $source_encoding = 'UTF-8', $target_encoding = 'UTF-8') {
+		public static function valueOf($value, string $source_encoding = 'UTF-8', string $target_encoding = 'UTF-8') {
 			$flags = (defined('ENT_XML1')) ? ENT_QUOTES | ENT_XML1 : ENT_QUOTES;
 			if (is_array($value) || is_object($value)) {
 				$array = (array)$value;

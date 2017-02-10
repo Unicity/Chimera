@@ -51,7 +51,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean                                          whether the file actually exists
 		 */
-		public function exists() {
+		public function exists() : bool {
 			return true;
 		}
 
@@ -61,7 +61,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isExecutable() {
+		public function isExecutable() : bool {
 			return false;
 		}
 
@@ -71,7 +71,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isReadable() {
+		public function isReadable() : bool {
 			return false;
 		}
 
@@ -81,7 +81,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isWritable() {
+		public function isWritable() : bool {
 			return true;
 		}
 

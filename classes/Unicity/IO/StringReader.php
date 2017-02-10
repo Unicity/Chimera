@@ -76,7 +76,7 @@ namespace Unicity\IO {
 		 *
 		 * @access public
 		 */
-		public function close() {
+		public function close() : void {
 			$this->mark = 0;
 			$this->position = 0;
 		}
@@ -104,7 +104,7 @@ namespace Unicity\IO {
 		 * @see http://paul-m-jones.com/archives/262
 		 * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
 		 */
-		public function dispose(bool $disposing = true) {
+		public function dispose(bool $disposing = true) : void {
 			$this->close();
 			if ($disposing) {
 				$this->buffer = null;
@@ -118,7 +118,7 @@ namespace Unicity\IO {
 		 * @return boolean                                          whether the reader is done
 		 *                                                          reading
 		 */
-		public function isDone() {
+		public function isDone() : bool {
 			return !$this->isReady();
 		}
 
@@ -129,7 +129,7 @@ namespace Unicity\IO {
 		 * @return boolean                                          whether the reader is ready
 		 *                                                          to read
 		 */
-		public function isReady() {
+		public function isReady() : bool {
 			return (($this->position >= 0) && ($this->position < $this->length));
 		}
 
@@ -139,7 +139,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return integer                                          the length of the resource
 		 */
-		public function length() {
+		public function length() : int {
 			return $this->length;
 		}
 
@@ -148,7 +148,7 @@ namespace Unicity\IO {
 		 *
 		 * @access public
 		 */
-		public function open() {
+		public function open() : void {
 			// do nothing
 		}
 
@@ -159,7 +159,7 @@ namespace Unicity\IO {
 		 * @return integer                                          the current position of the
 		 *                                                          reader
 		 */
-		public function position() {
+		public function position() : int {
 			return $this->position;
 		}
 
@@ -173,7 +173,7 @@ namespace Unicity\IO {
 		 * @return string                                           the block of characters in the
 		 *                                                          resource
 		 */
-		public function readBlock($offset, $length) {
+		public function readBlock(int $offset, int $length) : ?string {
 			if (!$this->isDone() && ($length > 0)) {
 				$buffer = substr($this->buffer, $offset, $length);
 				$strlen = strlen($buffer);
@@ -195,7 +195,7 @@ namespace Unicity\IO {
 		 *                                                          after the read
 		 * @return char                                             the next character in the resource
 		 */
-		public function readChar($position = null, $advance = true) {
+		public function readChar($position = null, bool $advance = true) : ?string {
 			if (($position !== null) && is_integer($position)) {
 				$this->seek($position);
 				$char = $this->readChar(null, $advance);
@@ -219,7 +219,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return string                                           the next line in the resource
 		 */
-		public function readLine() {
+		public function readLine() : ?string {
 			if (!$this->isDone()) {
 				$eol = strpos($this->buffer, "\n", $this->position);
 				if ($eol === false) {
@@ -244,7 +244,7 @@ namespace Unicity\IO {
 		 * @return string                                           all characters from the current
 		 *                                                          position to the end of the stream
 		 */
-		public function readToEnd() {
+		public function readToEnd() : ?string {
 			if (!$this->isDone()) {
 				$buffer = substr($this->buffer, $this->position, $this->length);
 				$this->position = $this->length;
@@ -270,7 +270,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @param integer $position                                 the seek position
 		 */
-		public function seek($position) {
+		public function seek($position) : void {
 			$this->position = (int) $position;
 		}
 
@@ -280,7 +280,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @param integer $n                                        the number of positions to skip
 		 */
-		public function skip($n) {
+		public function skip($n) : void {
 			$this->position += (int) $n;
 		}
 

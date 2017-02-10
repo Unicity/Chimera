@@ -68,7 +68,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return string                                           the extension for the file
 		 */
-		public function getFileExtensionFromStream() {
+		public function getFileExtensionFromStream() : string {
 			$ext = '';
 			$handle = fopen($this->uri, 'r');
 			if ($handle) {
@@ -99,7 +99,7 @@ namespace Unicity\IO {
 		 *
 		 * @return string
 		 */
-		public function toEncodedURI() {
+		public function toEncodedURI() : string {
 			return 'data:' . $this->getContentType() . ';base64,' . urlencode(base64_encode($this->getBytes()));
 		}
 
@@ -110,10 +110,8 @@ namespace Unicity\IO {
 		 * @static
 		 * @param string $data                                      the data to be evaluated
 		 * @return boolean                                          whether the data is base 64 encoded
-		 *
-		 * @see
 		 */
-		protected static function isBase64($data) {
+		protected static function isBase64($data) : bool {
 			return boolval(preg_match('`^[a-zA-Z0-9+/]+={0,2}$`', $data));
 		}
 
@@ -127,7 +125,7 @@ namespace Unicity\IO {
 		 *
 		 * @see https://blog.netspi.com/magic-bytes-identifying-common-file-formats-at-a-glance/
 		 */
-		protected static function isBMP($data) {
+		protected static function isBMP($data) : bool {
 			$signature = '424D';
 			$length = strlen($data);
 			if ($length >= 2) {
@@ -151,7 +149,7 @@ namespace Unicity\IO {
 		 * @see https://blog.netspi.com/magic-bytes-identifying-common-file-formats-at-a-glance/
 		 * @see http://php.net/manual/en/function.imagecreatefromgif.php#104473
 		 */
-		protected static function isGIF($data) {
+		protected static function isGIF($data) : bool {
 			$signature = array('474946383761', '474946383961');
 			$length = strlen($data);
 			if ($length >= 6) {
@@ -174,7 +172,7 @@ namespace Unicity\IO {
 		 *
 		 * @see http://php.net/manual/en/function.exif-imagetype.php
 		 */
-		protected static function isJPEG($data) {
+		protected static function isJPEG($data) : bool {
 			$signature = 'FFD8';
 			$length = strlen($data);
 			if ($length >= 2) {
@@ -198,7 +196,7 @@ namespace Unicity\IO {
 		 * @see http://php.net/manual/en/function.exif-imagetype.php
 		 * @see https://blog.netspi.com/magic-bytes-identifying-common-file-formats-at-a-glance/
 		 */
-		protected static function isPNG($data) {
+		protected static function isPNG($data) : bool {
 			$signature = '89504E470D0A1A0A';
 			$length = strlen($data);
 			if ($length >= 8) {

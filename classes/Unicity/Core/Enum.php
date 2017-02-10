@@ -77,7 +77,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the enumeration
 		 * @param mixed $value                                      the value to be assigned to the enumeration
 		 */
-		protected abstract function __construct($name, $value);
+		protected abstract function __construct(string $name, $value);
 
 		/**
 		 * This destructor ensures that any resources are properly disposed.

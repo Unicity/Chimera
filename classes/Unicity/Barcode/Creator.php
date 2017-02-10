@@ -84,7 +84,7 @@ namespace Unicity\Barcode {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function display(Core\IMessage $message = null) {
+		public function display(Core\IMessage $message = null) : void {
 			if ($message === null) {
 				$message = new Core\Message();
 				$send = true;
@@ -111,7 +111,7 @@ namespace Unicity\Barcode {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function export(Core\IMessage $message = null) {
+		public function export(Core\IMessage $message = null) : void {
 			$uri = (string) $this->file;
 
 			if ($message === null) {
@@ -198,7 +198,7 @@ namespace Unicity\Barcode {
 		 *
 		 * @return string
 		 */
-		public function toEncodedURI() {
+		public function toEncodedURI() : string {
 			if ($this->uri === null) {
 				$this->uri = 'data:image/png;base64,' . urlencode(base64_encode($this->render()));
 			}

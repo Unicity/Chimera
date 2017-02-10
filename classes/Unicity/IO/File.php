@@ -177,7 +177,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean                                          whether the file actually exists
 		 */
-		public function exists() {
+		public function exists() : bool {
 			if (preg_match('/^data\\:\\/\\/text\\/plain,/', $this->uri)) {
 				return (strlen($this->uri) > 18);
 			}
@@ -275,7 +275,7 @@ namespace Unicity\IO {
 		 *
 		 * @see http://www.php.net/manual/en/function.pathinfo.php
 		 */
-		public function getFileExtensionFromName() {
+		public function getFileExtensionFromName() : string {
 			$uri = $this->uri;
 			$position = strpos($uri, '?');
 			if ($position !== false) {
@@ -291,7 +291,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return string                                           the extension for the file
 		 */
-		public function getFileExtensionFromStream() {
+		public function getFileExtensionFromStream() : string {
 			$ext = '';
 			$handle = fopen($this->uri, 'r');
 			if ($handle) {
@@ -382,7 +382,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isExecutable() {
+		public function isExecutable() : bool {
 			return is_executable($this->uri);
 		}
 
@@ -392,7 +392,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isReadable() {
+		public function isReadable() : bool {
 			return is_readable($this->uri);
 		}
 
@@ -402,7 +402,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isWritable() {
+		public function isWritable() : bool {
 			return is_writable($this->uri);
 		}
 

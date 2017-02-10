@@ -260,7 +260,7 @@ namespace Unicity\Core {
 		 *
 		 * @access public
 		 */
-		public function send() {
+		public function send() : void {
 			header(implode(' ', array($this->protocol, $this->status, static::$statuses[$this->status])));
 
 			foreach ($this->headers as $name => $value) {
@@ -282,7 +282,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param mixed $body                                       the message's body
 		 */
-		public function setBody($body = null) {
+		public function setBody($body = null) : void {
 			if (is_object($body) && ($body instanceof IO\File)) {
 				$this->body = $body;
 			}
@@ -301,7 +301,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the header
 		 * @param string $value                                     the value of the header
 		 */
-		public function setHeader(string $name, ?string $value) {
+		public function setHeader(string $name, ?string $value) : void {
 			$name = strtolower($name);
 			if (!in_array($name, array('content-length'))) {
 				if ($value !== null) {
@@ -319,7 +319,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param array $headers                                    the headers associated with the message
 		 */
-		public function setHeaders(array $headers) {
+		public function setHeaders(array $headers) : void {
 			foreach ($headers as $name => $value) {
 				$this->setHeader($name, $value);
 			}
@@ -332,7 +332,7 @@ namespace Unicity\Core {
 		 * @param string $id
 		 * @throws Throwable\Parse\Exception                        the message id
 		 */
-		public function setMessageId(?string $id) {
+		public function setMessageId(?string $id) : void {
 			if ($this->id !== null) {
 				$this->id = $id;
 			}
@@ -347,7 +347,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param string $protocol                                  the HTTP protocol to be set
 		 */
-		public function setProtocol(string $protocol) {
+		public function setProtocol(string $protocol) : void {
 			$this->protocol = strtoupper($protocol);
 		}
 
@@ -359,7 +359,7 @@ namespace Unicity\Core {
 		 * @throws Throwable\InvalidArgument\Exception              indicates the specified status
 		 *                                                          code is not known
 		 */
-		public function setStatus(int $status) {
+		public function setStatus(int $status) : void {
 			if (!isset(static::$statuses[$status])) {
 				throw new Throwable\InvalidArgument\Exception('Invalid status code. Expected an HTTP status code, but got ":status".', array(':status' => $status));
 			}

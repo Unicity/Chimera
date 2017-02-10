@@ -106,7 +106,7 @@ namespace Unicity\Config {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function display(Core\IMessage $message = null) {
+		public function display(Core\IMessage $message = null) : void {
 			$charset = isset($this->metadata['encoding'][1])
 				? $this->metadata['encoding'][1]
 				: Core\Data\Charset::UTF_8_ENCODING;
@@ -137,7 +137,7 @@ namespace Unicity\Config {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function export(Core\IMessage $message = null) {
+		public function export(Core\IMessage $message = null) : void {
 			if (isset($this->metadata['uri']) && ($this->metadata['uri'] != '')) {
 				$uri = preg_split('!(\?.*|/)!', $this->metadata['uri'], -1, PREG_SPLIT_NO_EMPTY);
 				$uri = $uri[count($uri) - 1];

@@ -70,7 +70,7 @@ namespace Unicity\Core {
 		 *
 		 * @access public
 		 */
-		public function send();
+		public function send() : void;
 
 		/**
 		 * This method sets the message's body.
@@ -78,7 +78,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param mixed $body                                       the message's body
 		 */
-		public function setBody($body = null);
+		public function setBody($body = null) : void;
 
 		/**
 		 * This method sets the header with specified name.
@@ -87,7 +87,7 @@ namespace Unicity\Core {
 		 * @param string $name                                      the name of the header
 		 * @param string $value                                     the value of the header
 		 */
-		public function setHeader(string $name, ?string $value);
+		public function setHeader(string $name, ?string $value) : void;
 
 		/**
 		 * This method sets the headers with the specified name/value pairs.
@@ -95,7 +95,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @param array $headers                                    the headers associated with the message
 		 */
-		public function setHeaders(array $headers);
+		public function setHeaders(array $headers) : void;
 
 		/**
 		 * This method sets the message's id.
@@ -104,7 +104,7 @@ namespace Unicity\Core {
 		 * @param string $id
 		 * @throws Throwable\Parse\Exception                        the message id
 		 */
-		public function setMessageId(?string $id);
+		public function setMessageId(?string $id) : void;
 
 	}
 

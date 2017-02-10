@@ -88,7 +88,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public function close() {
+		public function close() : IO\Writer {
 			if ($this->handle !== null) {
 				if (is_resource($this->handle)) {
 					@fclose($this->handle);
@@ -134,7 +134,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public function open() {
+		public function open() : IO\Writer {
 			if ($this->handle === null) {
 				$this->handle = @fopen((string) $this->file, $this->mode);
 			}
@@ -165,7 +165,7 @@ namespace Unicity\IO {
 		 * @param mixed $data                                       the data to be written
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public function write($data) {
+		public function write($data) : IO\Writer {
 			fwrite($this->handle, $data);
 			return $this;
 		}
@@ -177,7 +177,7 @@ namespace Unicity\IO {
 		 * @param mixed $data                                       the data to be written
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public function writeLine($data) {
+		public function writeLine($data) : IO\Writer {
 			return $this->write($data)->write($this->eol);
 		}
 
@@ -188,7 +188,7 @@ namespace Unicity\IO {
 		 * @param mixed $collection                                 a collection of data to be written
 		 * @return IO\Writer                                        a reference to this class
 		 */
-		public function writeLines($collection) {
+		public function writeLines($collection) : IO\Writer {
 			foreach ($collection as $line) {
 				$this->writeLine($line);
 			}

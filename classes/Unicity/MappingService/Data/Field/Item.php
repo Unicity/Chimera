@@ -65,7 +65,7 @@ namespace Unicity\MappingService\Data\Field {
 		 * @param string $name                                      the name identifying the value
 		 * @param mixed $value                                      the value to be wrapped
 		 */
-		public function __construct($name, $value) {
+		public function __construct(string $name, $value) {
 			$info = Core\DataType::info($value);
 			if (($info->class == 'object') && ($info->type != 'string')) {
 				throw new Throwable\InvalidArgument\Exception('Invalid argument specified. Expected a primitive or unknown, but got ":type"', array(':type', $info->type));

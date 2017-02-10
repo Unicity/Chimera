@@ -47,7 +47,7 @@ namespace Unicity\IO {
 		 * @param string $prefix                                    the prefix of the generated temporary file
 		 * @throws Throwable\InvalidArgument\Exception              indicates a data type mismatch
 		 */
-		public function __construct($prefix = '') {
+		public function __construct(string $prefix = '') {
 			parent::__construct(tempnam(static::directory(), $prefix));
 			$this->temporary = true;
 		}
@@ -59,7 +59,7 @@ namespace Unicity\IO {
 		 * @static
 		 * @return string                                           a usable temp directory
 		 */
-		public static function directory() {
+		public static function directory() : string {
 			if (static::$directory === null) {
 				static::$directory = function_exists('sys_get_temp_dir')
 					? sys_get_temp_dir()
@@ -80,7 +80,7 @@ namespace Unicity\IO {
 		 * @license http://opensource.org/licenses/bsd-license.php BSD
 		 * @link http://solarphp.com/trac/core/browser/trunk/Solar/Dir.php
 		 */
-		protected static function _directory() {
+		protected static function _directory() : string {
 			// Non-Windows System?
 			if (strtolower(substr(PHP_OS, 0, 3)) != 'win') {
 				$directory = empty($_ENV['TMPDIR']) ? getenv('TMPDIR') : $_ENV['TMPDIR'];

@@ -121,7 +121,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean                                          whether the file actually exists
 		 */
-		public function exists() {
+		public function exists() : bool {
 			return (($this->error == 0) && file_exists($this->uri));
 		}
 
@@ -133,7 +133,7 @@ namespace Unicity\IO {
 		 *
 		 * @see http://www.php.net/manual/en/function.pathinfo.php
 		 */
-		public function getFileExtensionFromName() {
+		public function getFileExtensionFromName() : string {
 			$uri = $this->getFileName();
 			$position = strpos($uri, '?');
 			if ($position !== false) {

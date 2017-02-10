@@ -308,7 +308,7 @@ namespace Unicity\Common {
 		 * @access public
 		 * @return integer                                          the length of the string
 		 */
-		public function length() {
+		public function length() : int {
 			return strlen($this->string);
 		}
 
@@ -389,7 +389,7 @@ namespace Unicity\Common {
 		 * @access public
 		 * @return integer                                          the current position of the iterator
 		 */
-		public function position() {
+		public function position() : int {
 			return $this->position;
 		}
 

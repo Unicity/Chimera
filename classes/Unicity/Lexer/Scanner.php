@@ -117,7 +117,7 @@ namespace Unicity\Lexer {
 		 * @see http://paul-m-jones.com/archives/262
 		 * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
 		 */
-		public function dispose(bool $disposing = true) {
+		public function dispose(bool $disposing = true) : void {
 			$this->current = null;
 			$this->rules->clear();
 			if ($disposing) {

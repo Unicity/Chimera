@@ -46,7 +46,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @abstract
 		 */
-		public abstract function close();
+		public abstract function close() : void;
 
 		/**
 		 * This destructor ensures that any resources are properly disposed.
@@ -70,7 +70,7 @@ namespace Unicity\IO {
 		 * @see http://paul-m-jones.com/archives/262
 		 * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
 		 */
-		public function dispose(bool $disposing = true) {
+		public function dispose(bool $disposing = true) : void {
 			$this->close();
 		}
 
@@ -81,7 +81,7 @@ namespace Unicity\IO {
 		 * @abstract
 		 * @return integer                                          the length of the resource
 		 */
-		public abstract function length();
+		public abstract function length() : int;
 
 		/**
 		 * This method returns whether the reader is done reading.
@@ -91,7 +91,7 @@ namespace Unicity\IO {
 		 * @return boolean                                          whether the reader is done
 		 *                                                          reading
 		 */
-		public abstract function isDone();
+		public abstract function isDone() : bool;
 
 		/**
 		 * This method determines whether the resource is empty.
@@ -110,7 +110,7 @@ namespace Unicity\IO {
 		 * @abstract
 		 * @return boolean
 		 */
-		public abstract function isReady();
+		public abstract function isReady() : bool;
 
 		/**
 		 * This method marks either the current position or the specified position should
@@ -132,7 +132,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @abstract
 		 */
-		public abstract function open();
+		public abstract function open() : void;
 
 		/**
 		 * This method returns the current position of the reader.
@@ -142,7 +142,7 @@ namespace Unicity\IO {
 		 * @return integer                                          the current position of the
 		 *                                                          reader
 		 */
-		public abstract function position();
+		public abstract function position() : int;
 
 		/**
 		 * This method returns a block of characters in the resource.
@@ -155,7 +155,7 @@ namespace Unicity\IO {
 		 * @return string                                           the block of characters in the
 		 *                                                          resource
 		 */
-		public abstract function readBlock($offset, $length);
+		public abstract function readBlock(int $offset, int $length) : ?string;
 
 		/**
 		 * This method returns a character from the resource.
@@ -168,7 +168,7 @@ namespace Unicity\IO {
 		 * @return char                                             the next character in the file
 		 *                                                          resource
 		 */
-		public abstract function readChar($position = null, $advance = true);
+		public abstract function readChar($position = null, bool $advance = true) : ?string;
 
 		/**
 		 * This method returns an array with the characters.
@@ -197,7 +197,7 @@ namespace Unicity\IO {
 		 * @abstract
 		 * @return string                                           the next line in the file resource
 		 */
-		public abstract function readLine();
+		public abstract function readLine() : ?string;
 
 		/**
 		 * This method returns an array with the lines.
@@ -242,7 +242,7 @@ namespace Unicity\IO {
 		 * @return string                                           all characters from the current
 		 *                                                          position to the end of the stream
 		 */
-		public abstract function readToEnd();
+		public abstract function readToEnd() : ?string;
 
 		/**
 		 * This method resets the reader to the last marked position.
@@ -259,7 +259,7 @@ namespace Unicity\IO {
 		 * @abstract
 		 * @param integer $position                                 the seek position
 		 */
-		public abstract function seek($position);
+		public abstract function seek($position) : void;
 
 		/**
 		 * This method skips to "n" positions ahead.
@@ -268,7 +268,7 @@ namespace Unicity\IO {
 		 * @abstract
 		 * @param integer $n                                        the number of positions to skip
 		 */
-		public abstract function skip($n);
+		public abstract function skip($n) : void;
 
 	}
 

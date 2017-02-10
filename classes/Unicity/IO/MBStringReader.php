@@ -75,7 +75,7 @@ namespace Unicity\IO {
 		 * @return string                                           the block of characters in the
 		 *                                                          resource
 		 */
-		public function readBlock($offset, $length) {
+		public function readBlock(int $offset, int $length) : ?string {
 			if (!$this->isDone() && ($length > 0)) {
 				$buffer = mb_substr($this->buffer, $offset, $length, $this->encoding);
 				$strlen = mb_strlen($buffer, $this->encoding);
@@ -97,7 +97,7 @@ namespace Unicity\IO {
 		 *                                                          after the read
 		 * @return char                                             the next character in the resource
 		 */
-		public function readChar($position = null, $advance = true) {
+		public function readChar($position = null, bool $advance = true) : ?string {
 			if (($position !== null) && is_integer($position)) {
 				$this->seek($position);
 				$char = $this->readChar(null, $advance);
@@ -121,7 +121,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return string                                           the next line in the resource
 		 */
-		public function readLine() {
+		public function readLine() : ?string {
 			if (!$this->isDone()) {
 				$eol = mb_strpos($this->buffer, "\n", $this->position, $this->encoding);
 				if ($eol === false) {
@@ -146,7 +146,7 @@ namespace Unicity\IO {
 		 * @return string                                           all characters from the current
 		 *                                                          position to the end of the stream
 		 */
-		public function readToEnd() {
+		public function readToEnd() : ?string {
 			if (!$this->isDone()) {
 				$buffer = mb_substr($this->buffer, $this->position, $this->length, $this->encoding);
 				$this->position = $this->length;

@@ -76,7 +76,7 @@ namespace Unicity\IO {
 		 *
 		 * @access public
 		 */
-		public function close() {
+		public function close() : void {
 			if ($this->handle !== null) {
 				if (is_resource($this->handle)) {
 					@fclose($this->handle);
@@ -103,7 +103,7 @@ namespace Unicity\IO {
 		 * @return boolean                                          whether the reader is done
 		 *                                                          reading
 		 */
-		public function isDone() {
+		public function isDone() : bool {
 			return (($this->handle === null) || feof($this->handle));
 		}
 
@@ -114,7 +114,7 @@ namespace Unicity\IO {
 		 * @return boolean                                          whether the reader is ready
 		 *                                                          to read
 		 */
-		public function isReady() {
+		public function isReady() : bool {
 			return (($this->handle !== null) && !feof($this->handle));
 		}
 
@@ -124,7 +124,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return integer                                          the length of the resource
 		 */
-		public function length() {
+		public function length() : int {
 			return $this->file->getFileSize();
 		}
 
@@ -133,7 +133,7 @@ namespace Unicity\IO {
 		 *
 		 * @access public
 		 */
-		public function open() {
+		public function open() : void {
 			if ($this->handle === null) {
 				$this->handle = @fopen((string) $this->file, 'r');
 				$this->mark = 0;
@@ -147,7 +147,7 @@ namespace Unicity\IO {
 		 * @return integer                                          the current position of the
 		 *                                                          reader
 		 */
-		public function position() {
+		public function position() : int {
 			return ftell($this->handle);
 		}
 
@@ -161,7 +161,7 @@ namespace Unicity\IO {
 		 * @return string                                           the block of characters in the
 		 *                                                          resource
 		 */
-		public function readBlock($offset, $length) {
+		public function readBlock(int $offset, int $length) : ?string {
 			if (!$this->isDone() && ($length > 0)) {
 				$this->seek($offset);
 				$buffer = '';
@@ -184,7 +184,7 @@ namespace Unicity\IO {
 		 *                                                          after the read
 		 * @return string                                           the next character in the resource
 		 */
-		public function readChar($position = null, $advance = true) {
+		public function readChar($position = null, bool $advance = true) : ?string {
 			if (is_integer($position)) {
 				$this->seek($position);
 				$char = $this->readChar(null, $advance);
@@ -207,7 +207,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return string                                           the next line in the resource
 		 */
-		public function readLine() {
+		public function readLine() : ?string {
 			if (!$this->isDone()) {
 				ini_set('auto_detect_line_endings', '1');
 				return fgets($this->handle);
@@ -222,7 +222,7 @@ namespace Unicity\IO {
 		 * @return string                                           all characters from the current
 		 *                                                          position to the end of the stream
 		 */
-		public function readToEnd() {
+		public function readToEnd() : ?string {
 			if (!$this->isDone()) {
 				$buffer = '';
 				do {
@@ -251,7 +251,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @param integer $position                                 the seek position
 		 */
-		public function seek($position) {
+		public function seek($position) : void {
 			fseek($this->handle, (int) $position);
 		}
 
@@ -261,7 +261,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @param integer $n                                        the number of positions to skip
 		 */
-		public function skip($n) {
+		public function skip($n) : void {
 			fseek($this->handle, $this->position() + $n);
 		}
 
@@ -277,7 +277,7 @@ namespace Unicity\IO {
 		 * @throws Throwable\InvalidArgument\Exception              indicates an invalid argument specified
 		 * @throws \Exception                                       indicates a rethrown exception
 		 */
-		public static function read(IO\File $file, $callback, $mode = 'readLine') {
+		public static function read(IO\File $file, callable $callback, string $mode = 'readLine') : void {
 			if (!in_array($mode, array('readChar', 'readLine', 'readToEnd'))) {
 				throw new Throwable\InvalidArgument\Exception('Invalid argument specified. Expected mode to be either "read", "readLine", or "readToEnd", but got :mode.', array(':mode' => $mode));
 			}

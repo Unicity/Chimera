@@ -76,7 +76,7 @@ namespace Unicity\Core {
 		 * @see https://chortle.ccsu.edu/java5/Notes/chap09C/ch09C_2.html
 		 * @see http://php.net/manual/en/function.gettype.php
 		 */
-		public static function info($value) { // TODO handle callable types
+		public static function info($value) : \stdClass { // TODO handle callable types
 			$type = ($value !== null) ? gettype($value) : 'NULL';
 			$info = new \stdClass();
 			switch ($type) {

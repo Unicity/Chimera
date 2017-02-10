@@ -68,7 +68,7 @@ namespace Unicity\MappingService\Data {
 		 * @param mixed $value                                      the value to be assigned to the
 		 *                                                          enumeration
 		 */
-		protected function __construct($name, $value) {
+		protected function __construct(string $name, $value) {
 			$this->__name = $name;
 			$this->__value = $value;
 			$this->__ordinal = count(static::$__enums);

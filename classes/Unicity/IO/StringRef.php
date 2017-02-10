@@ -53,7 +53,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isExecutable() {
+		public function isExecutable() : bool {
 			return false;
 		}
 
@@ -63,7 +63,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isReadable() {
+		public function isReadable() : bool {
 			return true;
 		}
 
@@ -73,7 +73,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean
 		 */
-		public function isWritable() {
+		public function isWritable() : bool {
 			return false;
 		}
 

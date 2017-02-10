@@ -38,7 +38,7 @@ namespace Unicity\IO {
 		 * @access public
 		 * @return boolean                                          whether the URL is active
 		 */
-		public function exists() {
+		public function exists() : bool {
 			$headers = @get_headers($this->uri);
 			$exists = (is_array($headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $headers[0]));
 			return $exists;

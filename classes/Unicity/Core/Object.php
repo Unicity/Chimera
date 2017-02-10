@@ -49,7 +49,7 @@ namespace Unicity\Core {
 		 * @param string $signature                                 the name of the method
 		 * @param callable $function                                an anonymous function
 		 */
-		public static function __addMethod($signature, $function) {
+		public static function __addMethod($signature, $function) : void {
 			$class = get_called_class();
 			$extensionMethods = &static::$__extensionMethods;
 			if (!array_key_exists($class, $extensionMethods)) {
@@ -138,7 +138,7 @@ namespace Unicity\Core {
 		 * @access public
 		 * @return array                                            an array of method names
 		 */
-		public function __getMethods() {
+		public function __getMethods() : array {
 			$class = new \ReflectionClass($this);
 			$methods = array_map(function($object) {
 				return $object->name;

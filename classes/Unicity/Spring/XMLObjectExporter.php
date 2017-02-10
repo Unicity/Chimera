@@ -141,7 +141,7 @@ namespace Unicity\Spring {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function display(Core\IMessage $message = null) {
+		public function display(Core\IMessage $message = null) : void {
 			$charset = isset($this->encoding[1])
 				? $this->encoding[1]
 				: Core\Data\Charset::UTF_8_ENCODING;
@@ -172,7 +172,7 @@ namespace Unicity\Spring {
 		 * @access public
 		 * @param Core\IMessage $message                            the message container
 		 */
-		public function export(Core\IMessage $message = null) {
+		public function export(Core\IMessage $message = null) : void {
 			if (empty($this->file_name)) {
 				date_default_timezone_set('America/Denver');
 				$this->file_name = date('YmdHis') . '.xml';
