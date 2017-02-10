@@ -232,7 +232,7 @@ namespace Unicity\Locale {
 		 *
 		 * @see http://php.net/money_format
 		 */
-		public static function format($number) {
+		public static function format($number) : string {
 			$amount = Core\Convert::toDouble($number);
 			//if (function_exists('money_format')) {
 			//	return money_format('%.2n', $amount);

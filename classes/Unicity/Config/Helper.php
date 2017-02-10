@@ -68,7 +68,7 @@ namespace Unicity\Config {
 		 * @param string $path                                      the path to be tested
 		 * @return boolean                                          whether the specified path exists
 		 */
-		public function hasPath($path) {
+		public function hasPath(string $path) : bool {
 			return ($this->getValue($path) !== null);
 		}
 
@@ -80,8 +80,8 @@ namespace Unicity\Config {
 		 * @return mixed                                            the element associated with the specified path
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
-		public function getValue($path) {
-			$segments = explode('.', (string) $path);
+		public function getValue(string $path) {
+			$segments = explode('.', $path);
 			if (count($segments) > 0) {
 				$element = $this->collection;
 				foreach ($segments as $segment) {
@@ -124,7 +124,7 @@ namespace Unicity\Config {
 		 * @param mixed $collection                                 the collection to be processed
 		 * @return \Unicity\Config\Helper                           a new instance of this class
 		 */
-		public static function factory($collection) {
+		public static function factory($collection) : \Unicity\Config\Helper {
 			return new static($collection);
 		}
 

@@ -93,7 +93,7 @@ namespace Unicity\Lexer {
 		 * @param \Unicity\Lexer\Scanner\ITokenRule $rule           the token rule definition to be
 		 *                                                          added
 		 */
-		public function addRule(Lexer\Scanner\ITokenRule $rule) {
+		public function addRule(Lexer\Scanner\ITokenRule $rule) : void {
 			$this->rules->addValue($rule);
 		}
 

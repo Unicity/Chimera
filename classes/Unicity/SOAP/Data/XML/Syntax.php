@@ -41,7 +41,7 @@ namespace Unicity\SOAP\Data\XML {
 		 * @return boolean                                          whether the specified string matches the syntax
 		 *                                                          for a boolean value
 		 */
-		public static function isBoolean($token) {
+		public static function isBoolean($token) : bool {
 			return is_string($token) && preg_match('/^(true|false)$/', $token);
 		}
 

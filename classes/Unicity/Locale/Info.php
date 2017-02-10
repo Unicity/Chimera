@@ -40,7 +40,7 @@ namespace Unicity\Locale {
 		 * @static
 		 * @return array                                            the languages in the request
 		 */
-		public static function getLanguages() {
+		public static function getLanguages() : array {
 			if (static::$languages === null) {
 				if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && is_string($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 					$languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);

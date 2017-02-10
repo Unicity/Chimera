@@ -126,11 +126,8 @@ namespace Unicity\Throwable\Runtime {
 		 * @param \Exception $exception                             the exception to be processed
 		 * @return string                                           a string representing the exception
 		 */
-		public static function text(\Exception $exception) {
-			if ($exception !== null) {
-				return sprintf('%s [ %s ]: %s ~ %s [ %d ]', get_class($exception), $exception->getCode(), strip_tags($exception->getMessage()), $exception->getFile(), $exception->getLine());
-			}
-			return '';
+		public static function text(\Exception $exception) : string {
+			return sprintf('%s [ %s ]: %s ~ %s [ %d ]', get_class($exception), $exception->getCode(), strip_tags($exception->getMessage()), $exception->getFile(), $exception->getLine());
 		}
 
 	}

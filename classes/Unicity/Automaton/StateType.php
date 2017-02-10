@@ -48,9 +48,9 @@ namespace Unicity\Automaton {
 		 * @access protected
 		 * @static
 		 * @param integer $ordinal                                  the ordinal index of the token
-		 * @return Core\Enum                                        the token
+		 * @return Automaton\StateType                              the token
 		 */
-		protected static function __enum($ordinal) {
+		protected static function __enum(int $ordinal) : Automaton\StateType {
 			if (!is_array(static::$__enums)) {
 				static::$__enums = array();
 				static::$__enums[] = new static('normal', 'normal');
@@ -79,7 +79,7 @@ namespace Unicity\Automaton {
 		 * @static
 		 * @return Automaton\StateType                              the state type token
 		 */
-		public static function goal() {
+		public static function goal() : Automaton\StateType {
 			return static::__enum(1);
 		}
 
@@ -90,7 +90,7 @@ namespace Unicity\Automaton {
 		 * @static
 		 * @return Automaton\StateType                              the state type token
 		 */
-		public static function normal() {
+		public static function normal() : Automaton\StateType {
 			return static::__enum(0);
 		}
 

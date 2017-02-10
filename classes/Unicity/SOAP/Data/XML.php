@@ -34,9 +34,10 @@ namespace Unicity\SOAP\Data {
 		/**
 		 * This constant represents the default namespace used by SOAP XML.
 		 *
+		 * @access public
 		 * @const string
 		 */
-		const DEFAULT_NAMESPACE = 'http://schemas.xmlsoap.org/soap/envelope/';
+		public const DEFAULT_NAMESPACE = 'http://schemas.xmlsoap.org/soap/envelope/';
 
 	}
 

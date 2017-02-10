@@ -18,7 +18,7 @@
 
 // http://en.wikipedia.org/wiki/List_of_file_signatures
 return array(
-	'bmp' => function($data) {
+	'bmp' => function($data) : bool {
 		$signature = '424D';
 		$length = strlen($data);
 		if ($length >= 2) {
@@ -30,10 +30,10 @@ return array(
 		}
 		return false;
 	},
-	'csv' => function($data) {
+	'csv' => function($data) : bool {
 		return (preg_match('/^(.*,)+/', $data) || preg_match('/^(.*\|)+/', $data));
 	},
-	'gif' => function($data) {
+	'gif' => function($data) : bool {
 		$signature = array('474946383761', '474946383961');
 		$length = strlen($data);
 		if ($length >= 6) {
@@ -45,10 +45,10 @@ return array(
 		}
 		return false;
 	},
-	'html' => function($data) {
-		return preg_match('/^<html/', $data);
+	'html' => function($data) : bool {
+		return (bool) preg_match('/^<html/', $data);
 	},
-	'jpg' => function($data) {
+	'jpg' => function($data) : bool {
 		$signature = 'FFD8';
 		$length = strlen($data);
 		if ($length >= 2) {
@@ -60,16 +60,16 @@ return array(
 		}
 		return false;
 	},
-	'json' => function($data) {
-		return preg_match("/^[{]/", $data);
+	'json' => function($data) : bool {
+		return (bool) preg_match("/^[{]/", $data);
 	},
-	'php' => function($data) {
-		return preg_match('/^<\?php/', $data);
+	'php' => function($data) : bool {
+		return (bool) preg_match('/^<\?php/', $data);
 	},
-	'plist' => function($data) {
+	'plist' => function($data) : bool {
 		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<plist/', $data));
 	},
-	'png' => function($data) {
+	'png' => function($data) : bool {
 		$signature = '89504E470D0A1A0A';
 		$length = strlen($data);
 		if ($length >= 8) {
@@ -81,19 +81,19 @@ return array(
 		}
 		return false;
 	},
-	'properties' => function($data) {
+	'properties' => function($data) : bool {
 		return (preg_match('/^[^=]+=.+/', $data) || preg_match('/^#.*$/', $data));
 	},
-	'spring' => function($data) {
+	'spring' => function($data) : bool {
 		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<objects/', $data));
 	},
-	'soap' => function($data) {
+	'soap' => function($data) : bool {
 		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<soap:Envelope/', $data));
 	},
-	'xml' => function($data) {
-		return preg_match('/^<\?xml\s+.+\?>/', $data);
+	'xml' => function($data) : bool {
+		return (bool) preg_match('/^<\?xml\s+.+\?>/', $data);
 	},
-	'wddx' => function($data) {
+	'wddx' => function($data) : bool {
 		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<wddxPacket/', $data));
 	},
 );

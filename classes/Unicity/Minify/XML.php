@@ -56,7 +56,7 @@ namespace Unicity\Minify {
 		 *
 		 * @return string
 		 */
-		public static function minify($xml, $options = array()) {
+		public static function minify(string $xml, $options = array()) : string {
 			$minifier = new static($xml, $options);
 			return $minifier->process();
 		}
@@ -68,7 +68,7 @@ namespace Unicity\Minify {
 		 * @param string $xml
 		 * @param array $options
 		 */
-		public function __construct($xml, array $options = array()) {
+		public function __construct(string $xml, array $options = array()) {
 			$this->xml = str_replace("\r\n", "\n", trim($xml));
 			$this->options = array_merge(array(
 				'preserveComments' => true,
@@ -94,7 +94,7 @@ namespace Unicity\Minify {
 		 *
 		 * @return string
 		 */
-		public function process() {
+		public function process() : string {
 			$xml = $this->xml;
 
 			$document = new \DOMDocument();
