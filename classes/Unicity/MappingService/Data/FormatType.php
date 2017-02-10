@@ -49,9 +49,9 @@ namespace Unicity\MappingService\Data {
 		 * @access protected
 		 * @static
 		 * @param integer $ordinal                                  the ordinal index of the token
-		 * @return Core\Enum                                        the token
+		 * @return MappingService\Data\FormatType                   the token
 		 */
-		protected static function __enum($ordinal) {
+		protected static function __enum(int $ordinal) : MappingService\Data\FormatType {
 			if (!is_array(static::$__enums)) {
 				static::$__enums = array();
 				static::$__enums[] = new static('canonical', 'Canonical');
