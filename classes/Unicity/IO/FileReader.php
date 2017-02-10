@@ -166,7 +166,10 @@ namespace Unicity\IO {
 				$this->seek($offset);
 				$buffer = '';
 				for ($i = 0; !$this->isDone() && $i < $length; $i++) {
-					$buffer .= fgets($this->handle);
+					$line = fgets($this->handle);
+					if (is_string($line)) {
+						$buffer .= fgets($this->handle);
+					}
 				}
 				if (strlen($buffer) > 0) {
 					return $buffer;
@@ -210,7 +213,10 @@ namespace Unicity\IO {
 		public function readLine() : ?string {
 			if (!$this->isDone()) {
 				ini_set('auto_detect_line_endings', '1');
-				return fgets($this->handle);
+				$line = fgets($this->handle);
+				if (is_string($line)) {
+					return $line;
+				}
 			}
 			return null;
 		}
