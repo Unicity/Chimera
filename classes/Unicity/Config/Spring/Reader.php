@@ -702,6 +702,7 @@ namespace Unicity\Config\Spring {
 				$collection = $this->parseOuterObjectElements($root, $root);
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 

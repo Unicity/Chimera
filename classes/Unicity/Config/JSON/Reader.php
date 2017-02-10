@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\Config\JSON {
 
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Throwable;
 
@@ -77,6 +78,7 @@ namespace Unicity\Config\JSON {
 				$collection = json_decode($buffer, $this->metadata['assoc'], $this->metadata['depth']);
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 

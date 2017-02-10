@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\Config\Object {
 
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Throwable;
 
@@ -65,6 +66,7 @@ namespace Unicity\Config\Object {
 				$collection = unserialize($buffer);
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 

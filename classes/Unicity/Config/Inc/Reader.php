@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\Config\Inc {
 
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\Throwable;
 
 	/**
@@ -47,6 +48,7 @@ namespace Unicity\Config\Inc {
 				};
 				$collection = $reader();
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 				return $collection;

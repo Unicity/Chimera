@@ -107,6 +107,7 @@ namespace Unicity\Config\QueryString {
 				});
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 

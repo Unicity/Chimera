@@ -258,6 +258,7 @@ namespace Unicity\Config\SOAP {
 				$collection = $this->parseEnvelopeElement($xml);
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 

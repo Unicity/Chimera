@@ -489,6 +489,7 @@ namespace Unicity\Config\WDDX {
 				$collection = $this->parseWDDXPacketElement($document);
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 

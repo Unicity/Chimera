@@ -327,6 +327,7 @@ namespace Unicity\Config\PList {
 				$collection = $this->parsePListElement(new Core\Data\XML($buffer));
 
 				if ($path !== null) {
+					$path = Core\Convert::toString($path);
 					$collection = Config\Helper::factory($collection)->getValue($path);
 				}
 
