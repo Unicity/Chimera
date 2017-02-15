@@ -198,20 +198,17 @@ namespace Unicity\ORM\JSON\Model {
 		 *
 		 * @see http://www.justin-cook.com/wp/2006/08/02/php-insert-into-an-array-at-a-specific-position/
 		 */
-		public function insertValue($index, $value) {
-			if (is_integer($index)) {
-				$count = $this->count();
-				if (($index >= 0) && ($index < $count)) {
-					array_splice($this->elements, $index, 0, array($value));
-					return true;
-				}
-				else if ($index == $count) {
-					$this->addValue($value);
-					return true;
-				}
-				throw new Throwable\OutOfBounds\Exception('Unable to insert value. Invalid index specified', array(':index' => $index, ':value' => $value));
+		public function insertValue(int $index, $value) : bool {
+			$count = $this->count();
+			if (($index >= 0) && ($index < $count)) {
+				array_splice($this->elements, $index, 0, array($value));
+				return true;
 			}
-			throw new Throwable\InvalidArgument\Exception('Unable to insert value. ":type" is of the wrong data type.', array(':type' => Core\DataType::info($index)->type, ':value' => $value));
+			else if ($index == $count) {
+				$this->addValue($value);
+				return true;
+			}
+			throw new Throwable\OutOfBounds\Exception('Unable to insert value. Invalid index specified', array(':index' => $index, ':value' => $value));
 		}
 
 		/**
@@ -220,7 +217,7 @@ namespace Unicity\ORM\JSON\Model {
 		 * @access public
 		 * @return boolean                                          whether this model is case sensitive
 		 */
-		public function isCaseSensitive() {
+		public function isCaseSensitive() : bool {
 			return $this->case_sensitive;
 		}
 

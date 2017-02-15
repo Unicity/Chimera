@@ -69,7 +69,7 @@ namespace Unicity\Common\Mutable {
 		 * @throws Throwable\OutOfBounds\Exception                  indicates that no value exists at the
 		 *                                                          specified index
 		 */
-		public function insertValue($index, $value);
+		public function insertValue(int $index, $value) : bool;
 
 		/**
 		 * This method removes the element as the specified index.

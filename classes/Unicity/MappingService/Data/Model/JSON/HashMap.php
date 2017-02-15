@@ -168,7 +168,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 * @access public
 		 * @return boolean                                          whether this model is case sensitive
 		 */
-		public function isCaseSensitive() {
+		public function isCaseSensitive() : bool {
 			return $this->case_sensitive;
 		}
 

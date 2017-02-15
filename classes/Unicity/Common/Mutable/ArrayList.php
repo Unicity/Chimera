@@ -96,10 +96,7 @@ namespace Unicity\Common\Mutable {
 		 *
 		 * @see http://www.justin-cook.com/wp/2006/08/02/php-insert-into-an-array-at-a-specific-position/
 		 */
-		public function insertValue($index, $value) {
-			if (!is_integer($index)) {
-				throw new Throwable\InvalidArgument\Exception('Unable to insert value. :type is of the wrong data type.', array(':type' => Core\DataType::info($index)->type, ':value' => $value));
-			}
+		public function insertValue(int $index, $value) : bool {
 			$count = $this->count();
 			if ($index > $count) {
 				throw new Throwable\OutOfBounds\Exception('Unable to insert value. Invalid index specified', array(':index' => $index, ':value' => $value));
