@@ -47,7 +47,7 @@ namespace Unicity\Lexer\Scanner {
 		 * This variable stores the type associated with the token.
 		 *
 		 * @access protected
-		 * @var \Unicity\Lexer\Scanner\ITokenRule
+		 * @var \Unicity\Lexer\Scanner\TokenType
 		 */
 		protected $type;
 

@@ -49,7 +49,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		* @access public
 		* @param string $terminal                                   the terminal character
 		*/
-		public function __construct($terminal) {
+		public function __construct(string $terminal) {
 			$this->terminal = $terminal;
 		}
 

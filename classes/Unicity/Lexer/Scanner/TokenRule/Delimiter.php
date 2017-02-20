@@ -49,7 +49,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		* @access public
 		* @param string $delimiter                                  the delimiter character
 		*/
-		public function __construct($delimiter) {
+		public function __construct(string $delimiter) {
 			$this->delimiter = $delimiter;
 		}
 
