@@ -32,7 +32,7 @@ namespace Unicity\VS\Parser\Task {
 			$value = VS\Parser\Context::instance()->current()->getComponentAtPath($path);
 
 			$expectedType = $this->expectedType($schema);
-			$actualType = $this->actualType($schema, $value);
+			$actualType = $this->actualType($path, $schema, $value);
 			if ($expectedType !== $actualType) {
 				$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($path));
 			}
@@ -64,7 +64,7 @@ namespace Unicity\VS\Parser\Task {
 		 * @param mixed $value                                      the value to evaluated
 		 * @return string                                           the data type
 		 */
-		protected function actualType(array $schema, $value) {
+		protected function actualType(string $path, array $schema, $value) {
 			$actualType = gettype($value);
 			$expectedType = $this->expectedType($schema);
 
@@ -90,22 +90,22 @@ namespace Unicity\VS\Parser\Task {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				// TODO report "Set" message
+				$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				// TODO report "Set" message
+				$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					// TODO report "Set" message
+					$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					// TODO report "Set" message
+					$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
 					return $expectedType;
 				}
 			}
@@ -135,15 +135,15 @@ namespace Unicity\VS\Parser\Task {
 		 * This method logs the issue.
 		 *
 		 * @access protected
-		 * @param string $type                                      the type of rule
+		 * @param string $rule                                      the type of rule
 		 * @param string $message                                   the message describing the issue
 		 * @param array $paths                                      the paths associated with the issue
 		 */
-		protected function log(string $type, string $message, array $paths) {
+		protected function log(string $rule, string $message, array $paths) {
 			Log\Manager::instance()->add(Log\Level::informational(), json_encode([
-				'type' => $type,
-				'paths' => $paths,
+				'rule' => $rule,
 				'message' => $message,
+				'paths' => $paths,
 			]));
 		}
 
@@ -187,7 +187,7 @@ namespace Unicity\VS\Parser\Task {
 				$ipath = ORM\Query::appendIndex($path, $i);
 
 				$expectedType = $this->expectedType($schema);
-				$actualType = $this->actualType($schema, $v);
+				$actualType = $this->actualType($ipath, $schema, $v);
 
 				if ($expectedType !== $actualType) {
 					$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($ipath));
@@ -239,7 +239,7 @@ namespace Unicity\VS\Parser\Task {
 					$kpath = ORM\Query::appendKey($path, $k);
 
 					$expectedType = $this->expectedType($schema);
-					$actualType = $this->actualType($schema, $v);
+					$actualType = $this->actualType($kpath, $schema, $v);
 
 					if ($expectedType !== $actualType) {
 						$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($kpath));
