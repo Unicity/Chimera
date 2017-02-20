@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS {
+namespace Unicity\VS\Parser {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
@@ -43,9 +43,9 @@ namespace Unicity\VS {
 
 		protected static $singleton = null;
 
-		public static function instance() : VS\Context {
+		public static function instance() : VS\Parser\Context {
 			if (static::$singleton === null) {
-				static::$singleton = new VS\Context();
+				static::$singleton = new VS\Parser\Context();
 			}
 			return static::$singleton;
 		}
