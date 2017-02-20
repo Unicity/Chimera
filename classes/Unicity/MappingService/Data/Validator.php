@@ -43,36 +43,14 @@ namespace Unicity\MappingService\Data {
 		}
 
 		/**
-		 * This method performs any pre-processing of the data.
-		 *
-		 * @access protected
-		 * @param Common\HashMap $data                              the data to be processed
-		 * @return Common\HashMap                                   the processed data
-		 */
-		protected function before(Common\HashMap $data) {
-			return $data;
-		}
-
-		/**
 		 * This method performs any processing of the data.
 		 *
 		 * @access protected
 		 * @abstract
 		 * @param Common\HashMap $data                              the data to be processed
-		 * @return Common\HashMap                                   the processed data
+		 * @return Common\ArrayList                                 the processed data
 		 */
 		protected abstract function process(Common\HashMap $data);
-
-		/**
-		 * This method performs any post-processing of the data.
-		 *
-		 * @access protected
-		 * @param Common\HashMap $data                              the data to be processed
-		 * @return Common\HashMap                                   the processed data
-		 */
-		protected function after(Common\HashMap $data) {
-			return $data;
-		}
 
 		/**
 		 * This method executes the lookup.
@@ -81,14 +59,11 @@ namespace Unicity\MappingService\Data {
 		 * @static
 		 * @final
 		 * @param Common\HashMap $data                              the data to be processed
-		 * @return Common\HashMap                                   the processed data
+		 * @return Common\ArrayList                                 the processed data
 		 */
-		public static final function execute(Common\HashMap $data) {
+		public static final function execute(Common\HashMap $data) : Common\ArrayList {
 			$object = new static();
-			$data = $object->before($data);
-			$data = $object->process($data);
-			$data = $object->after($data);
-			return $data;
+			return $object->process($data);
 		}
 
 	}

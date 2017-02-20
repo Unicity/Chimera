@@ -22,7 +22,6 @@ namespace Unicity\VS\Parser\Task {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\Log;
 	use \Unicity\ORM;
 	use \Unicity\VS;
 
@@ -140,11 +139,11 @@ namespace Unicity\VS\Parser\Task {
 		 * @param array $paths                                      the paths associated with the issue
 		 */
 		protected function log(string $rule, string $message, array $paths) {
-			Log\Manager::instance()->add(Log\Level::informational(), json_encode([
+			VS\Parser\Context::instance()->results()->addValue([
 				'rule' => $rule,
 				'message' => $message,
 				'paths' => $paths,
-			]));
+			]);
 		}
 
 		/**
