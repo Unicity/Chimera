@@ -1,0 +1,32 @@
+{
+	"items": [
+		{
+			"properties": {
+				"rule": {
+					"enum": [
+						"Conflict",
+						"Malformed",
+						"Mismatch",
+						"Missing",
+						"Remove",
+						"Set"
+					],
+					"type": "string"
+				},
+				"message": {
+					"type": "string"
+				},
+				"paths": {
+					"items": [
+						{
+							"type": "string"
+						}
+					],
+					"type": "array"
+				}
+			},
+			"type": "object"
+		}
+	],
+	"type": "array"
+}

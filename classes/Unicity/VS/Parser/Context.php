@@ -23,13 +23,17 @@ namespace Unicity\VS\Parser {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
+	use \Unicity\ORM;
 	use \Unicity\VS;
 
 	class Context extends Core\Object {
 
+		protected $results;
+
 		protected $stack;
 
 		public function __construct(BT\Entity $entity) {
+			$this->results = new ORM\JSON\Model\ArrayList('\Unicity\MappingService\Impl\Validation\API\Master\Model\Results');
 			$this->stack = new Common\Mutable\Stack();
 			$this->stack->push($entity);
 		}
@@ -51,6 +55,10 @@ namespace Unicity\VS\Parser {
 				'components' => $this->current()->getComponentAtPath($path),
 				'entity_id' => $this->stack->count(),
 			]));
+		}
+
+		public function results() {
+			return $this->results;
 		}
 
 		public function root() : BT\Entity {
