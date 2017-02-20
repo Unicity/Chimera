@@ -278,10 +278,10 @@ namespace Unicity\VS {
 
 		protected function SyntaxError(?Lexer\Scanner\Tuple $tuple) : void {
 			if (is_null($tuple)) {
-				throw new Throwable\Parse\Exception('Syntax error. Missing token.');
+				throw new Throwable\Parse\Exception('Syntax error. Statement is incomplete.');
 			}
 			else {
-				throw new Throwable\Parse\Exception('Syntax error. Unexpected token ":token" of type ":type" encountered.', array(':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
+				throw new Throwable\Parse\Exception('Syntax error. Unexpected token \':token\' of type \':type\' encountered.', array(':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
 			}
 		}
 
