@@ -59,9 +59,9 @@ namespace Unicity\VS\Parser {
 
 		protected static $singleton = null;
 
-		public static function instance() : VS\Parser\Context {
+		public static function instance(BT\Entity $entity = null) : VS\Parser\Context {
 			if (static::$singleton === null) {
-				static::$singleton = new VS\Parser\Context();
+				static::$singleton = new VS\Parser\Context($entity);
 			}
 			return static::$singleton;
 		}

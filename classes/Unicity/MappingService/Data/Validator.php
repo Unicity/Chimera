@@ -24,14 +24,14 @@ namespace Unicity\MappingService\Data {
 	use \Unicity\Core;
 
 	/**
-	 * This class represents a lookup action.
+	 * This class represents a validation action.
 	 *
 	 * @abstract
 	 * @access public
 	 * @class
 	 * @package MappingService
 	 */
-	abstract class Lookup extends Core\Object {
+	abstract class Validator extends Core\Object {
 
 		/**
 		 * This constructor initializes the class.
