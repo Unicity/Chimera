@@ -34,6 +34,32 @@ namespace Unicity\ORM {
 	class Query extends Core\Object {
 
 		/**
+		 * This method returns the JSONPath for the given index.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $path                                      the current path
+		 * @param integer $index                                    the index to be affixed
+		 * @return string                                           the new path
+		 */
+		public static function appendIndex(string $path, int $index) {
+			return trim($path . '.' . sprintf('%d', $index), '.');
+		}
+
+		/**
+		 * This method returns the JSONPath for the given key.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $path                                      the current path
+		 * @param string $key                                       the key to be affixed
+		 * @return string                                           the new path
+		 */
+		public static function appendKey(string $path, $key) {
+			return trim($path . '.' . $key, '.');
+		}
+
+		/**
 		 * This method performs a breath first search (BFS) on the collection to determine
 		 * the path to the specified needle.  Note that this method will return the first
 		 * path that matches the needle.
