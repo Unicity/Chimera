@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
@@ -31,15 +31,9 @@ namespace Unicity\VS\Automaton {
 			$this->scanner = new Lexer\Scanner($reader);
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
+			$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Variable());
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword(
-				'def', 'run', 'eval', // instructions
-				'false', 'true', // booleans
-				'null'
-			));
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Number());
 
@@ -53,40 +47,32 @@ namespace Unicity\VS\Automaton {
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
 
+			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Variable());
+			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
+				'def', 'eval', 'run', // instructions
+				'false', 'true', // booleans
+				'null',
+			]));
+
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Unknown());
 
 			$this->scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
 		}
 
 		public function start() : void {
-			while ($this->scanner->next()) {
+			$this->scanner->next();
+			while (true) {
 				$tuple = $this->scanner->current();
-				$token = (string) $tuple->token;
-				$type = (string) $tuple->type;
-				switch ($type) {
-					case 'KEYWORD':
-						switch ($token) {
-							case 'def':
-								$this->DefStatement()->accept0();
-								break;
-							case 'run':
-								$this->RunStatement()->accept0();
-								break;
-							default:
-								$this->SyntaxError($tuple);
-								break;
-						}
-						break;
-					default:
-						$this->SyntaxError($tuple);
-						break;
+				if (is_null($tuple)) {
+					break;
 				}
+				$this->Statement()->accept0();
 			}
 		}
 
-		protected function ArrayTerm() : VS\Automaton\ArrayTerm {
+		protected function ArrayTerm() : VS\Parser\ArrayTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsSymbol($tuple, '[')) {
+			if (!$this->IsArrayTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$terms = array();
@@ -102,10 +88,20 @@ namespace Unicity\VS\Automaton {
 				$this->Symbol(',');
 				$terms[] = $this->Term();
 			}
-			return new VS\Automaton\ArrayTerm($terms);
+			return new VS\Parser\ArrayTerm($terms);
 		}
 
-		protected function DefStatement() : VS\Automaton\DefStatement {
+		protected function BooleanTerm() : VS\Parser\BooleanTerm {
+			$tuple = $this->scanner->current();
+			if (!$this->IsBooleanTerm($tuple)) {
+				$this->SyntaxError($tuple);
+			}
+			$term = new VS\Parser\BooleanTerm((string) $tuple->token);
+			$this->scanner->next();
+			return $term;
+		}
+
+		protected function DefStatement() : VS\Parser\DefStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol('(');
@@ -114,35 +110,47 @@ namespace Unicity\VS\Automaton {
 			$args[] = $this->Term();
 			$this->Symbol(')');
 			$this->Terminal();
-			return new VS\Automaton\DefStatement($args);
+			return new VS\Parser\DefStatement($args);
 		}
 
-		protected function FalseTerm() : VS\Automaton\FalseTerm {
-			$tuple = $this->scanner->current();
-			if (!$this->IsFalseTerm($tuple)) {
-				$this->SyntaxError($tuple);
-			}
-			$term = new VS\Automaton\FalseTerm();
+		protected function EvalStatement() : VS\Parser\EvalStatement {
 			$this->scanner->next();
-			return $term;
+			$args = array();
+			$this->Symbol('(');
+			$args[] = $this->TermOption('StringTerm', 'VariableTerm');
+			$this->Symbol(',');
+			$args[] = $this->Term();
+			$this->Symbol(',');
+			$args[] = $this->Term();
+			$this->Symbol(')');
+			$this->Terminal();
+			return new VS\Parser\EvalStatement($args);
 		}
 
-		protected function IntegerTerm() : VS\Automaton\IntegerTerm {
+		protected function IntegerTerm() : VS\Parser\IntegerTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsIntegerTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Automaton\IntegerTerm((string) $tuple->token);
+			$term = new VS\Parser\IntegerTerm((string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function IsFalseTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === 'false'));
+		protected function IsArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->IsSymbol($tuple, '[');
+		}
+
+		protected function IsBooleanTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && in_array((string) $tuple->token, ['false', 'true']));
 		}
 
 		protected function IsIntegerTerm(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:INTEGER'));
+		}
+
+		protected function IsMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->IsSymbol($tuple, '{');
 		}
 
 		protected function IsNullTerm(Lexer\Scanner\Tuple $tuple) : bool {
@@ -151,6 +159,10 @@ namespace Unicity\VS\Automaton {
 
 		protected function IsRealTerm(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:REAL'));
+		}
+
+		protected function IsStatement(Lexer\Scanner\Tuple $tuple, string $identifier) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === $identifier));
 		}
 
 		protected function IsStringTerm(Lexer\Scanner\Tuple $tuple) : bool {
@@ -165,17 +177,13 @@ namespace Unicity\VS\Automaton {
 			return (!is_null($tuple) && ((string) $tuple->type === 'TERMINAL'));
 		}
 
-		protected function IsTrueTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === 'true'));
-		}
-
 		protected function IsVariableTerm(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE'));
 		}
 
-		protected function MapTerm() : VS\Automaton\MapTerm {
+		protected function MapTerm() : VS\Parser\MapTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsSymbol($tuple, '{')) {
+			if (!$this->IsMapTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$entries = array();
@@ -197,31 +205,30 @@ namespace Unicity\VS\Automaton {
 				$val = $this->Term();
 				$entries[] = Common\Tuple::box2($key, $val);
 			}
-			return new VS\Automaton\MapTerm($entries);
+			return new VS\Parser\MapTerm($entries);
 		}
 
-		protected function NullTerm() : VS\Automaton\NullTerm {
+		protected function NullTerm() : VS\Parser\NullTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsNullTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Automaton\NullTerm();
+			$term = new VS\Parser\NullTerm();
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function RealTerm() : VS\Automaton\RealTerm {
+		protected function RealTerm() : VS\Parser\RealTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsRealTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Automaton\RealTerm((string) $tuple->token);
+			$term = new VS\Parser\RealTerm((string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
 
-
-		protected function RunStatement() : VS\Automaton\RunStatement {
+		protected function RunStatement() : VS\Parser\RunStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol('(');
@@ -232,30 +239,44 @@ namespace Unicity\VS\Automaton {
 			$args[] = $this->Term();
 			$this->Symbol(')');
 			$this->Terminal();
-			return new VS\Automaton\RunStatement($args);
+			return new VS\Parser\RunStatement($args);
 		}
 
-		protected function StringTerm() : VS\Automaton\StringTerm {
+		protected function Statement() : VS\Parser\Statement {
+			$tuple = $this->scanner->current();
+			if ($this->IsStatement($tuple, 'def')) {
+				return $this->DefStatement();
+			}
+			if ($this->IsStatement($tuple, 'eval')) {
+				return $this->EvalStatement();
+			}
+			if ($this->IsStatement($tuple, 'run')) {
+				return $this->RunStatement();
+			}
+			$this->SyntaxError($tuple);
+		}
+
+		protected function StringTerm() : VS\Parser\StringTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsStringTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Automaton\StringTerm((string) $tuple->token);
+			$term = new VS\Parser\StringTerm((string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function Symbol(string $symbol) : VS\Automaton\Symbol {
+		protected function Symbol(string $symbol) : VS\Parser\Symbol {
 			$tuple = $this->scanner->current();
 			if (!$this->IsSymbol($tuple, $symbol)) {
 				$this->SyntaxError($tuple);
 			}
-			$symbol = new VS\Automaton\Symbol((string) $tuple->token);
+			$symbol = new VS\Parser\Symbol((string) $tuple->token);
 			$this->scanner->next();
 			return $symbol;
 		}
 
-		protected function SyntaxError(Lexer\Scanner\Tuple $tuple = null) : void {
+		protected function SyntaxError(?Lexer\Scanner\Tuple $tuple) : void {
 			if (is_null($tuple)) {
 				throw new Throwable\Parse\Exception('Syntax error. Missing token.');
 			}
@@ -264,13 +285,19 @@ namespace Unicity\VS\Automaton {
 			}
 		}
 
-		protected function Term() : VS\Automaton\Term {
+		protected function Term() : VS\Parser\Term {
 			$tuple = $this->scanner->current();
-			if ($this->IsFalseTerm($tuple)) {
-				return $this->FalseTerm();
+			if ($this->IsArrayTerm($tuple)) {
+				return $this->ArrayTerm();
+			}
+			if ($this->IsBooleanTerm($tuple)) {
+				return $this->BooleanTerm();
 			}
 			if ($this->IsIntegerTerm($tuple)) {
 				return $this->IntegerTerm();
+			}
+			if ($this->IsMapTerm($tuple)) {
+				return $this->MapTerm();
 			}
 			if ($this->IsNullTerm($tuple)) {
 				return $this->NullTerm();
@@ -281,58 +308,50 @@ namespace Unicity\VS\Automaton {
 			if ($this->IsStringTerm($tuple)) {
 				return $this->StringTerm();
 			}
-			if ($this->IsSymbol($tuple, '[')) {
-				return $this->ArrayTerm();
-			}
-			if ($this->IsSymbol($tuple, '{')) {
-				return $this->MapTerm();
-			}
-			if ($this->IsTrueTerm($tuple)) {
-				return $this->TrueTerm();
-			}
 			if ($this->IsVariableTerm($tuple)) {
 				return $this->VariableTerm();
 			}
 			$this->SyntaxError($tuple);
 		}
 
-		protected function Terminal() : VS\Automaton\Terminal {
+		protected function Terminal() : VS\Parser\Terminal {
 			$tuple = $this->scanner->current();
 			if (!$this->IsTerminal($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$token = (string) $tuple->token;
-			$terminal = new VS\Automaton\Terminal($token);
+			$terminal = new VS\Parser\Terminal($token);
 			$this->scanner->next();
 			return $terminal;
 		}
 
-		protected function TrueTerm() : VS\Automaton\TrueTerm {
+		protected function TermOption(...$terms) : VS\Parser\Term {
 			$tuple = $this->scanner->current();
-			if (!$this->IsTrueTerm($tuple)) {
-				$this->SyntaxError($tuple);
+			foreach ($terms as $term) {
+				$IsA = 'Is' . $term;
+				if ($this->{$IsA}($tuple)) {
+					return $this->{$term}();
+				}
 			}
-			$term = new VS\Automaton\TrueTerm();
-			$this->scanner->next();
-			return $term;
+			$this->SyntaxError($tuple);
 		}
 
-		protected function VariableKey() : VS\Automaton\VariableKey {
+		protected function VariableKey() : VS\Parser\VariableKey {
 			$tuple = $this->scanner->current();
 			if (!$this->IsVariableTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$key = new VS\Automaton\VariableKey((string) $tuple->token);
+			$key = new VS\Parser\VariableKey((string) $tuple->token);
 			$this->scanner->next();
 			return $key;
 		}
 
-		protected function VariableTerm() : VS\Automaton\VariableTerm {
+		protected function VariableTerm() : VS\Parser\VariableTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsVariableTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Automaton\VariableTerm((string) $tuple->token);
+			$term = new VS\Parser\VariableTerm((string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}

@@ -2,16 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
+	use \Unicity\Common;
 	use \Unicity\VS;
 
-	class StringTerm implements VS\Automaton\Term {
+	class Symbol implements Common\ISupplier {
 
 		protected $token;
 
 		public function __construct(string $token) {
-			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
+			$this->token = false;
 		}
 
 		public function get0() {

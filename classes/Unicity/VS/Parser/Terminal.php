@@ -2,14 +2,16 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
-	use \Unicity\VS;
+	use \Unicity\Common;
 
-	class IntegerTerm extends VS\Automaton\RealTerm {
+	class Terminal implements Common\ISupplier {
+
+		protected $token;
 
 		public function __construct(string $token) {
-			$this->token = intval($token);
+			$this->token = $token;
 		}
 
 		public function get0() {

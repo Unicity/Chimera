@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
-	use \Unicity\Common;
+	use \Unicity\VS;
 
-	class Terminal implements Common\ISupplier {
+	class VariableTerm implements VS\Parser\Term {
 
 		protected $token;
 
@@ -15,7 +15,7 @@ namespace Unicity\VS\Automaton {
 		}
 
 		public function get0() {
-			return $this->token;
+			return VS\Parser\SymbolTable::instance()->getValue($this->token);
 		}
 
 	}
