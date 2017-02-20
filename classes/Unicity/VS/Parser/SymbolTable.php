@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
 	use \Unicity\Common;
 	use \Unicity\Core;

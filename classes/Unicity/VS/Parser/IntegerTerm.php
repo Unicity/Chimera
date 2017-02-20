@@ -2,17 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
-	use \Unicity\Common;
 	use \Unicity\VS;
 
-	class Symbol implements Common\ISupplier {
-
-		protected $token;
+	class IntegerTerm extends VS\Parser\RealTerm {
 
 		public function __construct(string $token) {
-			$this->token = false;
+			$this->token = intval($token);
 		}
 
 		public function get0() {

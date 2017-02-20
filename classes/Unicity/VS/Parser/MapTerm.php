@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
 	use \Unicity\Common;
 	use \Unicity\VS;
 
-	class MapTerm implements VS\Automaton\Term {
+	class MapTerm implements VS\Parser\Term {
 
 		protected $entries;
 

@@ -2,16 +2,16 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
 	use \Unicity\VS;
 
-	class TrueTerm implements VS\Automaton\Term {
+	class NullTerm implements VS\Parser\Term {
 
 		protected $token;
 
 		public function __construct() {
-			$this->token = true;
+			$this->token = null;
 		}
 
 		public function get0() {

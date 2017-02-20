@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
 	use \Unicity\VS;
 
-	class ArrayTerm implements VS\Automaton\Term {
+	class ArrayTerm implements VS\Parser\Term {
 
 		protected $terms;
 
@@ -15,7 +15,7 @@ namespace Unicity\VS\Automaton {
 		}
 
 		public function get0() {
-			return array_map(function(VS\Automaton\Term $term) {
+			return array_map(function(VS\Parser\Term $term) {
 				return $term->get0();
 			}, $this->terms);
 		}

@@ -2,16 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Automaton {
+namespace Unicity\VS\Parser {
 
-	use \Unicity\Common;
+	use Unicity\Core;
+	use \Unicity\VS;
 
-	class VariableKey implements Common\ISupplier {
+	class BooleanTerm implements VS\Parser\Term {
 
 		protected $token;
 
 		public function __construct(string $token) {
-			$this->token = $token;
+			$this->token = ($token === 'true');
 		}
 
 		public function get0() {
