@@ -251,7 +251,7 @@ namespace Unicity\BT {
 		 * @access public
 		 * @param string $taskId                                    the task id to be set
 		 */
-		public function setTaskId(string $taskId = null) : void {
+		public function setTaskId(?string $taskId) : void {
 			$this->taskId = $taskId;
 		}
 

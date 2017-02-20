@@ -22,22 +22,37 @@ namespace Unicity\VS\Parser\Task {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
-	use Unicity\VS;
+	use \Unicity\Log;
+	use \Unicity\ORM;
+	use \Unicity\VS;
 
 	class HasSchema implements VS\Parser\Task {
 
 		public function test2($path, $schema) : bool {
 			$value = VS\Parser\Context::instance()->current()->getComponentAtPath($path);
 
-			if (isset($schema['type'])) {
-				$expectedType = $this->expectedType($schema);
-				$acutualType = $this->actualType($schema, $value);
-				if ($expectedType !== $acutualType) {
-					$this->send(Rule::MALFORMED, $this->message($expectedType), $path);
-					var_dump($expectedType, $acutualType);
+			$expectedType = $this->expectedType($schema);
+			$actualType = $this->actualType($schema, $value);
+			if ($expectedType !== $actualType) {
+				$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($path));
+			}
+			else {
+				switch ($expectedType) {
+					case 'array':
+						$this->matchArray($path, $schema, $value);
+						break;
+					case 'integer':
+					case 'number':
+						$this->matchNumber($path, $schema, $value);
+						break;
+					case 'object':
+						$this->matchMap($path, $schema, $value);
+						break;
+					case 'string':
+						$this->matchString($path, $schema, $value);
+						break;
 				}
 			}
-
 			return true;
 		}
 
@@ -49,7 +64,7 @@ namespace Unicity\VS\Parser\Task {
 		 * @param mixed $value                                      the value to evaluated
 		 * @return string                                           the data type
 		 */
-		protected function actualType($schema, $value) {
+		protected function actualType(array $schema, $value) {
 			$actualType = gettype($value);
 			$expectedType = $this->expectedType($schema);
 
@@ -111,22 +126,263 @@ namespace Unicity\VS\Parser\Task {
 		 * @param array $schema                                     the schema information
 		 * @return string                                           the data type
 		 */
-		protected function expectedType($schema) {
-			return strtolower($schema['type']);
+		protected function expectedType(array $schema) : string {
+			$type = $schema['type'] ?? 'object';
+			return strtolower($type);
 		}
 
 		/**
-		 * This method returns the log message.
+		 * This method logs the issue.
 		 *
 		 * @access protected
-		 * @param string $type                                      the data type
-		 * @return string                                           the log message
+		 * @param string $type                                      the type of rule
+		 * @param string $message                                   the message describing the issue
+		 * @param array $paths                                      the paths associated with the issue
 		 */
-		protected function message(string $type) {
-			if (in_array($type[0], array('a', 'e', 'i', 'o', 'u'))) {
-				return "Field requires an '{$type}'.";
+		protected function log(string $type, string $message, array $paths) {
+			Log\Manager::instance()->add(Log\Level::informational(), json_encode([
+				'type' => $type,
+				'paths' => $paths,
+				'message' => $message,
+			]));
+		}
+
+		/**
+		 * This method returns whether the value complies with its field's constraints.
+		 *
+		 * @access protected
+		 * @param string $path                                      the current path
+		 * @param array $schema                                     the schema information
+		 * @param mixed $value                                      the value to be evaluated
+		 * @return boolean                                          whether the value complies
+		 */
+		protected function matchArray(string $path, array $schema, $value) {
+			if (isset($schema['minItems'])) {
+				$size = $value->count();
+				if ($size < $schema['minItems']) {
+					$minItems = $schema['minItems'];
+					$this->log(VS\Parser\Rule::MISMATCH, "Field must have a minimum size of '{$minItems}'.", array($path));
+					return false;
+				}
 			}
-			return "Field requires a '{$type}'.";
+
+			if (isset($schema['maxItems'])) {
+				$size = $value->count();
+				if ($size > $schema['maxItems']) {
+					$maxItems = $schema['maxItems'];
+					$this->log(VS\Parser\Rule::MISMATCH, "Field must have a maximum size of '{$maxItems}'.", array($path));
+					return false;
+				}
+			}
+
+			$schema = $schema['items'][0] ?? array();
+			if (isset($schema['$ref'])) {
+				$schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
+			}
+
+			return $this->reduce($value, function(bool $carry, array $tuple) use($schema, $path) {
+				$i = $tuple[1];
+				$v = $tuple[0];
+
+				$ipath = ORM\Query::appendIndex($path, $i);
+
+				$expectedType = $this->expectedType($schema);
+				$actualType = $this->actualType($schema, $v);
+
+				if ($expectedType !== $actualType) {
+					$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($ipath));
+				}
+				else {
+					switch ($expectedType) {
+						case 'array':
+							return $this->matchArray($ipath, $schema, $v) && $carry;
+						case 'integer':
+						case 'number':
+							return $this->matchNumber($ipath, $schema, $v) && $carry;
+						case 'object':
+							return $this->matchMap($ipath, $schema, $v) && $carry;
+						case 'string':
+							return $this->matchString($ipath, $schema, $v) && $carry;
+					}
+				}
+
+				return $carry;
+			}, true);
+		}
+
+		/**
+		 * This method returns whether the value complies with its field's constraints.
+		 *
+		 * @access protected
+		 * @param string $path                                      the current path
+		 * @param array $schema                                     the schema information
+		 * @param mixed $value                                      the value to be evaluated
+		 * @return boolean                                          whether the value complies
+		 */
+		protected function matchMap(string $path, array $schema, $value) {
+			if (isset($schema['properties']) && !$value->isEmpty()) {
+				$properties = $schema['properties'];
+
+				return $this->reduce($properties, function (bool $carry, array $tuple) use ($value, $path) {
+					$k = $tuple[1];
+					$v = $value->getValue($k);
+
+					if (Core\Data\ToolKit::isUnset($v)) {
+						return $carry;
+					}
+
+					$schema = $tuple[0];
+					if (isset($schema['$ref'])) {
+						$schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
+					}
+
+					$kpath = ORM\Query::appendKey($path, $k);
+
+					$expectedType = $this->expectedType($schema);
+					$actualType = $this->actualType($schema, $v);
+
+					if ($expectedType !== $actualType) {
+						$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($kpath));
+					}
+					else {
+						switch ($expectedType) {
+							case 'array':
+								return $this->matchArray($kpath, $schema, $v) && $carry;
+							case 'integer':
+							case 'number':
+								return $this->matchNumber($kpath, $schema, $v) && $carry;
+							case 'object':
+								return $this->matchMap($kpath, $schema, $v) && $carry;
+							case 'string':
+								return $this->matchString($kpath, $schema, $v) && $carry;
+						}
+					}
+
+					return $carry;
+				}, true);
+			}
+			return true;
+		}
+
+		/**
+		 * This method returns whether the value complies with its field's constraints.
+		 *
+		 * @access protected
+		 * @param string $path                                      the current path
+		 * @param array $schema                                     the schema information
+		 * @param mixed $value                                      the value to be evaluated
+		 * @return boolean                                          whether the value complies
+		 */
+		protected function matchNumber(string $path, array $schema, $value) {
+			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
+				if (!in_array($value, $schema['enum'])) {
+					$this->log(VS\Parser\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['exclusiveMinimum']) && $schema['exclusiveMinimum']) {
+				$minimum = $schema['minimum'] ?? 0;
+				if ($value <= $minimum) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field has an exclusive minimum value of '{$minimum}'.", array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['minimum'])) {
+				$minimum = $schema['minimum'];
+				if ($value < $minimum) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field has a minimum value of '{$minimum}'.", array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['exclusiveMaximum']) && $schema['exclusiveMaximum']) {
+				$maximum = $schema['maximum'] ?? PHP_INT_MAX;
+				if ($value >= $maximum) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field has an exclusive maximum value of '{$maximum}'.", array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['maximum'])) {
+				$maximum = $schema['maximum'];
+				if ($value > $maximum) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field has a maximum value of '{$maximum}'.", array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['divisibleBy'])) {
+				$divisibleBy = $schema['divisibleBy'];
+				if (fmod($value, $divisibleBy) == 0.0) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field must be divisible by '{$divisibleBy}'.", array($path));
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * This method returns whether the value complies with its field's constraints.
+		 *
+		 * @access protected
+		 * @param string $path                                      the current path
+		 * @param array $schema                                     the schema information
+		 * @param mixed $value                                      the value to be evaluated
+		 * @return boolean                                          whether the value complies
+		 */
+		protected function matchString(string $path, array $schema, $value) : bool {
+			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
+				if (!in_array($value, $schema['enum'])) {
+					$this->log(VS\Parser\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['pattern'])) {
+				$pattern = $schema['pattern'];
+				if (!preg_match($pattern, $value)) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field must match pattern '{$pattern}'.", array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['minLength'])) {
+				$minLength = $schema['minLength'];
+				if (strlen($value) < $minLength) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field has a minimum length of '{$minLength}'.", array($path));
+					return false;
+				}
+			}
+
+			if (isset($schema['maxLength'])) {
+				$maxLength = $schema['maxLength'];
+				if (strlen($value) > $maxLength) {
+					$this->log(VS\Parser\Rule::MISMATCH, "Field has a maximum length of '{$maxLength}'.", array($path));
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * This method performs a reduction on the given collection.
+		 *
+		 * @access protected
+		 * @param mixed $collection                                 the collection to be reduced
+		 * @param callable $callback                                the callback
+		 * @param mixed $initial                                    the initial value
+		 * @return mixed                                            the reduced value
+		 */
+		protected function reduce($collection, $callback, $initial) {
+			$c = $initial;
+			foreach ($collection as $k => $v) {
+				$c = $callback($c, array($v, $k));
+			}
+			return $c;
 		}
 
 	}
