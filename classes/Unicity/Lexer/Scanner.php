@@ -45,6 +45,14 @@ namespace Unicity\Lexer {
 		protected $current;
 
 		/**
+		 * This variable stores a list of token types to be ignored.
+		 *
+		 * @access protected
+		 * @var \Unicity\Common\Mutable\HashSet
+		 */
+		protected $ignorables;
+
+		/**
 		 * This variable stores the string reader being used for tokenization.
 		 *
 		 * @access protected
@@ -69,6 +77,7 @@ namespace Unicity\Lexer {
 		 */
 		public function __construct(IO\Reader $reader) {
 			$this->current = null;
+			$this->ignorables = new Common\Mutable\HashSet();
 			$this->reader = $reader;
 			$this->rules = new Common\Mutable\ArrayList();
 		}
@@ -84,6 +93,16 @@ namespace Unicity\Lexer {
 			unset($this->current);
 			unset($this->reader);
 			unset($this->rules);
+		}
+
+		/**
+		 * This method adds an ignorable.
+		 *
+		 * @access protected
+		 * @param Scanner\TokenType $type                           the token type to be ignored
+		 */
+		public function addIgnorable(Lexer\Scanner\TokenType $type) {
+			$this->ignorables->putValue($type);
 		}
 
 		/**
@@ -139,7 +158,7 @@ namespace Unicity\Lexer {
 			if ($this->reader->isReady()) {
 				foreach ($this->rules as $rule) {
 					$tuple = $rule->process($this->reader);
-					if ($tuple !== null) {
+					if (($tuple !== null) && !$this->ignorables->hasValue($tuple->type)) {
 						$this->current = $tuple;
 						return true;
 					}

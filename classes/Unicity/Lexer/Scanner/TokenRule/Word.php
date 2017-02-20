@@ -52,7 +52,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 */
 		public function __construct(array $blacklist = null) {
 			$this->blacklist = new Common\Mutable\HashSet();
-			$this->blacklist->putValues(array(' ', "\t", "\n", "\r", "\0", "\x0B", "\x0C", '')); // http://php.net/manual/en/regexp.reference.escape.php
+			$this->blacklist->putValues([' ', "\t", "\n", "\r", "\0", "\x0B", "\x0C", '']); // http://php.net/manual/en/regexp.reference.escape.php
 			if ($blacklist !== null) {
 				$this->blacklist->putValues($blacklist);
 			}

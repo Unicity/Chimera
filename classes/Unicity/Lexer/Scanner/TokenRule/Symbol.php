@@ -49,7 +49,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		* @access public
 		* @param string $symbol                                     the symbol character
 		*/
-		public function __construct($symbol) {
+		public function __construct(string $symbol) {
 			$this->symbol = $symbol;
 		}
 

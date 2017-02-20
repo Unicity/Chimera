@@ -27,32 +27,30 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	use \Unicity\Lexer;
 
 	/**
-	 * This class represents the rule definition for a "literal" token, which the tokenizer will use
+	 * This class represents the rule definition for an "EOL comment" token, which the tokenizer will use
 	 * to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package Lexer
 	 */
-	class Literal extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class EOLComment extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
-		 * This variable stores the quotation mark that signals the beginning and end of the token.
+		 * This variable stores the end-of-line characters.
 		 *
 		 * @access protected
-		 * @var string
+		 * @var array
 		 */
-		protected $quotation;
+		protected $eol;
 
 		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
-		 * @param string $quotation                                 the quotation mark that will signal
-		 *                                                          the beginning and end of the token
 		 */
-		public function __construct(string $quotation) {
-			$this->quotation = $quotation;
+		public function __construct() {
+			$this->eol = array("\n", "\r", "\x0C", '', null); // http://php.net/manual/en/regexp.reference.escape.php
 		}
 
 		/**
@@ -62,7 +60,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->quotation);
+			unset($this->eol);
 		}
 
 		/**
@@ -76,22 +74,27 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if ($char == $this->quotation) {
+			if ($char === '#') {
 				$lookahead = $index + 1;
-				$length = $reader->length() - 1;
-				while ($lookahead <= $length) {
-					if ($reader->readChar($lookahead, false) == $this->quotation) {
-						if (($lookahead == $length) || ($reader->readChar($lookahead + 1, false) != $this->quotation)) {
-							$lookahead++;
-							break;
-						}
-						$lookahead++;
-					}
+				while (!in_array($reader->readChar($lookahead, false), $this->eol)) {
 					$lookahead++;
 				}
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::literal(), new Common\StringRef($token));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token));
 				return $tuple;
+			}
+			if ($char === '-') { // "whitespace" token (i.e. SQL-style comment) or "operator" token
+				$lookahead = $index + 1;
+				$char = $reader->readChar($lookahead, false);
+				if ($char === '-') {
+					do {
+						$lookahead++;
+					}
+					while (!in_array($reader->readChar($lookahead, false), $this->eol));
+					$token = $reader->readRange($index, $lookahead);
+					$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token));
+					return $tuple;
+				}
 			}
 			return null;
 		}

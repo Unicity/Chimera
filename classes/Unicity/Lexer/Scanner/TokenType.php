@@ -55,7 +55,6 @@ namespace Unicity\Lexer\Scanner {
 			if (!is_array(static::$__enums)) {
 				static::$__enums = array();
 				static::$__enums[] = new static('delimiter', 'DELIMITER');
-				static::$__enums[] = new static('dot', 'DOT');
 				static::$__enums[] = new static('error', 'ERROR');
 				static::$__enums[] = new static('hexadecimal', 'HEXADECIMAL');
 				static::$__enums[] = new static('identifier', 'IDENTIFIER');
@@ -68,6 +67,7 @@ namespace Unicity\Lexer\Scanner {
 				static::$__enums[] = new static('symbol', 'SYMBOL');
 				static::$__enums[] = new static('terminal', 'TERMINAL');
 				static::$__enums[] = new static('unknown', 'UNKNOWN');
+				static::$__enums[] = new static('variable', 'VARIABLE');
 				static::$__enums[] = new static('whitespace', 'WHITESPACE');
 			}
 			return static::$__enums[$ordinal];
@@ -98,17 +98,6 @@ namespace Unicity\Lexer\Scanner {
 		}
 
 		/**
-		 * This method returns the "dot" token.
-		 *
-		 * @access public
-		 * @static
-		 * @return Lexer\Scanner\TokenType                          the token type
-		 */
-		public static function dot() : Lexer\Scanner\TokenType {
-			return static::__enum(1);
-		}
-
-		/**
 		 * This method returns the "error" token.
 		 *
 		 * @access public
@@ -116,7 +105,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function error() : Lexer\Scanner\TokenType {
-			return static::__enum(2);
+			return static::__enum(1);
 		}
 
 		/**
@@ -127,7 +116,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function hexadecimal() : Lexer\Scanner\TokenType {
-			return static::__enum(3);
+			return static::__enum(2);
 		}
 
 		/**
@@ -138,7 +127,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function identifier() : Lexer\Scanner\TokenType {
-			return static::__enum(4);
+			return static::__enum(3);
 		}
 
 		/**
@@ -149,7 +138,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function integer() : Lexer\Scanner\TokenType {
-			return static::__enum(5);
+			return static::__enum(4);
 		}
 
 		/**
@@ -160,7 +149,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function keyword() : Lexer\Scanner\TokenType {
-			return static::__enum(6);
+			return static::__enum(5);
 		}
 
 		/**
@@ -171,7 +160,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function literal() : Lexer\Scanner\TokenType {
-			return static::__enum(7);
+			return static::__enum(6);
 		}
 
 		/**
@@ -182,7 +171,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function operator() : Lexer\Scanner\TokenType {
-			return static::__enum(8);
+			return static::__enum(7);
 		}
 
 		/**
@@ -193,7 +182,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function parameter() : Lexer\Scanner\TokenType {
-			return static::__enum(9);
+			return static::__enum(8);
 		}
 
 		/**
@@ -204,7 +193,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function real() : Lexer\Scanner\TokenType {
-			return static::__enum(10);
+			return static::__enum(9);
 		}
 
 		/**
@@ -215,7 +204,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function symbol() : Lexer\Scanner\TokenType {
-			return static::__enum(11);
+			return static::__enum(10);
 		}
 
 		/**
@@ -226,7 +215,7 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function terminal() : Lexer\Scanner\TokenType {
-			return static::__enum(12);
+			return static::__enum(11);
 		}
 
 		/**
@@ -237,6 +226,17 @@ namespace Unicity\Lexer\Scanner {
 		 * @return Lexer\Scanner\TokenType                          the token type
 		 */
 		public static function unknown() : Lexer\Scanner\TokenType {
+			return static::__enum(12);
+		}
+
+		/**
+		 * This method returns the "variable" token.
+		 *
+		 * @access public
+		 * @static
+		 * @return Lexer\Scanner\TokenType                          the token type
+		 */
+		public static function variable() : Lexer\Scanner\TokenType {
 			return static::__enum(13);
 		}
 

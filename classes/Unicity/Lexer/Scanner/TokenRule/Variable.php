@@ -27,43 +27,14 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	use \Unicity\Lexer;
 
 	/**
-	 * This class represents the rule definition for a "literal" token, which the tokenizer will use
+	 * This class represents the rule definition for a "variable" token, which the tokenizer will use
 	 * to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package Lexer
 	 */
-	class Literal extends Core\Object implements Lexer\Scanner\ITokenRule {
-
-		/**
-		 * This variable stores the quotation mark that signals the beginning and end of the token.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $quotation;
-
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 * @param string $quotation                                 the quotation mark that will signal
-		 *                                                          the beginning and end of the token
-		 */
-		public function __construct(string $quotation) {
-			$this->quotation = $quotation;
-		}
-
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->quotation);
-		}
+	class Variable extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.
@@ -76,21 +47,15 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if ($char == $this->quotation) {
-				$lookahead = $index + 1;
-				$length = $reader->length() - 1;
-				while ($lookahead <= $length) {
-					if ($reader->readChar($lookahead, false) == $this->quotation) {
-						if (($lookahead == $length) || ($reader->readChar($lookahead + 1, false) != $this->quotation)) {
-							$lookahead++;
-							break;
-						}
-						$lookahead++;
-					}
+			if (($char !== null) && preg_match('/^' . preg_quote('$'). '$/', $char)) {
+				$lookahead = $index;
+				do {
 					$lookahead++;
+					$next = $reader->readChar($lookahead, false);
 				}
+				while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::literal(), new Common\StringRef($token));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::variable(), new Common\StringRef($token));
 				return $tuple;
 			}
 			return null;
