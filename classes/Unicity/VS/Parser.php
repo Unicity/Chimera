@@ -84,6 +84,12 @@ namespace Unicity\VS {
 				}
 				$this->Statement()->accept0();
 			}
+			/*
+			while ($this->scanner->next()) {
+				$tuple = $this->scanner->current();
+				var_dump($tuple);
+			}
+			*/
 		}
 
 		protected function ArrayTerm() : VS\Parser\ArrayTerm {
@@ -203,15 +209,15 @@ namespace Unicity\VS {
 				$this->SyntaxError($tuple);
 			}
 			$entries = array();
-			$entries[] = $this->Symbol('{');
-			if (!$this->IsSymbol($tuple, '}')) {
+			$this->Symbol('{');
+			if (!$this->IsSymbol($this->scanner->current(), '}')) {
 				$key = $this->StringTerm();
 				$this->Symbol(':');
 				$val = $this->Term();
 				$entries[] = Common\Tuple::box2($key, $val);
 			}
 			while (true) {
-				if ($this->IsSymbol($tuple, '}')) {
+				if ($this->IsSymbol($this->scanner->current(), '}')) {
 					$this->Symbol('}');
 					break;
 				}
