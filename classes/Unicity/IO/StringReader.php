@@ -202,12 +202,12 @@ namespace Unicity\IO {
 				return $char;
 			}
 			if (!$this->isDone()) {
-				$buffer = substr($this->buffer, $this->position, 1);
+				$char = substr($this->buffer, $this->position, 1);
 				if ($advance) {
 					$this->position++;
 				}
-				if (strlen($buffer) > 0) {
-					return $buffer;
+				if (strlen($char) > 0) {
+					return $char;
 				}
 			}
 			return null;
@@ -296,7 +296,7 @@ namespace Unicity\IO {
 		 * @throws Throwable\InvalidArgument\Exception              indicates an invalid argument specified
 		 * @throws \Exception                                       indicates a rethrown exception
 		 */
-		public static function read($string, $callback, $mode = 'readLine') {
+		public static function read($string, callable $callback, $mode = 'readLine') {
 			if (!in_array($mode, array('readChar', 'readLine', 'readToEnd'))) {
 				throw new Throwable\InvalidArgument\Exception('Invalid argument specified. Expected mode to be either "read", "readLine", or "readToEnd", but got :mode.', array(':mode' => $mode));
 			}
