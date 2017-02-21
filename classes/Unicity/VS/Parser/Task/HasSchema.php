@@ -20,39 +20,48 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Task {
 
+	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\ORM;
 	use \Unicity\VS;
 
-	class HasSchema implements VS\Parser\Task {
+	class HasSchema extends VS\Parser\Task {
 
-		public function test2($path, $schema) : bool {
-			$value = VS\Parser\Context::instance()->current()->getComponentAtPath($path);
+		public function process(BT\Entity $entity, $other) : int {
+			$path = $other;
+
+			$value = $entity->getComponentAtPath($path);
+
+			$schema = $this->policy;
 
 			$expectedType = $this->expectedType($schema);
 			$actualType = $this->actualType($path, $schema, $value);
+
 			if ($expectedType !== $actualType) {
 				$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($path));
+				return BT\Status::FAILED;
 			}
-			else {
-				switch ($expectedType) {
-					case 'array':
-						$this->matchArray($path, $schema, $value);
-						break;
-					case 'integer':
-					case 'number':
-						$this->matchNumber($path, $schema, $value);
-						break;
-					case 'object':
-						$this->matchMap($path, $schema, $value);
-						break;
-					case 'string':
-						$this->matchString($path, $schema, $value);
-						break;
-				}
+
+			$result = true;
+
+			switch ($expectedType) {
+				case 'array':
+					$result = $this->matchArray($path, $schema, $value);
+					break;
+				case 'integer':
+				case 'number':
+					$result = $this->matchNumber($path, $schema, $value);
+					break;
+				case 'object':
+					$result = $this->matchMap($path, $schema, $value);
+					break;
+				case 'string':
+					$result = $this->matchString($path, $schema, $value);
+					break;
 			}
-			return true;
+
+			return ($result) ? BT\Status::SUCCESS : BT\Status::FAILED;
 		}
 
 		/**
@@ -89,22 +98,22 @@ namespace Unicity\VS\Parser\Task {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
+				$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
+				$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
+					$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					$this->log(VS\Parser\Rule::SET, "Field should have a type of '{$expectedType}'.", array($path));
+					$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 					return $expectedType;
 				}
 			}
@@ -139,7 +148,7 @@ namespace Unicity\VS\Parser\Task {
 		 * @param array $paths                                      the paths associated with the issue
 		 */
 		protected function log(string $rule, string $message, array $paths) {
-			VS\Parser\Context::instance()->results()->addValue([
+			$this->output->addValue([
 				'rule' => $rule,
 				'message' => $message,
 				'paths' => $paths,

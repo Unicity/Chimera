@@ -22,6 +22,6 @@ namespace Unicity\VS\Parser {
 
 	use \Unicity\Common;
 
-	interface Statement extends Common\IProcedure { }
+	interface Statement extends Common\ISupplier { }
 
 }

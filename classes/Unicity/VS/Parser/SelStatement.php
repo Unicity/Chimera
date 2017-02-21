@@ -20,22 +20,27 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser {
 
-	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\ORM;
+	use \Unicity\VS;
 
-	abstract class Task extends Core\Object {
+	class SelStatement implements VS\Parser\Statement {
 
-		protected $policy;
+		protected $args;
 
-		protected $output;
-
-		public function __construct($policy, ORM\JSON\Model\ArrayList $output) {
-			$this->policy = $policy;
-			$this->output = $output;
+		public function __construct(array $args) {
+			$this->args = $args;
 		}
 
-		public abstract function process(BT\Entity $entity, $other) : int;
+		public function get0() {
+			$task = $this->args[0]->get0();
+			$policy = (isset($this->args[2])) ? $this->args[2]->get0() : null;
+			$context = VS\Parser\Context::instance();
+			$output = $context->results();
+			$entity = $context->current();
+			$other = $this->args[1]->get0();
+
+			$object = new $task($policy, $output);
+			return call_user_func_array([$object, 'process'], [$entity, $other]);
+		}
 
 	}
 
