@@ -20,26 +20,38 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser {
 
+	use \Unicity\BT;
 	use \Unicity\VS;
 
 	class ParStatement implements VS\Parser\Statement {
 
 		protected $args;
 
-		public function __construct(array $args) {
+		protected $tasks;
+
+		public function __construct(array $args, array $tasks) {
 			$this->args = $args;
+			$this->tasks = $tasks;
 		}
 
 		public function get0() {
-			$task = $this->args[0]->get0();
-			$policy = (isset($this->args[2])) ? $this->args[2]->get0() : null;
 			$context = VS\Parser\Context::instance();
-			$output = $context->results();
-			$entity = $context->current();
-			$other = $this->args[1]->get0();
+			$path = (isset($this->args[0])) ? $this->args[0]->get0() : null;
+			$pushed = $context->push($path);
 
-			$object = new $task($policy, $output);
-			return call_user_func_array([$object, 'process'], [$entity, $other]);
+			$status = BT\Status::SUCCESS;
+			foreach ($this->tasks as $task) {
+				$status = $task->get0();
+				if ($status !== BT\Status::SUCCESS) {
+					break;
+				}
+			}
+
+			if ($pushed) {
+				$context->pop();
+			}
+
+			return $status;
 		}
 
 	}

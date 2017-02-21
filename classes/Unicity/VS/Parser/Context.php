@@ -50,11 +50,15 @@ namespace Unicity\VS\Parser {
 			return false;
 		}
 
-		public function push(string $path) {
-			$this->stack->push($entity = new BT\Entity([
-				'components' => $this->current()->getComponentAtPath($path),
-				'entity_id' => $this->stack->count(),
-			]));
+		public function push(?string $path) : bool {
+			if ($path !== null) {
+				$this->stack->push($entity = new BT\Entity([
+					'components' => $this->current()->getComponentAtPath($path),
+					'entity_id' => $this->stack->count(),
+				]));
+				return true;
+			}
+			return false;
 		}
 
 		public function results() {
