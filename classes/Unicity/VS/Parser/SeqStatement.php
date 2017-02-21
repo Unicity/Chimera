@@ -22,7 +22,7 @@ namespace Unicity\VS\Parser {
 
 	use \Unicity\VS;
 
-	class RunStatement implements VS\Parser\Statement {
+	class SeqStatement implements VS\Parser\Statement {
 
 		protected $args;
 
@@ -30,8 +30,16 @@ namespace Unicity\VS\Parser {
 			$this->args = $args;
 		}
 
-		public function accept0() : void {
-			call_user_func_array($this->args[0]->get0(), [$this->args[1]->get0(), $this->args[2]->get0()]);
+		public function get0() {
+			$task = $this->args[0]->get0();
+			$policy = (isset($this->args[2])) ? $this->args[2]->get0() : null;
+			$context = VS\Parser\Context::instance();
+			$output = $context->results();
+			$entity = $context->current();
+			$other = $this->args[1]->get0();
+
+			$object = new $task($policy, $output);
+			return call_user_func_array([$object, 'process'], [$entity, $other]);
 		}
 
 	}

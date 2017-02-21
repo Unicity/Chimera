@@ -65,7 +65,7 @@ namespace Unicity\VS {
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Variable());
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'def', 'eval', 'run', // instructions
+				'def', 'eval', 'par', 'sel', 'seq', // instructions
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -82,7 +82,7 @@ namespace Unicity\VS {
 				if (is_null($tuple)) {
 					break;
 				}
-				$this->Statement()->accept0();
+				$this->Statement()->get0();
 			}
 			/*
 			while ($this->scanner->next()) {
@@ -240,17 +240,7 @@ namespace Unicity\VS {
 			return $term;
 		}
 
-		protected function RealTerm() : VS\Parser\RealTerm {
-			$tuple = $this->scanner->current();
-			if (!$this->IsRealTerm($tuple)) {
-				$this->SyntaxError($tuple);
-			}
-			$term = new VS\Parser\RealTerm((string) $tuple->token);
-			$this->scanner->next();
-			return $term;
-		}
-
-		protected function RunStatement() : VS\Parser\RunStatement {
+		protected function ParStatement() : VS\Parser\ParStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol('(');
@@ -261,7 +251,45 @@ namespace Unicity\VS {
 			$args[] = $this->Term();
 			$this->Symbol(')');
 			$this->Terminal();
-			return new VS\Parser\RunStatement($args);
+			return new VS\Parser\ParStatement($args);
+		}
+
+		protected function RealTerm() : VS\Parser\RealTerm {
+			$tuple = $this->scanner->current();
+			if (!$this->IsRealTerm($tuple)) {
+				$this->SyntaxError($tuple);
+			}
+			$term = new VS\Parser\RealTerm((string) $tuple->token);
+			$this->scanner->next();
+			return $term;
+		}
+
+		protected function SelStatement() : VS\Parser\SelStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol('(');
+			$args[] = $this->VariableKey();
+			$this->Symbol(',');
+			$args[] = $this->Term();
+			$this->Symbol(',');
+			$args[] = $this->Term();
+			$this->Symbol(')');
+			$this->Terminal();
+			return new VS\Parser\SelStatement($args);
+		}
+
+		protected function SeqStatement() : VS\Parser\SeqStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol('(');
+			$args[] = $this->VariableKey();
+			$this->Symbol(',');
+			$args[] = $this->Term();
+			$this->Symbol(',');
+			$args[] = $this->Term();
+			$this->Symbol(')');
+			$this->Terminal();
+			return new VS\Parser\SeqStatement($args);
 		}
 
 		protected function Statement() : VS\Parser\Statement {
@@ -272,8 +300,14 @@ namespace Unicity\VS {
 			if ($this->IsStatement($tuple, 'eval')) {
 				return $this->EvalStatement();
 			}
-			if ($this->IsStatement($tuple, 'run')) {
-				return $this->RunStatement();
+			if ($this->IsStatement($tuple, 'par')) {
+				return $this->ParStatement();
+			}
+			if ($this->IsStatement($tuple, 'sel')) {
+				return $this->SelStatement();
+			}
+			if ($this->IsStatement($tuple, 'seq')) {
+				return $this->SeqStatement();
 			}
 			$this->SyntaxError($tuple);
 		}
