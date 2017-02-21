@@ -247,8 +247,7 @@ namespace Unicity\VS {
 			$tuple = $this->scanner->current();
 			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
 				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
-				$tuple = $this->scanner->current();
-				if ($this->IsSymbol($tuple, ',')) {
+				if ($this->IsSymbol($this->scanner->current(), ',')) {
 					$this->Symbol(',');
 					$args[] = $this->Term();
 				}
@@ -257,7 +256,7 @@ namespace Unicity\VS {
 			$tasks = array();
 			$this->Symbol('{');
 			while (true) {
-				if ($this->IsSymbol($tuple, '}')) {
+				if ($this->IsSymbol($this->scanner->current(), '}')) {
 					$this->Symbol('}');
 					break;
 				}
@@ -284,8 +283,7 @@ namespace Unicity\VS {
 			$tuple = $this->scanner->current();
 			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
 				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
-				$tuple = $this->scanner->current();
-				if ($this->IsSymbol($tuple, ',')) {
+				if ($this->IsSymbol($this->scanner->current(), ',')) {
 					$this->Symbol(',');
 					$args[] = $this->Term();
 				}
@@ -294,7 +292,7 @@ namespace Unicity\VS {
 			$tasks = array();
 			$this->Symbol('{');
 			while (true) {
-				if ($this->IsSymbol($tuple, '}')) {
+				if ($this->IsSymbol($this->scanner->current(), '}')) {
 					$this->Symbol('}');
 					break;
 				}
@@ -311,8 +309,7 @@ namespace Unicity\VS {
 			$tuple = $this->scanner->current();
 			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
 				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
-				$tuple = $this->scanner->current();
-				if ($this->IsSymbol($tuple, ',')) {
+				if ($this->IsSymbol($this->scanner->current(), ',')) {
 					$this->Symbol(',');
 					$args[] = $this->Term();
 				}
@@ -321,7 +318,7 @@ namespace Unicity\VS {
 			$tasks = array();
 			$this->Symbol('{');
 			while (true) {
-				if ($this->IsSymbol($tuple, '}')) {
+				if ($this->IsSymbol($this->scanner->current(), '}')) {
 					$this->Symbol('}');
 					break;
 				}
