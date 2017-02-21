@@ -244,14 +244,27 @@ namespace Unicity\VS {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol('(');
-			$args[] = $this->VariableKey();
-			$this->Symbol(',');
-			$args[] = $this->Term();
-			$this->Symbol(',');
-			$args[] = $this->Term();
+			$tuple = $this->scanner->current();
+			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
+				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
+				$tuple = $this->scanner->current();
+				if ($this->IsSymbol($tuple, ',')) {
+					$this->Symbol(',');
+					$args[] = $this->Term();
+				}
+			}
 			$this->Symbol(')');
+			$tasks = array();
+			$this->Symbol('{');
+			while (true) {
+				if ($this->IsSymbol($tuple, '}')) {
+					$this->Symbol('}');
+					break;
+				}
+				$tasks[] = $this->Statement();
+			}
 			$this->Terminal();
-			return new VS\Parser\ParStatement($args);
+			return new VS\Parser\ParStatement($args, $tasks);
 		}
 
 		protected function RealTerm() : VS\Parser\RealTerm {
@@ -268,28 +281,54 @@ namespace Unicity\VS {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol('(');
-			$args[] = $this->VariableKey();
-			$this->Symbol(',');
-			$args[] = $this->Term();
-			$this->Symbol(',');
-			$args[] = $this->Term();
+			$tuple = $this->scanner->current();
+			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
+				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
+				$tuple = $this->scanner->current();
+				if ($this->IsSymbol($tuple, ',')) {
+					$this->Symbol(',');
+					$args[] = $this->Term();
+				}
+			}
 			$this->Symbol(')');
+			$tasks = array();
+			$this->Symbol('{');
+			while (true) {
+				if ($this->IsSymbol($tuple, '}')) {
+					$this->Symbol('}');
+					break;
+				}
+				$tasks[] = $this->Statement();
+			}
 			$this->Terminal();
-			return new VS\Parser\SelStatement($args);
+			return new VS\Parser\SelStatement($args, $tasks);
 		}
 
 		protected function SeqStatement() : VS\Parser\SeqStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol('(');
-			$args[] = $this->VariableKey();
-			$this->Symbol(',');
-			$args[] = $this->Term();
-			$this->Symbol(',');
-			$args[] = $this->Term();
+			$tuple = $this->scanner->current();
+			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
+				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
+				$tuple = $this->scanner->current();
+				if ($this->IsSymbol($tuple, ',')) {
+					$this->Symbol(',');
+					$args[] = $this->Term();
+				}
+			}
 			$this->Symbol(')');
+			$tasks = array();
+			$this->Symbol('{');
+			while (true) {
+				if ($this->IsSymbol($tuple, '}')) {
+					$this->Symbol('}');
+					break;
+				}
+				$tasks[] = $this->Statement();
+			}
 			$this->Terminal();
-			return new VS\Parser\SeqStatement($args);
+			return new VS\Parser\SeqStatement($args, $tasks);
 		}
 
 		protected function Statement() : VS\Parser\Statement {
