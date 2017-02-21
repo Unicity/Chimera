@@ -42,7 +42,7 @@ namespace Unicity\VS\Parser {
 			$status = BT\Status::SUCCESS;
 			foreach ($this->tasks as $task) {
 				$status = $task->get0();
-				if ($status !== BT\Status::SUCCESS) {
+				if ($status !== BT\Status::FAILED) {
 					break;
 				}
 			}

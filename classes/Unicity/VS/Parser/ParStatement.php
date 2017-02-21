@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\VS\Parser {
 
 	use \Unicity\BT;
+	use \Unicity\Core;
 	use \Unicity\VS;
 
 	class ParStatement implements VS\Parser\Statement {
@@ -39,11 +40,27 @@ namespace Unicity\VS\Parser {
 			$path = (isset($this->args[0])) ? $this->args[0]->get0() : null;
 			$pushed = $context->push($path);
 
-			$status = BT\Status::SUCCESS;
+			$policy = (isset($this->args[1])) ? $this->args[1]->get0() : [];
+
+			$successesRequired = (is_array($policy) && isset($policy['successes']))
+				? Core\Convert::toInteger($policy['successes'])
+				: 1;
+			$failuresRequired = (is_array($policy) && isset($policy['failures']))
+				? Core\Convert::toInteger($policy['failures'])
+				: 1;
+
+			$successes = 0;
+			$failures = 0;
+
 			foreach ($this->tasks as $task) {
 				$status = $task->get0();
-				if ($status !== BT\Status::SUCCESS) {
-					break;
+				switch ($status) {
+					case BT\Status::SUCCESS:
+						$successes++;
+						break;
+					case BT\Status::FAILED:
+						$failures++;
+						break;
 				}
 			}
 
@@ -51,7 +68,15 @@ namespace Unicity\VS\Parser {
 				$context->pop();
 			}
 
-			return $status;
+			if (($successesRequired > 0) && ($successes >= $successesRequired)) {
+				return BT\Status::SUCCESS;
+			}
+
+			if (($failuresRequired > 0) && ($failures >= $failuresRequired)) {
+				return BT\Status::FAILED;
+			}
+
+			return BT\Status::ACTIVE;
 		}
 
 	}
