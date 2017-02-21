@@ -104,7 +104,7 @@ namespace Unicity\IO {
 		 *                                                          reading
 		 */
 		public function isDone() : bool {
-			return (($this->handle === null) || feof($this->handle));
+			return !$this->isReady();
 		}
 
 		/**
@@ -166,9 +166,9 @@ namespace Unicity\IO {
 				$this->seek($offset);
 				$buffer = '';
 				for ($i = 0; !$this->isDone() && $i < $length; $i++) {
-					$line = fgets($this->handle);
-					if (is_string($line)) {
-						$buffer .= fgets($this->handle);
+					$char = fgetc($this->handle);
+					if (is_string($char)) {
+						$buffer .= $char;
 					}
 				}
 				if (strlen($buffer) > 0) {
@@ -188,7 +188,7 @@ namespace Unicity\IO {
 		 * @return string                                           the next character in the resource
 		 */
 		public function readChar($position = null, bool $advance = true) : ?string {
-			if (is_integer($position)) {
+			if (($position !== null) && is_integer($position)) {
 				$this->seek($position);
 				$char = $this->readChar(null, $advance);
 				return $char;
@@ -199,7 +199,9 @@ namespace Unicity\IO {
 				if (!$advance) {
 					$this->seek($position);
 				}
-				return $char;
+				if (is_string($char)) {
+					return $char;
+				}
 			}
 			return null;
 		}

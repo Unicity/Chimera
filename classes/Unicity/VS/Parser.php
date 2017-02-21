@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\VS {
 
+	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\IO;
@@ -82,7 +83,10 @@ namespace Unicity\VS {
 				if (is_null($tuple)) {
 					break;
 				}
-				$this->Statement()->get0();
+				$status = $this->Statement()->get0();
+				if ($status !== BT\Status::SUCCESS) {
+					break;
+				}
 			}
 			/*
 			while ($this->scanner->next()) {
