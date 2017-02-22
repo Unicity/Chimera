@@ -18,18 +18,40 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
+	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class IntegerTerm extends VS\Parser\RealTerm {
+	class SelStatement implements VS\Parser\Definition\Statement {
 
-		public function __construct(string $token) {
-			$this->token = intval($token);
+		protected $args;
+
+		protected $tasks;
+
+		public function __construct(array $args, array $tasks) {
+			$this->args = $args;
+			$this->tasks = $tasks;
 		}
 
-		public function get0() {
-			return $this->token;
+		public function get() {
+			$context = VS\Parser\Context::instance();
+			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
+			$pushed = $context->push($path);
+
+			$status = BT\Status::SUCCESS;
+			foreach ($this->tasks as $task) {
+				$status = $task->get();
+				if ($status !== BT\Status::FAILED) {
+					break;
+				}
+			}
+
+			if ($pushed) {
+				$context->pop();
+			}
+
+			return $status;
 		}
 
 	}

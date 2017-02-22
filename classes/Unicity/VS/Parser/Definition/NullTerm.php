@@ -18,19 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\Common;
+	use \Unicity\VS;
 
-	class Terminal implements Common\ISupplier {
+	class NullTerm implements VS\Parser\Definition\Term {
 
 		protected $token;
 
-		public function __construct(string $token) {
-			$this->token = $token;
+		public function __construct() {
+			$this->token = null;
 		}
 
-		public function get0() {
+		public function get() {
 			return $this->token;
 		}
 

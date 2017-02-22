@@ -18,11 +18,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class MapTerm implements VS\Parser\Term {
+	class MapTerm implements VS\Parser\Definition\Term {
 
 		protected $entries;
 
@@ -30,10 +30,10 @@ namespace Unicity\VS\Parser {
 			$this->entries = $entries;
 		}
 
-		public function get0() {
+		public function get() {
 			$map = array();
 			foreach ($this->entries as $entry) {
-				$map[$entry->first()->get0()] = $entry->second()->get0();
+				$map[$entry->first()->get()] = $entry->second()->get();
 			}
 			return $map;
 		}

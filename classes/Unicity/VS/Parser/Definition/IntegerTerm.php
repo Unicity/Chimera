@@ -18,19 +18,17 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class StringTerm implements VS\Parser\Term {
-
-		protected $token;
+	class IntegerTerm extends VS\Parser\Definition\RealTerm {
 
 		public function __construct(string $token) {
-			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
+			$this->token = intval($token);
 		}
 
-		public function get0() {
+		public function get() {
 			return $this->token;
 		}
 

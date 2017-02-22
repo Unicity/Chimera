@@ -18,10 +18,24 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\Common;
+	use \Unicity\BT;
+	use \Unicity\VS;
 
-	interface Term extends Common\ISupplier { }
+	class DefStatement implements VS\Parser\Definition\Statement {
+
+		protected $args;
+
+		public function __construct(array $args) {
+			$this->args = $args;
+		}
+
+		public function get() {
+			VS\Parser\SymbolTable::instance()->putEntry($this->args[0]->get(), $this->args[1]->get());
+			return BT\Status::SUCCESS;
+		}
+
+	}
 
 }
