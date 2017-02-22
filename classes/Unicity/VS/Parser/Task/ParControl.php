@@ -18,43 +18,37 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Definition {
+namespace Unicity\VS\Parser\Task {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VS;
 
-	class ParStatement extends VS\Parser\Definition\Statement {
+	class ParControl extends VS\Parser\Task {
 
-		protected $args;
+		protected $policy;
 
-		protected $tasks;
+		protected $statements;
 
-		public function __construct(VS\Parser\Context $context, array $args, array $tasks) {
+		public function __construct(VS\Parser\Context $context, $policy, array $statements) {
 			parent::__construct($context);
-			$this->args = $args;
-			$this->tasks = $tasks;
+			$this->policy = $policy;
+			$this->statements = $statements;
 		}
 
 		public function get() {
-			$context = VS\Parser\Context::instance();
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$pushed = $context->push($path);
-
-			$policy = (isset($this->args[1])) ? $this->args[1]->get() : [];
-
-			$successesRequired = (is_array($policy) && isset($policy['successes']))
-				? Core\Convert::toInteger($policy['successes'])
+			$successesRequired = (is_array($this->policy) && isset($this->policy['successes']))
+				? Core\Convert::toInteger($this->policy['successes'])
 				: 1;
-			$failuresRequired = (is_array($policy) && isset($policy['failures']))
-				? Core\Convert::toInteger($policy['failures'])
+			$failuresRequired = (is_array($this->policy) && isset($this->policy['failures']))
+				? Core\Convert::toInteger($this->policy['failures'])
 				: 1;
 
 			$successes = 0;
 			$failures = 0;
 
-			foreach ($this->tasks as $task) {
-				$status = $task->get();
+			foreach ($this->statements as $statement) {
+				$status = $statement->get();
 				switch ($status) {
 					case BT\Status::SUCCESS:
 						$successes++;
@@ -63,10 +57,6 @@ namespace Unicity\VS\Parser\Definition {
 						$failures++;
 						break;
 				}
-			}
-
-			if ($pushed) {
-				$context->pop();
 			}
 
 			if (($successesRequired > 0) && ($successes >= $successesRequired)) {

@@ -26,9 +26,9 @@ namespace Unicity\VS\Parser\Definition {
 
 		protected $token;
 
-		public function __construct(VS\Parser\Context $context, string $token) {
+		public function __construct(VS\Parser\Context $context, string $value) {
 			parent::__construct($context);
-			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
+			$this->token = (strlen($value) > 2) ? substr($value, 1, -1) : '';
 		}
 
 		public function get() {

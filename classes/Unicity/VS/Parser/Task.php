@@ -18,20 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Definition {
+namespace Unicity\VS\Parser {
 
 	use \Unicity\VS;
 
-	class IntegerTerm extends VS\Parser\Definition\RealTerm {
+	abstract class Task {
 
-		public function __construct(VS\Parser\Context $context, string $value) {
-			parent::__construct($context);
-			$this->value = intval($value);
+		protected $context;
+
+		public function __construct(VS\Parser\Context $context) {
+			$this->context = $context;
 		}
 
-		public function get() {
-			return $this->value;
-		}
+		public abstract function get();
 
 	}
 

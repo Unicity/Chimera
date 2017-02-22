@@ -24,15 +24,15 @@ namespace Unicity\VS\Parser\Definition {
 
 	class RealTerm extends VS\Parser\Definition\Term {
 
-		protected $token;
+		protected $value;
 
-		public function __construct(VS\Parser\Context $context, string $token) {
+		public function __construct(VS\Parser\Context $context, string $value) {
 			parent::__construct($context);
-			$this->token = doubleval($token);
+			$this->value = doubleval($value);
 		}
 
 		public function get() {
-			return $this->token;
+			return $this->value;
 		}
 	}
 
