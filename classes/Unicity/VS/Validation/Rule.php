@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Validation {
 
 	use \Unicity\Core;
 
