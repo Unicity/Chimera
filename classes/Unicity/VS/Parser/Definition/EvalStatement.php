@@ -32,13 +32,12 @@ namespace Unicity\VS\Parser\Definition {
 		}
 
 		public function get() {
-			$task = $this->args[0]->get();
+			$module = $this->context->getModule($this->args[0]->get());
 			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
 			$output = $this->context->output();
-			$entity = $this->context->current();
+			$object = new $module($policy, $output);
+			$entity = $this->context->getEntity();
 			$other = $this->args[1]->get();
-
-			$object = new $task($policy, $output);
 			return call_user_func_array([$object, 'process'], [$entity, $other]);
 		}
 

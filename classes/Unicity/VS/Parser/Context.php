@@ -48,8 +48,13 @@ namespace Unicity\VS\Parser {
 			$context['modules']->putEntries($modules);
 		}
 
-		public function current() : array {
+		protected function current() : array {
 			return $this->stack->peek();
+		}
+
+		public function getEntity() : BT\Entity {
+			$context = $this->current();
+			return $context['entity'];
 		}
 
 		public function getModule(string $key) {

@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Validation\Evaluator {
+namespace Unicity\VS\Validation\Module {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
@@ -26,10 +26,10 @@ namespace Unicity\VS\Validation\Evaluator {
 	use \Unicity\ORM;
 	use \Unicity\VS;
 
-	class HasSchema extends VS\Validation\Evaluator {
+	class HasSchema extends VS\Validation\Module {
 
 		public function process(BT\Entity $entity, $other) : int {
-			$path = $other;
+			$path = (string) $other;
 
 			$value = $entity->getComponentAtPath($path);
 

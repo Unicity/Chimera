@@ -109,11 +109,11 @@ namespace Unicity\VS {
 			}
 			$terms = array();
 			$this->Symbol($context, '[');
-			if (!$this->IsSymbol($tuple, ']')) {
+			if (!$this->IsSymbol($this->scanner->current(), ']')) {
 				$terms[] = $this->Term($context);
 			}
 			while (true) {
-				if ($this->IsSymbol($tuple, ']')) {
+				if ($this->IsSymbol($this->scanner->current(), ']')) {
 					$this->Symbol($context, ']');
 					break;
 				}
@@ -140,8 +140,10 @@ namespace Unicity\VS {
 			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
 			$this->Symbol($context, ',');
 			$args[] = $this->Term($context);
-			$this->Symbol($context, ',');
-			$args[] = $this->Term($context);
+			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->Term($context);
+			}
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VS\Parser\Definition\EvalStatement($context, $args);
@@ -347,7 +349,6 @@ namespace Unicity\VS {
 			return new VS\Parser\Definition\SeqStatement($context, $args, $tasks);
 		}
 
-		// 'eval', 'install', 'run', 'select', 'set',
 		protected function Statement(VS\Parser\Context $context) : VS\Parser\Definition\Statement {
 			$tuple = $this->scanner->current();
 			if ($this->IsStatement($tuple, 'eval')) {
