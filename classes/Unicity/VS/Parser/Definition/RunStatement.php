@@ -43,7 +43,7 @@ namespace Unicity\VS\Parser\Definition {
 		public function get() {
 			$task = static::$tasks[$this->args[0]->get()];
 			$policy = (isset($this->args[1])) ? $this->args[1]->get() : null;
-			$object = new $task($this->context, $this->statements, $policy);
+			$object = new $task($this->context, $policy, $this->statements);
 			return $object->get();
 		}
 
