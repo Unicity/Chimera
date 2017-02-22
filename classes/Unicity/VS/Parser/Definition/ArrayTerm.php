@@ -18,10 +18,24 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\Common;
+	use \Unicity\VS;
 
-	interface Statement extends Common\ISupplier { }
+	class ArrayTerm implements VS\Parser\Definition\Term {
+
+		protected $terms;
+
+		public function __construct(array $terms) {
+			$this->terms = $terms;
+		}
+
+		public function get() {
+			return array_map(function(VS\Parser\Definition\Term $term) {
+				return $term->get();
+			}, $this->terms);
+		}
+
+	}
 
 }

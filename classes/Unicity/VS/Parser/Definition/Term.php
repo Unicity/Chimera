@@ -18,22 +18,10 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\Common;
+	use \Unicity\VS;
 
-	class Symbol implements Common\ISupplier {
-
-		protected $token;
-
-		public function __construct(string $token) {
-			$this->token = false;
-		}
-
-		public function get0() {
-			return $this->token;
-		}
-
-	}
+	interface Term extends VS\Parser\Definition { }
 
 }

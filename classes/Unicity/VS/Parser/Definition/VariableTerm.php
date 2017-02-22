@@ -18,21 +18,22 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class RealTerm implements VS\Parser\Term {
+	class VariableTerm implements VS\Parser\Definition\Term {
 
 		protected $token;
 
 		public function __construct(string $token) {
-			$this->token = doubleval($token);
+			$this->token = $token;
 		}
 
-		public function get0() {
-			return $this->token;
+		public function get() {
+			return VS\Parser\SymbolTable::instance()->getValue($this->token);
 		}
+
 	}
 
 }

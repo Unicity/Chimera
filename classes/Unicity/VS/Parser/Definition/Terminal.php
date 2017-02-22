@@ -18,22 +18,20 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class DefStatement implements VS\Parser\Statement {
+	class Terminal implements VS\Parser\Definition {
 
-		protected $args;
+		protected $token;
 
-		public function __construct(array $args) {
-			$this->args = $args;
+		public function __construct(string $token) {
+			$this->token = $token;
 		}
 
-		public function get0() {
-			VS\Parser\SymbolTable::instance()->putEntry($this->args[0]->get0(), $this->args[1]->get0());
-			return BT\Status::SUCCESS;
+		public function get() {
+			return $this->token;
 		}
 
 	}

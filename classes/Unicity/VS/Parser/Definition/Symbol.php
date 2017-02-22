@@ -18,28 +18,20 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class EvalStatement implements VS\Parser\Statement {
+	class Symbol implements VS\Parser\Definition {
 
-		protected $args;
+		protected $token;
 
-		public function __construct(array $args) {
-			$this->args = $args;
+		public function __construct(string $token) {
+			$this->token = false;
 		}
 
-		public function get0() {
-			$task = $this->args[0]->get0();
-			$policy = (isset($this->args[2])) ? $this->args[2]->get0() : null;
-			$context = VS\Parser\Context::instance();
-			$output = $context->results();
-			$entity = $context->current();
-			$other = $this->args[1]->get0();
-
-			$object = new $task($policy, $output);
-			return call_user_func_array([$object, 'process'], [$entity, $other]);
+		public function get() {
+			return $this->token;
 		}
 
 	}

@@ -18,13 +18,13 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VS;
 
-	class ParStatement implements VS\Parser\Statement {
+	class ParStatement implements VS\Parser\Definition\Statement {
 
 		protected $args;
 
@@ -35,12 +35,12 @@ namespace Unicity\VS\Parser {
 			$this->tasks = $tasks;
 		}
 
-		public function get0() {
+		public function get() {
 			$context = VS\Parser\Context::instance();
-			$path = (isset($this->args[0])) ? $this->args[0]->get0() : null;
+			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
 			$pushed = $context->push($path);
 
-			$policy = (isset($this->args[1])) ? $this->args[1]->get0() : [];
+			$policy = (isset($this->args[1])) ? $this->args[1]->get() : [];
 
 			$successesRequired = (is_array($policy) && isset($policy['successes']))
 				? Core\Convert::toInteger($policy['successes'])
@@ -53,7 +53,7 @@ namespace Unicity\VS\Parser {
 			$failures = 0;
 
 			foreach ($this->tasks as $task) {
-				$status = $task->get0();
+				$status = $task->get();
 				switch ($status) {
 					case BT\Status::SUCCESS:
 						$successes++;

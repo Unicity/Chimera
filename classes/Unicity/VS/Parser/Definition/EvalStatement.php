@@ -18,22 +18,28 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class ArrayTerm implements VS\Parser\Term {
+	class EvalStatement implements VS\Parser\Definition\Statement {
 
-		protected $terms;
+		protected $args;
 
-		public function __construct(array $terms) {
-			$this->terms = $terms;
+		public function __construct(array $args) {
+			$this->args = $args;
 		}
 
-		public function get0() {
-			return array_map(function(VS\Parser\Term $term) {
-				return $term->get0();
-			}, $this->terms);
+		public function get() {
+			$task = $this->args[0]->get();
+			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
+			$context = VS\Parser\Context::instance();
+			$output = $context->results();
+			$entity = $context->current();
+			$other = $this->args[1]->get();
+
+			$object = new $task($policy, $output);
+			return call_user_func_array([$object, 'process'], [$entity, $other]);
 		}
 
 	}

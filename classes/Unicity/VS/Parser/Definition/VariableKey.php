@@ -18,20 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use Unicity\Core;
 	use \Unicity\VS;
 
-	class BooleanTerm implements VS\Parser\Term {
+	class VariableKey implements VS\Parser\Definition {
 
 		protected $token;
 
 		public function __construct(string $token) {
-			$this->token = ($token === 'true');
+			$this->token = $token;
 		}
 
-		public function get0() {
+		public function get() {
 			return $this->token;
 		}
 
