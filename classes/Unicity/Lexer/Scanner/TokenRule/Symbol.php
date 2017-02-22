@@ -72,9 +72,10 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 *                                                          discovered
 		 */
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
-			$char = $reader->readChar($reader->position(), false);
+			$index = $reader->position();
+		    $char = $reader->readChar($index, false);
 			if (($char !== null) && ($char == $this->symbol)) {
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::symbol(), new Common\StringRef($char));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::symbol(), new Common\StringRef($char), $index);
 				$reader->skip(1);
 				return $tuple;
 			}

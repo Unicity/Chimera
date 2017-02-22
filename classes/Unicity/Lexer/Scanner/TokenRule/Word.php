@@ -87,7 +87,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 				}
 				while (($next !== null) && !$this->blacklist->hasValue($next));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::keyword(), new Common\StringRef($token));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::keyword(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			return null;

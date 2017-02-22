@@ -55,7 +55,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 				}
 				while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::variable(), new Common\StringRef($token));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::variable(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			return null;
