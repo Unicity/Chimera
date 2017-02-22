@@ -99,9 +99,9 @@ namespace Unicity\Lexer {
 		 * This method adds an ignorable.
 		 *
 		 * @access protected
-		 * @param Scanner\TokenType $type                           the token type to be ignored
+		 * @param Scanner\ITokenType $type                          the token type to be ignored
 		 */
-		public function addIgnorable(Lexer\Scanner\TokenType $type) {
+		public function addIgnorable(Lexer\Scanner\ITokenType $type) {
 			$this->ignorables->putValue($type);
 		}
 
