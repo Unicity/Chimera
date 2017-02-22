@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Task {
+namespace Unicity\VS\Validation\Evaluator {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
@@ -39,7 +39,7 @@ namespace Unicity\VS\Parser\Task {
 			$actualType = $this->actualType($path, $schema, $value);
 
 			if ($expectedType !== $actualType) {
-				$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($path));
+				$this->log(VS\Validation\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($path));
 				return BT\Status::FAILED;
 			}
 
@@ -98,22 +98,22 @@ namespace Unicity\VS\Parser\Task {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+				$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+				$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+					$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					$this->log(VS\Parser\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+					$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
 					return $expectedType;
 				}
 			}
@@ -169,7 +169,7 @@ namespace Unicity\VS\Parser\Task {
 				$size = $value->count();
 				if ($size < $schema['minItems']) {
 					$minItems = $schema['minItems'];
-					$this->log(VS\Parser\Rule::MISMATCH, "Field must have a minimum size of '{$minItems}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field must have a minimum size of '{$minItems}'.", array($path));
 					return false;
 				}
 			}
@@ -178,7 +178,7 @@ namespace Unicity\VS\Parser\Task {
 				$size = $value->count();
 				if ($size > $schema['maxItems']) {
 					$maxItems = $schema['maxItems'];
-					$this->log(VS\Parser\Rule::MISMATCH, "Field must have a maximum size of '{$maxItems}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field must have a maximum size of '{$maxItems}'.", array($path));
 					return false;
 				}
 			}
@@ -198,7 +198,7 @@ namespace Unicity\VS\Parser\Task {
 				$actualType = $this->actualType($ipath, $schema, $v);
 
 				if ($expectedType !== $actualType) {
-					$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($ipath));
+					$this->log(VS\Validation\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($ipath));
 				}
 				else {
 					switch ($expectedType) {
@@ -250,7 +250,7 @@ namespace Unicity\VS\Parser\Task {
 					$actualType = $this->actualType($kpath, $schema, $v);
 
 					if ($expectedType !== $actualType) {
-						$this->log(VS\Parser\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($kpath));
+						$this->log(VS\Validation\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($kpath));
 					}
 					else {
 						switch ($expectedType) {
@@ -284,7 +284,7 @@ namespace Unicity\VS\Parser\Task {
 		protected function matchNumber(string $path, array $schema, $value) {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				if (!in_array($value, $schema['enum'])) {
-					$this->log(VS\Parser\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
 					return false;
 				}
 			}
@@ -292,7 +292,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['exclusiveMinimum']) && $schema['exclusiveMinimum']) {
 				$minimum = $schema['minimum'] ?? 0;
 				if ($value <= $minimum) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field has an exclusive minimum value of '{$minimum}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field has an exclusive minimum value of '{$minimum}'.", array($path));
 					return false;
 				}
 			}
@@ -300,7 +300,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['minimum'])) {
 				$minimum = $schema['minimum'];
 				if ($value < $minimum) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field has a minimum value of '{$minimum}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field has a minimum value of '{$minimum}'.", array($path));
 					return false;
 				}
 			}
@@ -308,7 +308,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['exclusiveMaximum']) && $schema['exclusiveMaximum']) {
 				$maximum = $schema['maximum'] ?? PHP_INT_MAX;
 				if ($value >= $maximum) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field has an exclusive maximum value of '{$maximum}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field has an exclusive maximum value of '{$maximum}'.", array($path));
 					return false;
 				}
 			}
@@ -316,7 +316,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['maximum'])) {
 				$maximum = $schema['maximum'];
 				if ($value > $maximum) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field has a maximum value of '{$maximum}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field has a maximum value of '{$maximum}'.", array($path));
 					return false;
 				}
 			}
@@ -324,7 +324,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['divisibleBy'])) {
 				$divisibleBy = $schema['divisibleBy'];
 				if (fmod($value, $divisibleBy) == 0.0) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field must be divisible by '{$divisibleBy}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field must be divisible by '{$divisibleBy}'.", array($path));
 					return false;
 				}
 			}
@@ -344,7 +344,7 @@ namespace Unicity\VS\Parser\Task {
 		protected function matchString(string $path, array $schema, $value) : bool {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				if (!in_array($value, $schema['enum'])) {
-					$this->log(VS\Parser\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
 					return false;
 				}
 			}
@@ -352,7 +352,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['pattern'])) {
 				$pattern = $schema['pattern'];
 				if (!preg_match($pattern, $value)) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field must match pattern '{$pattern}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field must match pattern '{$pattern}'.", array($path));
 					return false;
 				}
 			}
@@ -360,7 +360,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['minLength'])) {
 				$minLength = $schema['minLength'];
 				if (strlen($value) < $minLength) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field has a minimum length of '{$minLength}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field has a minimum length of '{$minLength}'.", array($path));
 					return false;
 				}
 			}
@@ -368,7 +368,7 @@ namespace Unicity\VS\Parser\Task {
 			if (isset($schema['maxLength'])) {
 				$maxLength = $schema['maxLength'];
 				if (strlen($value) > $maxLength) {
-					$this->log(VS\Parser\Rule::MISMATCH, "Field has a maximum length of '{$maxLength}'.", array($path));
+					$this->log(VS\Validation\Rule::MISMATCH, "Field has a maximum length of '{$maxLength}'.", array($path));
 					return false;
 				}
 			}
