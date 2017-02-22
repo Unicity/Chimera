@@ -36,7 +36,8 @@ namespace Unicity\VS\Parser\Definition {
 		}
 
 		public function get() {
-			$this->context->push($this->args[0]->get());
+			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
+			$this->context->push($path);
 			$status = BT\Status::SUCCESS;
 			foreach ($this->statements as $statement) {
 				$status = $statement->get();

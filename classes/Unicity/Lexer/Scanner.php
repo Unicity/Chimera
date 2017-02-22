@@ -34,7 +34,7 @@ namespace Unicity\Lexer {
 	 * @class
 	 * @package Lexer
 	 */
-	class Scanner extends Core\Object implements Core\IDisposable, Core\IEnumerator {
+	class Scanner extends Core\Object implements Core\IEnumerator {
 
 		/**
 		 * This variable stores the current tuple.
@@ -89,8 +89,8 @@ namespace Unicity\Lexer {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			$this->dispose();
 			unset($this->current);
+			unset($this->ignorables);
 			unset($this->reader);
 			unset($this->rules);
 		}
@@ -124,28 +124,6 @@ namespace Unicity\Lexer {
 		 */
 		public function current() {
 			return $this->current;
-		}
-
-		/**
-		 * This method assists with freeing, releasing, and resetting un-managed resources.
-		 *
-		 * @access public
-		 * @param boolean $disposing                                whether managed resources can be disposed
-		 *                                                          in addition to un-managed resources
-		 *
-		 * @see http://paul-m-jones.com/archives/262
-		 * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
-		 */
-		public function dispose(bool $disposing = true) : void {
-			$this->current = null;
-			$this->rules->clear();
-			if ($disposing) {
-				$this->reader = null;
-				$this->rules = null;
-			}
-			if ($this->reader !== null) {
-				$this->reader->seek(0);
-			}
 		}
 
 		/**
