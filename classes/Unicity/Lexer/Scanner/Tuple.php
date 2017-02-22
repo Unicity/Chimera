@@ -47,7 +47,7 @@ namespace Unicity\Lexer\Scanner {
 		 * This variable stores the type associated with the token.
 		 *
 		 * @access protected
-		 * @var \Unicity\Lexer\Scanner\TokenType
+		 * @var \Unicity\Lexer\Scanner\ITokenType
 		 */
 		protected $type;
 
@@ -55,10 +55,10 @@ namespace Unicity\Lexer\Scanner {
 		 * This constructor initializes the class.
 		 *
 		 * @access public
-		 * @param \Unicity\Lexer\Scanner\TokenType $type            the type of token
+		 * @param \Unicity\Lexer\Scanner\ITokenType $type           the type of token
 		 * @param \Unicity\Common\StringRef $token                  the actual token
 		 */
-		public function __construct(Lexer\Scanner\TokenType $type, Common\StringRef $token) {
+		public function __construct(Lexer\Scanner\ITokenType $type, Common\StringRef $token) {
 			$this->token = $token;
 			$this->type = $type;
 		}
