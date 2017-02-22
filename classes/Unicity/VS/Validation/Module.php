@@ -24,7 +24,7 @@ namespace Unicity\VS\Validation {
 	use \Unicity\Core;
 	use \Unicity\ORM;
 
-	abstract class Evaluator extends Core\Object {
+	abstract class Module extends Core\Object {
 
 		protected $policy;
 
