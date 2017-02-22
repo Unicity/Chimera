@@ -22,11 +22,12 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class VariableKey implements VS\Parser\Definition {
+	class VariableKey extends VS\Parser\Definition {
 
 		protected $token;
 
-		public function __construct(string $token) {
+		public function __construct(VS\Parser\Context $context, string $token) {
+			parent::__construct($context);
 			$this->token = $token;
 		}
 

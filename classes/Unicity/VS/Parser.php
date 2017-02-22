@@ -66,7 +66,7 @@ namespace Unicity\VS {
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Variable());
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'def', 'eval', 'par', 'sel', 'seq', // instructions
+				'eval', 'install', 'run', 'select', 'set', // statements
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -76,18 +76,24 @@ namespace Unicity\VS {
 			$this->scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
 		}
 
-		public function start() : void {
+		public function run(Common\HashMap $input) : void {
+			$context = new VS\Parser\Context(new BT\Entity([
+				'components' => $input,
+				'entity_id' => 0,
+			]));
+
 			$this->scanner->next();
 			while (true) {
 				$tuple = $this->scanner->current();
 				if (is_null($tuple)) {
 					break;
 				}
-				$status = $this->Statement()->get();
+				$status = $this->Statement($context)->get();
 				if ($status !== BT\Status::SUCCESS) {
 					break;
 				}
 			}
+
 			/*
 			while ($this->scanner->next()) {
 				$tuple = $this->scanner->current();
@@ -96,69 +102,66 @@ namespace Unicity\VS {
 			*/
 		}
 
-		protected function ArrayTerm() : VS\Parser\Definition\ArrayTerm {
+		protected function ArrayTerm(VS\Parser\Context $context) : VS\Parser\Definition\ArrayTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsArrayTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$terms = array();
-			$this->Symbol('[');
+			$this->Symbol($context, '[');
 			if (!$this->IsSymbol($tuple, ']')) {
-				$terms[] = $this->Term();
+				$terms[] = $this->Term($context);
 			}
 			while (true) {
 				if ($this->IsSymbol($tuple, ']')) {
-					$this->Symbol(']');
+					$this->Symbol($context, ']');
 					break;
 				}
-				$this->Symbol(',');
-				$terms[] = $this->Term();
+				$this->Symbol($context, ',');
+				$terms[] = $this->Term($context);
 			}
-			return new VS\Parser\Definition\ArrayTerm($terms);
+			return new VS\Parser\Definition\ArrayTerm($context, $terms);
 		}
 
-		protected function BooleanTerm() : VS\Parser\Definition\BooleanTerm {
+		protected function BooleanTerm(VS\Parser\Context $context) : VS\Parser\Definition\BooleanTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsBooleanTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Parser\Definition\BooleanTerm((string) $tuple->token);
+			$term = new VS\Parser\Definition\BooleanTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function DefStatement() : VS\Parser\Definition\DefStatement {
+		protected function EvalStatement(VS\Parser\Context $context) : VS\Parser\Definition\EvalStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol('(');
-			$args[] = $this->VariableKey();
-			$this->Symbol(',');
-			$args[] = $this->Term();
-			$this->Symbol(')');
-			$this->Terminal();
-			return new VS\Parser\Definition\DefStatement($args);
+			$this->Symbol($context, '(');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$this->Symbol($context, ',');
+			$args[] = $this->Term($context);
+			$this->Symbol($context, ',');
+			$args[] = $this->Term($context);
+			$this->Symbol($context, ')');
+			$this->Terminal($context);
+			return new VS\Parser\Definition\EvalStatement($context, $args);
 		}
 
-		protected function EvalStatement() : VS\Parser\Definition\EvalStatement {
+		protected function InstallStatement(VS\Parser\Context $context) : VS\Parser\Definition\InstallStatement {
 			$this->scanner->next();
-			$args = array();
-			$this->Symbol('(');
-			$args[] = $this->TermOption('StringTerm', 'VariableTerm');
-			$this->Symbol(',');
-			$args[] = $this->Term();
-			$this->Symbol(',');
-			$args[] = $this->Term();
-			$this->Symbol(')');
-			$this->Terminal();
-			return new VS\Parser\Definition\EvalStatement($args);
+			$this->Symbol($context, '(');
+			$path = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$this->Symbol($context, ')');
+			$this->Terminal($context);
+			return new VS\Parser\Definition\InstallStatement($context, $path);
 		}
 
-		protected function IntegerTerm() : VS\Parser\Definition\IntegerTerm {
+		protected function IntegerTerm(VS\Parser\Context $context) : VS\Parser\Definition\IntegerTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsIntegerTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Parser\Definition\IntegerTerm((string) $tuple->token);
+			$term = new VS\Parser\Definition\IntegerTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
@@ -207,167 +210,180 @@ namespace Unicity\VS {
 			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE'));
 		}
 
-		protected function MapTerm() : VS\Parser\Definition\MapTerm {
+		protected function MapTerm(VS\Parser\Context $context) : VS\Parser\Definition\MapTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsMapTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$entries = array();
-			$this->Symbol('{');
+			$this->Symbol($context, '{');
 			if (!$this->IsSymbol($this->scanner->current(), '}')) {
-				$key = $this->StringTerm();
-				$this->Symbol(':');
-				$val = $this->Term();
+				$key = $this->StringTerm($context);
+				$this->Symbol($context, ':');
+				$val = $this->Term($context);
 				$entries[] = Common\Tuple::box2($key, $val);
 			}
 			while (true) {
 				if ($this->IsSymbol($this->scanner->current(), '}')) {
-					$this->Symbol('}');
+					$this->Symbol($context, '}');
 					break;
 				}
-				$this->Symbol(',');
-				$key = $this->StringTerm();
-				$this->Symbol(':');
-				$val = $this->Term();
+				$this->Symbol($context, ',');
+				$key = $this->StringTerm($context);
+				$this->Symbol($context, ':');
+				$val = $this->Term($context);
 				$entries[] = Common\Tuple::box2($key, $val);
 			}
-			return new VS\Parser\Definition\MapTerm($entries);
+			return new VS\Parser\Definition\MapTerm($context, $entries);
 		}
 
-		protected function NullTerm() : VS\Parser\Definition\NullTerm {
+		protected function NullTerm(VS\Parser\Context $context) : VS\Parser\Definition\NullTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsNullTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Parser\Definition\NullTerm();
+			$term = new VS\Parser\Definition\NullTerm($context);
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function ParStatement() : VS\Parser\Definition\ParStatement {
+		protected function ParStatement(VS\Parser\Context $context) : VS\Parser\Definition\ParStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol('(');
+			$this->Symbol($context, '(');
 			$tuple = $this->scanner->current();
 			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
-				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
+				$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
 				if ($this->IsSymbol($this->scanner->current(), ',')) {
-					$this->Symbol(',');
-					$args[] = $this->Term();
+					$this->Symbol($context, ',');
+					$args[] = $this->Term($context);
 				}
 			}
-			$this->Symbol(')');
+			$this->Symbol($context, ')');
 			$tasks = array();
-			$this->Symbol('{');
+			$this->Symbol($context, '{');
 			while (true) {
 				if ($this->IsSymbol($this->scanner->current(), '}')) {
-					$this->Symbol('}');
+					$this->Symbol($context, '}');
 					break;
 				}
-				$tasks[] = $this->Statement();
+				$tasks[] = $this->Statement($context);
 			}
-			$this->Terminal();
-			return new VS\Parser\Definition\ParStatement($args, $tasks);
+			$this->Terminal($context);
+			return new VS\Parser\Definition\ParStatement($context, $args, $tasks);
 		}
 
-		protected function RealTerm() : VS\Parser\Definition\RealTerm {
+		protected function RealTerm(VS\Parser\Context $context) : VS\Parser\Definition\RealTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsRealTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Parser\Definition\RealTerm((string) $tuple->token);
+			$term = new VS\Parser\Definition\RealTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function SelStatement() : VS\Parser\Definition\SelStatement {
+		protected function SetStatement(VS\Parser\Context $context) : VS\Parser\Definition\SetStatement {
 			$this->scanner->next();
-			$args = array();
-			$this->Symbol('(');
-			$tuple = $this->scanner->current();
-			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
-				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
-				if ($this->IsSymbol($this->scanner->current(), ',')) {
-					$this->Symbol(',');
-					$args[] = $this->Term();
-				}
-			}
-			$this->Symbol(')');
-			$tasks = array();
-			$this->Symbol('{');
-			while (true) {
-				if ($this->IsSymbol($this->scanner->current(), '}')) {
-					$this->Symbol('}');
-					break;
-				}
-				$tasks[] = $this->Statement();
-			}
-			$this->Terminal();
-			return new VS\Parser\Definition\SelStatement($args, $tasks);
+			$entry = array();
+			$this->Symbol($context, '(');
+			$entry[] = $this->VariableKey($context);
+			$this->Symbol($context, ',');
+			$entry[] = $this->Term($context);
+			$this->Symbol($context, ')');
+			$this->Terminal($context);
+			return new VS\Parser\Definition\SetStatement($context, $entry);
 		}
 
-		protected function SeqStatement() : VS\Parser\Definition\SeqStatement {
+		protected function SelStatement(VS\Parser\Context $context) : VS\Parser\Definition\SelStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol('(');
+			$this->Symbol($context, '(');
 			$tuple = $this->scanner->current();
 			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
-				$args[] = $this->TermOption('StringTerm', 'VariableTerm');
+				$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
 				if ($this->IsSymbol($this->scanner->current(), ',')) {
-					$this->Symbol(',');
-					$args[] = $this->Term();
+					$this->Symbol($context, ',');
+					$args[] = $this->Term($context);
 				}
 			}
-			$this->Symbol(')');
+			$this->Symbol($context, ')');
 			$tasks = array();
-			$this->Symbol('{');
+			$this->Symbol($context, '{');
 			while (true) {
 				if ($this->IsSymbol($this->scanner->current(), '}')) {
-					$this->Symbol('}');
+					$this->Symbol($context, '}');
 					break;
 				}
-				$tasks[] = $this->Statement();
+				$tasks[] = $this->Statement($context);
 			}
-			$this->Terminal();
-			return new VS\Parser\Definition\SeqStatement($args, $tasks);
+			$this->Terminal($context);
+			return new VS\Parser\Definition\SelStatement($context, $args, $tasks);
 		}
 
-		protected function Statement() : VS\Parser\Definition\Statement {
+		protected function SeqStatement(VS\Parser\Context $context) : VS\Parser\Definition\SeqStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
 			$tuple = $this->scanner->current();
-			if ($this->IsStatement($tuple, 'def')) {
-				return $this->DefStatement();
+			if ($this->IsStringTerm($tuple) || $this->IsVariableTerm($tuple)) {
+				$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+				if ($this->IsSymbol($this->scanner->current(), ',')) {
+					$this->Symbol($context, ',');
+					$args[] = $this->Term($context);
+				}
 			}
+			$this->Symbol($context, ')');
+			$tasks = array();
+			$this->Symbol($context, '{');
+			while (true) {
+				if ($this->IsSymbol($this->scanner->current(), '}')) {
+					$this->Symbol($context, '}');
+					break;
+				}
+				$tasks[] = $this->Statement($context);
+			}
+			$this->Terminal($context);
+			return new VS\Parser\Definition\SeqStatement($context, $args, $tasks);
+		}
+
+		// 'eval', 'install', 'run', 'select', 'set',
+		protected function Statement(VS\Parser\Context $context) : VS\Parser\Definition\Statement {
+			$tuple = $this->scanner->current();
 			if ($this->IsStatement($tuple, 'eval')) {
-				return $this->EvalStatement();
+				return $this->EvalStatement($context);
 			}
-			if ($this->IsStatement($tuple, 'par')) {
-				return $this->ParStatement();
+			if ($this->IsStatement($tuple, 'install')) {
+				return $this->InstallStatement($context);
 			}
-			if ($this->IsStatement($tuple, 'sel')) {
-				return $this->SelStatement();
+			if ($this->IsStatement($tuple, 'run')) {
+				return $this->RunStatement($context);
 			}
-			if ($this->IsStatement($tuple, 'seq')) {
-				return $this->SeqStatement();
+			if ($this->IsStatement($tuple, 'select')) {
+				return $this->SelectStatement($context);
+			}
+			if ($this->IsStatement($tuple, 'set')) {
+				return $this->SetStatement($context);
 			}
 			$this->SyntaxError($tuple);
 		}
 
-		protected function StringTerm() : VS\Parser\Definition\StringTerm {
+		protected function StringTerm(VS\Parser\Context $context) : VS\Parser\Definition\StringTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsStringTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Parser\Definition\StringTerm((string) $tuple->token);
+			$term = new VS\Parser\Definition\StringTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}
 
-		protected function Symbol(string $symbol) : VS\Parser\Definition\Symbol {
+		protected function Symbol(VS\Parser\Context $context, string $symbol) : VS\Parser\Definition\Symbol {
 			$tuple = $this->scanner->current();
 			if (!$this->IsSymbol($tuple, $symbol)) {
 				$this->SyntaxError($tuple);
 			}
-			$symbol = new VS\Parser\Definition\Symbol((string) $tuple->token);
+			$symbol = new VS\Parser\Definition\Symbol($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $symbol;
 		}
@@ -381,73 +397,72 @@ namespace Unicity\VS {
 			}
 		}
 
-		protected function Term() : VS\Parser\Definition\Term {
+		protected function Term(VS\Parser\Context $context) : VS\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if ($this->IsArrayTerm($tuple)) {
-				return $this->ArrayTerm();
+				return $this->ArrayTerm($context);
 			}
 			if ($this->IsBooleanTerm($tuple)) {
-				return $this->BooleanTerm();
+				return $this->BooleanTerm($context);
 			}
 			if ($this->IsIntegerTerm($tuple)) {
-				return $this->IntegerTerm();
+				return $this->IntegerTerm($context);
 			}
 			if ($this->IsMapTerm($tuple)) {
-				return $this->MapTerm();
+				return $this->MapTerm($context);
 			}
 			if ($this->IsNullTerm($tuple)) {
-				return $this->NullTerm();
+				return $this->NullTerm($context);
 			}
 			if ($this->IsRealTerm($tuple)) {
-				return $this->RealTerm();
+				return $this->RealTerm($context);
 			}
 			if ($this->IsStringTerm($tuple)) {
-				return $this->StringTerm();
+				return $this->StringTerm($context);
 			}
 			if ($this->IsVariableTerm($tuple)) {
-				return $this->VariableTerm();
+				return $this->VariableTerm($context);
 			}
 			$this->SyntaxError($tuple);
 		}
 
-		protected function Terminal() : VS\Parser\Definition\Terminal {
+		protected function Terminal(VS\Parser\Context $context) : VS\Parser\Definition\Terminal {
 			$tuple = $this->scanner->current();
 			if (!$this->IsTerminal($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$token = (string) $tuple->token;
-			$terminal = new VS\Parser\Definition\Terminal($token);
+			$terminal = new VS\Parser\Definition\Terminal($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $terminal;
 		}
 
-		protected function TermOption(...$terms) : VS\Parser\Definition\Term {
+		protected function TermOption(VS\Parser\Context $context, ...$terms) : VS\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			foreach ($terms as $term) {
 				$IsA = 'Is' . $term;
 				if ($this->{$IsA}($tuple)) {
-					return $this->{$term}();
+					return $this->{$term}($context);
 				}
 			}
 			$this->SyntaxError($tuple);
 		}
 
-		protected function VariableKey() : VS\Parser\Definition\VariableKey {
+		protected function VariableKey(VS\Parser\Context $context) : VS\Parser\Definition\VariableKey {
 			$tuple = $this->scanner->current();
 			if (!$this->IsVariableTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$key = new VS\Parser\Definition\VariableKey((string) $tuple->token);
+			$key = new VS\Parser\Definition\VariableKey($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $key;
 		}
 
-		protected function VariableTerm() : VS\Parser\Definition\VariableTerm {
+		protected function VariableTerm(VS\Parser\Context $context) : VS\Parser\Definition\VariableTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsVariableTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
-			$term = new VS\Parser\Definition\VariableTerm((string) $tuple->token);
+			$term = new VS\Parser\Definition\VariableTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
 		}

@@ -22,20 +22,20 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class EvalStatement implements VS\Parser\Definition\Statement {
+	class EvalStatement extends VS\Parser\Definition\Statement {
 
 		protected $args;
 
-		public function __construct(array $args) {
+		public function __construct(VS\Parser\Context $context, array $args) {
+			parent::__construct($context);
 			$this->args = $args;
 		}
 
 		public function get() {
 			$task = $this->args[0]->get();
 			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
-			$context = VS\Parser\Context::instance();
-			$output = $context->results();
-			$entity = $context->current();
+			$output = $this->context->output();
+			$entity = $this->context->current();
 			$other = $this->args[1]->get();
 
 			$object = new $task($policy, $output);

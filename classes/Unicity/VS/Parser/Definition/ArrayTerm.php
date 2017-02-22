@@ -22,11 +22,12 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class ArrayTerm implements VS\Parser\Definition\Term {
+	class ArrayTerm extends VS\Parser\Definition\Term {
 
 		protected $terms;
 
-		public function __construct(array $terms) {
+		public function __construct(VS\Parser\Context $context, array $terms) {
+			parent::__construct($context);
 			$this->terms = $terms;
 		}
 

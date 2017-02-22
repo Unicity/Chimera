@@ -22,11 +22,12 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class BooleanTerm implements VS\Parser\Definition\Term {
+	class BooleanTerm extends VS\Parser\Definition\Term {
 
 		protected $token;
 
-		public function __construct(string $token) {
+		public function __construct(VS\Parser\Context $context, string $token) {
+			parent::__construct($context);
 			$this->token = ($token === 'true');
 		}
 

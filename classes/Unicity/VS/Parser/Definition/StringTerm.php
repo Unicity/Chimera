@@ -22,11 +22,12 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class StringTerm implements VS\Parser\Definition\Term {
+	class StringTerm extends VS\Parser\Definition\Term {
 
 		protected $token;
 
-		public function __construct(string $token) {
+		public function __construct(VS\Parser\Context $context, string $token) {
+			parent::__construct($context);
 			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
 		}
 

@@ -18,23 +18,24 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Definition {
+namespace Unicity\VS\Validation {
 
 	use \Unicity\BT;
-	use \Unicity\VS;
+	use \Unicity\Core;
+	use \Unicity\ORM;
 
-	class DefStatement implements VS\Parser\Definition\Statement {
+	abstract class Evaluator extends Core\Object {
 
-		protected $args;
+		protected $policy;
 
-		public function __construct(array $args) {
-			$this->args = $args;
+		protected $output;
+
+		public function __construct($policy, ORM\JSON\Model\ArrayList $output) {
+			$this->policy = $policy;
+			$this->output = $output;
 		}
 
-		public function get() {
-			VS\Parser\SymbolTable::instance()->putEntry($this->args[0]->get(), $this->args[1]->get());
-			return BT\Status::SUCCESS;
-		}
+		public abstract function process(BT\Entity $entity, $other) : int;
 
 	}
 

@@ -23,13 +23,14 @@ namespace Unicity\VS\Parser\Definition {
 	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class SelStatement implements VS\Parser\Definition\Statement {
+	class SelStatement extends VS\Parser\Definition\Statement {
 
 		protected $args;
 
 		protected $tasks;
 
-		public function __construct(array $args, array $tasks) {
+		public function __construct(VS\Parser\Context $context, array $args, array $tasks) {
+			parent::__construct($context);
 			$this->args = $args;
 			$this->tasks = $tasks;
 		}

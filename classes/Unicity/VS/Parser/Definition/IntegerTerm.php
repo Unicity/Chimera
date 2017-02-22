@@ -24,7 +24,8 @@ namespace Unicity\VS\Parser\Definition {
 
 	class IntegerTerm extends VS\Parser\Definition\RealTerm {
 
-		public function __construct(string $token) {
+		public function __construct(VS\Parser\Context $context, string $token) {
+			parent::__construct($context);
 			$this->token = intval($token);
 		}
 

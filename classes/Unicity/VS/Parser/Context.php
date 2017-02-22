@@ -24,58 +24,104 @@ namespace Unicity\VS\Parser {
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\ORM;
-	use \Unicity\VS;
+	use \Unicity\Throwable;
 
 	class Context extends Core\Object {
 
-		protected $results;
+		protected $output;
 
 		protected $stack;
 
 		public function __construct(BT\Entity $entity) {
-			$this->results = new ORM\JSON\Model\ArrayList('\Unicity\MappingService\Impl\Validation\API\Master\Model\Results');
 			$this->stack = new Common\Mutable\Stack();
-			$this->stack->push($entity);
+			$this->stack->push([
+				'entity' => $entity,
+				'modules' => new Common\Mutable\HashMap(),
+				'path' => '',
+				'symbols' => new Common\Mutable\HashMap(),
+			]);
+			$this->output = new ORM\JSON\Model\ArrayList('\Unicity\MappingService\Impl\Validation\API\Master\Model\Results');
 		}
 
-		public function current() : BT\Entity {
+		public function addModules(array $modules) {
+			$context = $this->current();
+			$context['modules']->putEntries($modules);
+		}
+
+		public function current() : array {
 			return $this->stack->peek();
 		}
 
-		public function pop() : bool {
+		public function getModule(string $key) {
+			$stack = $this->stack->toList();
+			for ($i = $stack->count() - 1; $i >= 0; $i--) {
+				$context = $stack->getValue($i);
+				$modules = $context['modules'];
+				if ($modules->hasKey($key)) {
+					return $modules->getValue($key);
+				}
+			}
+			throw new Throwable\KeyNotFound\Exception('Unable to get element. Key ":key" does not exist.', array(':key' => $key));
+		}
+
+		public function getPath() {
+			$context = $this->current();
+			return $context['path'];
+		}
+
+		public function getSymbol(string $key) {
+			$stack = $this->stack->toList();
+			for ($i = $stack->count() - 1; $i >= 0; $i--) {
+				$context = $stack->getValue($i);
+				$symbols = $context['symbols'];
+				if ($symbols->hasKey($key)) {
+					return $symbols->getValue($key);
+				}
+			}
+			throw new Throwable\KeyNotFound\Exception('Unable to get element. Key ":key" does not exist.', array(':key' => $key));
+		}
+
+		public function pop() : void {
 			if ($this->stack->count() > 1) {
 				$this->stack->pop();
-				return true;
 			}
-			return false;
 		}
 
-		public function push(?string $path) : bool {
-			if ($path !== null) {
-				$this->stack->push($entity = new BT\Entity([
-					'components' => $this->current()->getComponentAtPath($path),
-					'entity_id' => $this->stack->count(),
-				]));
-				return true;
+		public function push(?string $path) : void {
+			$context = $this->current();
+			if (is_null($path) || in_array($path, ['.', ''])) {
+				$this->stack->push([
+					'entity' => $context['entity'],
+					'modules' => new Common\Mutable\HashMap(),
+					'path' => $context['path'],
+					'symbols' => new Common\Mutable\HashMap()
+				]);
 			}
-			return false;
-		}
-
-		public function results() {
-			return $this->results;
-		}
-
-		public function root() : BT\Entity {
-			return $this->stack->toList()->getValue(0);
-		}
-
-		protected static $singleton = null;
-
-		public static function instance(BT\Entity $entity = null) : VS\Parser\Context {
-			if (static::$singleton === null) {
-				static::$singleton = new VS\Parser\Context($entity);
+			else {
+				$this->stack->push([
+					'entity' => new BT\Entity([
+						'components' => $context['entity']->getComponentAtPath($path),
+						'entity_id' => $this->stack->count(),
+					]),
+					'modules' => new Common\Mutable\HashMap(),
+					'path' => implode('.', [$context['path'], $path]),
+					'symbols' => new Common\Mutable\HashMap(),
+				]);
 			}
-			return static::$singleton;
+		}
+
+		public function setSymbol(string $key, $value) {
+			$context = $this->current();
+			if (is_null($value)) {
+				$context['symbols']->removeKey($key);
+			}
+			else {
+				$context['symbols']->putEntry($key, $value);
+			}
+		}
+
+		public function output() : ORM\JSON\Model\ArrayList {
+			return $this->output;
 		}
 
 	}

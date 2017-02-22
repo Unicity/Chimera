@@ -26,7 +26,7 @@ namespace Unicity\VS\Validation\Evaluator {
 	use \Unicity\ORM;
 	use \Unicity\VS;
 
-	class HasSchema extends VS\Parser\Task {
+	class HasSchema extends VS\Validation\Evaluator {
 
 		public function process(BT\Entity $entity, $other) : int {
 			$path = $other;
