@@ -27,15 +27,15 @@ namespace Unicity\VS\Parser\Definition {
 
 	class InstallStatement extends VS\Parser\Definition\Statement {
 
-		protected $entry;
+		protected $args;
 
-		public function __construct(VS\Parser\Context $context, array $entry) {
+		public function __construct(VS\Parser\Context $context, array $args) {
 			parent::__construct($context);
-			$this->entry = $entry;
+			$this->args = $args;
 		}
 
 		public function get() {
-			$modules = Config\Inc\Reader::load(new IO\File($this->entry[0]->get()))->read();
+			$modules = Config\Inc\Reader::load(new IO\File($this->args[0]->get()))->read();
 			$this->context->addModules($modules);
 			return BT\Status::SUCCESS;
 		}

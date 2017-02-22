@@ -123,7 +123,20 @@ namespace Unicity\IO {
 				throw new Throwable\InvalidArgument\Exception('Unable to handle argument. Argument must be a string, but got :type.', array(':type' => gettype($uri)));
 			}
 
-			$this->uri = preg_replace('/^classpath:/i', Bootstrap::rootPath(), $uri, 1);
+			$uri = Core\Convert::toString($uri);
+
+			if (preg_match('/^classpath:/i', $uri)) {
+				foreach (Bootstrap::$classpaths as $classpath) {
+					$temp = preg_replace('/^classpath:/i', $classpath, $uri, 1);
+					if (file_exists($temp)) {
+						$uri = $temp;
+						break;
+					}
+				}
+				$uri = preg_replace('/^classpath:/i', Bootstrap::rootPath(), $uri, 1);
+			}
+
+			$this->uri = $uri;
 			$this->temporary = false;
 		}
 
@@ -373,7 +386,7 @@ namespace Unicity\IO {
 			if (preg_match('/^data\\:\\/\\/text\\/plain,/', $this->uri)) {
 				return strlen($this->uri) - 18;
 			}
-			return filesize($this->uri);
+			return Core\Convert::toInteger(@filesize($this->uri));
 		}
 
 		/**

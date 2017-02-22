@@ -81,19 +81,14 @@ namespace Unicity\VS {
 				'components' => $input,
 				'entity_id' => 0,
 			]));
-
 			$this->scanner->next();
-			while (true) {
-				$tuple = $this->scanner->current();
-				if (is_null($tuple)) {
-					break;
-				}
+			while (!is_null($this->scanner->current())) {
 				$status = $this->Statement($context)->get();
 				if ($status !== BT\Status::SUCCESS) {
 					break;
 				}
 			}
-
+			return $context->output();
 			/*
 			while ($this->scanner->next()) {
 				$tuple = $this->scanner->current();
@@ -101,8 +96,6 @@ namespace Unicity\VS {
 			}
 			exit();
 			*/
-
-			return $context->output();
 		}
 
 		protected function ArrayTerm(VS\Parser\Context $context) : VS\Parser\Definition\ArrayTerm {
@@ -114,15 +107,12 @@ namespace Unicity\VS {
 			$this->Symbol($context, '[');
 			if (!$this->IsSymbol($this->scanner->current(), ']')) {
 				$terms[] = $this->Term($context);
-			}
-			while (true) {
-				if ($this->IsSymbol($this->scanner->current(), ']')) {
-					$this->Symbol($context, ']');
-					break;
+				while (!$this->IsSymbol($this->scanner->current(), ']')) {
+					$this->Symbol($context, ',');
+					$terms[] = $this->Term($context);
 				}
-				$this->Symbol($context, ',');
-				$terms[] = $this->Term($context);
 			}
+			$this->Symbol($context, ']');
 			return new VS\Parser\Definition\ArrayTerm($context, $terms);
 		}
 
@@ -154,11 +144,12 @@ namespace Unicity\VS {
 
 		protected function InstallStatement(VS\Parser\Context $context) : VS\Parser\Definition\InstallStatement {
 			$this->scanner->next();
+			$args = array();
 			$this->Symbol($context, '(');
-			$path = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
-			return new VS\Parser\Definition\InstallStatement($context, $path);
+			return new VS\Parser\Definition\InstallStatement($context, $args);
 		}
 
 		protected function IntegerTerm(VS\Parser\Context $context) : VS\Parser\Definition\IntegerTerm {
@@ -227,18 +218,15 @@ namespace Unicity\VS {
 				$this->Symbol($context, ':');
 				$val = $this->Term($context);
 				$entries[] = Common\Tuple::box2($key, $val);
-			}
-			while (true) {
-				if ($this->IsSymbol($this->scanner->current(), '}')) {
-					$this->Symbol($context, '}');
-					break;
+				while (!$this->IsSymbol($this->scanner->current(), '}')) {
+					$this->Symbol($context, ',');
+					$key = $this->StringTerm($context);
+					$this->Symbol($context, ':');
+					$val = $this->Term($context);
+					$entries[] = Common\Tuple::box2($key, $val);
 				}
-				$this->Symbol($context, ',');
-				$key = $this->StringTerm($context);
-				$this->Symbol($context, ':');
-				$val = $this->Term($context);
-				$entries[] = Common\Tuple::box2($key, $val);
 			}
+			$this->Symbol($context, '}');
 			return new VS\Parser\Definition\MapTerm($context, $entries);
 		}
 
@@ -280,22 +268,18 @@ namespace Unicity\VS {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			if ($this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
 			}
 			$this->Symbol($context, ')');
-			$tasks = array();
+			$statements = array();
 			$this->Symbol($context, '{');
-			while (true) {
-				if ($this->IsSymbol($this->scanner->current(), '}')) {
-					$this->Symbol($context, '}');
-					break;
-				}
-				$tasks[] = $this->Statement($context);
+			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				$statements[] = $this->Statement($context);
 			}
+			$this->Symbol($context, '}');
 			$this->Terminal($context);
-			$this->Terminal($context);
-			return new VS\Parser\Definition\SelectStatement($context, $args, $tasks);
+			return new VS\Parser\Definition\SelectStatement($context, $args, $statements);
 		}
 
 		protected function SetStatement(VS\Parser\Context $context) : VS\Parser\Definition\SetStatement {
