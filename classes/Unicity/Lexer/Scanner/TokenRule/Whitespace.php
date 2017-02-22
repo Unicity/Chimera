@@ -82,7 +82,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 				}
 				while (($next !== null) && in_array($next, $this->whitespace));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			return null;

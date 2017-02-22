@@ -339,7 +339,7 @@ namespace Unicity\VS {
 				throw new Throwable\Parse\Exception('Syntax error. Statement is incomplete.');
 			}
 			else {
-				throw new Throwable\Parse\Exception('Syntax error. Unexpected token \':token\' of type \':type\' encountered.', array(':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
+				throw new Throwable\Parse\Exception('Syntax error. Unexpected token \':token\' of type \':type\' encountered at :index.', array(':index' => $tuple->index, ':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
 			}
 		}
 

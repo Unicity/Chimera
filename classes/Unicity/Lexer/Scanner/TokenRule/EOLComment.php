@@ -80,7 +80,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 					$lookahead++;
 				}
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token));
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			if ($char === '-') { // "whitespace" token (i.e. SQL-style comment) or "operator" token
@@ -92,7 +92,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 					}
 					while (!in_array($reader->readChar($lookahead, false), $this->eol));
 					$token = $reader->readRange($index, $lookahead);
-					$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token));
+					$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
 					return $tuple;
 				}
 			}

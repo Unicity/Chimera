@@ -35,6 +35,14 @@ namespace Unicity\Lexer\Scanner {
 	 */
 	class Tuple extends Core\Object {
 
+        /**
+         * This variable stores the start index of the token.
+         *
+         * @access protected
+         * @var integer
+         */
+	    protected $index;
+
 		/**
 		 * This variable stores the actual token.
 		 *
@@ -57,10 +65,12 @@ namespace Unicity\Lexer\Scanner {
 		 * @access public
 		 * @param \Unicity\Lexer\Scanner\ITokenType $type           the type of token
 		 * @param \Unicity\Common\StringRef $token                  the actual token
+         * @param int $index                                        the start index of the token
 		 */
-		public function __construct(Lexer\Scanner\ITokenType $type, Common\StringRef $token) {
-			$this->token = $token;
+		public function __construct(Lexer\Scanner\ITokenType $type, Common\StringRef $token, int $index) {
+		    $this->token = $token;
 			$this->type = $type;
+			$this->index = $index;
 		}
 
 		/**
@@ -70,6 +80,7 @@ namespace Unicity\Lexer\Scanner {
 		 */
 		public function __destruct() {
 			parent::__destruct();
+			unset($this->index);
 			unset($this->token);
 			unset($this->type);
 		}
