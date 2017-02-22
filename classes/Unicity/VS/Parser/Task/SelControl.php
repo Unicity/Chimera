@@ -18,40 +18,31 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Definition {
+namespace Unicity\VS\Parser\Task {
 
 	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class SeqStatement extends VS\Parser\Definition\Statement {
+	class SelControl extends VS\Parser\Task {
 
-		protected $args;
+		protected $policy;
 
-		protected $tasks;
+		protected $statements;
 
-		public function __construct(VS\Parser\Context $context, array $args, array $tasks) {
+		public function __construct(VS\Parser\Context $context, $policy, array $statements) {
 			parent::__construct($context);
-			$this->args = $args;
-			$this->tasks = $tasks;
+			$this->policy = $policy;
+			$this->statements = $statements;
 		}
 
 		public function get() {
-			$context = VS\Parser\Context::instance();
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$pushed = $context->push($path);
-
 			$status = BT\Status::SUCCESS;
-			foreach ($this->tasks as $task) {
-				$status = $task->get();
-				if ($status !== BT\Status::SUCCESS) {
+			foreach ($this->statements as $statement) {
+				$status = $statement->get();
+				if ($status !== BT\Status::FAILED) {
 					break;
 				}
 			}
-
-			if ($pushed) {
-				$context->pop();
-			}
-
 			return $status;
 		}
 

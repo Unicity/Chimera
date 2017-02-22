@@ -24,15 +24,15 @@ namespace Unicity\VS\Parser\Definition {
 
 	class BooleanTerm extends VS\Parser\Definition\Term {
 
-		protected $token;
+		protected $value;
 
-		public function __construct(VS\Parser\Context $context, string $token) {
+		public function __construct(VS\Parser\Context $context, string $value) {
 			parent::__construct($context);
-			$this->token = ($token === 'true');
+			$this->value = ($value === 'true');
 		}
 
 		public function get() {
-			return $this->token;
+			return $this->value;
 		}
 
 	}

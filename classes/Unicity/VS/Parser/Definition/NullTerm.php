@@ -24,15 +24,15 @@ namespace Unicity\VS\Parser\Definition {
 
 	class NullTerm extends VS\Parser\Definition\Term {
 
-		protected $token;
+		protected $value;
 
 		public function __construct(VS\Parser\Context $context) {
 			parent::__construct($context);
-			$this->token = null;
+			$this->value = null;
 		}
 
 		public function get() {
-			return $this->token;
+			return $this->value;
 		}
 
 	}

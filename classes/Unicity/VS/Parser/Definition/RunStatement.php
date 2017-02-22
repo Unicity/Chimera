@@ -20,39 +20,31 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class SelStatement extends VS\Parser\Definition\Statement {
+	class RunStatement extends VS\Parser\Definition\Statement {
+
+		protected static $tasks = array(
+			'par' => '\Unicity\VS\Parser\Task\ParControl',
+			'sel' => '\Unicity\VS\Parser\Task\SelControl',
+			'seq' => '\Unicity\VS\Parser\Task\SeqControl',
+		);
 
 		protected $args;
 
-		protected $tasks;
+		protected $statements;
 
-		public function __construct(VS\Parser\Context $context, array $args, array $tasks) {
+		public function __construct(VS\Parser\Context $context, array $args, array $statements) {
 			parent::__construct($context);
 			$this->args = $args;
-			$this->tasks = $tasks;
+			$this->statements = $statements;
 		}
 
 		public function get() {
-			$context = VS\Parser\Context::instance();
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$pushed = $context->push($path);
-
-			$status = BT\Status::SUCCESS;
-			foreach ($this->tasks as $task) {
-				$status = $task->get();
-				if ($status !== BT\Status::FAILED) {
-					break;
-				}
-			}
-
-			if ($pushed) {
-				$context->pop();
-			}
-
-			return $status;
+			$task = static::$tasks[$this->args[0]->get()];
+			$policy = (isset($this->args[1])) ? $this->args[1]->get() : null;
+			$object = new $task($this->context, $this->statements, $policy);
+			return $object->get();
 		}
 
 	}

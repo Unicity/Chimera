@@ -20,17 +20,32 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Definition {
 
+	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class IntegerTerm extends VS\Parser\Definition\RealTerm {
+	class SelectStatement extends VS\Parser\Definition\Statement {
 
-		public function __construct(VS\Parser\Context $context, string $value) {
+		protected $args;
+
+		protected $statements;
+
+		public function __construct(VS\Parser\Context $context, array $args, array $statements) {
 			parent::__construct($context);
-			$this->value = intval($value);
+			$this->args = $args;
+			$this->statements = $statements;
 		}
 
 		public function get() {
-			return $this->value;
+			$this->context->push($this->args[0]->get());
+			$status = BT\Status::SUCCESS;
+			foreach ($this->statements as $statement) {
+				$status = $statement->get();
+				if ($status !== BT\Status::SUCCESS) {
+					break;
+				}
+			}
+			$this->context->pop();
+			return $status;
 		}
 
 	}

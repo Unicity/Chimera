@@ -18,19 +18,32 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Definition {
+namespace Unicity\VS\Parser\Task {
 
+	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class IntegerTerm extends VS\Parser\Definition\RealTerm {
+	class SeqControl extends VS\Parser\Task {
 
-		public function __construct(VS\Parser\Context $context, string $value) {
+		protected $policy;
+
+		protected $statements;
+
+		public function __construct(VS\Parser\Context $context, $policy, array $statements) {
 			parent::__construct($context);
-			$this->value = intval($value);
+			$this->policy = $policy;
+			$this->statements = $statements;
 		}
 
 		public function get() {
-			return $this->value;
+			$status = BT\Status::SUCCESS;
+			foreach ($this->statements as $statement) {
+				$status = $statement->get();
+				if ($status !== BT\Status::SUCCESS) {
+					break;
+				}
+			}
+			return $status;
 		}
 
 	}
