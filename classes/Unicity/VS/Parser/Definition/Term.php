@@ -22,6 +22,6 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	interface Term extends VS\Parser\Definition { }
+	abstract class Term extends VS\Parser\Definition { }
 
 }

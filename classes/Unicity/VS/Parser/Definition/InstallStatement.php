@@ -18,24 +18,27 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\ORM;
+	use \Unicity\Config;
+	use \Unicity\IO;
+	use \Unicity\VS;
 
-	abstract class Task extends Core\Object {
+	class InstallStatement extends VS\Parser\Definition\Statement {
 
-		protected $policy;
+		protected $entry;
 
-		protected $output;
-
-		public function __construct($policy, ORM\JSON\Model\ArrayList $output) {
-			$this->policy = $policy;
-			$this->output = $output;
+		public function __construct(VS\Parser\Context $context, array $entry) {
+			parent::__construct($context);
+			$this->entry = $entry;
 		}
 
-		public abstract function process(BT\Entity $entity, $other) : int;
+		public function get() {
+			$modules = Config\Inc\Reader::load(new IO\File($this->entry[0]->get()))->read();
+			$this->context->addModules($modules);
+			return BT\Status::SUCCESS;
+		}
 
 	}
 

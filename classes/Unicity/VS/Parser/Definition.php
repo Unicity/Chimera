@@ -20,9 +20,17 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser {
 
-	interface Definition {
+	use \Unicity\VS;
 
-		public function get();
+	abstract class Definition {
+
+		protected $context;
+
+		public function __construct(VS\Parser\Context $context) {
+			$this->context = $context;
+		}
+
+		public abstract function get();
 
 	}
 

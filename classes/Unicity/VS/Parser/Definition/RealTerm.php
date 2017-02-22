@@ -22,11 +22,12 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class RealTerm implements VS\Parser\Definition\Term {
+	class RealTerm extends VS\Parser\Definition\Term {
 
 		protected $token;
 
-		public function __construct(string $token) {
+		public function __construct(VS\Parser\Context $context, string $token) {
+			parent::__construct($context);
 			$this->token = doubleval($token);
 		}
 

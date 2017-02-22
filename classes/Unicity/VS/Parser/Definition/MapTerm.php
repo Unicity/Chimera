@@ -22,11 +22,12 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class MapTerm implements VS\Parser\Definition\Term {
+	class MapTerm extends VS\Parser\Definition\Term {
 
 		protected $entries;
 
-		public function __construct(array $entries) {
+		public function __construct(VS\Parser\Context $context, array $entries) {
+			parent::__construct($context);
 			$this->entries = $entries;
 		}
 

@@ -18,20 +18,23 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\Common;
-	use \Unicity\Core;
+	use \Unicity\BT;
+	use \Unicity\VS;
 
-	class SymbolTable extends Core\Object {
+	class SetStatement extends VS\Parser\Definition\Statement {
 
-		protected static $table = null;
+		protected $entry;
 
-		public static function instance() : Common\Mutable\HashMap {
-			if (static::$table === null) {
-				static::$table = new Common\Mutable\HashMap();
-			}
-			return static::$table;
+		public function __construct(VS\Parser\Context $context, array $entry) {
+			parent::__construct($context);
+			$this->entry = $entry;
+		}
+
+		public function get() {
+			$this->context->setSymbol($this->entry[0]->get(), $this->entry[1]->get());
+			return BT\Status::SUCCESS;
 		}
 
 	}
