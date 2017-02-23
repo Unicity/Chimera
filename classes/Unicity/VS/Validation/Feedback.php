@@ -67,7 +67,7 @@ namespace Unicity\VS\Validation {
 		}
 
 		public function addViolations(VS\Validation\Feedback $feedback) : void {
-			$this->violations->putValue($feedback->violations);
+			$this->violations->putValues($feedback->violations);
 		}
 
 		public function getNumberOfRecommendations() : int {
@@ -80,8 +80,8 @@ namespace Unicity\VS\Validation {
 
 		public function toMap() : Common\IMap {
 			$feedback = new ORM\JSON\Model\HashMap('\\Unicity\\VS\\Validation\\Model\\Feedback');
-			$feedback->recommendations = $this->recommendations->toArray();
-			$feedback->violations = $this->violations->toArray();
+			$feedback->recommendations = $this->recommendations;
+			$feedback->violations = $this->violations;
 			return $feedback;
 		}
 
