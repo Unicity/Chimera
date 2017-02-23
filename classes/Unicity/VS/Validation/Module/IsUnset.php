@@ -23,6 +23,7 @@ namespace Unicity\VS\Validation\Module {
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VS;
+	use \Unicity\VS\Validation\RuleType;
 
 	class IsUnset extends VS\Validation\Module {
 
@@ -32,7 +33,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!Core\Data\ToolKit::isUnset($v1)) {
-					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be unset.');
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must be unset.');
 				}
 			}
 

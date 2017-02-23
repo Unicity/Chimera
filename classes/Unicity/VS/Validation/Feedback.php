@@ -42,11 +42,11 @@ namespace Unicity\VS\Validation {
 			$this->violations = new Common\Mutable\HashSet();
 		}
 
-		public function addRecommendation(string $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
+		public function addRecommendation(VS\Validation\RuleType $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
 			ksort($values);
 			sort($paths);
 			$this->recommendations->putValue([
-				'type' => strtoupper($type),
+				'type' => (string) $type,
 				'message' => strtr($message, $values),
 				'paths' => $paths,
 			]);
@@ -56,11 +56,11 @@ namespace Unicity\VS\Validation {
 			$this->recommendations->putValues($feedback->recommendations);
 		}
 
-		public function addViolation(string $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
+		public function addViolation(VS\Validation\RuleType $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
 			ksort($values);
 			sort($paths);
 			$this->violations->putValue([
-				'type' => strtoupper($type),
+				'type' => (string) $type,
 				'message' => strtr($message, $values),
 				'paths' => $paths,
 			]);

@@ -22,6 +22,7 @@ namespace Unicity\VS\Validation\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VS;
+	use \Unicity\VS\Validation\RuleType;
 
 	class IsGreaterThanOrEqualTo extends VS\Validation\Module {
 
@@ -33,7 +34,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if ($v1 < $v2) {
-					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be greater than or equal to ":value".', [':value' => $v2]);
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must be greater than or equal to ":value".', [':value' => $v2]);
 				}
 			}
 

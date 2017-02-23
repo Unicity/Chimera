@@ -4,12 +4,12 @@
 			"properties": {
 				"type": {
 					"enum": [
-						"CONFLICT",
-						"MALFORMED",
-						"MISMATCH",
-						"MISSING",
-						"REMOVE",
-						"SET"
+						"Conflict",
+						"Malformed",
+						"Mismatch",
+						"Missing",
+						"Remove",
+						"Set"
 					],
 					"type": "string"
 				},

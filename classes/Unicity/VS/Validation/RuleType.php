@@ -21,66 +21,125 @@ declare(strict_types = 1);
 namespace Unicity\VS\Validation {
 
 	use \Unicity\Core;
+	use \Unicity\VS;
 
-	class RuleType extends Core\Object {
-
-		#region Flags -> Recommendations
-
-		/**
-		 * This constant indicates that a field is to be removed from the data entirely.
-		 *
-		 * @access public
-		 * @const string
-		 */
-		const REMOVE = 'REMOVE';
+	final class RuleType extends Core\Enum {
 
 		/**
-		 * This constant indicates that a field should be set with a value (e.g. a value
-		 * is derivable from other content, is to be added for enrichment purposes, has
-		 * been filtered, or is to be replaced).
+		 * This variable stores the enumerations.
 		 *
-		 * @access public
-		 * @const string
+		 * @access protected
+		 * @static
+		 * @var array                                               an indexed array of the enumerations
 		 */
-		const SET = 'SET';
-
-		#endregion
-
-		#region Flags -> Violations
+		protected static $__enums;
 
 		/**
-		 * This constant indicates that two or more fields conflict with each other.
+		 * This method returns the token at the specified ordinal index.
 		 *
-		 * @access public
-		 * @const string
+		 * @access protected
+		 * @static
+		 * @param integer $ordinal                                  the ordinal index of the token
+		 * @return VS\Validation\RuleType                           the token
 		 */
-		const CONFLICT = 'CONFLICT';
+		protected static function __enum(int $ordinal) : VS\Validation\RuleType {
+			if (!is_array(self::$__enums)) {
+				self::$__enums = array();
+				self::$__enums[] = new VS\Validation\RuleType('conflict', 'Conflict');
+				self::$__enums[] = new VS\Validation\RuleType('malformed', 'Malformed');
+				self::$__enums[] = new VS\Validation\RuleType('mismatch', 'Mismatch');
+				self::$__enums[] = new VS\Validation\RuleType('missing', 'Missing');
+				self::$__enums[] = new VS\Validation\RuleType('remove', 'Remove');
+				self::$__enums[] = new VS\Validation\RuleType('set', 'Set');
+			}
+			return self::$__enums[$ordinal];
+		}
 
 		/**
-		 * This constant indicates that the data cannot be parsed or is incorrectly typed.
+		 * This constructor initializes the enumeration with the specified properties.
 		 *
-		 * @access public
-		 * @const string
+		 * @access protected
+		 * @param string $name                                      the name of the enumeration
+		 * @param mixed $value                                      the value to be assigned to the enumeration
 		 */
-		const MALFORMED = 'MALFORMED';
+		protected function __construct(string $name, $value) {
+			$this->__name = $name;
+			$this->__value = $value;
+			$this->__ordinal = count(self::$__enums);
+		}
 
 		/**
-		 * This constant indicates that a field does not match a particular pattern.
+		 * This method returns the "conflict" enumeration.
 		 *
 		 * @access public
-		 * @const string
+		 * @static
+		 * @return VS\Validation\RuleType                           the rule type enumeration
 		 */
-		const MISMATCH = 'MISMATCH';
+		public static function conflict() : VS\Validation\RuleType {
+			return self::__enum(0);
+		}
 
 		/**
-		 * This constant indicates that a field's value is missing.
+		 * This method returns the "malformed" enumeration.  Used to indicate that a value cannot
+		 * be parsed or is incorrectly typed.
 		 *
 		 * @access public
-		 * @const string
+		 * @static
+		 * @return VS\Validation\RuleType                           the rule type enumeration
 		 */
-		const MISSING = 'MISSING';
+		public static function malformed() : VS\Validation\RuleType {
+			return self::__enum(1);
+		}
 
-		#endregion
+		/**
+		 * This method returns the "mismatch" enumeration. Used to indicate that a field does not
+		 * match a particular pattern or constraint.
+		 *
+		 * @access public
+		 * @static
+		 * @return VS\Validation\RuleType                           the rule type enumeration
+		 */
+		public static function mismatch() : VS\Validation\RuleType {
+			return self::__enum(2);
+		}
+
+		/**
+		 * This method returns the "missing" enumeration.  Used to indicate that a field's value
+		 * is missing.
+		 *
+		 * @access public
+		 * @static
+		 * @return VS\Validation\RuleType                           the rule type enumeration
+		 */
+		public static function missing() : VS\Validation\RuleType {
+			return self::__enum(3);
+		}
+
+		/**
+		 * This method returns the "remove" enumeration.  Used to indicate that a field is to be
+		 * removed from the entity.
+		 *
+		 * @access public
+		 * @static
+		 * @return VS\Validation\RuleType                           the rule type enumeration
+		 */
+		public static function remove() : VS\Validation\RuleType {
+			return self::__enum(4);
+		}
+
+		/**
+		 * This method returns the "set" enumeration.  Used to indicate that a field should be fixed
+		 * and/or set with a particular value (e.g. when the value is derivable from other fields,
+		 * when value can be added for enrichment purposes, when value is to be filtered out, and when
+		 * the value should be replaced).
+		 *
+		 * @access public
+		 * @static
+		 * @return VS\Validation\RuleType                           the rule type enumeration
+		 */
+		public static function set() : VS\Validation\RuleType {
+			return self::__enum(5);
+		}
 
 	}
 
