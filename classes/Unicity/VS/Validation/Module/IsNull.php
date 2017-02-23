@@ -32,7 +32,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!is_null($v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must be null.');
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.null');
 				}
 			}
 

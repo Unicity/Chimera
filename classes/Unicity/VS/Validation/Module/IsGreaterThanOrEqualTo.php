@@ -34,7 +34,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if ($v1 < $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must be greater than or equal to ":value".', [':value' => $v2]);
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ge', [':value' => $v2]);
 				}
 			}
 
