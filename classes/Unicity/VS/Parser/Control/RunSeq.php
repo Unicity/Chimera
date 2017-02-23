@@ -18,12 +18,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Task {
+namespace Unicity\VS\Parser\Control {
 
 	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class SeqControl extends VS\Parser\Task {
+	class RunSeq extends VS\Parser\Control {
 
 		protected $policy;
 

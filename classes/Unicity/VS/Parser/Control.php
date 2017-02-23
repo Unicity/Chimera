@@ -22,7 +22,7 @@ namespace Unicity\VS\Parser {
 
 	use \Unicity\VS;
 
-	abstract class Task {
+	abstract class Control {
 
 		protected $context;
 

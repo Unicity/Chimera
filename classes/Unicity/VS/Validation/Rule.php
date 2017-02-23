@@ -24,7 +24,7 @@ namespace Unicity\VS\Validation {
 
 	class Rule extends Core\Object {
 
-		#region Flags -> Fixes
+		#region Flags -> Recommendations
 
 		/**
 		 * This constant indicates that a field is to be removed from the data entirely.

@@ -18,13 +18,13 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Task {
+namespace Unicity\VS\Parser\Control {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VS;
 
-	class ParControl extends VS\Parser\Task {
+	class RunAll extends VS\Parser\Control {
 
 		protected $policy;
 
@@ -39,35 +39,22 @@ namespace Unicity\VS\Parser\Task {
 		public function get() {
 			$successesRequired = (is_array($this->policy) && isset($this->policy['successes']))
 				? Core\Convert::toInteger($this->policy['successes'])
-				: 1;
-			$failuresRequired = (is_array($this->policy) && isset($this->policy['failures']))
-				? Core\Convert::toInteger($this->policy['failures'])
-				: 1;
+				: count($this->statements);
 
 			$successes = 0;
-			$failures = 0;
 
 			foreach ($this->statements as $statement) {
 				$status = $statement->get();
-				switch ($status) {
-					case BT\Status::SUCCESS:
-						$successes++;
-						break;
-					case BT\Status::FAILED:
-						$failures++;
-						break;
-				}
+				if ($status === BT\Status::SUCCESS) {
+                    $successes++;
+                }
 			}
 
 			if (($successesRequired > 0) && ($successes >= $successesRequired)) {
 				return BT\Status::SUCCESS;
 			}
 
-			if (($failuresRequired > 0) && ($failures >= $failuresRequired)) {
-				return BT\Status::FAILED;
-			}
-
-			return BT\Status::ACTIVE;
+			return BT\Status::FAILED;
 		}
 
 	}
