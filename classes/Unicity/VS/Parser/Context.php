@@ -40,7 +40,7 @@ namespace Unicity\VS\Parser {
 				'path' => '',
 				'symbols' => new Common\Mutable\HashMap(),
 			]);
-			$this->output = new ORM\JSON\Model\ArrayList('\Unicity\MappingService\Impl\Validation\API\Master\Model\Results');
+			$this->output = new ORM\JSON\Model\ArrayList('\Unicity\VS\Validation\Model\Results');
 		}
 
 		public function addModules(array $modules) {

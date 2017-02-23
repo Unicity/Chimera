@@ -23,7 +23,7 @@ namespace Unicity\VS\Parser\Task {
 	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class SelControl extends VS\Parser\Task {
+	class RunSel extends VS\Parser\Task {
 
 		protected $policy;
 

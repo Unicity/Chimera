@@ -24,10 +24,10 @@ namespace Unicity\VS\Parser\Definition {
 
 	class RunStatement extends VS\Parser\Definition\Statement {
 
-		protected static $tasks = array(
-			'par' => '\Unicity\VS\Parser\Task\ParControl',
-			'sel' => '\Unicity\VS\Parser\Task\SelControl',
-			'seq' => '\Unicity\VS\Parser\Task\SeqControl',
+		protected static $controls = array(
+			'all' => '\Unicity\VS\Parser\Control\RunAll', // executes all and reports all recommendations/violations (only when at least # have reported no violations)
+			'sel' => '\Unicity\VS\Parser\Control\RunSel', // executes all in order until one does not report any violations
+			'seq' => '\Unicity\VS\Parser\Control\RunSeq', // executes all in order until one reports a violation
 		);
 
 		protected $args;
@@ -41,9 +41,9 @@ namespace Unicity\VS\Parser\Definition {
 		}
 
 		public function get() {
-			$task = static::$tasks[$this->args[0]->get()];
+			$control = static::$controls[$this->args[0]->get()];
 			$policy = (isset($this->args[1])) ? $this->args[1]->get() : null;
-			$object = new $task($this->context, $policy, $this->statements);
+			$object = new $control($this->context, $policy, $this->statements);
 			return $object->get();
 		}
 
