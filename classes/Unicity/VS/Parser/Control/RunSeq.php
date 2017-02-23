@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Control {
 
-	use \Unicity\BT;
 	use \Unicity\VS;
 
 	class RunSeq extends VS\Parser\Control {
@@ -36,14 +35,19 @@ namespace Unicity\VS\Parser\Control {
 		}
 
 		public function get() {
-			$status = BT\Status::SUCCESS;
+			$feedback = new VS\Validation\Feedback();
+
 			foreach ($this->statements as $statement) {
-				$status = $statement->get();
-				if ($status !== BT\Status::SUCCESS) {
+				$result = $statement->get();
+
+				$feedback->addRecommendations($result);
+				if ($result->getNumberOfViolations() > 0) {
+					$feedback->addViolations($result);
 					break;
 				}
 			}
-			return $status;
+
+			return $feedback;
 		}
 
 	}

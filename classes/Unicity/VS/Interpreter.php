@@ -21,10 +21,10 @@ namespace Unicity\VS {
 		 * @final
 		 * @param Common\HashMap $input                             the input data to be processed
 		 * @param string $script                                    the namespaced name to ".vld" file
-		 * @return Common\ArrayList                                 the processed data
+		 * @return Common\IMap                                      the feedback results
 		 * @throws Throwable\FileNotFound\Exception                 indicates that no ".vld" could be found
 		 */
-		public static final function execute(Common\HashMap $input, string $script) : Common\ArrayList {
+		public static final function execute(Common\HashMap $input, string $script) : Common\IMap {
 			$components = preg_split('/(\\\|_)+/', trim($script, '\\'));
 
 			$filepath = implode(DIRECTORY_SEPARATOR, $components) . '.vld';

@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Control {
 
-	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VS;
 
@@ -37,24 +36,36 @@ namespace Unicity\VS\Parser\Control {
 		}
 
 		public function get() {
-			$successesRequired = (is_array($this->policy) && isset($this->policy['successes']))
-				? Core\Convert::toInteger($this->policy['successes'])
-				: count($this->statements);
+			if (is_array($this->policy) && isset($this->policy['successes'])) {
+				$successesRequired = Core\Convert::toInteger($this->policy['successes']);
+				if ($successesRequired < 0) {
+					$successesRequired = count($this->statements) + $successesRequired;
+				}
+			}
+			else {
+				$successesRequired = count($this->statements);
+			}
 
+			$feedback = new VS\Validation\Feedback();
+
+			$results = array();
 			$successes = 0;
 
-			foreach ($this->statements as $statement) {
-				$status = $statement->get();
-				if ($status === BT\Status::SUCCESS) {
+			foreach ($this->statements as $i => $statement) {
+				$result[$i] = $statement->get();
+				$feedback->addRecommendations($result[$i]);
+				if ($result[$i]->getNumberOfViolations() === 0) {
                     $successes++;
                 }
 			}
 
-			if (($successesRequired > 0) && ($successes >= $successesRequired)) {
-				return BT\Status::SUCCESS;
+			if ($successes < $successesRequired) {
+				foreach ($results as $result) {
+					$feedback->addViolations($result);
+				}
 			}
 
-			return BT\Status::FAILED;
+			return $feedback;
 		}
 
 	}

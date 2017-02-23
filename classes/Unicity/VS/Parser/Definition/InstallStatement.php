@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\BT;
 	use \Unicity\Config;
 	use \Unicity\IO;
 	use \Unicity\VS;
@@ -37,7 +36,7 @@ namespace Unicity\VS\Parser\Definition {
 		public function get() {
 			$modules = Config\Inc\Reader::load(new IO\File($this->args[0]->get()))->read();
 			$this->context->addModules($modules);
-			return BT\Status::SUCCESS;
+			return new VS\Validation\Feedback();
 		}
 
 	}

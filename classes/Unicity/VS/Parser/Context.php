@@ -23,12 +23,9 @@ namespace Unicity\VS\Parser {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
 	class Context extends Core\Object {
-
-		protected $output;
 
 		protected $stack;
 
@@ -40,10 +37,9 @@ namespace Unicity\VS\Parser {
 				'path' => '',
 				'symbols' => new Common\Mutable\HashMap(),
 			]);
-			$this->output = new ORM\JSON\Model\ArrayList('\Unicity\VS\Validation\Model\Results');
 		}
 
-		public function addModules(array $modules) {
+		public function addModules(array $modules) : void {
 			$context = $this->current();
 			$context['modules']->putEntries($modules);
 		}
@@ -57,7 +53,7 @@ namespace Unicity\VS\Parser {
 			return $context['entity'];
 		}
 
-		public function getModule(string $key) {
+		public function getModule(string $key) : string {
 			$stack = $this->stack->toList();
 			for ($i = $stack->count() - 1; $i >= 0; $i--) {
 				$context = $stack->getValue($i);
@@ -123,10 +119,6 @@ namespace Unicity\VS\Parser {
 			else {
 				$context['symbols']->putEntry($key, $value);
 			}
-		}
-
-		public function output() : ORM\JSON\Model\ArrayList {
-			return $this->output;
 		}
 
 	}

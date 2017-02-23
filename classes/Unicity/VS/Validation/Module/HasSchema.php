@@ -28,7 +28,9 @@ namespace Unicity\VS\Validation\Module {
 
 	class HasSchema extends VS\Validation\Module {
 
-		public function process(BT\Entity $entity, $other) : int {
+		public function process(BT\Entity $entity, $other) : VS\Validation\Feedback {
+			$feedback = new VS\Validation\Feedback();
+
 			$path = (string) $other;
 
 			$value = $entity->getComponentAtPath($path);
@@ -36,43 +38,43 @@ namespace Unicity\VS\Validation\Module {
 			$schema = $this->policy;
 
 			$expectedType = $this->expectedType($schema);
-			$actualType = $this->actualType($path, $schema, $value);
+			$actualType = $this->actualType($feedback, $path, $schema, $value);
 
 			if ($expectedType !== $actualType) {
-				$this->log(VS\Validation\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($path));
-				return BT\Status::FAILED;
+				$feedback->addViolation(VS\Validation\RuleType::MALFORMED, [$path], 'Field must have a type of ":type".', [':type' => $expectedType]);
+			}
+			else {
+				switch ($expectedType) {
+					case 'array':
+						$this->matchArray($feedback, $path, $schema, $value);
+						break;
+					case 'integer':
+					case 'number':
+						$this->matchNumber($feedback, $path, $schema, $value);
+						break;
+					case 'object':
+						$this->matchMap($feedback, $path, $schema, $value);
+						break;
+					case 'string':
+						$this->matchString($feedback, $path, $schema, $value);
+						break;
+				}
 			}
 
-			$result = true;
-
-			switch ($expectedType) {
-				case 'array':
-					$result = $this->matchArray($path, $schema, $value);
-					break;
-				case 'integer':
-				case 'number':
-					$result = $this->matchNumber($path, $schema, $value);
-					break;
-				case 'object':
-					$result = $this->matchMap($path, $schema, $value);
-					break;
-				case 'string':
-					$result = $this->matchString($path, $schema, $value);
-					break;
-			}
-
-			return ($result) ? BT\Status::SUCCESS : BT\Status::FAILED;
+			return $feedback;
 		}
 
 		/**
 		 * This method returns the data type for the value.
 		 *
 		 * @access protected
+		 * @param VS\Validation\Feedback $feedback                  the feedback buffer
+		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to evaluated
 		 * @return string                                           the data type
 		 */
-		protected function actualType(string $path, array $schema, $value) {
+		protected function actualType(VS\Validation\Feedback $feedback, string $path, array $schema, $value) {
 			$actualType = gettype($value);
 			$expectedType = $this->expectedType($schema);
 
@@ -98,22 +100,22 @@ namespace Unicity\VS\Validation\Module {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+				$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+				$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+					$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					$this->log(VS\Validation\Rule::SET, "Field type should be '{$expectedType}'.", array($path));
+					$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
 					return $expectedType;
 				}
 			}
@@ -140,36 +142,21 @@ namespace Unicity\VS\Validation\Module {
 		}
 
 		/**
-		 * This method logs the issue.
-		 *
-		 * @access protected
-		 * @param string $rule                                      the type of rule
-		 * @param string $message                                   the message describing the issue
-		 * @param array $paths                                      the paths associated with the issue
-		 */
-		protected function log(string $rule, string $message, array $paths) {
-			$this->output->addValue([
-				'rule' => $rule,
-				'message' => $message,
-				'paths' => $paths,
-			]);
-		}
-
-		/**
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
+		 * @param VS\Validation\Feedback $feedback                  the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchArray(string $path, array $schema, $value) {
+		protected function matchArray(VS\Validation\Feedback $feedback, string $path, array $schema, $value) {
 			if (isset($schema['minItems'])) {
 				$size = $value->count();
 				if ($size < $schema['minItems']) {
 					$minItems = $schema['minItems'];
-					$this->log(VS\Validation\Rule::MISMATCH, "Field must have a minimum size of '{$minItems}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must have a minimum size of ":size".', [':size' => $minItems]);
 					return false;
 				}
 			}
@@ -178,7 +165,7 @@ namespace Unicity\VS\Validation\Module {
 				$size = $value->count();
 				if ($size > $schema['maxItems']) {
 					$maxItems = $schema['maxItems'];
-					$this->log(VS\Validation\Rule::MISMATCH, "Field must have a maximum size of '{$maxItems}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must have a maximum size of ":size".', [':size' => $maxItems]);
 					return false;
 				}
 			}
@@ -188,29 +175,29 @@ namespace Unicity\VS\Validation\Module {
 				$schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
 			}
 
-			return $this->reduce($value, function(bool $carry, array $tuple) use($schema, $path) {
+			return $this->reduce($value, function(bool $carry, array $tuple) use($feedback, $schema, $path) {
 				$i = $tuple[1];
 				$v = $tuple[0];
 
 				$ipath = ORM\Query::appendIndex($path, $i);
 
 				$expectedType = $this->expectedType($schema);
-				$actualType = $this->actualType($ipath, $schema, $v);
+				$actualType = $this->actualType($feedback, $ipath, $schema, $v);
 
 				if ($expectedType !== $actualType) {
-					$this->log(VS\Validation\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($ipath));
+					$feedback->addViolation(VS\Validation\RuleType::MALFORMED, [$ipath], 'Field must have a type of ":type".', [':type' => $expectedType]);
 				}
 				else {
 					switch ($expectedType) {
 						case 'array':
-							return $this->matchArray($ipath, $schema, $v) && $carry;
+							return $this->matchArray($feedback, $ipath, $schema, $v) && $carry;
 						case 'integer':
 						case 'number':
-							return $this->matchNumber($ipath, $schema, $v) && $carry;
+							return $this->matchNumber($feedback, $ipath, $schema, $v) && $carry;
 						case 'object':
-							return $this->matchMap($ipath, $schema, $v) && $carry;
+							return $this->matchMap($feedback, $ipath, $schema, $v) && $carry;
 						case 'string':
-							return $this->matchString($ipath, $schema, $v) && $carry;
+							return $this->matchString($feedback, $ipath, $schema, $v) && $carry;
 					}
 				}
 
@@ -222,16 +209,17 @@ namespace Unicity\VS\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
+		 * @param VS\Validation\Feedback $feedback                  the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchMap(string $path, array $schema, $value) {
+		protected function matchMap(VS\Validation\Feedback $feedback, string $path, array $schema, $value) {
 			if (isset($schema['properties']) && !$value->isEmpty()) {
 				$properties = $schema['properties'];
 
-				return $this->reduce($properties, function (bool $carry, array $tuple) use ($value, $path) {
+				return $this->reduce($properties, function (bool $carry, array $tuple) use ($feedback, $value, $path) {
 					$k = $tuple[1];
 					$v = $value->getValue($k);
 
@@ -247,22 +235,22 @@ namespace Unicity\VS\Validation\Module {
 					$kpath = ORM\Query::appendKey($path, $k);
 
 					$expectedType = $this->expectedType($schema);
-					$actualType = $this->actualType($kpath, $schema, $v);
+					$actualType = $this->actualType($feedback, $kpath, $schema, $v);
 
 					if ($expectedType !== $actualType) {
-						$this->log(VS\Validation\Rule::MALFORMED, "Field must have a type of '{$expectedType}'.", array($kpath));
+						$feedback->addViolation(VS\Validation\RuleType::MALFORMED, [$kpath], 'Field must have a type of ":type".', [':type' => $expectedType]);
 					}
 					else {
 						switch ($expectedType) {
 							case 'array':
-								return $this->matchArray($kpath, $schema, $v) && $carry;
+								return $this->matchArray($feedback, $kpath, $schema, $v) && $carry;
 							case 'integer':
 							case 'number':
-								return $this->matchNumber($kpath, $schema, $v) && $carry;
+								return $this->matchNumber($feedback, $kpath, $schema, $v) && $carry;
 							case 'object':
-								return $this->matchMap($kpath, $schema, $v) && $carry;
+								return $this->matchMap($feedback, $kpath, $schema, $v) && $carry;
 							case 'string':
-								return $this->matchString($kpath, $schema, $v) && $carry;
+								return $this->matchString($feedback, $kpath, $schema, $v) && $carry;
 						}
 					}
 
@@ -276,15 +264,16 @@ namespace Unicity\VS\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
+		 * @param VS\Validation\Feedback $feedback                  the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchNumber(string $path, array $schema, $value) {
+		protected function matchNumber(VS\Validation\Feedback $feedback, string $path, array $schema, $value) {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				if (!in_array($value, $schema['enum'])) {
-					$this->log(VS\Validation\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be an enumerated constant.');
 					return false;
 				}
 			}
@@ -292,7 +281,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['exclusiveMinimum']) && $schema['exclusiveMinimum']) {
 				$minimum = $schema['minimum'] ?? 0;
 				if ($value <= $minimum) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field has an exclusive minimum value of '{$minimum}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field has an exclusive minimum value of ":value".', [':value' => $minimum]);
 					return false;
 				}
 			}
@@ -300,7 +289,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['minimum'])) {
 				$minimum = $schema['minimum'];
 				if ($value < $minimum) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field has a minimum value of '{$minimum}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field has a minimum value of ":value".', [':value' => $minimum]);
 					return false;
 				}
 			}
@@ -308,7 +297,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['exclusiveMaximum']) && $schema['exclusiveMaximum']) {
 				$maximum = $schema['maximum'] ?? PHP_INT_MAX;
 				if ($value >= $maximum) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field has an exclusive maximum value of '{$maximum}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field has an exclusive maximum value of ":value".', [':value' => $maximum]);
 					return false;
 				}
 			}
@@ -316,7 +305,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['maximum'])) {
 				$maximum = $schema['maximum'];
 				if ($value > $maximum) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field has a maximum value of '{$maximum}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field has a maximum value of ":value".', [':value' => $maximum]);
 					return false;
 				}
 			}
@@ -324,7 +313,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['divisibleBy'])) {
 				$divisibleBy = $schema['divisibleBy'];
 				if (fmod($value, $divisibleBy) == 0.0) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field must be divisible by '{$divisibleBy}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be divisible by ":value".', [':value' => $divisibleBy]);
 					return false;
 				}
 			}
@@ -336,15 +325,16 @@ namespace Unicity\VS\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
+		 * @param VS\Validation\Feedback $feedback                  the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchString(string $path, array $schema, $value) : bool {
+		protected function matchString(VS\Validation\Feedback $feedback, string $path, array $schema, $value) : bool {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				if (!in_array($value, $schema['enum'])) {
-					$this->log(VS\Validation\Rule::MISMATCH, 'Field must be an enumerated constant.', array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be an enumerated constant.');
 					return false;
 				}
 			}
@@ -352,7 +342,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['pattern'])) {
 				$pattern = $schema['pattern'];
 				if (!preg_match($pattern, $value)) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field must match pattern '{$pattern}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must match pattern ":pattern".', [':pattern' => $pattern]);
 					return false;
 				}
 			}
@@ -360,7 +350,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['minLength'])) {
 				$minLength = $schema['minLength'];
 				if (strlen($value) < $minLength) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field has a minimum length of '{$minLength}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field has a minimum length of ":value".', [':value' => $minLength]);
 					return false;
 				}
 			}
@@ -368,7 +358,7 @@ namespace Unicity\VS\Validation\Module {
 			if (isset($schema['maxLength'])) {
 				$maxLength = $schema['maxLength'];
 				if (strlen($value) > $maxLength) {
-					$this->log(VS\Validation\Rule::MISMATCH, "Field has a maximum length of '{$maxLength}'.", array($path));
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field has a maximum length of ":value".', [':value' => $maxLength]);
 					return false;
 				}
 			}
