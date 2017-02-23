@@ -34,7 +34,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!preg_match($v2, $v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must match pattern ":pattern".', [':pattern' => $v2]);
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.regex', [':regex' => $v2]);
 				}
 			}
 

@@ -33,7 +33,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!Core\Data\ToolKit::isUnset($v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must be unset.');
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.unset');
 				}
 			}
 
