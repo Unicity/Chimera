@@ -43,10 +43,12 @@ namespace Unicity\VS\Validation {
 		}
 
 		public function addRecommendation(string $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
+			ksort($values);
+			sort($paths);
 			$this->recommendations->putValue([
 				'type' => strtoupper($type),
-				'message' => strtr($message, ksort($values)),
-				'paths' => sort($paths),
+				'message' => strtr($message, $values),
+				'paths' => $paths,
 			]);
 		}
 
@@ -55,10 +57,12 @@ namespace Unicity\VS\Validation {
 		}
 
 		public function addViolation(string $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
+			ksort($values);
+			sort($paths);
 			$this->violations->putValue([
 				'type' => strtoupper($type),
-				'message' => strtr($message, ksort($values)),
-				'paths' => sort($paths),
+				'message' => strtr($message, $values),
+				'paths' => $paths,
 			]);
 		}
 
@@ -76,12 +80,11 @@ namespace Unicity\VS\Validation {
 
 		public function toMap() : Common\IMap {
 			$feedback = new ORM\JSON\Model\HashMap('\\Unicity\\VS\\Validation\\Model\\Feedback');
-			$feedback->putEntries(Common\Collection::useArrays([
-				'recommendation' => $this->recommendations,
-				'violations' => $this->violations,
-			]));
+			$feedback->recommendations = $this->recommendations->toArray();
+			$feedback->violations = $this->violations->toArray();
 			return $feedback;
 		}
+
 	}
 
 }
