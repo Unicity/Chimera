@@ -134,7 +134,7 @@ namespace Unicity\VS {
 			$this->Symbol($context, '(');
 			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
 			$this->Symbol($context, ',');
-			$args[] = $this->Term($context);
+			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);

@@ -36,8 +36,11 @@ namespace Unicity\VS\Parser\Definition {
 			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
 			$object = new $module($policy);
 			$entity = $this->context->getEntity();
-			$other = $this->args[1]->get();
-			return call_user_func_array([$object, 'process'], [$entity, $other]);
+			$paths = $this->args[1]->get();
+			if (!is_array($paths)) {
+				$paths = [$paths];
+			}
+			return call_user_func_array([$object, 'process'], [$entity, $paths]);
 		}
 
 	}

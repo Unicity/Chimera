@@ -28,36 +28,36 @@ namespace Unicity\VS\Validation\Module {
 
 	class HasSchema extends VS\Validation\Module {
 
-		public function process(BT\Entity $entity, $other) : VS\Validation\Feedback {
+		public function process(BT\Entity $entity, array $paths) : VS\Validation\Feedback {
 			$feedback = new VS\Validation\Feedback();
 
-			$path = (string) $other;
+			foreach ($paths as $path) {
+				$value = $entity->getComponentAtPath($path);
 
-			$value = $entity->getComponentAtPath($path);
+				$schema = $this->policy;
 
-			$schema = $this->policy;
+				$expectedType = $this->expectedType($schema);
+				$actualType = $this->actualType($feedback, $path, $schema, $value);
 
-			$expectedType = $this->expectedType($schema);
-			$actualType = $this->actualType($feedback, $path, $schema, $value);
-
-			if ($expectedType !== $actualType) {
-				$feedback->addViolation(VS\Validation\RuleType::MALFORMED, [$path], 'Field must have a type of ":type".', [':type' => $expectedType]);
-			}
-			else {
-				switch ($expectedType) {
-					case 'array':
-						$this->matchArray($feedback, $path, $schema, $value);
-						break;
-					case 'integer':
-					case 'number':
-						$this->matchNumber($feedback, $path, $schema, $value);
-						break;
-					case 'object':
-						$this->matchMap($feedback, $path, $schema, $value);
-						break;
-					case 'string':
-						$this->matchString($feedback, $path, $schema, $value);
-						break;
+				if ($expectedType !== $actualType) {
+					$feedback->addViolation(VS\Validation\RuleType::MALFORMED, [$path], 'Field must have a type of ":type".', [':type' => $expectedType]);
+				}
+				else {
+					switch ($expectedType) {
+						case 'array':
+							$this->matchArray($feedback, $path, $schema, $value);
+							break;
+						case 'integer':
+						case 'number':
+							$this->matchNumber($feedback, $path, $schema, $value);
+							break;
+						case 'object':
+							$this->matchMap($feedback, $path, $schema, $value);
+							break;
+						case 'string':
+							$this->matchString($feedback, $path, $schema, $value);
+							break;
+					}
 				}
 			}
 
