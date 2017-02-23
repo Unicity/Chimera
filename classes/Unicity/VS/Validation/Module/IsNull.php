@@ -22,6 +22,7 @@ namespace Unicity\VS\Validation\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VS;
+	use \Unicity\VS\Validation\RuleType;
 
 	class IsNull extends VS\Validation\Module {
 
@@ -31,7 +32,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!is_null($v1)) {
-					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be null.');
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'Field must be null.');
 				}
 			}
 
