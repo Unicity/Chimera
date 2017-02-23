@@ -2,14 +2,14 @@
 	"items": [
 		{
 			"properties": {
-				"rule": {
+				"type": {
 					"enum": [
-						"Conflict",
-						"Malformed",
-						"Mismatch",
-						"Missing",
-						"Remove",
-						"Set"
+						"CONFLICT",
+						"MALFORMED",
+						"MISMATCH",
+						"MISSING",
+						"REMOVE",
+						"SET"
 					],
 					"type": "string"
 				},

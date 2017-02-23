@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\BT;
 	use \Unicity\VS;
 
 	class SetStatement extends VS\Parser\Definition\Statement {
@@ -34,7 +33,7 @@ namespace Unicity\VS\Parser\Definition {
 
 		public function get() {
 			$this->context->setSymbol($this->entry[0]->get(), $this->entry[1]->get());
-			return BT\Status::SUCCESS;
+			return new VS\Validation\Feedback();
 		}
 
 	}

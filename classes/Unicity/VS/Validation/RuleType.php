@@ -22,7 +22,7 @@ namespace Unicity\VS\Validation {
 
 	use \Unicity\Core;
 
-	class Rule extends Core\Object {
+	class RuleType extends Core\Object {
 
 		#region Flags -> Recommendations
 
@@ -32,7 +32,7 @@ namespace Unicity\VS\Validation {
 		 * @access public
 		 * @const string
 		 */
-		const REMOVE = 'Remove';
+		const REMOVE = 'REMOVE';
 
 		/**
 		 * This constant indicates that a field should be set with a value (e.g. a value
@@ -42,7 +42,7 @@ namespace Unicity\VS\Validation {
 		 * @access public
 		 * @const string
 		 */
-		const SET = 'Set';
+		const SET = 'SET';
 
 		#endregion
 
@@ -54,7 +54,7 @@ namespace Unicity\VS\Validation {
 		 * @access public
 		 * @const string
 		 */
-		const CONFLICT = 'Conflict';
+		const CONFLICT = 'CONFLICT';
 
 		/**
 		 * This constant indicates that the data cannot be parsed or is incorrectly typed.
@@ -62,7 +62,7 @@ namespace Unicity\VS\Validation {
 		 * @access public
 		 * @const string
 		 */
-		const MALFORMED = 'Malformed';
+		const MALFORMED = 'MALFORMED';
 
 		/**
 		 * This constant indicates that a field does not match a particular pattern.
@@ -70,7 +70,7 @@ namespace Unicity\VS\Validation {
 		 * @access public
 		 * @const string
 		 */
-		const MISMATCH = 'Mismatch';
+		const MISMATCH = 'MISMATCH';
 
 		/**
 		 * This constant indicates that a field's value is missing.
@@ -78,7 +78,7 @@ namespace Unicity\VS\Validation {
 		 * @access public
 		 * @const string
 		 */
-		const MISSING = 'Missing';
+		const MISSING = 'MISSING';
 
 		#endregion
 

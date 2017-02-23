@@ -76,19 +76,22 @@ namespace Unicity\VS {
 			$this->scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
 		}
 
-		public function run(Common\HashMap $input) {
+		public function run(Common\HashMap $input) : Common\IMap {
+			$feedback = new VS\Validation\Feedback();
 			$context = new VS\Parser\Context(new BT\Entity([
 				'components' => $input,
 				'entity_id' => 0,
 			]));
 			$this->scanner->next();
 			while (!is_null($this->scanner->current())) {
-				$status = $this->Statement($context)->get();
-				if ($status !== BT\Status::SUCCESS) {
+				$result = $this->Statement($context)->get();
+				$feedback->addRecommendations($result);
+				if ($result->getNumberOfViolations() > 0) {
+					$feedback->addViolations($result);
 					break;
 				}
 			}
-			return $context->output();
+			return $feedback->toMap();
 			/*
 			while ($this->scanner->next()) {
 				$tuple = $this->scanner->current();

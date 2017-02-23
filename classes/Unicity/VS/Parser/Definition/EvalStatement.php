@@ -34,8 +34,7 @@ namespace Unicity\VS\Parser\Definition {
 		public function get() {
 			$module = $this->context->getModule($this->args[0]->get());
 			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
-			$output = $this->context->output();
-			$object = new $module($policy, $output);
+			$object = new $module($policy);
 			$entity = $this->context->getEntity();
 			$other = $this->args[1]->get();
 			return call_user_func_array([$object, 'process'], [$entity, $other]);

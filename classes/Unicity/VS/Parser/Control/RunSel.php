@@ -18,12 +18,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Task {
+namespace Unicity\VS\Parser\Control {
 
-	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class RunSel extends VS\Parser\Task {
+	class RunSel extends VS\Parser\Control {
 
 		protected $policy;
 
@@ -36,14 +35,27 @@ namespace Unicity\VS\Parser\Task {
 		}
 
 		public function get() {
-			$status = BT\Status::SUCCESS;
-			foreach ($this->statements as $statement) {
-				$status = $statement->get();
-				if ($status !== BT\Status::FAILED) {
+			$feedback = new VS\Validation\Feedback();
+
+			$results = array();
+			$success = false;
+
+			foreach ($this->statements as $i => $statement) {
+				$result[$i] = $statement->get();
+				$feedback->addRecommendations($result[$i]);
+				if ($result[$i]->getNumberOfViolations() === 0) {
+					$success = true;
 					break;
 				}
 			}
-			return $status;
+
+			if (!$success) {
+				foreach ($results as $result) {
+					$feedback->addViolations($result);
+				}
+			}
+
+			return $feedback;
 		}
 
 	}

@@ -22,20 +22,17 @@ namespace Unicity\VS\Validation {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
-	use \Unicity\ORM;
+	use \Unicity\VS;
 
 	abstract class Module extends Core\Object {
 
 		protected $policy;
 
-		protected $output;
-
-		public function __construct($policy, ORM\JSON\Model\ArrayList $output) {
+		public function __construct($policy) {
 			$this->policy = $policy;
-			$this->output = $output;
 		}
 
-		public abstract function process(BT\Entity $entity, $other) : int;
+		public abstract function process(BT\Entity $entity, $other) : VS\Validation\Feedback;
 
 	}
 

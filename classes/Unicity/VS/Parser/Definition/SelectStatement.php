@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\BT;
 	use \Unicity\VS;
 
 	class SelectStatement extends VS\Parser\Definition\Statement {
@@ -36,17 +35,24 @@ namespace Unicity\VS\Parser\Definition {
 		}
 
 		public function get() {
+			$feedback = new VS\Validation\Feedback();
+
 			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
 			$this->context->push($path);
-			$status = BT\Status::SUCCESS;
+
 			foreach ($this->statements as $statement) {
-				$status = $statement->get();
-				if ($status !== BT\Status::SUCCESS) {
+				$result = $statement->get();
+
+				$feedback->addRecommendations($result);
+				if ($result->getNumberOfViolations() > 0) {
+					$feedback->addViolations($result);
 					break;
 				}
 			}
+
 			$this->context->pop();
-			return $status;
+
+			return $feedback;
 		}
 
 	}
