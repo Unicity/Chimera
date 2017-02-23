@@ -66,7 +66,7 @@ namespace Unicity\VS {
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Variable());
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'eval', 'install', 'run', 'select', 'set', // statements
+				'eval', 'if', 'install', 'run', 'select', 'set', // statements
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -142,6 +142,28 @@ namespace Unicity\VS {
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VS\Parser\Definition\EvalStatement($context, $args);
+		}
+
+		protected function IfStatement(VS\Parser\Context $context) : VS\Parser\Definition\IfStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$this->Symbol($context, ',');
+			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableTerm');
+			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->Term($context);
+			}
+			$this->Symbol($context, ')');
+			$statements = array();
+			$this->Symbol($context, '{');
+			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				$statements[] = $this->Statement($context);
+			}
+			$this->Symbol($context, '}');
+			$this->Terminal($context);
+			return new VS\Parser\Definition\IfStatement($context, $args, $statements);
 		}
 
 		protected function InstallStatement(VS\Parser\Context $context) : VS\Parser\Definition\InstallStatement {
@@ -300,6 +322,9 @@ namespace Unicity\VS {
 			$tuple = $this->scanner->current();
 			if ($this->IsStatement($tuple, 'eval')) {
 				return $this->EvalStatement($context);
+			}
+			if ($this->IsStatement($tuple, 'if')) {
+				return $this->IfStatement($context);
 			}
 			if ($this->IsStatement($tuple, 'install')) {
 				return $this->InstallStatement($context);

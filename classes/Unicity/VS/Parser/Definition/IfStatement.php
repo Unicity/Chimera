@@ -22,7 +22,7 @@ namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class SelectStatement extends VS\Parser\Definition\Statement {
+	class IfStatement extends VS\Parser\Definition\Statement {
 
 		protected $args;
 
@@ -35,15 +35,20 @@ namespace Unicity\VS\Parser\Definition {
 		}
 
 		public function get() {
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$this->context->push($path);
-
-			$object = new VS\Parser\Control\RunSeq($this->context, null, $this->statements);
-			$feedback = $object->get();
-
-			$this->context->pop();
-
-			return $feedback;
+			$module = $this->context->getModule($this->args[0]->get());
+			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
+			$object = new $module($policy);
+			$entity = $this->context->getEntity();
+			$paths = $this->args[1]->get();
+			if (!is_array($paths)) {
+				$paths = [$paths];
+			}
+			$feedback = call_user_func_array([$object, 'process'], [$entity, $paths]);
+			if ($feedback->getNumberOfViolations() === 0) {
+				$object = new VS\Parser\Control\RunSeq($this->context, null, $this->statements);
+				return $object->get();
+			}
+			return new VS\Validation\Feedback();
 		}
 
 	}
