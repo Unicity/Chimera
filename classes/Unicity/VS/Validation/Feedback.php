@@ -21,7 +21,10 @@ declare(strict_types = 1);
 namespace Unicity\VS\Validation {
 
 	use \Unicity\Common;
+	use \Unicity\Config;
 	use \Unicity\Core;
+	use \Unicity\IO;
+	use \Unicity\Locale;
 	use \Unicity\ORM;
 	use \Unicity\VS;
 
@@ -47,7 +50,7 @@ namespace Unicity\VS\Validation {
 			sort($paths);
 			$this->recommendations->putValue([
 				'type' => (string) $type,
-				'message' => strtr($message, $values),
+				'message' => strtr(static::localize($message), $values),
 				'paths' => $paths,
 			]);
 		}
@@ -61,7 +64,7 @@ namespace Unicity\VS\Validation {
 			sort($paths);
 			$this->violations->putValue([
 				'type' => (string) $type,
-				'message' => strtr($message, $values),
+				'message' => strtr(static::localize($message), $values),
 				'paths' => $paths,
 			]);
 		}
@@ -83,6 +86,32 @@ namespace Unicity\VS\Validation {
 			$feedback->recommendations = $this->recommendations;
 			$feedback->violations = $this->violations;
 			return $feedback;
+		}
+
+		protected static $localization = null;
+
+		protected static function localize(string $message) {
+			if (static::$localization === null) {
+				static::$localization = static::localize_();
+			}
+			if (static::$localization->hasKey($message)) {
+				return static::$localization->getValue($message);
+			}
+			return $message;
+		}
+
+		protected static function localize_() {
+			$languages = Locale\Info::getLanguages();
+			$file = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Messages';
+			foreach ($languages as $language => $q) {
+				$ext = '_' . str_replace('-', '_', $language) . '.properties';
+				$uri = $file . $ext;
+				if (file_exists($uri)) {
+					return Config\Properties\Reader::load(new IO\File($uri))->read();
+				}
+			}
+			$uri = $file . '.properties';
+			return Config\Properties\Reader::load(new IO\File($uri))->read();
 		}
 
 	}
