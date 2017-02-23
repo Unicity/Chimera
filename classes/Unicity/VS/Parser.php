@@ -94,8 +94,7 @@ namespace Unicity\VS {
 			return $feedback->toMap();
 			/*
 			while ($this->scanner->next()) {
-				$tuple = $this->scanner->current();
-				var_dump($tuple);
+				var_dump($this->scanner->current());
 			}
 			exit();
 			*/

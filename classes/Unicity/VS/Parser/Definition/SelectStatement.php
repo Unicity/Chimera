@@ -42,7 +42,6 @@ namespace Unicity\VS\Parser\Definition {
 
 			foreach ($this->statements as $statement) {
 				$result = $statement->get();
-
 				$feedback->addRecommendations($result);
 				if ($result->getNumberOfViolations() > 0) {
 					$feedback->addViolations($result);
