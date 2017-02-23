@@ -31,10 +31,10 @@ namespace Unicity\VS\Validation\Module {
 		public function process(BT\Entity $entity, array $paths) : VS\Validation\Feedback {
 			$feedback = new VS\Validation\Feedback();
 
+			$schema = $this->policy;
+
 			foreach ($paths as $path) {
 				$value = $entity->getComponentAtPath($path);
-
-				$schema = $this->policy;
 
 				$expectedType = $this->expectedType($schema);
 				$actualType = $this->actualType($feedback, $path, $schema, $value);
@@ -100,22 +100,22 @@ namespace Unicity\VS\Validation\Module {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
+				$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field should have a type of ":type".', [':type' => $expectedType]);
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
+				$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field should have a type of ":type".', [':type' => $expectedType]);
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
+					$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field should have a type of ":type".', [':type' => $expectedType]);
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field type should be ":type".', [':type' => $expectedType]);
+					$feedback->addRecommendation(VS\Validation\RuleType::SET, [$path], 'Field should have a type of ":type".', [':type' => $expectedType]);
 					return $expectedType;
 				}
 			}
