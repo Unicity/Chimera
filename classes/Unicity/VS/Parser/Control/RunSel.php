@@ -41,9 +41,9 @@ namespace Unicity\VS\Parser\Control {
 			$success = false;
 
 			foreach ($this->statements as $i => $statement) {
-				$result[$i] = $statement->get();
-				$feedback->addRecommendations($result[$i]);
-				if ($result[$i]->getNumberOfViolations() === 0) {
+				$results[$i] = $statement->get();
+				$feedback->addRecommendations($results[$i]);
+				if ($results[$i]->getNumberOfViolations() === 0) {
 					$success = true;
 					break;
 				}

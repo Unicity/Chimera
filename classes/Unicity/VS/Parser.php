@@ -284,8 +284,14 @@ namespace Unicity\VS {
 				$args[] = $this->Term($context);
 			}
 			$this->Symbol($context, ')');
+			$statements = array();
+			$this->Symbol($context, '{');
+			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				$statements[] = $this->Statement($context);
+			}
+			$this->Symbol($context, '}');
 			$this->Terminal($context);
-			return new VS\Parser\Definition\RunStatement($context, $args);
+			return new VS\Parser\Definition\RunStatement($context, $args, $statements);
 		}
 
 		protected function SelectStatement(VS\Parser\Context $context) : VS\Parser\Definition\SelectStatement {
