@@ -23,17 +23,15 @@ namespace Unicity\VS\Validation\Module {
 	use \Unicity\BT;
 	use \Unicity\VS;
 
-	class IsLesserThan extends VS\Validation\Module {
+	class IsNull extends VS\Validation\Module {
 
 		public function process(BT\Entity $entity, array $paths): VS\Validation\Feedback {
 			$feedback = new VS\Validation\Feedback();
 
-			$v2 = $this->policy;
-
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 >= $v2) {
-					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be lesser than ":value".', [':value' => $v2]);
+				if (!is_null($v1)) {
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be null.');
 				}
 			}
 

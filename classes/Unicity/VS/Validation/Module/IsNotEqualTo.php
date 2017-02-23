@@ -33,7 +33,7 @@ namespace Unicity\VS\Validation\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if ($v1 === $v2) {
-					$feedback->addViolation(VS\Validation\RuleType::MALFORMED, [$path], 'Field must be not equal to ":value".', [':value' => $v2]);
+					$feedback->addViolation(VS\Validation\RuleType::MISMATCH, [$path], 'Field must be not equal to ":value".', [':value' => $v2]);
 				}
 			}
 
