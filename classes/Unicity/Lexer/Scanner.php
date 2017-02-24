@@ -134,11 +134,19 @@ namespace Unicity\Lexer {
 		 */
 		public function next() {
 			if ($this->reader->isReady()) {
-				foreach ($this->rules as $rule) {
-					$tuple = $rule->process($this->reader);
-					if (($tuple !== null) && !$this->ignorables->hasValue($tuple->type)) {
-						$this->current = $tuple;
-						return true;
+				$rewind = true;
+				while ($rewind) { // without this loop sequential ignorables weren't recognized
+					$rewind = false;
+					foreach ($this->rules as $rule) {
+						$tuple = $rule->process($this->reader);
+						if ($tuple !== null) {
+							if ($this->ignorables->hasValue($tuple->type)) {
+								$rewind = true;
+								break;
+							}
+							$this->current = $tuple;
+							return true;
+						}
 					}
 				}
 			}

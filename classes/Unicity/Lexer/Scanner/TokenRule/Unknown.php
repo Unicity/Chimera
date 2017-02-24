@@ -50,6 +50,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 			if ($char !== null) {
 				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::unknown(), new Common\StringRef($char), $index);
 				$reader->skip(1);
+				var_dump(ord($char)); exit();
 				return $tuple;
 			}
 			return null;

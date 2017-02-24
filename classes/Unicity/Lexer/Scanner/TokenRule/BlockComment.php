@@ -27,40 +27,52 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	use \Unicity\Lexer;
 
 	/**
-	 * This class represents the rule definition for a "whitespace" token, which the tokenizer will use
-	 * to tokenize a string.
+	 * This class represents the rule definition for a "whitespace" token (i.e. C-style comment), which
+	 * the tokenizer will use to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package Lexer
 	 */
-	class Whitespace extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class BlockComment extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
-		 * This variable stores the traditional whitespace characters.
+		 * This variable stores the opening 2-character sequence.
 		 *
 		 * @access protected
-		 * @var array
+		 * @var string
 		 */
-		protected $whitespace;
+		protected $opening;
+
+		/**
+		 * This variable stores the closing 2-character sequence.
+		 *
+		 * @access protected
+		 * @var string
+		 */
+		protected $closing;
 
 		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
+		 * @param string $opening                                   the opening 2-character sequence
+		 * @param string $closing                                   the closing 2-character sequence
 		 */
-		public function __construct() {
-			$this->whitespace = array(' ', "\t", chr(10), "\n", "\r", "\0", "\x0B", "\x0C"); // http://php.net/manual/en/regexp.reference.escape.php
+		public function __construct(string $opening, string $closing) {
+			$this->opening = $opening;
+			$this->closing = $closing;
 		}
 
 		/**
-		 * This destructor ensures that any resources are properly disposed.
+		 * This method releases any internal references to an object.
 		 *
 		 * @access public
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->whitespace);
+			unset($this->opening);
+			unset($this->closing);
 		}
 
 		/**
@@ -74,16 +86,20 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if (($char !== null) && in_array($char, $this->whitespace)) {
-				$lookahead = $index;
-				do {
+			if ($char == $this->opening[0]) {
+				$lookahead = $index + 1;
+				$next = $reader->readChar($lookahead, false);
+				if ($next == $this->opening[1]) {
+					$lookahead += 2;
+					while ( ! (($reader->readChar($lookahead - 1, false) == $this->closing[0]) && ($reader->readChar($lookahead, false) == $this->closing[1]))) {
+						$lookahead++;
+					}
 					$lookahead++;
-					$next = $reader->readChar($lookahead, false);
+					$token = $reader->readRange($index, $lookahead);
+					$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
+					return $tuple;
 				}
-				while (($next !== null) && in_array($next, $this->whitespace));
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
-				return $tuple;
+
 			}
 			return null;
 		}
