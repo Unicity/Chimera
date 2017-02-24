@@ -27,7 +27,7 @@ namespace Unicity\VLD\Parser\Module {
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class HasSchema extends VLD\Parser\Module {
+	class MatchesSchema extends VLD\Parser\Module {
 
 		public function process(BT\Entity $entity, string $root, array $paths) : VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback($root);
