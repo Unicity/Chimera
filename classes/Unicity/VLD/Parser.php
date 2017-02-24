@@ -65,12 +65,12 @@ namespace Unicity\VLD {
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
 
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\ArrayVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\BooleanVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\MapVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\MixedVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\NumberVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\StringVariable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableArray());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableBoolean());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableMap());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableMixed());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableNumber());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableString());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
 				'eval', 'if', 'include', 'install', 'run', 'select', 'set', // statements
@@ -139,9 +139,9 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
-			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -155,9 +155,9 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
-			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -177,7 +177,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\IncludeStatement($context, $args);
@@ -187,7 +187,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\InstallStatement($context, $args);
@@ -244,7 +244,31 @@ namespace Unicity\VLD {
 		}
 
 		protected function IsVariableTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE'));
+			return (!is_null($tuple) && preg_match('/^VARIABLE/', (string) $tuple->type));
+		}
+
+		protected function IsVariableArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:ARRAY'));
+		}
+
+		protected function IsVariableBooleanTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:BOOLEAN'));
+		}
+
+		protected function IsVariableMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MAP'));
+		}
+
+		protected function IsVariableMixedTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MIXED'));
+		}
+
+		protected function IsVariableNumberTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:NUMBER'));
+		}
+
+		protected function IsVariableStringTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:STRING'));
 		}
 
 		protected function MapTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\MapTerm {
@@ -295,7 +319,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -316,7 +340,7 @@ namespace Unicity\VLD {
 			$args = array();
 			$this->Symbol($context, '(');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
-				$args[] = $this->TermOption($context, 'StringTerm', 'VariableTerm');
+				$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
 			}
 			$this->Symbol($context, ')');
 			$statements = array();

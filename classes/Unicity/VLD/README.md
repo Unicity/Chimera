@@ -71,7 +71,7 @@ false
 
 ### Maps
 
-A map (aka object) is defined using curly brackets. It represents a collection of name/value pairs.
+A map (aka hash or object) is defined using curly brackets. It represents a collection of name-value pairs.
 
 ```
 {
@@ -196,7 +196,7 @@ To declare a map variable, use the set statement.
 set(%variable, {}).
 ```
 
-### Mixed Variables
+#### Mixed Variables
 
 Mixed variables are prefixed using an asterisk (which is an adaptation of the wildcard
 syntax in many languages).
