@@ -2,7 +2,7 @@
 
 ## File
 
-A VLD file is simple text file and uses the file extension `.vld`.
+A VLD file is a simple text file and uses the file extension `.vld`.
 
 ## Syntax
 
@@ -40,9 +40,12 @@ The syntax of VLD in Backus-Naur Form:
 
 ## Terms
 
+All terms share the same syntax as JSON uses for its terms, with the exception of the variable
+term which uses PHP syntax.
+
 ### Arrays
 
-An array is defined using square brackets (just like in JSON). It represents a collection of items.
+An array is defined using square brackets. It represents a collection of items.
 
 ```
 [
@@ -62,8 +65,7 @@ false
 
 ### Maps
 
-A map (aka object) is defined using curly brackets (just like in JSON). It represents a collection
-of name/value pairs.
+A map (aka object) is defined using curly brackets. It represents a collection of name/value pairs.
 
 ```
 {
@@ -84,11 +86,15 @@ null
 
 There are two types of numbers: integer and real numbers.
 
+#### Integers
+
 An integer is a number without a decimal point.
 
 ```
 123
 ```
+
+#### Reals
 
 A real is a number with a decimal point.
 
@@ -106,8 +112,8 @@ A string is some test surrounded by double quotation marks.
 
 ### Variables
 
-A variable can be assigned the value of any other term.  A variable is defined like PHP variables with
-a dollar sign for its prefix.
+A variable can be assigned the value of any other term.  A variable is declared using a dollar sign as
+its prefix.
 
 ```
 $example
