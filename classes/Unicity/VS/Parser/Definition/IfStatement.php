@@ -46,7 +46,7 @@ namespace Unicity\VS\Parser\Definition {
 			}
 			$feedback = call_user_func_array([$object, 'process'], [$entity, $root, $paths]);
 			if ($feedback->getNumberOfViolations() === 0) {
-				$object = new VS\Parser\Control\RunSeq($this->context, null, $this->statements);
+				$object = new VS\Parser\Definition\SeqControl($this->context, null, $this->statements);
 				return $object->get();
 			}
 			return new VS\Validation\Feedback($root);

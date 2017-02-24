@@ -18,12 +18,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Control {
+namespace Unicity\VS\Parser\Definition {
 
-	use \Unicity\Core;
 	use \Unicity\VS;
 
-	class RunAll extends VS\Parser\Control {
+	class SelControl extends VS\Parser\Definition\Control {
 
 		protected $policy;
 
@@ -36,30 +35,21 @@ namespace Unicity\VS\Parser\Control {
 		}
 
 		public function get() {
-			if (is_array($this->policy) && isset($this->policy['successes'])) {
-				$successesRequired = Core\Convert::toInteger($this->policy['successes']);
-				if ($successesRequired < 0) {
-					$successesRequired = count($this->statements) + $successesRequired;
-				}
-			}
-			else {
-				$successesRequired = count($this->statements);
-			}
-
 			$feedback = new VS\Validation\Feedback($this->context->getPath());
 
 			$results = array();
-			$successes = 0;
+			$success = false;
 
 			foreach ($this->statements as $i => $statement) {
 				$results[$i] = $statement->get();
 				$feedback->addRecommendations($results[$i]);
 				if ($results[$i]->getNumberOfViolations() === 0) {
-                    $successes++;
-                }
+					$success = true;
+					break;
+				}
 			}
 
-			if ($successes < $successesRequired) {
+			if (!$success) {
 				foreach ($results as $result) {
 					$feedback->addViolations($result);
 				}
