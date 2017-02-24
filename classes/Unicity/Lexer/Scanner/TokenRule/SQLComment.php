@@ -27,14 +27,14 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	use \Unicity\Lexer;
 
 	/**
-	 * This class represents the rule definition for an "EOL comment" token, which the tokenizer will use
-	 * to tokenize a string.
+	 * This class represents the rule definition for an "SQL-style comment" token, which the tokenizer
+	 * will use to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package Lexer
 	 */
-	class EOLComment extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class SQLComment extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores the end-of-line characters.
@@ -45,21 +45,12 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		protected $eol;
 
 		/**
-		 * This variable stores the symbol that signals the start of the EOL comments.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $symbol;
-
-		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
 		 */
-		public function __construct(string $symbol) {
+		public function __construct() {
 			$this->eol = array("\n", "\r", "\x0C", '', null); // http://php.net/manual/en/regexp.reference.escape.php
-			$this->symbol = $symbol;
 		}
 
 		/**
@@ -83,14 +74,18 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if ($char === $this->symbol) {
+			if ($char === '-') { // "whitespace" token (i.e. SQL-style comment) or "operator" token
 				$lookahead = $index + 1;
-				while (!in_array($reader->readChar($lookahead, false), $this->eol)) {
-					$lookahead++;
+				$char = $reader->readChar($lookahead, false);
+				if ($char === '-') {
+					do {
+						$lookahead++;
+					}
+					while (!in_array($reader->readChar($lookahead, false), $this->eol));
+					$token = $reader->readRange($index, $lookahead);
+					$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
+					return $tuple;
 				}
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
-				return $tuple;
 			}
 			return null;
 		}

@@ -49,7 +49,7 @@ namespace Unicity\VLD {
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\BlockComment('/*', '*/'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment());
+			$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment('`'));
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
 
@@ -65,7 +65,13 @@ namespace Unicity\VLD {
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
 
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Variable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\ArrayVariable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\BooleanVariable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\MapVariable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\MixedVariable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\NumberVariable());
+			$this->scanner->addRule(new VLD\Scanner\TokenRule\StringVariable());
+
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
 				'eval', 'if', 'include', 'install', 'run', 'select', 'set', // statements
 				'false', 'true', // booleans

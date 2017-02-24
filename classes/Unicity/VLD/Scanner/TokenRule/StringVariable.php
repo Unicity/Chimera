@@ -19,7 +19,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Lexer\Scanner\TokenRule {
+namespace Unicity\VLD\Scanner\TokenRule {
 
 	use \Unicity\Common;
 	use \Unicity\Core;
@@ -27,50 +27,14 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	use \Unicity\Lexer;
 
 	/**
-	 * This class represents the rule definition for an "EOL comment" token, which the tokenizer will use
-	 * to tokenize a string.
+	 * This class represents the rule definition for a "string variable" token, which the
+	 * tokenizer will use to tokenize a string.
 	 *
 	 * @access public
 	 * @class
-	 * @package Lexer
+	 * @package VLD
 	 */
-	class EOLComment extends Core\Object implements Lexer\Scanner\ITokenRule {
-
-		/**
-		 * This variable stores the end-of-line characters.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $eol;
-
-		/**
-		 * This variable stores the symbol that signals the start of the EOL comments.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $symbol;
-
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 */
-		public function __construct(string $symbol) {
-			$this->eol = array("\n", "\r", "\x0C", '', null); // http://php.net/manual/en/regexp.reference.escape.php
-			$this->symbol = $symbol;
-		}
-
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->eol);
-		}
+	class StringVariable extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.
@@ -83,13 +47,15 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if ($char === $this->symbol) {
-				$lookahead = $index + 1;
-				while (!in_array($reader->readChar($lookahead, false), $this->eol)) {
+			if (($char !== null) && preg_match('/^' . preg_quote('$'). '$/', $char)) {
+				$lookahead = $index;
+				do {
 					$lookahead++;
+					$next = $reader->readChar($lookahead, false);
 				}
+				while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
+				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::variable(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			return null;
