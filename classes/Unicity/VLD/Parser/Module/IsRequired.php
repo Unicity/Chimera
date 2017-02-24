@@ -21,18 +21,17 @@ declare(strict_types = 1);
 namespace Unicity\VLD\Parser\Module {
 
 	use \Unicity\BT;
-	use \Unicity\Core;
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class IsUnset extends VLD\Parser\Module {
+	class IsRequired extends VLD\Parser\Module {
 
 		public function process(BT\Entity $entity, string $root, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback($root);
 
 			foreach ($paths as $path) {
-				if (Core\Data\ToolKit::isUnset($entity->hasComponentAtPath($path))) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.unset');
+				if (!$entity->hasComponentAtPath($path)) {
+					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
 				}
 			}
 

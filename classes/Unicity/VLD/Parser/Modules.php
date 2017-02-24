@@ -14,5 +14,7 @@ return array(
 	'undefined' => '\\Unicity\\VLD\\Parser\\Module\\IsUndefined',
 	'unset' => '\\Unicity\\VLD\\Parser\\Module\\IsUnset',
 
+	'req' => '\\Unicity\\VLD\\Parser\\Module\\IsRequired',
+
 	'regex' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
 );
