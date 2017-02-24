@@ -36,11 +36,17 @@ namespace Unicity\VS\Validation {
 		protected $recommendations;
 
 		/**
+		 * @var string
+		 */
+		protected $root;
+
+		/**
 		 * @var Common\Mutable\HashSet
 		 */
 		protected $violations;
 
-		public function __construct() {
+		public function __construct(string $root) {
+			$this->root = $root;
 			$this->recommendations = new Common\Mutable\HashSet();
 			$this->violations = new Common\Mutable\HashSet();
 		}
@@ -49,7 +55,7 @@ namespace Unicity\VS\Validation {
 			ksort($values);
 			sort($fields);
 			$this->recommendations->putValue([
-				'fields' => static::mapFields($fields),
+				'fields' => static::mapFields($this->root, $fields),
 				'message' => strtr(static::localize($message), $values),
 				'type' => (string) $type,
 			]);
@@ -63,7 +69,7 @@ namespace Unicity\VS\Validation {
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
-				'fields' => static::mapFields($fields),
+				'fields' => static::mapFields($this->root, $fields),
 				'message' => strtr(static::localize($message), $values),
 				'type' => (string) $type,
 			]);
@@ -114,10 +120,10 @@ namespace Unicity\VS\Validation {
 			return Config\Properties\Reader::load(new IO\File($uri))->read();
 		}
 
-		protected static function mapFields(array $fields) {
+		protected static function mapFields(string $root, array $fields) {
 			$buffer = array();
 			foreach ($fields as $i => $field) {
-				$buffer[$i]['field'] = $field;
+				$buffer[$i]['field'] = ORM\Query::appendKey($root, (string) $field);
 			}
 			return $buffer;
 		}

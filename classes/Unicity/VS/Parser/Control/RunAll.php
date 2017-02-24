@@ -46,7 +46,7 @@ namespace Unicity\VS\Parser\Control {
 				$successesRequired = count($this->statements);
 			}
 
-			$feedback = new VS\Validation\Feedback();
+			$feedback = new VS\Validation\Feedback($this->context->getPath());
 
 			$results = array();
 			$successes = 0;

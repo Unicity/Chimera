@@ -77,11 +77,11 @@ namespace Unicity\VS {
 		}
 
 		public function run(Common\HashMap $input) : Common\IMap {
-			$feedback = new VS\Validation\Feedback();
 			$context = new VS\Parser\Context(new BT\Entity([
 				'components' => $input,
 				'entity_id' => 0,
 			]));
+			$feedback = new VS\Validation\Feedback($context->getPath());
 			$this->scanner->next();
 			while (!is_null($this->scanner->current())) {
 				$result = $this->Statement($context)->get();

@@ -33,7 +33,7 @@ namespace Unicity\VS\Parser\Definition {
 
 		public function get() {
 			$this->context->setSymbol($this->entry[0]->get(), $this->entry[1]->get());
-			return new VS\Validation\Feedback();
+			return new VS\Validation\Feedback($this->context->getPath());
 		}
 
 	}

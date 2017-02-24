@@ -35,7 +35,7 @@ namespace Unicity\VS\Parser\Control {
 		}
 
 		public function get() {
-			$feedback = new VS\Validation\Feedback();
+			$feedback = new VS\Validation\Feedback($this->context->getPath());
 
 			$results = array();
 			$success = false;

@@ -39,16 +39,17 @@ namespace Unicity\VS\Parser\Definition {
 			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
 			$object = new $module($policy);
 			$entity = $this->context->getEntity();
+			$root = $this->context->getPath();
 			$paths = $this->args[1]->get();
 			if (!is_array($paths)) {
 				$paths = [$paths];
 			}
-			$feedback = call_user_func_array([$object, 'process'], [$entity, $paths]);
+			$feedback = call_user_func_array([$object, 'process'], [$entity, $root, $paths]);
 			if ($feedback->getNumberOfViolations() === 0) {
 				$object = new VS\Parser\Control\RunSeq($this->context, null, $this->statements);
 				return $object->get();
 			}
-			return new VS\Validation\Feedback();
+			return new VS\Validation\Feedback($root);
 		}
 
 	}

@@ -42,8 +42,11 @@ namespace Unicity\ORM {
 		 * @param integer $index                                    the index to be affixed
 		 * @return string                                           the new path
 		 */
-		public static function appendIndex(string $path, int $index) {
-			return trim($path . '.' . sprintf('%d', $index), '.');
+		public static function appendIndex(?string $path, int $index) {
+			if (is_null($path) || in_array($path, ['.', ''])) {
+				return sprintf('%d', $index);
+			}
+			return trim(implode('.', [$path, sprintf('%d', $index)]), '.');
 		}
 
 		/**
@@ -55,8 +58,11 @@ namespace Unicity\ORM {
 		 * @param string $key                                       the key to be affixed
 		 * @return string                                           the new path
 		 */
-		public static function appendKey(string $path, $key) {
-			return trim($path . '.' . $key, '.');
+		public static function appendKey(?string $path, string $key) {
+			if (is_null($path) || in_array($path, ['.', ''])) {
+				return trim($key, '.');
+			}
+			return trim(implode('.', [$path, $key]), '.');
 		}
 
 		/**
