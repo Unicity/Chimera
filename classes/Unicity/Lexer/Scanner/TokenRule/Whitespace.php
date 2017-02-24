@@ -50,7 +50,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->whitespace = array(' ', "\t", chr(10), "\n", "\r", "\0", "\x0B", "\x0C"); // http://php.net/manual/en/regexp.reference.escape.php
+			$this->whitespace = array(' ', "\t", "\n", "\r", "\0", "\x0B", "\x0C"); // http://php.net/manual/en/regexp.reference.escape.php
 		}
 
 		/**
