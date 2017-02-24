@@ -1,0 +1,13 @@
+{
+	"properties": {
+		"recommendations": {
+			"$ref": "\\Unicity\\VLD\\Validation\\Model\\Entries",
+			"type": "array"
+		},
+		"violations": {
+			"$ref": "\\Unicity\\VLD\\Validation\\Model\\Entries",
+			"type": "array"
+		}
+	},
+	"type": "object"
+}
