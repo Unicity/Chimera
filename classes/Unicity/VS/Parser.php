@@ -48,7 +48,8 @@ namespace Unicity\VS {
 			$this->scanner = new Lexer\Scanner($reader);
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
-			//$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment());
+			$this->scanner->addRule(new Lexer\Scanner\TokenRule\BlockComment('/*', '*/'));
+			$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
 
@@ -77,6 +78,12 @@ namespace Unicity\VS {
 		}
 
 		public function run(Common\HashMap $input) : Common\IMap {
+			/*
+			while ($this->scanner->next()) {
+				var_dump($this->scanner->current());
+			}
+			exit();
+			*/
 			$context = new VS\Parser\Context(new BT\Entity([
 				'components' => $input,
 				'entity_id' => 0,
@@ -92,12 +99,6 @@ namespace Unicity\VS {
 				}
 			}
 			return $feedback->toMap();
-			/*
-			while ($this->scanner->next()) {
-				var_dump($this->scanner->current());
-			}
-			exit();
-			*/
 		}
 
 		protected function ArrayTerm(VS\Parser\Context $context) : VS\Parser\Definition\ArrayTerm {
