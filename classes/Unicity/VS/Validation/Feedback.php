@@ -45,13 +45,13 @@ namespace Unicity\VS\Validation {
 			$this->violations = new Common\Mutable\HashSet();
 		}
 
-		public function addRecommendation(VS\Validation\RuleType $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
+		public function addRecommendation(VS\Validation\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
 			ksort($values);
-			sort($paths);
+			sort($fields);
 			$this->recommendations->putValue([
-				'type' => (string) $type,
+				'fields' => static::mapFields($fields),
 				'message' => strtr(static::localize($message), $values),
-				'paths' => $paths,
+				'type' => (string) $type,
 			]);
 		}
 
@@ -59,13 +59,13 @@ namespace Unicity\VS\Validation {
 			$this->recommendations->putValues($feedback->recommendations);
 		}
 
-		public function addViolation(VS\Validation\RuleType $type, array $paths, string $message, array $values = []) : void { # TODO make multilingual
+		public function addViolation(VS\Validation\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
 			ksort($values);
-			sort($paths);
+			sort($fields);
 			$this->violations->putValue([
-				'type' => (string) $type,
+				'fields' => static::mapFields($fields),
 				'message' => strtr(static::localize($message), $values),
-				'paths' => $paths,
+				'type' => (string) $type,
 			]);
 		}
 
@@ -112,6 +112,14 @@ namespace Unicity\VS\Validation {
 			}
 			$uri = $file . '.properties';
 			return Config\Properties\Reader::load(new IO\File($uri))->read();
+		}
+
+		protected static function mapFields(array $fields) {
+			$buffer = array();
+			foreach ($fields as $i => $field) {
+				$buffer[$i]['field'] = $field;
+			}
+			return $buffer;
 		}
 
 	}
