@@ -32,7 +32,7 @@ namespace Unicity\VS\Validation {
 			$this->policy = $policy;
 		}
 
-		public abstract function process(BT\Entity $entity, array $paths) : VS\Validation\Feedback;
+		public abstract function process(BT\Entity $entity, string $root, array $paths) : VS\Validation\Feedback;
 
 	}
 

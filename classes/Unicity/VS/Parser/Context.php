@@ -65,7 +65,7 @@ namespace Unicity\VS\Parser {
 			throw new Throwable\KeyNotFound\Exception('Unable to get element. Key ":key" does not exist.', array(':key' => $key));
 		}
 
-		public function getPath() {
+		public function getPath() : string {
 			$context = $this->current();
 			return $context['path'];
 		}

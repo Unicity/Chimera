@@ -29,8 +29,8 @@ namespace Unicity\VS\Validation\Module {
 
 	class HasSchema extends VS\Validation\Module {
 
-		public function process(BT\Entity $entity, array $paths) : VS\Validation\Feedback {
-			$feedback = new VS\Validation\Feedback();
+		public function process(BT\Entity $entity, string $root, array $paths) : VS\Validation\Feedback {
+			$feedback = new VS\Validation\Feedback($root);
 
 			$schema = $this->policy;
 

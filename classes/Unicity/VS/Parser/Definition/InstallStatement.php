@@ -36,7 +36,7 @@ namespace Unicity\VS\Parser\Definition {
 		public function get() {
 			$modules = Config\Inc\Reader::load(new IO\File($this->args[0]->get()))->read();
 			$this->context->addModules($modules);
-			return new VS\Validation\Feedback();
+			return new VS\Validation\Feedback($this->context->getPath());
 		}
 
 	}
