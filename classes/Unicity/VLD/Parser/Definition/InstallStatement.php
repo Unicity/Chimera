@@ -36,7 +36,7 @@ namespace Unicity\VLD\Parser\Definition {
 		public function get() {
 			$modules = Config\Inc\Reader::load(new IO\File($this->args[0]->get()))->read();
 			$this->context->addModules($modules);
-			return new VLD\Validation\Feedback($this->context->getPath());
+			return new VLD\Parser\Feedback($this->context->getPath());
 		}
 
 	}

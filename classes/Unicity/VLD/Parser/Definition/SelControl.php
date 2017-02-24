@@ -35,7 +35,7 @@ namespace Unicity\VLD\Parser\Definition {
 		}
 
 		public function get() {
-			$feedback = new VLD\Validation\Feedback($this->context->getPath());
+			$feedback = new VLD\Parser\Feedback($this->context->getPath());
 
 			$results = array();
 			$success = false;

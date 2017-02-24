@@ -18,27 +18,21 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Validation\Module {
+namespace Unicity\VLD\Parser {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Validation\RuleType;
 
-	class IsUndefined extends VLD\Validation\Module {
+	abstract class Module extends Core\Object {
 
-		public function process(BT\Entity $entity, string $root, array $paths): VLD\Validation\Feedback {
-			$feedback = new VLD\Validation\Feedback($root);
+		protected $policy;
 
-			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if (!Core\Data\ToolKit::isUndefined($v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.undefined');
-				}
-			}
-
-			return $feedback;
+		public function __construct($policy) {
+			$this->policy = $policy;
 		}
+
+		public abstract function process(BT\Entity $entity, string $root, array $paths) : VLD\Parser\Feedback;
 
 	}
 

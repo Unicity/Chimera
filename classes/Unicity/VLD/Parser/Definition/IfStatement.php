@@ -49,7 +49,7 @@ namespace Unicity\VLD\Parser\Definition {
 				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->statements);
 				return $object->get();
 			}
-			return new VLD\Validation\Feedback($root);
+			return new VLD\Parser\Feedback($root);
 		}
 
 	}

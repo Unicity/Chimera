@@ -18,23 +18,23 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Validation\Module {
+namespace Unicity\VLD\Parser\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Validation\RuleType;
+	use \Unicity\VLD\Parser\RuleType;
 
-	class IsNotEqualTo extends VLD\Validation\Module {
+	class IsGreaterThanOrEqualTo extends VLD\Parser\Module {
 
-		public function process(BT\Entity $entity, string $root, array $paths): VLD\Validation\Feedback {
-			$feedback = new VLD\Validation\Feedback($root);
+		public function process(BT\Entity $entity, string $root, array $paths): VLD\Parser\Feedback {
+			$feedback = new VLD\Parser\Feedback($root);
 
 			$v2 = $this->policy;
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 === $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ne', [':value' => $v2]);
+				if ($v1 < $v2) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ge', [':value' => $v2]);
 				}
 			}
 
