@@ -14,10 +14,10 @@ The syntax of VLD in Backus-Naur Form:
 <block> = <lcurly> <statement>+ <rcurly>
 <colon> = ":"
 <comma> = ","
-<eval> = eval <lparen> (<string> | <variable>) <comma> (<array> | <string> | <variable>) (<comma> <term>)? <rparen> <terminal>
+<eval> = eval <lparen> (<string> | <variable-string>) <comma> (<array> | <string> | <variable-string>) (<comma> <term>)? <rparen> <terminal>
 <if> = if <lparen> (<string> | <variable>) <comma> (<array> | <string> | <variable>) (<comma> <term>)? <rparen> <block> <terminal>
-<include> = include <lparen> (<string> | <variable>) <rparen> <terminal>
-<install> = install <lparen> (<string> | <variable>) <rparen> <terminal>
+<include> = include <lparen> (<string> | <variable-string>) <rparen> <terminal>
+<install> = install <lparen> (<string> | <variable-string>) <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
 <lbracket> = "["
 <lcurly> = "{"
@@ -28,20 +28,26 @@ The syntax of VLD in Backus-Naur Form:
 <rbracket> = "]"
 <rcurly> = "}"
 <rparen> = ")"
-<run> = run <lparen> (<string> | <variable>) (<comma> <term>)? <rparen> <block> <terminal>
-<select> = select <lparen> (<string> | <variable>)? <rparen>  <terminal>
+<run> = run <lparen> (<string> | <variable-string>) (<comma> <term>)? <rparen> <block> <terminal>
+<select> = select <lparen> (<string> | <variable-string>)? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> <term> <rparen>  <terminal>
 <statement> = <eval> | <if> | <include> | <install> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
-<variable> = '/^\$[a-z0-9]$/i'
+<variable> = <variable-boolean> | <variable-number> | <variable-string> | <variable-array> | <variable-map> | <variable-mixed>
+<variable-boolean> = '/^\?[a-z0-9]$/i'
+<variable-number> = '/^#[a-z0-9]$/i'
+<variable-string> = '/^\$[a-z0-9]$/i'
+<variable-array> = '/^@[a-z0-9]$/i'
+<variable-map> = '/^%[a-z0-9]$/i'
+<variable-mixed> = '/^\*[a-z0-9]$/i'
 ```
 
 ## Terms
 
 All terms share the same syntax as JSON uses for its terms, with the exception of the variable
-term which uses PHP syntax.
+terms (which adapt their convention from a variety of other languages).
 
 ### Arrays
 
@@ -112,11 +118,102 @@ A string is some test surrounded by double quotation marks.
 
 ### Variables
 
-A variable can be assigned the value of any other term.  A variable is declared using a dollar sign as
-its prefix.
+A variable is used to store the value of another term.  There are 6 variable types
+in the VLD language: boolean variables, number variables, string variables, array
+variables, map variables, and mixed variables.  Each variable type has its own unique
+prefix.
+
+#### Boolean Variables
+
+Boolean variables are prefixed using a question mark (which is an adaptation of the
+syntax used in Ruby).
 
 ```
-$example
+?variable
+```
+
+To declare a boolean variable, use the set statement.
+
+```
+set(?variable, true).
+```
+
+#### Number Variables
+
+Number variables are prefixed using a hash/number symbol.
+
+```
+#variable
+```
+
+To declare a boolean variable, use the set statement.
+
+```
+set(#variable, 123).
+set(#variable, 12.3).
+```
+
+#### String Variables
+
+String variables are prefixed using a dollar sign (which is an adaptation of the syntax
+used in Perl and PHP).
+
+```
+$variable
+```
+
+To declare a boolean variable, use the set statement.
+
+```
+set($variable, "some text").
+```
+
+#### Array Variables
+
+Array variables are prefixed using an `@` sign (which is the same syntax used in Perl).
+
+```
+@variable
+```
+
+To declare an array variable, use the set statement.
+
+```
+set(@variable, []).
+```
+
+#### Map Variables
+
+Map variables are prefixed using a percent sign (which is the same syntax used in Perl).
+
+```
+%variable
+```
+
+To declare a map variable, use the set statement.
+
+```
+set(%variable, {}).
+```
+
+### Mixed Variables
+
+Mixed variables are prefixed using an asterisk (which is an adaptation of the wildcard
+syntax in many languages).
+
+```
+*variable
+```
+
+To declare a mixed variable, use the set statement.
+
+```
+set(*variable, null).
+set(*variable, true).
+set(*variable, 123).
+set(*variable, 12.3).
+set(*variable, []).
+set(*variable, {}).
 ```
 
 ## Comments
@@ -126,10 +223,11 @@ by the parser as whitespace.
 
 ### Single-Line Comments
 
-A single-line comment is started using the `#` symbol.  The comment will terminate at the end-of-the-line.
+A single-line comment is started using the backtick symbol.  The comment will terminate at the end of the
+line.
 
 ```
-# some comment
+` some comment
 ```
 
 ### Block Comments
@@ -157,12 +255,12 @@ onto multiple lines).
 A `set` statement is used to define variables and assign them values.
 
 ```
-set($variable, null).
-set($variable, true).
-set($variable, 123).
-set($variable, 12.3).
-set($variable, []).
-set($variable, {}).
+set(*variable, null).
+set(?variable, true).
+set(#variable, 123).
+set(#variable, 12.3).
+set(@variable, []).
+set(%variable, {}).
 ```
 
 ##### Parameters
@@ -203,10 +301,10 @@ executing the designated module.
 
 ```
 eval("module", "path1").
-eval("module", "path1", $policy).
+eval("module", "path1", *policy).
 eval("module", ["path1"]).
-eval("module", ["path1"], $policy).
-eval("module", ["path1", "path2"], $policy).
+eval("module", ["path1"], *policy).
+eval("module", ["path1", "path2"], *policy).
 ```
 
 ##### Parameters
@@ -239,8 +337,8 @@ A `run` statement is used to control the way other statements are processed.  It
 by executing the designated control.
 
 ```
-run("control") { }.
-run("control", $policy) { }.
+run("seq") { }.
+run("seq", *policy) { }.
 ```
 
 ##### Parameters
@@ -278,10 +376,10 @@ its block are executed according to the `seq` control flow.
 
 ```
 if("module", "path1") { }.
-if("module", "path1", $policy) { }.
+if("module", "path1", *policy) { }.
 if("module", ["path1"]) { }.
-if("module", ["path1"], $policy) { }.
-if("module", ["path1", "path2"], $policy) { }.
+if("module", ["path1"], *policy) { }.
+if("module", ["path1", "path2"], *policy) { }.
 ```
 
 ##### Parameters
