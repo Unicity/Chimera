@@ -25,9 +25,9 @@ namespace Unicity\VS\Parser\Definition {
 	class RunStatement extends VS\Parser\Definition\Statement {
 
 		protected static $controls = array(
-			'all' => '\Unicity\VS\Parser\Control\RunAll', // executes all and reports all recommendations/violations (only when at least # have reported no violations)
-			'sel' => '\Unicity\VS\Parser\Control\RunSel', // executes all in order until one does not report any violations
-			'seq' => '\Unicity\VS\Parser\Control\RunSeq', // executes all in order until one reports a violation
+			'all' => '\Unicity\VS\Parser\Definition\AllControl',
+			'sel' => '\Unicity\VS\Parser\Definition\SelControl',
+			'seq' => '\Unicity\VS\Parser\Definition\SeqControl',
 		);
 
 		protected $args;

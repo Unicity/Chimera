@@ -38,7 +38,7 @@ namespace Unicity\VS\Parser\Definition {
 			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
 			$this->context->push($path);
 
-			$object = new VS\Parser\Control\RunSeq($this->context, null, $this->statements);
+			$object = new VS\Parser\Definition\SeqControl($this->context, null, $this->statements);
 			$feedback = $object->get();
 
 			$this->context->pop();

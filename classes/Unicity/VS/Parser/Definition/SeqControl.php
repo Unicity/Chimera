@@ -18,11 +18,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VS\Parser\Control {
+namespace Unicity\VS\Parser\Definition {
 
 	use \Unicity\VS;
 
-	class RunSel extends VS\Parser\Control {
+	class SeqControl extends VS\Parser\Definition\Control {
 
 		protected $policy;
 
@@ -37,21 +37,12 @@ namespace Unicity\VS\Parser\Control {
 		public function get() {
 			$feedback = new VS\Validation\Feedback($this->context->getPath());
 
-			$results = array();
-			$success = false;
-
-			foreach ($this->statements as $i => $statement) {
-				$results[$i] = $statement->get();
-				$feedback->addRecommendations($results[$i]);
-				if ($results[$i]->getNumberOfViolations() === 0) {
-					$success = true;
-					break;
-				}
-			}
-
-			if (!$success) {
-				foreach ($results as $result) {
+			foreach ($this->statements as $statement) {
+				$result = $statement->get();
+				$feedback->addRecommendations($result);
+				if ($result->getNumberOfViolations() > 0) {
 					$feedback->addViolations($result);
+					break;
 				}
 			}
 

@@ -48,7 +48,7 @@ namespace Unicity\VS {
 			$this->scanner = new Lexer\Scanner($reader);
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment());
+			//$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
 
