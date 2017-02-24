@@ -9,4 +9,10 @@ return array(
 	'lt' => '\\Unicity\\VLD\\Parser\\Module\\IsLesserThan',
 	'le' => '\\Unicity\\VLD\\Parser\\Module\\IsLesserThanOrEqualTo',
 	'ne' => '\\Unicity\\VLD\\Parser\\Module\\IsNotEqualTo',
+
+	'null' => '\\Unicity\\VLD\\Parser\\Module\\IsNull',
+	'undefined' => '\\Unicity\\VLD\\Parser\\Module\\IsUndefined',
+	'unset' => '\\Unicity\\VLD\\Parser\\Module\\IsUnset',
+
+	'regex' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
 );
