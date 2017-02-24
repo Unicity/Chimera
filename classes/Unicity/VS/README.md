@@ -16,6 +16,7 @@ The syntax of VLD in Backus-Naur Form:
 <comma> = ","
 <eval> = eval <lparen> (<string> | <variable>) <comma> (<array> | <string> | <variable>) (<comma> <term>)? <rparen> <terminal>
 <if> = if <lparen> (<string> | <variable>) <comma> (<array> | <string> | <variable>) (<comma> <term>)? <rparen> <block> <terminal>
+<include> = include <lparen> (<string> | <variable>) <rparen> <terminal>
 <install> = install <lparen> (<string> | <variable>) <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
 <lbracket> = "["
@@ -30,7 +31,7 @@ The syntax of VLD in Backus-Naur Form:
 <run> = run <lparen> (<string> | <variable>) (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> (<string> | <variable>)? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> <term> <rparen>  <terminal>
-<statement> = <eval> | <if> | <install> | <run> | <select> | <set>
+<statement> = <eval> | <if> | <include> | <install> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
