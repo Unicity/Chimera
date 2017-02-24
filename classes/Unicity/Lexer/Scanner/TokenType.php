@@ -32,7 +32,7 @@ namespace Unicity\Lexer\Scanner {
 	 * @final
 	 * @package Lexer
 	 */
-	final class TokenType extends Core\Enum implements ITokenType {
+	final class TokenType extends Core\Enum implements Lexer\Scanner\ITokenType {
 
 		/**
 		 * This variable stores the enumerations.

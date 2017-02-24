@@ -25,16 +25,17 @@ namespace Unicity\VLD\Scanner\TokenRule {
 	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Lexer;
+	use \Unicity\VLD;
 
 	/**
-	 * This class represents the rule definition for a "number variable" token, which the
+	 * This class represents the rule definition for a "map variable" token, which the
 	 * tokenizer will use to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package VLD
 	 */
-	class NumberVariable extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class VariableMap extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.
@@ -47,7 +48,7 @@ namespace Unicity\VLD\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if (($char !== null) && preg_match('/^' . preg_quote('#'). '$/', $char)) {
+			if (($char !== null) && preg_match('/^' . preg_quote('%'). '$/', $char)) {
 				$lookahead = $index;
 				do {
 					$lookahead++;
@@ -55,7 +56,7 @@ namespace Unicity\VLD\Scanner\TokenRule {
 				}
 				while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::variable(), new Common\StringRef($token), $index);
+				$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::variable_map(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			return null;
