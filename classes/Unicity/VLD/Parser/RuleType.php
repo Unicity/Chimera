@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Validation {
+namespace Unicity\VLD\Parser {
 
 	use \Unicity\Core;
 	use \Unicity\VLD;
@@ -40,17 +40,17 @@ namespace Unicity\VLD\Validation {
 		 * @access protected
 		 * @static
 		 * @param integer $ordinal                                  the ordinal index of the token
-		 * @return VLD\Validation\RuleType                           the token
+		 * @return VLD\Parser\RuleType                           the token
 		 */
-		protected static function __enum(int $ordinal) : VLD\Validation\RuleType {
+		protected static function __enum(int $ordinal) : VLD\Parser\RuleType {
 			if (!is_array(self::$__enums)) {
 				self::$__enums = array();
-				self::$__enums[] = new VLD\Validation\RuleType('conflict', 'Conflict');
-				self::$__enums[] = new VLD\Validation\RuleType('malformed', 'Malformed');
-				self::$__enums[] = new VLD\Validation\RuleType('mismatch', 'Mismatch');
-				self::$__enums[] = new VLD\Validation\RuleType('missing', 'Missing');
-				self::$__enums[] = new VLD\Validation\RuleType('remove', 'Remove');
-				self::$__enums[] = new VLD\Validation\RuleType('set', 'Set');
+				self::$__enums[] = new VLD\Parser\RuleType('conflict', 'Conflict');
+				self::$__enums[] = new VLD\Parser\RuleType('malformed', 'Malformed');
+				self::$__enums[] = new VLD\Parser\RuleType('mismatch', 'Mismatch');
+				self::$__enums[] = new VLD\Parser\RuleType('missing', 'Missing');
+				self::$__enums[] = new VLD\Parser\RuleType('remove', 'Remove');
+				self::$__enums[] = new VLD\Parser\RuleType('set', 'Set');
 			}
 			return self::$__enums[$ordinal];
 		}
@@ -73,9 +73,9 @@ namespace Unicity\VLD\Validation {
 		 *
 		 * @access public
 		 * @static
-		 * @return VLD\Validation\RuleType                           the rule type enumeration
+		 * @return VLD\Parser\RuleType                           the rule type enumeration
 		 */
-		public static function conflict() : VLD\Validation\RuleType {
+		public static function conflict() : VLD\Parser\RuleType {
 			return self::__enum(0);
 		}
 
@@ -85,9 +85,9 @@ namespace Unicity\VLD\Validation {
 		 *
 		 * @access public
 		 * @static
-		 * @return VLD\Validation\RuleType                           the rule type enumeration
+		 * @return VLD\Parser\RuleType                           the rule type enumeration
 		 */
-		public static function malformed() : VLD\Validation\RuleType {
+		public static function malformed() : VLD\Parser\RuleType {
 			return self::__enum(1);
 		}
 
@@ -97,9 +97,9 @@ namespace Unicity\VLD\Validation {
 		 *
 		 * @access public
 		 * @static
-		 * @return VLD\Validation\RuleType                           the rule type enumeration
+		 * @return VLD\Parser\RuleType                           the rule type enumeration
 		 */
-		public static function mismatch() : VLD\Validation\RuleType {
+		public static function mismatch() : VLD\Parser\RuleType {
 			return self::__enum(2);
 		}
 
@@ -109,9 +109,9 @@ namespace Unicity\VLD\Validation {
 		 *
 		 * @access public
 		 * @static
-		 * @return VLD\Validation\RuleType                           the rule type enumeration
+		 * @return VLD\Parser\RuleType                           the rule type enumeration
 		 */
-		public static function missing() : VLD\Validation\RuleType {
+		public static function missing() : VLD\Parser\RuleType {
 			return self::__enum(3);
 		}
 
@@ -121,9 +121,9 @@ namespace Unicity\VLD\Validation {
 		 *
 		 * @access public
 		 * @static
-		 * @return VLD\Validation\RuleType                           the rule type enumeration
+		 * @return VLD\Parser\RuleType                           the rule type enumeration
 		 */
-		public static function remove() : VLD\Validation\RuleType {
+		public static function remove() : VLD\Parser\RuleType {
 			return self::__enum(4);
 		}
 
@@ -135,9 +135,9 @@ namespace Unicity\VLD\Validation {
 		 *
 		 * @access public
 		 * @static
-		 * @return VLD\Validation\RuleType                           the rule type enumeration
+		 * @return VLD\Parser\RuleType                           the rule type enumeration
 		 */
-		public static function set() : VLD\Validation\RuleType {
+		public static function set() : VLD\Parser\RuleType {
 			return self::__enum(5);
 		}
 

@@ -18,19 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Validation\Module {
+namespace Unicity\VLD\Parser\Module {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\ORM;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Validation\RuleType;
+	use \Unicity\VLD\Parser\RuleType;
 
-	class HasSchema extends VLD\Validation\Module {
+	class HasSchema extends VLD\Parser\Module {
 
-		public function process(BT\Entity $entity, string $root, array $paths) : VLD\Validation\Feedback {
-			$feedback = new VLD\Validation\Feedback($root);
+		public function process(BT\Entity $entity, string $root, array $paths) : VLD\Parser\Feedback {
+			$feedback = new VLD\Parser\Feedback($root);
 
 			$schema = $this->policy;
 
@@ -69,13 +69,13 @@ namespace Unicity\VLD\Validation\Module {
 		 * This method returns the data type for the value.
 		 *
 		 * @access protected
-		 * @param VLD\Validation\Feedback $feedback                 the feedback buffer
+		 * @param VLD\Parser\Feedback $feedback                 the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to evaluated
 		 * @return string                                           the data type
 		 */
-		protected function actualType(VLD\Validation\Feedback $feedback, string $path, array $schema, $value) {
+		protected function actualType(VLD\Parser\Feedback $feedback, string $path, array $schema, $value) {
 			$actualType = gettype($value);
 			$expectedType = $this->expectedType($schema);
 
@@ -146,13 +146,13 @@ namespace Unicity\VLD\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
-		 * @param VLD\Validation\Feedback $feedback                 the feedback buffer
+		 * @param VLD\Parser\Feedback $feedback                 the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchArray(VLD\Validation\Feedback $feedback, string $path, array $schema, $value) {
+		protected function matchArray(VLD\Parser\Feedback $feedback, string $path, array $schema, $value) {
 			if (isset($schema['minItems'])) {
 				$size = $value->count();
 				if ($size < $schema['minItems']) {
@@ -210,13 +210,13 @@ namespace Unicity\VLD\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
-		 * @param VLD\Validation\Feedback $feedback                 the feedback buffer
+		 * @param VLD\Parser\Feedback $feedback                 the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchMap(VLD\Validation\Feedback $feedback, string $path, array $schema, $value) {
+		protected function matchMap(VLD\Parser\Feedback $feedback, string $path, array $schema, $value) {
 			if (isset($schema['properties']) && !$value->isEmpty()) {
 				$properties = $schema['properties'];
 
@@ -265,13 +265,13 @@ namespace Unicity\VLD\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
-		 * @param VLD\Validation\Feedback $feedback                 the feedback buffer
+		 * @param VLD\Parser\Feedback $feedback                 the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchNumber(VLD\Validation\Feedback $feedback, string $path, array $schema, $value) {
+		protected function matchNumber(VLD\Parser\Feedback $feedback, string $path, array $schema, $value) {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				if (!in_array($value, $schema['enum'])) {
 					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.enum');
@@ -326,13 +326,13 @@ namespace Unicity\VLD\Validation\Module {
 		 * This method returns whether the value complies with its field's constraints.
 		 *
 		 * @access protected
-		 * @param VLD\Validation\Feedback $feedback                 the feedback buffer
+		 * @param VLD\Parser\Feedback $feedback                 the feedback buffer
 		 * @param string $path                                      the current path
 		 * @param array $schema                                     the schema information
 		 * @param mixed $value                                      the value to be evaluated
 		 * @return boolean                                          whether the value complies
 		 */
-		protected function matchString(VLD\Validation\Feedback $feedback, string $path, array $schema, $value) : bool {
+		protected function matchString(VLD\Parser\Feedback $feedback, string $path, array $schema, $value) : bool {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				if (!in_array($value, $schema['enum'])) {
 					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.enum');

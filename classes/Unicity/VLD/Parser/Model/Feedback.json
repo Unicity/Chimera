@@ -1,11 +1,11 @@
 {
 	"properties": {
 		"recommendations": {
-			"$ref": "\\Unicity\\VLD\\Validation\\Model\\Entries",
+			"$ref": "\\Unicity\\VLD\\Parser\\Model\\Entries",
 			"type": "array"
 		},
 		"violations": {
-			"$ref": "\\Unicity\\VLD\\Validation\\Model\\Entries",
+			"$ref": "\\Unicity\\VLD\\Parser\\Model\\Entries",
 			"type": "array"
 		}
 	},

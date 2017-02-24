@@ -169,7 +169,7 @@ set($variable, {}).
 An `install` statement adds the module mappings into the current context.
 
 ```
-install("classpath:Unicity/VLD/Validation/Modules.php").
+install("classpath:Unicity/VLD/Parser/Modules.php").
 ```
 
 ##### Parameters
@@ -183,8 +183,8 @@ These mappings are stored in a PHP config file.
 ```
 <?php
 return array(
-	'eq' => '\\Unicity\\VLD\\Validation\\Module\\IsEqualTo',
-	'gt' => '\\Unicity\\VLD\\Validation\\Module\\IsGreaterThan',
+	'eq' => '\\Unicity\\VLD\\Parser\\Module\\IsEqualTo',
+	'gt' => '\\Unicity\\VLD\\Parser\\Module\\IsGreaterThan',
 );
 ```
 

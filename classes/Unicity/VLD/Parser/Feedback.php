@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Validation {
+namespace Unicity\VLD\Parser {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
@@ -51,7 +51,7 @@ namespace Unicity\VLD\Validation {
 			$this->violations = new Common\Mutable\HashSet();
 		}
 
-		public function addRecommendation(VLD\Validation\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
+		public function addRecommendation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
 			ksort($values);
 			sort($fields);
 			$this->recommendations->putValue([
@@ -61,11 +61,11 @@ namespace Unicity\VLD\Validation {
 			]);
 		}
 
-		public function addRecommendations(VLD\Validation\Feedback $feedback) : void {
+		public function addRecommendations(VLD\Parser\Feedback $feedback) : void {
 			$this->recommendations->putValues($feedback->recommendations);
 		}
 
-		public function addViolation(VLD\Validation\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
+		public function addViolation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
@@ -75,7 +75,7 @@ namespace Unicity\VLD\Validation {
 			]);
 		}
 
-		public function addViolations(VLD\Validation\Feedback $feedback) : void {
+		public function addViolations(VLD\Parser\Feedback $feedback) : void {
 			$this->violations->putValues($feedback->violations);
 		}
 
@@ -88,7 +88,7 @@ namespace Unicity\VLD\Validation {
 		}
 
 		public function toMap() : Common\IMap {
-			$feedback = new ORM\JSON\Model\HashMap('\\Unicity\\VLD\\Validation\\Model\\Feedback');
+			$feedback = new ORM\JSON\Model\HashMap('\\Unicity\\VLD\\Parser\\Model\\Feedback');
 			$feedback->recommendations = $this->recommendations;
 			$feedback->violations = $this->violations;
 			return $feedback;

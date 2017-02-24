@@ -88,7 +88,7 @@ namespace Unicity\VLD {
 				'components' => $input,
 				'entity_id' => 0,
 			]));
-			$feedback = new VLD\Validation\Feedback($context->getPath());
+			$feedback = new VLD\Parser\Feedback($context->getPath());
 			$this->scanner->next();
 			while (!is_null($this->scanner->current())) {
 				$result = $this->Statement($context)->get();
