@@ -51,7 +51,7 @@ namespace Unicity\VLD\Parser {
 			$this->violations = new Common\Mutable\HashSet();
 		}
 
-		public function addRecommendation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
+		public function addRecommendation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void {
 			ksort($values);
 			sort($fields);
 			$this->recommendations->putValue([
@@ -65,7 +65,7 @@ namespace Unicity\VLD\Parser {
 			$this->recommendations->putValues($feedback->recommendations);
 		}
 
-		public function addViolation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void { # TODO make multilingual
+		public function addViolation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void {
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
