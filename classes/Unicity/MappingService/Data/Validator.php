@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD {
+namespace Unicity\MappingService\Data {
 
 	use \Unicity\Bootstrap;
 	use \Unicity\Common;
@@ -11,7 +11,7 @@ namespace Unicity\VLD {
 	use \Unicity\Throwable;
 	use \Unicity\VLD;
 
-	class Interpreter extends Core\Object {
+	class Validator extends Core\Object {
 
 		/**
 		 * This method executes the lookup.
