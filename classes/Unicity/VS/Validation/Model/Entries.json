@@ -2,6 +2,28 @@
 	"items": [
 		{
 			"properties": {
+				"fields": {
+					"items": [
+						{
+							"properties": {
+								"field": {
+									"type": "string"
+								},
+								"from": {
+									"type": "mixed"
+								},
+								"to": {
+									"type": "mixed"
+								}
+							},
+							"type": "object"
+						}
+					],
+					"type": "array"
+				},
+				"message": {
+					"type": "string"
+				},
 				"type": {
 					"enum": [
 						"Conflict",
@@ -12,17 +34,6 @@
 						"Set"
 					],
 					"type": "string"
-				},
-				"message": {
-					"type": "string"
-				},
-				"paths": {
-					"items": [
-						{
-							"type": "string"
-						}
-					],
-					"type": "array"
 				}
 			},
 			"type": "object"
