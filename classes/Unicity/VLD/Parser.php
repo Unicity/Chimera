@@ -73,7 +73,7 @@ namespace Unicity\VLD {
 			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableString());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'eval', 'if', 'include', 'install', 'run', 'select', 'set', // statements
+				'eval', 'if', 'include', 'install', 'not', 'run', 'select', 'set', // statements
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -295,6 +295,28 @@ namespace Unicity\VLD {
 			return new VLD\Parser\Definition\MapTerm($context, $entries);
 		}
 
+		protected function NotStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\NotStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$this->Symbol($context, ',');
+			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
+			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->Term($context);
+			}
+			$this->Symbol($context, ')');
+			$statements = array();
+			$this->Symbol($context, '{');
+			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				$statements[] = $this->Statement($context);
+			}
+			$this->Symbol($context, '}');
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\NotStatement($context, $args, $statements);
+		}
+
 		protected function NullTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\NullTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsNullTerm($tuple)) {
@@ -378,6 +400,9 @@ namespace Unicity\VLD {
 			}
 			if ($this->IsStatement($tuple, 'install')) {
 				return $this->InstallStatement($context);
+			}
+			if ($this->IsStatement($tuple, 'not')) {
+				return $this->NotStatement($context);
 			}
 			if ($this->IsStatement($tuple, 'run')) {
 				return $this->RunStatement($context);

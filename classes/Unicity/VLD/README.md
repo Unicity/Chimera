@@ -10,8 +10,8 @@ The syntax of VLD in Backus-Naur Form:
 
 ```
 <array> = <lbracket> (<term> (<comma> <term>)*)? <rbracket>
-<boolean> = false | true
 <block> = <lcurly> <statement>+ <rcurly>
+<boolean> = false | true
 <colon> = ":"
 <comma> = ","
 <control> = <string> | <variable-string>
@@ -25,17 +25,18 @@ The syntax of VLD in Backus-Naur Form:
 <lparen> = "("
 <map> = <lcurly> (<string> <colon> <term> (<comma> <string> <colon> <term>)*)? <rcurly>
 <module> = <string> | <variable-string>
+<not> = not <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
 <null> = null
 <path> = <string> | <variable-string>
 <paths> = <string> | <variable-string> | <array> | <variable-array>
-<real> = '/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/'
 <rbracket> = "]"
 <rcurly> = "}"
+<real> = '/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/'
 <rparen> = ")"
 <run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> <path>? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> <term> <rparen> <terminal>
-<statement> = <eval> | <if> | <include> | <install> | <run> | <select> | <set>
+<statement> = <eval> | <if> | <include> | <install> | <not> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
@@ -248,7 +249,8 @@ multiple lines.
 
 ## Statements
 
-There are 7 types of statements: `eval`, `if`, `install`, `include`, `run`, `select`, and `set`.
+There are 8 types of statements: `eval`, `if`, `install`, `include`, `not`, `run`, `select`, and
+`set`.
 
 ### Simple Statements
 
@@ -385,6 +387,26 @@ if("module", "path1", *policy) { }.
 if("module", ["path1"]) { }.
 if("module", ["path1"], *policy) { }.
 if("module", ["path1", "path2"], *policy) { }.
+```
+
+##### Parameters
+
+1. Required: Defines the module to be executed.
+2. Required: Defines the path to the component(s).
+3. Optional: Defines the module's policy parameters.
+
+#### Not Statements
+
+A `not` statement is the inverse of an `if` statement.  It does so by executing the designated
+module first before running its block.  By default, statements in its block are executed
+according to the `seq` control flow.
+
+```
+not("module", "path1") { }.
+not("module", "path1", *policy) { }.
+not("module", ["path1"]) { }.
+not("module", ["path1"], *policy) { }.
+not("module", ["path1", "path2"], *policy) { }.
 ```
 
 ##### Parameters
