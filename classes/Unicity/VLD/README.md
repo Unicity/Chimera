@@ -9,7 +9,7 @@ A VLD file is a simple text file and uses the file extension `.vld`.
 The syntax of VLD in Backus-Naur Form:
 
 ```
-<array> = <lbracket> <term>* <rbracket>
+<array> = <lbracket> (<term> (<comma> <term>)*)? <rbracket>
 <boolean> = false | true
 <block> = <lcurly> <statement>+ <rcurly>
 <colon> = ":"
