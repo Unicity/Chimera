@@ -10,14 +10,14 @@ return array(
 
 	'gt_length' => '\\Unicity\\VLD\\Parser\\Module\\IsGreaterThanLength',
 
-	'is_null' => '\\Unicity\\VLD\\Parser\\Module\\IsNull',
-	'is_undefined' => '\\Unicity\\VLD\\Parser\\Module\\IsUndefined',
-	'is_unset' => '\\Unicity\\VLD\\Parser\\Module\\IsUnset',
+	'null' => '\\Unicity\\VLD\\Parser\\Module\\IsNull',
+	'undefined' => '\\Unicity\\VLD\\Parser\\Module\\IsUndefined',
+	'unset' => '\\Unicity\\VLD\\Parser\\Module\\IsUnset',
 
-	'is_required' => '\\Unicity\\VLD\\Parser\\Module\\IsRequired',
+	'required' => '\\Unicity\\VLD\\Parser\\Module\\IsRequired',
 
-	'is_iban' => '\\Unicity\\VLD\\Parser\\Module\\IsIBAN',
+	'iban' => '\\Unicity\\VLD\\Parser\\Module\\IsIBAN',
 
-	'matches_regex' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
-	'matches_schema' => '\\Unicity\\VLD\\Parser\\Module\\MatchesSchema',
+	'regex' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
+	'schema' => '\\Unicity\\VLD\\Parser\\Module\\MatchesSchema',
 );
