@@ -26,12 +26,12 @@ namespace Unicity\VLD\Parser\Definition {
 
 		protected $args;
 
-		protected $statements;
+		protected $block;
 
-		public function __construct(VLD\Parser\Context $context, array $args, array $statements) {
+		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
 			parent::__construct($context);
 			$this->args = $args;
-			$this->statements = $statements;
+			$this->block = $block;
 		}
 
 		public function get() {
@@ -46,7 +46,7 @@ namespace Unicity\VLD\Parser\Definition {
 			}
 			$feedback = call_user_func_array([$object, 'process'], [$entity, $root, $paths]);
 			if ($feedback->getNumberOfViolations() > 0) {
-				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->statements);
+				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->block->get());
 				return $object->get();
 			}
 			return new VLD\Parser\Feedback($root);

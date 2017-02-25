@@ -22,28 +22,17 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class SelectStatement extends VLD\Parser\Definition\Statement {
+	class TermVariable extends VLD\Parser\Definition\Term implements VLD\Parser\Definition\Variable {
 
-		protected $args;
+		protected $token;
 
-		protected $block;
-
-		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
+		public function __construct(VLD\Parser\Context $context, string $token) {
 			parent::__construct($context);
-			$this->args = $args;
-			$this->block = $block;
+			$this->token = $token;
 		}
 
 		public function get() {
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$this->context->push($path);
-
-			$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->block->get());
-			$feedback = $object->get();
-
-			$this->context->pop();
-
-			return $feedback;
+			return $this->context->getSymbol($this->token);
 		}
 
 	}

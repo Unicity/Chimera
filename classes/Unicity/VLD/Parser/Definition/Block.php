@@ -22,19 +22,6 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class VariableTerm extends VLD\Parser\Definition\Term {
-
-		protected $token;
-
-		public function __construct(VLD\Parser\Context $context, string $token) {
-			parent::__construct($context);
-			$this->token = $token;
-		}
-
-		public function get() {
-			return $this->context->getSymbol($this->token);
-		}
-
-	}
+	abstract class Block extends VLD\Parser\Definition { }
 
 }

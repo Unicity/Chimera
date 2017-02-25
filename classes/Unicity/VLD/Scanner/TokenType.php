@@ -55,6 +55,7 @@ namespace Unicity\VLD\Scanner {
 			if (!is_array(static::$__enums)) {
 				static::$__enums = array();
 				static::$__enums[] = new static('variable-array', 'VARIABLE:ARRAY');
+				static::$__enums[] = new static('variable-block', 'VARIABLE:BLOCK');
 				static::$__enums[] = new static('variable-boolean', 'VARIABLE:BOOLEAN');
 				static::$__enums[] = new static('variable-map', 'VARIABLE:MAP');
 				static::$__enums[] = new static('variable-mixed', 'VARIABLE:MIXED');
@@ -89,6 +90,17 @@ namespace Unicity\VLD\Scanner {
 		}
 
 		/**
+		 * This method returns the "variable-block" token.
+		 *
+		 * @access public
+		 * @static
+		 * @return Lexer\Scanner\ITokenType                         the token type
+		 */
+		public static function variable_block() : Lexer\Scanner\ITokenType {
+			return static::__enum(1);
+		}
+
+		/**
 		 * This method returns the "variable-boolean" token.
 		 *
 		 * @access public
@@ -96,7 +108,7 @@ namespace Unicity\VLD\Scanner {
 		 * @return Lexer\Scanner\ITokenType                         the token type
 		 */
 		public static function variable_boolean() : Lexer\Scanner\ITokenType {
-			return static::__enum(1);
+			return static::__enum(2);
 		}
 
 		/**
@@ -107,7 +119,7 @@ namespace Unicity\VLD\Scanner {
 		 * @return Lexer\Scanner\ITokenType                         the token type
 		 */
 		public static function variable_map() : Lexer\Scanner\ITokenType {
-			return static::__enum(2);
+			return static::__enum(3);
 		}
 
 		/**
@@ -118,7 +130,7 @@ namespace Unicity\VLD\Scanner {
 		 * @return Lexer\Scanner\ITokenType                         the token type
 		 */
 		public static function variable_mixed() : Lexer\Scanner\ITokenType {
-			return static::__enum(3);
+			return static::__enum(4);
 		}
 
 		/**
@@ -129,7 +141,7 @@ namespace Unicity\VLD\Scanner {
 		 * @return Lexer\Scanner\ITokenType                         the token type
 		 */
 		public static function variable_number() : Lexer\Scanner\ITokenType {
-			return static::__enum(4);
+			return static::__enum(5);
 		}
 
 		/**
@@ -140,7 +152,7 @@ namespace Unicity\VLD\Scanner {
 		 * @return Lexer\Scanner\ITokenType                         the token type
 		 */
 		public static function variable_string() : Lexer\Scanner\ITokenType {
-			return static::__enum(5);
+			return static::__enum(6);
 		}
 
 	}

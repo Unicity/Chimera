@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class VariableKey extends VLD\Parser\Definition {
+	class KeyVariable extends VLD\Parser\Definition {
 
 		protected $token;
 
