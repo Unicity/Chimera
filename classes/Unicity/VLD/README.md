@@ -47,11 +47,11 @@ The syntax of VLD in Backus-Naur Form:
 <run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> <path>? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> <term> <rparen> <terminal>
-<statement> = <eval> | <if> | <include> | <install> | <not> | <run> | <select> | <set> | <tick>
+<statement> =  <do> | <eval> | <if> | <include> | <install> | <not> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
-<tick> = tick <lparen> <control> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
+<do> = do <lparen> <control> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
 <uri> = <string> | <variable-string>
 <variable> = <variable-array> | <variable-boolean> | <variable-map> | <variable-mixed> | <variable-number> | <variable-string>
 <variable-array> = '/^@[a-z0-9]$/i'
@@ -261,8 +261,8 @@ multiple lines.
 
 ## Statements
 
-There are 9 types of statements: `eval`, `if`, `install`, `include`, `not`, `run`, `select`, `set`,
-and `tick`.
+There are 9 types of statements: `do`, `eval`, `if`, `install`, `include`, `not`, `run`, `select`,
+and `set`.  They are broken into two groups: simple statements and complex statements.
 
 ### Simple Statements
 
@@ -387,20 +387,20 @@ select("path") {}.
 
 1. Optional: Defines the component's path that will become the new base entity.
 
-#### Tick Statements
+#### Do Statements
 
-A `tick` statement is used to apply its block to multiple paths.  The designated control is done on
+A `do` statement is used to apply its block to multiple paths.  The designated control is done on
 the block level, not on the statement level like the `run` statement.  It can be thought of as a hybird
-statement between a `run` statement and multiple `select` statements.  The `tick` statement, therefore,
+statement between a `run` statement and multiple `select` statements.  The `do` statement, therefore,
 performs a context switch for each path specified.  Note that statements in the block itself will be executed
-by defualt according to the `seq` control flow (and not by the control flow designed in the `tick` statement').
+by defualt according to the `seq` control flow (and not by the control flow designed in the `do` statement').
 
 ```
-tick("seq", "path1") { }.
-tick("seq", "path1", *policy) { }.
-tick("seq", ["path1"]) { }.
-tick("seq", ["path1"], *policy) { }.
-tick("seq", ["path1", "path2"], *policy) { }.
+do("seq", "path1") { }.
+do("seq", "path1", *policy) { }.
+do("seq", ["path1"]) { }.
+do("seq", ["path1"], *policy) { }.
+do("seq", ["path1", "path2"], *policy) { }.
 ```
 
 ##### Parameters

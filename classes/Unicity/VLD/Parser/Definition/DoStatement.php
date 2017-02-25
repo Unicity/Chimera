@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class TickStatement extends VLD\Parser\Definition\Statement {
+	class DoStatement extends VLD\Parser\Definition\Statement {
 
 		protected $args;
 
