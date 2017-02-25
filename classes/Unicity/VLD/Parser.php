@@ -73,7 +73,8 @@ namespace Unicity\VLD {
 			$this->scanner->addRule(new VLD\Scanner\TokenRule\VariableString());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'eval', 'if', 'include', 'install', 'not', 'run', 'select', 'set', // statements
+				'eval', 'include', 'install', 'set', // simple statements
+				'if', 'not', 'run', 'select', 'tick', // complex statements
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -139,9 +140,9 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
-			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -155,9 +156,9 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
-			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -177,7 +178,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\IncludeStatement($context, $args);
@@ -187,7 +188,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\InstallStatement($context, $args);
@@ -299,9 +300,9 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
-			$args[] = $this->TermOption($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -341,7 +342,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
@@ -362,7 +363,7 @@ namespace Unicity\VLD {
 			$args = array();
 			$this->Symbol($context, '(');
 			if (!$this->IsSymbol($this->scanner->current(), ')')) {
-				$args[] = $this->TermOption($context, 'StringTerm', 'VariableStringTerm');
+				$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			}
 			$this->Symbol($context, ')');
 			$statements = array();
@@ -412,6 +413,9 @@ namespace Unicity\VLD {
 			}
 			if ($this->IsStatement($tuple, 'set')) {
 				return $this->SetStatement($context);
+			}
+			if ($this->IsStatement($tuple, 'tick')) {
+				return $this->TickStatement($context);
 			}
 			$this->SyntaxError($tuple);
 		}
@@ -484,7 +488,7 @@ namespace Unicity\VLD {
 			return $terminal;
 		}
 
-		protected function TermOption(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
+		protected function Terms(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			foreach ($terms as $term) {
 				$IsA = 'Is' . $term;
@@ -493,6 +497,28 @@ namespace Unicity\VLD {
 				}
 			}
 			$this->SyntaxError($tuple);
+		}
+
+		protected function TickStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\TickStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
+			$this->Symbol($context, ',');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
+			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->Term($context);
+			}
+			$this->Symbol($context, ')');
+			$statements = array();
+			$this->Symbol($context, '{');
+			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				$statements[] = $this->Statement($context);
+			}
+			$this->Symbol($context, '}');
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\TickStatement($context, $args, $statements);
 		}
 
 		protected function VariableKey(VLD\Parser\Context $context) : VLD\Parser\Definition\VariableKey {
