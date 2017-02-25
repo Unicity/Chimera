@@ -26,18 +26,18 @@ namespace Unicity\VLD\Parser\Definition {
 
 		protected $args;
 
-		protected $statements;
+		protected $block;
 
-		public function __construct(VLD\Parser\Context $context, array $args, array $statements) {
+		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
 			parent::__construct($context);
 			$this->args = $args;
-			$this->statements = $statements;
+			$this->block = $block;
 		}
 
 		public function get() {
 			$control = VLD\Parser\Definition\Control::getControl($this->args[0]->get());
 			$policy = (isset($this->args[1])) ? $this->args[1]->get() : null;
-			$object = new $control($this->context, $policy, $this->statements);
+			$object = new $control($this->context, $policy, $this->block->get());
 			return $object->get();
 		}
 

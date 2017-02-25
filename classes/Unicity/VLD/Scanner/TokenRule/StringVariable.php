@@ -28,14 +28,14 @@ namespace Unicity\VLD\Scanner\TokenRule {
 	use \Unicity\VLD;
 
 	/**
-	 * This class represents the rule definition for a "mixed variable" token, which the
+	 * This class represents the rule definition for a "string variable" token, which the
 	 * tokenizer will use to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package VLD
 	 */
-	class VariableMixed extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class StringVariable extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.
@@ -48,7 +48,7 @@ namespace Unicity\VLD\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if (($char !== null) && preg_match('/^' . preg_quote('*'). '$/', $char)) {
+			if (($char !== null) && preg_match('/^' . preg_quote('$'). '$/', $char)) {
 				$lookahead = $index;
 				do {
 					$lookahead++;
@@ -56,7 +56,7 @@ namespace Unicity\VLD\Scanner\TokenRule {
 				}
 				while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
 				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::variable_mixed(), new Common\StringRef($token), $index);
+				$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::variable_string(), new Common\StringRef($token), $index);
 				return $tuple;
 			}
 			return null;

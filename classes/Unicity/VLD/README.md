@@ -136,10 +136,10 @@ A string is some text surrounded by double quotation marks.
 
 ### Variables
 
-A variable is used to store the value of another term.  There are 6 variable types
-in the VLD language: boolean variables, number variables, string variables, array
-variables, map variables, and mixed variables.  Each variable type has its own unique
-prefix.
+A variable is used to store the value of another term.  There are 7 variable types
+in the VLD language: array variables, block variables, boolean variables, map variables,
+mixed variables, number variables, and string variables.  Each variable type has its own
+unique prefix.
 
 #### Boolean Variables
 
@@ -234,6 +234,21 @@ set(*variable, []).
 set(*variable, {}).
 ```
 
+#### Block Variables
+
+Block variables are prefixed using an upcart (which is an adaptation of the lambda syntax
+used in Objective-C).
+
+```
+^variable
+```
+
+To declare a block variable, use the set statement.
+
+```
+set(^variable, {}).
+```
+
 ## Comments
 
 There are two types of comments: single-line comments and block comments.  Both types of comments are treated
@@ -262,7 +277,8 @@ multiple lines.
 ## Statements
 
 There are 9 types of statements: `do`, `eval`, `install`, `include`, `is`, `not`, `run`, `select`,
-and `set`.  They are broken into two groups: simple statements and complex statements.
+and `set`.  They are broken into two groups: simple statements and complex statements.  The syntax
+convention for statements in VLD was adapted from Prolog.
 
 ### Simple Statements
 
@@ -370,8 +386,8 @@ run("seq", *policy) { }.
 There are three types of controls: `all`, `sel`, and `seq`.
 
 * `all` executes all statements in order and will reports all violations, except when the number of successes meets the number required to not report any violations; however, it will always report all recommendations encountered.
-* `sel` executes all statements in order until one statement does not report any violations.  It will only report violations when no statements reports any.  It will always report all recommendations encountered.
-* `seq` executes all statements in order until one reports a violation.  It will always report all recommendations encountered.
+* `sel` executes all statements in order until one statement does not report any violations.  It will only report violations when no statements reports any violation.  It will always report all recommendations encountered.
+* `seq` executes all statements in order until one statement reports a violation.  It will always report all recommendations encountered.
 
 #### Select Statements
 
@@ -408,6 +424,15 @@ do("seq", ["path1", "path2"], *policy) { }.
 1. Required: Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
 2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the control's policy parameters.
+
+##### Control Types
+
+There are three types of controls: `all`, `sel`, and `seq`.
+
+* `all` executes all blocks in order and will reports all violations, except when the number of successes meets the number required to not report any violations; however, it will always report all recommendations encountered.
+* `sel` executes all blocks in order until one block does not report any violations.  It will only report violations when no blocks reports any violations.  It will always report all recommendations encountered.
+* `seq` executes all blocks in order until one block reports a violation.  It will always report all recommendations encountered.
+
 
 #### Is Statements
 

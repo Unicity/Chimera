@@ -20,32 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\VLD\Parser\Definition {
 
-	use \Unicity\VLD;
-
-	class SelectStatement extends VLD\Parser\Definition\Statement {
-
-		protected $args;
-
-		protected $block;
-
-		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
-			parent::__construct($context);
-			$this->args = $args;
-			$this->block = $block;
-		}
-
-		public function get() {
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$this->context->push($path);
-
-			$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->block->get());
-			$feedback = $object->get();
-
-			$this->context->pop();
-
-			return $feedback;
-		}
-
-	}
+	interface Variable { }
 
 }
