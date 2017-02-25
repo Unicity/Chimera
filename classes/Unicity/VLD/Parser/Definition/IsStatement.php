@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class IfStatement extends VLD\Parser\Definition\Statement {
+	class IsStatement extends VLD\Parser\Definition\Statement {
 
 		protected $args;
 
