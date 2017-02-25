@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class RunStatement extends VLD\Parser\Definition\Statement {
+	class TickStatement extends VLD\Parser\Definition\Statement {
 
 		protected $args;
 
@@ -36,8 +36,16 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function get() {
 			$control = VLD\Parser\Definition\Control::getControl($this->args[0]->get());
-			$policy = (isset($this->args[1])) ? $this->args[1]->get() : null;
-			$object = new $control($this->context, $policy, $this->statements);
+			$paths = $this->args[1]->get();
+			if (!is_array($paths)) {
+				$paths = [$paths];
+			}
+			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
+			$statements = array();
+			foreach ($paths as $path) {
+				$statements[] = new VLD\Parser\Definition\SelectStatement($this->context, [new VLD\Parser\Definition\PathTerm($this->context, $path)], $this->statements);
+			}
+			$object = new $control($this->context, $policy, $statements);
 			return $object->get();
 		}
 

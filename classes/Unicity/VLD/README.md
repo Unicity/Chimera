@@ -1,4 +1,15 @@
-# Validation Service
+# The VLD Programming Language.
+
+## About
+
+The VLD programming language is a simple intuitive scripting language that can be used to quickly
+write validation tests.  It is an interpretive language and has the power of calling PHP directly
+to perfom more complex validations when necessary.
+
+A core function of VLD is derived from behavior tree design in game programming.  Many of the controls
+in this language resemble a number of common task nodes (e.g. the parallel node, the sequence node,
+and the selector node).  The handling of feedback is also handled in similar way to the way behavior
+trees return success/failed messages.
 
 ## File
 
@@ -36,10 +47,11 @@ The syntax of VLD in Backus-Naur Form:
 <run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> <path>? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> <term> <rparen> <terminal>
-<statement> = <eval> | <if> | <include> | <install> | <not> | <run> | <select> | <set>
+<statement> = <eval> | <if> | <include> | <install> | <not> | <run> | <select> | <set> | <tick>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
+<tick> = tick <lparen> <control> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
 <uri> = <string> | <variable-string>
 <variable> = <variable-array> | <variable-boolean> | <variable-map> | <variable-mixed> | <variable-number> | <variable-string>
 <variable-array> = '/^@[a-z0-9]$/i'
@@ -57,7 +69,7 @@ terms (which adapt their convention from a variety of other languages).
 
 ### Arrays
 
-An array is defined using square brackets. It represents a collection of items.
+An array is defined using square brackets. It represents a collection of terms.
 
 ```
 [
@@ -96,11 +108,11 @@ null
 
 ### Numbers
 
-There are two types of numbers: integer and real numbers.
+There are two types of numbers: integers and real numbers.
 
 #### Integers
 
-An integer is a number without a decimal point.
+An integer is a number without a decimal point (for the sake of this document).
 
 ```
 123
@@ -108,7 +120,7 @@ An integer is a number without a decimal point.
 
 #### Reals
 
-A real is a number with a decimal point.
+A real is a number with a decimal point (for the sake of this document).
 
 ```
 12.3
@@ -116,7 +128,7 @@ A real is a number with a decimal point.
 
 ### Strings
 
-A string is some test surrounded by double quotation marks.
+A string is some text surrounded by double quotation marks.
 
 ```
 "some text"
@@ -249,8 +261,8 @@ multiple lines.
 
 ## Statements
 
-There are 8 types of statements: `eval`, `if`, `install`, `include`, `not`, `run`, `select`, and
-`set`.
+There are 9 types of statements: `eval`, `if`, `install`, `include`, `not`, `run`, `select`, `set`,
+and `tick`.
 
 ### Simple Statements
 
@@ -375,6 +387,28 @@ select("path") {}.
 
 1. Optional: Defines the component's path that will become the new base entity.
 
+#### Tick Statements
+
+A `tick` statement is used to apply its block to multiple paths.  The designated control is done on
+the block level, not on the statement level like the `run` statement.  It can be thought of as a hybird
+statement between a `run` statement and multiple `select` statements.  The `tick` statement, therefore,
+performs a context switch for each path specified.  Note that statements in the block itself will be executed
+by defualt according to the `seq` control flow (and not by the control flow designed in the `tick` statement').
+
+```
+tick("seq", "path1") { }.
+tick("seq", "path1", *policy) { }.
+tick("seq", ["path1"]) { }.
+tick("seq", ["path1"], *policy) { }.
+tick("seq", ["path1", "path2"], *policy) { }.
+```
+
+##### Parameters
+
+1. Required: Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
+2. Required: Defines the path(s) to the component(s).
+3. Optional: Defines the control's policy parameters.
+
 #### If Statements
 
 An `if` statement is used to evaluate whether to execute a block of statements.  It does so
@@ -392,7 +426,7 @@ if("module", ["path1", "path2"], *policy) { }.
 ##### Parameters
 
 1. Required: Defines the module to be executed.
-2. Required: Defines the path to the component(s).
+2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the module's policy parameters.
 
 #### Not Statements

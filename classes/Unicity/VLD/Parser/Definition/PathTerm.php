@@ -22,24 +22,17 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	abstract class Control {
+	class PathTerm extends VLD\Parser\Definition\Term {
 
-		protected static $controls = array(
-			'all' => '\Unicity\VLD\Parser\Definition\AllControl',
-			'sel' => '\Unicity\VLD\Parser\Definition\SelControl',
-			'seq' => '\Unicity\VLD\Parser\Definition\SeqControl',
-		);
+		protected $token;
 
-		protected $context;
-
-		public function __construct(VLD\Parser\Context $context) {
-			$this->context = $context;
+		public function __construct(VLD\Parser\Context $context, string $token) {
+			parent::__construct($context);
+			$this->token = $token;
 		}
 
-		public abstract function get();
-
-		public static function getControl(string $name) : string {
-			return static::$controls[$name];
+		public function get() {
+			return $this->token;
 		}
 
 	}
