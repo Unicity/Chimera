@@ -22,17 +22,17 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class BlockTerm extends VLD\Parser\Definition\Block {
+	class BlockKey extends VLD\Parser\Definition\Key {
 
-		protected $statements;
+		protected $token;
 
-		public function __construct(VLD\Parser\Context $context, array $statements) {
+		public function __construct(VLD\Parser\Context $context, string $token) {
 			parent::__construct($context);
-			$this->statements = $statements;
+			$this->token = $token;
 		}
 
 		public function get() {
-			return $this->statements;
+			return $this->token;
 		}
 
 	}

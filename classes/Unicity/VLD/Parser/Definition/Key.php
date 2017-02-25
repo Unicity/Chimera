@@ -22,19 +22,6 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class BlockTerm extends VLD\Parser\Definition\Block {
-
-		protected $statements;
-
-		public function __construct(VLD\Parser\Context $context, array $statements) {
-			parent::__construct($context);
-			$this->statements = $statements;
-		}
-
-		public function get() {
-			return $this->statements;
-		}
-
-	}
+	abstract class Key extends VLD\Parser\Definition { }
 
 }
