@@ -341,27 +341,6 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
-		protected function ProcessError(string $message, array $variables = null) : void {
-			$message = empty($variables) ? (string) $message : strtr((string) $message, $variables);
-			$logs = $this->error_handler['logs'];
-			foreach ($logs as $log) {
-				switch ($log) {
-					case 'stderr':
-						//fwrite(STDERR, $message . PHP_EOL);
-						error_log($message, 0);
-						break;
-					case 'syslog':
-						openlog('Unknown', LOG_CONS, LOG_USER);
-						syslog(LOG_ERR, $message);
-						break;
-				}
-			}
-			if ($this->error_handler['throw']) {
-				throw new Throwable\Parse\Exception($message);
-			}
-			exit();
-		}
-
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\RealTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsRealTerm($tuple)) {
@@ -476,10 +455,10 @@ namespace Unicity\VLD {
 
 		protected function SyntaxError(?Lexer\Scanner\Tuple $tuple) : void {
 			if (is_null($tuple)) {
-				$this->ProcessError('VLD Parse error: syntax error, unexpected end of file.');
+				$this->WriteError('VLD Parse error: syntax error, unexpected end of file.');
 			}
 			else {
-				$this->ProcessError('VLD Parse error: syntax error, unexpected token \':token\' of type \':type\' encountered at :index.', array(':index' => $tuple->index, ':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
+				$this->WriteError('VLD Parse error: syntax error, unexpected token \':token\' of type \':type\' encountered at :index.', array(':index' => $tuple->index, ':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
 			}
 		}
 
@@ -573,6 +552,27 @@ namespace Unicity\VLD {
 			$term = new VLD\Parser\Definition\VariableTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
+		}
+
+		protected function WriteError(string $message, array $variables = null) : void {
+			$message = empty($variables) ? (string) $message : strtr((string) $message, $variables);
+			$logs = $this->error_handler['logs'];
+			foreach ($logs as $log) {
+				switch ($log) {
+					case 'stderr':
+						//fwrite(STDERR, $message . PHP_EOL);
+						error_log($message, 0);
+						break;
+					case 'syslog':
+						openlog('Unknown', LOG_CONS, LOG_USER);
+						syslog(LOG_ERR, $message);
+						break;
+				}
+			}
+			if ($this->error_handler['throw']) {
+				throw new Throwable\Parse\Exception($message);
+			}
+			exit();
 		}
 
 	}
