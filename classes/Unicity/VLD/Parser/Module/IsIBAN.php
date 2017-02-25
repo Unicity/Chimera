@@ -30,8 +30,7 @@ namespace Unicity\VLD\Parser\Module {
 			$feedback = new VLD\Parser\Feedback($root);
 
 			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if (!$this->isIBAN($v1)) {
+				if (!$this->isIBAN($entity->getComponentAtPath($path))) {
 					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.pattern');
 				}
 			}
