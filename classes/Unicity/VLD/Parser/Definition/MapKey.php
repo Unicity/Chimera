@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class TermVariable extends VLD\Parser\Definition\Term implements VLD\Parser\Definition\Variable {
+	class MapKey extends VLD\Parser\Definition\Key {
 
 		protected $token;
 
@@ -32,7 +32,7 @@ namespace Unicity\VLD\Parser\Definition {
 		}
 
 		public function get() {
-			return $this->context->getSymbol($this->token);
+			return $this->token;
 		}
 
 	}
