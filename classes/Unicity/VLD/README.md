@@ -8,7 +8,7 @@ to perfom more complex validations when necessary.
 
 A core function of VLD is derived from behavior tree design in game programming.  Many of the controls
 in this language resemble a number of common task nodes (e.g. the parallel node, the sequence node,
-and the selector node).  The handling of feedback is also handled in similar way to the way behavior
+and the selector node).  The handling of feedback is also handled in a similar way to the way behavior
 trees return success/failed messages.
 
 ## File
@@ -329,7 +329,7 @@ eval("module", ["path1", "path2"], *policy).
 ##### Parameters
 
 1. Required: Defines the module to be executed.
-2. Required: Defines the path to the component(s).
+2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the module's policy parameters.
 
 #### Include Statements
@@ -446,5 +446,5 @@ not("module", ["path1", "path2"], *policy) { }.
 ##### Parameters
 
 1. Required: Defines the module to be executed.
-2. Required: Defines the path to the component(s).
+2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the module's policy parameters.
