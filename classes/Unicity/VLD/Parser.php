@@ -87,7 +87,7 @@ namespace Unicity\VLD {
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
 				'eval', 'include', 'install', 'set', // simple statements
-				'if', 'not', 'run', 'select', 'tick', // complex statements
+				'do', 'if', 'not', 'run', 'select', // complex statements
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -147,6 +147,28 @@ namespace Unicity\VLD {
 			$term = new VLD\Parser\Definition\BooleanTerm($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
+		}
+
+		protected function DoStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\DoStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
+			$this->Symbol($context, ',');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
+			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->Term($context);
+			}
+			$this->Symbol($context, ')');
+			$statements = array();
+			$this->Symbol($context, '{');
+			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				$statements[] = $this->Statement($context);
+			}
+			$this->Symbol($context, '}');
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\DoStatement($context, $args, $statements);
 		}
 
 		protected function EvalStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\EvalStatement {
@@ -403,6 +425,9 @@ namespace Unicity\VLD {
 
 		protected function Statement(VLD\Parser\Context $context) : VLD\Parser\Definition\Statement {
 			$tuple = $this->scanner->current();
+			if ($this->IsStatement($tuple, 'do')) {
+				return $this->DoStatement($context);
+			}
 			if ($this->IsStatement($tuple, 'eval')) {
 				return $this->EvalStatement($context);
 			}
@@ -426,9 +451,6 @@ namespace Unicity\VLD {
 			}
 			if ($this->IsStatement($tuple, 'set')) {
 				return $this->SetStatement($context);
-			}
-			if ($this->IsStatement($tuple, 'tick')) {
-				return $this->TickStatement($context);
 			}
 			$this->SyntaxError($tuple);
 		}
@@ -510,28 +532,6 @@ namespace Unicity\VLD {
 				}
 			}
 			$this->SyntaxError($tuple);
-		}
-
-		protected function TickStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\TickStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
-			$this->Symbol($context, ',');
-			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
-				$args[] = $this->Term($context);
-			}
-			$this->Symbol($context, ')');
-			$statements = array();
-			$this->Symbol($context, '{');
-			while (!$this->IsSymbol($this->scanner->current(), '}')) {
-				$statements[] = $this->Statement($context);
-			}
-			$this->Symbol($context, '}');
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\TickStatement($context, $args, $statements);
 		}
 
 		protected function VariableKey(VLD\Parser\Context $context) : VLD\Parser\Definition\VariableKey {
