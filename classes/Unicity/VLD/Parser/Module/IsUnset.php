@@ -31,7 +31,7 @@ namespace Unicity\VLD\Parser\Module {
 			$feedback = new VLD\Parser\Feedback($root);
 
 			foreach ($paths as $path) {
-				if (Core\Data\ToolKit::isUnset($entity->hasComponentAtPath($path))) {
+				if (!Core\Data\ToolKit::isUnset($entity->getComponentAtPath($path))) {
 					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.unset');
 				}
 			}

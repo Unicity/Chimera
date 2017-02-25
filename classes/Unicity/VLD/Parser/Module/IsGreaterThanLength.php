@@ -33,7 +33,7 @@ namespace Unicity\VLD\Parser\Module {
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if (is_string($v1) && (strlen($v1) <= $v2)) {
+				if (is_string($v1) && (strlen($v1) > $v2)) {
 					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.maximum', [':value' => $v2]);
 				}
 			}
