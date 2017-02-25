@@ -31,6 +31,14 @@ namespace Unicity\VLD {
 	class Parser extends Core\Object {
 
 		/**
+		 * This variable stores the config for how errors are handled.
+		 *
+		 * @access protected
+		 * @var array
+		 */
+		protected $error_handler;
+
+		/**
 		 * This variable stores a reference to the IO reader.
 		 *
 		 * @access protected
@@ -44,7 +52,12 @@ namespace Unicity\VLD {
 		 * @access public
 		 * @param IO\Reader $reader                                 a reference to the IO reader
 		 */
-		public function __construct(IO\Reader $reader) {
+		public function __construct(IO\Reader $reader, array $error_handler = array()) {
+			$this->error_handler = array_merge([
+				'logs' => ['stderr'],
+				'throw' => false,
+			], $error_handler);
+
 			$this->scanner = new Lexer\Scanner($reader);
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
@@ -328,6 +341,27 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
+		protected function ProcessError(string $message, array $variables = null) : void {
+			$message = empty($variables) ? (string) $message : strtr((string) $message, $variables);
+			$logs = $this->error_handler['logs'];
+			foreach ($logs as $log) {
+				switch ($log) {
+					case 'stderr':
+						//fwrite(STDERR, $message . PHP_EOL);
+						error_log($message, 0);
+						break;
+					case 'syslog':
+						openlog('Unknown', LOG_CONS, LOG_USER);
+						syslog(LOG_ERR, $message);
+						break;
+				}
+			}
+			if ($this->error_handler['throw']) {
+				throw new Throwable\Parse\Exception($message);
+			}
+			exit();
+		}
+
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\RealTerm {
 			$tuple = $this->scanner->current();
 			if (!$this->IsRealTerm($tuple)) {
@@ -442,10 +476,10 @@ namespace Unicity\VLD {
 
 		protected function SyntaxError(?Lexer\Scanner\Tuple $tuple) : void {
 			if (is_null($tuple)) {
-				throw new Throwable\Parse\Exception('Syntax error. Statement is incomplete.');
+				$this->ProcessError('VLD Parse error: syntax error, unexpected end of file.');
 			}
 			else {
-				throw new Throwable\Parse\Exception('Syntax error. Unexpected token \':token\' of type \':type\' encountered at :index.', array(':index' => $tuple->index, ':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
+				$this->ProcessError('VLD Parse error: syntax error, unexpected token \':token\' of type \':type\' encountered at :index.', array(':index' => $tuple->index, ':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
 			}
 		}
 
