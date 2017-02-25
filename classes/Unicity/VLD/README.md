@@ -20,18 +20,18 @@ A VLD file is a simple text file and uses the file extension `.vld`.
 The syntax of VLD in Backus-Naur Form:
 
 ```
-<array> = <lbracket> (<term> (<comma> <term>)*)? <rbracket>
+<array> = <lbrace> (<term> (<comma> <term>)*)? <rbrace>
 <block> = <lcurly> <statement>+ <rcurly>
 <boolean> = false | true
 <colon> = ":"
 <comma> = ","
 <control> = <string> | <variable-string>
 <eval> = eval <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <terminal>
-<if> = if <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
 <include> = include <lparen> <uri> <rparen> <terminal>
 <install> = install <lparen> <uri> <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
-<lbracket> = "["
+<is> = is <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
+<lbrace> = "["
 <lcurly> = "{"
 <lparen> = "("
 <map> = <lcurly> (<string> <colon> <term> (<comma> <string> <colon> <term>)*)? <rcurly>
@@ -40,14 +40,14 @@ The syntax of VLD in Backus-Naur Form:
 <null> = null
 <path> = <string> | <variable-string>
 <paths> = <string> | <variable-string> | <array> | <variable-array>
-<rbracket> = "]"
+<rbrace> = "]"
 <rcurly> = "}"
 <real> = '/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/'
 <rparen> = ")"
 <run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> <path>? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> <term> <rparen> <terminal>
-<statement> =  <do> | <eval> | <if> | <include> | <install> | <not> | <run> | <select> | <set>
+<statement> =  <do> | <eval> | <is> | <include> | <install> | <not> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
@@ -261,7 +261,7 @@ multiple lines.
 
 ## Statements
 
-There are 9 types of statements: `do`, `eval`, `if`, `install`, `include`, `not`, `run`, `select`,
+There are 9 types of statements: `do`, `eval`, `install`, `include`, `is`, `not`, `run`, `select`,
 and `set`.  They are broken into two groups: simple statements and complex statements.
 
 ### Simple Statements
@@ -311,7 +311,7 @@ return array(
 );
 ```
 
-The keys can then be used with other statements, e.g. the `eval` and `if` statements.
+The keys can then be used with other statements, e.g. the `eval` and `is` statements.
 
 #### Eval Statements
 
@@ -409,18 +409,18 @@ do("seq", ["path1", "path2"], *policy) { }.
 2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the control's policy parameters.
 
-#### If Statements
+#### Is Statements
 
-An `if` statement is used to evaluate whether to execute a block of statements.  It does so
+An `is` statement is used to evaluate whether to execute a block of statements.  It does so
 by executing the designated module first before running its block.  By default, statements in
 its block are executed according to the `seq` control flow.
 
 ```
-if("module", "path1") { }.
-if("module", "path1", *policy) { }.
-if("module", ["path1"]) { }.
-if("module", ["path1"], *policy) { }.
-if("module", ["path1", "path2"], *policy) { }.
+is("module", "path1") { }.
+is("module", "path1", *policy) { }.
+is("module", ["path1"]) { }.
+is("module", ["path1"], *policy) { }.
+is("module", ["path1", "path2"], *policy) { }.
 ```
 
 ##### Parameters
@@ -431,7 +431,7 @@ if("module", ["path1", "path2"], *policy) { }.
 
 #### Not Statements
 
-A `not` statement is the inverse of an `if` statement.  It does so by executing the designated
+A `not` statement is the inverse of an `is` statement.  It does so by executing the designated
 module first before running its block.  By default, statements in its block are executed
 according to the `seq` control flow.
 

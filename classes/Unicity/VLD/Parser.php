@@ -87,7 +87,7 @@ namespace Unicity\VLD {
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
 				'eval', 'include', 'install', 'set', // simple statements
-				'do', 'if', 'not', 'run', 'select', // complex statements
+				'do', 'is', 'not', 'run', 'select', // complex statements
 				'false', 'true', // booleans
 				'null',
 			]));
@@ -121,16 +121,18 @@ namespace Unicity\VLD {
 			return $feedback->toMap();
 		}
 
+		#region Productions
+
 		protected function ArrayTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\ArrayTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsArrayTerm($tuple)) {
+			if (!$this->isArrayTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$terms = array();
 			$this->Symbol($context, '[');
-			if (!$this->IsSymbol($this->scanner->current(), ']')) {
+			if (!$this->isSymbol($this->scanner->current(), ']')) {
 				$terms[] = $this->Term($context);
-				while (!$this->IsSymbol($this->scanner->current(), ']')) {
+				while (!$this->isSymbol($this->scanner->current(), ']')) {
 					$this->Symbol($context, ',');
 					$terms[] = $this->Term($context);
 				}
@@ -141,7 +143,7 @@ namespace Unicity\VLD {
 
 		protected function BooleanTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\BooleanTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsBooleanTerm($tuple)) {
+			if (!$this->isBooleanTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$term = new VLD\Parser\Definition\BooleanTerm($context, (string) $tuple->token);
@@ -156,14 +158,14 @@ namespace Unicity\VLD {
 			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
 			}
 			$this->Symbol($context, ')');
 			$statements = array();
 			$this->Symbol($context, '{');
-			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+			while (!$this->isSymbol($this->scanner->current(), '}')) {
 				$statements[] = $this->Statement($context);
 			}
 			$this->Symbol($context, '}');
@@ -178,7 +180,7 @@ namespace Unicity\VLD {
 			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
 			}
@@ -187,26 +189,26 @@ namespace Unicity\VLD {
 			return new VLD\Parser\Definition\EvalStatement($context, $args);
 		}
 
-		protected function IfStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IfStatement {
+		protected function IsStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IsStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
 			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
 			}
 			$this->Symbol($context, ')');
 			$statements = array();
 			$this->Symbol($context, '{');
-			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+			while (!$this->isSymbol($this->scanner->current(), '}')) {
 				$statements[] = $this->Statement($context);
 			}
 			$this->Symbol($context, '}');
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\IfStatement($context, $args, $statements);
+			return new VLD\Parser\Definition\IsStatement($context, $args, $statements);
 		}
 
 		protected function IncludeStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IncludeStatement {
@@ -231,7 +233,7 @@ namespace Unicity\VLD {
 
 		protected function IntegerTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\IntegerTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsIntegerTerm($tuple)) {
+			if (!$this->isIntegerTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$term = new VLD\Parser\Definition\IntegerTerm($context, (string) $tuple->token);
@@ -239,87 +241,19 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
-		protected function IsArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return $this->IsSymbol($tuple, '[');
-		}
-
-		protected function IsBooleanTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && in_array((string) $tuple->token, ['false', 'true']));
-		}
-
-		protected function IsIntegerTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:INTEGER'));
-		}
-
-		protected function IsMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return $this->IsSymbol($tuple, '{');
-		}
-
-		protected function IsNullTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === 'null'));
-		}
-
-		protected function IsRealTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:REAL'));
-		}
-
-		protected function IsStatement(Lexer\Scanner\Tuple $tuple, string $identifier) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === $identifier));
-		}
-
-		protected function IsStringTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'LITERAL'));
-		}
-
-		protected function IsSymbol(Lexer\Scanner\Tuple $tuple, string $symbol) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'SYMBOL') && ((string) $tuple->token === $symbol));
-		}
-
-		protected function IsTerminal(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'TERMINAL'));
-		}
-
-		protected function IsVariableTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && preg_match('/^VARIABLE/', (string) $tuple->type));
-		}
-
-		protected function IsVariableArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:ARRAY'));
-		}
-
-		protected function IsVariableBooleanTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:BOOLEAN'));
-		}
-
-		protected function IsVariableMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MAP'));
-		}
-
-		protected function IsVariableMixedTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MIXED'));
-		}
-
-		protected function IsVariableNumberTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:NUMBER'));
-		}
-
-		protected function IsVariableStringTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:STRING'));
-		}
-
 		protected function MapTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\MapTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsMapTerm($tuple)) {
+			if (!$this->isMapTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$entries = array();
 			$this->Symbol($context, '{');
-			if (!$this->IsSymbol($this->scanner->current(), '}')) {
+			if (!$this->isSymbol($this->scanner->current(), '}')) {
 				$key = $this->StringTerm($context);
 				$this->Symbol($context, ':');
 				$val = $this->Term($context);
 				$entries[] = Common\Tuple::box2($key, $val);
-				while (!$this->IsSymbol($this->scanner->current(), '}')) {
+				while (!$this->isSymbol($this->scanner->current(), '}')) {
 					$this->Symbol($context, ',');
 					$key = $this->StringTerm($context);
 					$this->Symbol($context, ':');
@@ -338,14 +272,14 @@ namespace Unicity\VLD {
 			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			$this->Symbol($context, ',');
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm', 'VariableArrayTerm', 'VariableStringTerm');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
 			}
 			$this->Symbol($context, ')');
 			$statements = array();
 			$this->Symbol($context, '{');
-			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+			while (!$this->isSymbol($this->scanner->current(), '}')) {
 				$statements[] = $this->Statement($context);
 			}
 			$this->Symbol($context, '}');
@@ -355,7 +289,7 @@ namespace Unicity\VLD {
 
 		protected function NullTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\NullTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsNullTerm($tuple)) {
+			if (!$this->isNullTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$term = new VLD\Parser\Definition\NullTerm($context);
@@ -365,7 +299,7 @@ namespace Unicity\VLD {
 
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\RealTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsRealTerm($tuple)) {
+			if (!$this->isRealTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$term = new VLD\Parser\Definition\RealTerm($context, (string) $tuple->token);
@@ -378,14 +312,14 @@ namespace Unicity\VLD {
 			$args = array();
 			$this->Symbol($context, '(');
 			$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->Term($context);
 			}
 			$this->Symbol($context, ')');
 			$statements = array();
 			$this->Symbol($context, '{');
-			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+			while (!$this->isSymbol($this->scanner->current(), '}')) {
 				$statements[] = $this->Statement($context);
 			}
 			$this->Symbol($context, '}');
@@ -397,13 +331,13 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			if (!$this->IsSymbol($this->scanner->current(), ')')) {
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$args[] = $this->Terms($context, 'StringTerm', 'VariableStringTerm');
 			}
 			$this->Symbol($context, ')');
 			$statements = array();
 			$this->Symbol($context, '{');
-			while (!$this->IsSymbol($this->scanner->current(), '}')) {
+			while (!$this->isSymbol($this->scanner->current(), '}')) {
 				$statements[] = $this->Statement($context);
 			}
 			$this->Symbol($context, '}');
@@ -425,39 +359,45 @@ namespace Unicity\VLD {
 
 		protected function Statement(VLD\Parser\Context $context) : VLD\Parser\Definition\Statement {
 			$tuple = $this->scanner->current();
-			if ($this->IsStatement($tuple, 'do')) {
-				return $this->DoStatement($context);
-			}
-			if ($this->IsStatement($tuple, 'eval')) {
+
+			// Simple Statements
+			if ($this->isKeyword($tuple, 'eval')) {
 				return $this->EvalStatement($context);
 			}
-			if ($this->IsStatement($tuple, 'if')) {
-				return $this->IfStatement($context);
-			}
-			if ($this->IsStatement($tuple, 'include')) {
+			if ($this->isKeyword($tuple, 'include')) {
 				return $this->IncludeStatement($context);
 			}
-			if ($this->IsStatement($tuple, 'install')) {
+			if ($this->isKeyword($tuple, 'install')) {
 				return $this->InstallStatement($context);
 			}
-			if ($this->IsStatement($tuple, 'not')) {
-				return $this->NotStatement($context);
-			}
-			if ($this->IsStatement($tuple, 'run')) {
-				return $this->RunStatement($context);
-			}
-			if ($this->IsStatement($tuple, 'select')) {
-				return $this->SelectStatement($context);
-			}
-			if ($this->IsStatement($tuple, 'set')) {
+			if ($this->isKeyword($tuple, 'set')) {
 				return $this->SetStatement($context);
 			}
+
+			// Complex Statements
+			if ($this->isKeyword($tuple, 'do')) {
+				return $this->DoStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'is')) {
+				return $this->IsStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'not')) {
+				return $this->NotStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'run')) {
+				return $this->RunStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'select')) {
+				return $this->SelectStatement($context);
+			}
+
+			// Error Handling
 			$this->SyntaxError($tuple);
 		}
 
 		protected function StringTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\StringTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsStringTerm($tuple)) {
+			if (!$this->isStringTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$term = new VLD\Parser\Definition\StringTerm($context, (string) $tuple->token);
@@ -467,7 +407,7 @@ namespace Unicity\VLD {
 
 		protected function Symbol(VLD\Parser\Context $context, string $symbol) : VLD\Parser\Definition\Symbol {
 			$tuple = $this->scanner->current();
-			if (!$this->IsSymbol($tuple, $symbol)) {
+			if (!$this->isSymbol($tuple, $symbol)) {
 				$this->SyntaxError($tuple);
 			}
 			$symbol = new VLD\Parser\Definition\Symbol($context, (string) $tuple->token);
@@ -486,28 +426,28 @@ namespace Unicity\VLD {
 
 		protected function Term(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
-			if ($this->IsArrayTerm($tuple)) {
+			if ($this->isArrayTerm($tuple)) {
 				return $this->ArrayTerm($context);
 			}
-			if ($this->IsBooleanTerm($tuple)) {
+			if ($this->isBooleanTerm($tuple)) {
 				return $this->BooleanTerm($context);
 			}
-			if ($this->IsIntegerTerm($tuple)) {
+			if ($this->isIntegerTerm($tuple)) {
 				return $this->IntegerTerm($context);
 			}
-			if ($this->IsMapTerm($tuple)) {
+			if ($this->isMapTerm($tuple)) {
 				return $this->MapTerm($context);
 			}
-			if ($this->IsNullTerm($tuple)) {
+			if ($this->isNullTerm($tuple)) {
 				return $this->NullTerm($context);
 			}
-			if ($this->IsRealTerm($tuple)) {
+			if ($this->isRealTerm($tuple)) {
 				return $this->RealTerm($context);
 			}
-			if ($this->IsStringTerm($tuple)) {
+			if ($this->isStringTerm($tuple)) {
 				return $this->StringTerm($context);
 			}
-			if ($this->IsVariableTerm($tuple)) {
+			if ($this->isVariableTerm($tuple)) {
 				return $this->VariableTerm($context);
 			}
 			$this->SyntaxError($tuple);
@@ -515,7 +455,7 @@ namespace Unicity\VLD {
 
 		protected function Terminal(VLD\Parser\Context $context) : VLD\Parser\Definition\Terminal {
 			$tuple = $this->scanner->current();
-			if (!$this->IsTerminal($tuple)) {
+			if (!$this->isTerminal($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$terminal = new VLD\Parser\Definition\Terminal($context, (string) $tuple->token);
@@ -536,7 +476,7 @@ namespace Unicity\VLD {
 
 		protected function VariableKey(VLD\Parser\Context $context) : VLD\Parser\Definition\VariableKey {
 			$tuple = $this->scanner->current();
-			if (!$this->IsVariableTerm($tuple)) {
+			if (!$this->isVariableTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$key = new VLD\Parser\Definition\VariableKey($context, (string) $tuple->token);
@@ -546,7 +486,7 @@ namespace Unicity\VLD {
 
 		protected function VariableTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\VariableTerm {
 			$tuple = $this->scanner->current();
-			if (!$this->IsVariableTerm($tuple)) {
+			if (!$this->isVariableTerm($tuple)) {
 				$this->SyntaxError($tuple);
 			}
 			$term = new VLD\Parser\Definition\VariableTerm($context, (string) $tuple->token);
@@ -574,6 +514,80 @@ namespace Unicity\VLD {
 			}
 			exit();
 		}
+
+		#endregion
+
+		#region Helpers
+
+		protected function isArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '[');
+		}
+
+		protected function isBooleanTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && in_array((string) $tuple->token, ['false', 'true']));
+		}
+
+		protected function isIntegerTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:INTEGER'));
+		}
+
+		protected function isKeyword(Lexer\Scanner\Tuple $tuple, string $identifier) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === $identifier));
+		}
+
+		protected function isMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '{');
+		}
+
+		protected function isNullTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === 'null'));
+		}
+
+		protected function isRealTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:REAL'));
+		}
+
+		protected function isStringTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'LITERAL'));
+		}
+
+		protected function isSymbol(Lexer\Scanner\Tuple $tuple, string $symbol) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'SYMBOL') && ((string) $tuple->token === $symbol));
+		}
+
+		protected function isTerminal(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'TERMINAL'));
+		}
+
+		protected function isVariableTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && preg_match('/^VARIABLE/', (string) $tuple->type));
+		}
+
+		protected function isVariableArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:ARRAY'));
+		}
+
+		protected function isVariableBooleanTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:BOOLEAN'));
+		}
+
+		protected function isVariableMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MAP'));
+		}
+
+		protected function isVariableMixedTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MIXED'));
+		}
+
+		protected function isVariableNumberTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:NUMBER'));
+		}
+
+		protected function isVariableStringTerm(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:STRING'));
+		}
+
+		#endregion
 
 	}
 
