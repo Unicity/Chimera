@@ -43,7 +43,7 @@ namespace Unicity\VLD\Parser\Definition {
 			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
 			$statements = array();
 			foreach ($paths as $path) {
-				$statements[] = new VLD\Parser\Definition\SelectStatement($this->context, [new VLD\Parser\Definition\PathTerm($this->context, $path)], $this->block);
+				$statements[] = new VLD\Parser\Definition\SelectStatement($this->context, [new VLD\Parser\Definition\TempTerm($this->context, $path)], $this->block);
 			}
 			$object = new $control($this->context, $policy, $statements);
 			return $object->get();

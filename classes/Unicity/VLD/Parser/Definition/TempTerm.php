@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class PathTerm extends VLD\Parser\Definition\Term {
+	class TempTerm extends VLD\Parser\Definition\Term {
 
 		protected $token;
 

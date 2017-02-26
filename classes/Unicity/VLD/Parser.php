@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace Unicity\VLD {
 
-	use \Unicity\BT;
 	use \Unicity\Common;
+	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Lexer;
@@ -34,9 +34,10 @@ namespace Unicity\VLD {
 		 * This variable stores the config for how errors are handled.
 		 *
 		 * @access protected
+		 * @static
 		 * @var array
 		 */
-		protected $error_handler;
+		protected static $error_handler = null;
 
 		/**
 		 * This variable stores a reference to the IO reader.
@@ -52,74 +53,22 @@ namespace Unicity\VLD {
 		 * @access public
 		 * @param IO\Reader $reader                                 a reference to the IO reader
 		 */
-		public function __construct(IO\Reader $reader, array $error_handler = array()) {
-			$this->error_handler = array_merge([
-				'logs' => ['stderr'],
-				'throw' => false,
-			], $error_handler);
+		public function __construct(IO\Reader $reader) {
+			$this->scanner = VLD\Scanner::factory($reader);
+		}
 
-			$this->scanner = new Lexer\Scanner($reader);
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\BlockComment('/*', '*/'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment('`'));
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Number());
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('('));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(')'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('['));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(']'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('{'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('}'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(','));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
-
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\ArrayVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\BlockVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\BooleanVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\MapVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\MixedVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\NumberVariable());
-			$this->scanner->addRule(new VLD\Scanner\TokenRule\StringVariable());
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'eval', 'install', 'set', // simple statements
-				'do', 'is', 'not', 'run', 'select', // complex statements
-				'false', 'true', // boolean values
-				'null', // null value
-			]));
-
-			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Unknown());
-
-			$this->scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
+		public function read(VLD\Parser\Context $context) : array {
+			$statements = array();
+			while ($this->scanner->next()) {
+				$statements[] = $this->Statement($context);
+			}
+			return $statements;
 		}
 
 		public function run(Common\HashMap $input) : Common\IMap {
-			/*
-			while ($this->scanner->next()) {
-				var_dump($this->scanner->current());
-			}
-			exit();
-			*/
-			$context = new VLD\Parser\Context(new BT\Entity([
-				'components' => $input,
-				'entity_id' => 0,
-			]));
-			$feedback = new VLD\Parser\Feedback($context->getPath());
-			$this->scanner->next();
-			while (!is_null($this->scanner->current())) {
-				$result = $this->Statement($context)->get();
-				$feedback->addRecommendations($result);
-				if ($result->getNumberOfViolations() > 0) {
-					$feedback->addViolations($result);
-					break;
-				}
-			}
-			return $feedback->toMap();
+			$context = new VLD\Parser\Context($input);
+			$control = new VLD\Parser\Definition\SeqControl($context, null, $this->read($context));
+			return $control->get()->toMap();
 		}
 
 		#region Productions
@@ -129,7 +78,7 @@ namespace Unicity\VLD {
 		protected function Symbol(VLD\Parser\Context $context, string $symbol) : VLD\Parser\Definition\Symbol {
 			$tuple = $this->scanner->current();
 			if (!$this->isSymbol($tuple, $symbol)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$symbol = new VLD\Parser\Definition\Symbol($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -139,7 +88,7 @@ namespace Unicity\VLD {
 		protected function Terminal(VLD\Parser\Context $context) : VLD\Parser\Definition\Terminal {
 			$tuple = $this->scanner->current();
 			if (!$this->isTerminal($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$terminal = new VLD\Parser\Definition\Terminal($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -153,7 +102,7 @@ namespace Unicity\VLD {
 		protected function ArrayKey(VLD\Parser\Context $context) : VLD\Parser\Definition\ArrayKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isArrayVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\ArrayKey($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -180,7 +129,7 @@ namespace Unicity\VLD {
 		protected function ArrayVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\ArrayVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isArrayVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\ArrayVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -190,15 +139,34 @@ namespace Unicity\VLD {
 		protected function BlockKey(VLD\Parser\Context $context) : VLD\Parser\Definition\BlockKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isBlockKey($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\BlockKey($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $key;
 		}
 
+		protected function BlockRef(VLD\Parser\Context $context) : VLD\Parser\Definition\Block {
+			$tuple = $this->scanner->current();
+			if (!$this->isBlockRef($tuple)) {
+				$this->SyntaxError();
+			}
+			if ($this->isStringVariable($tuple)) {
+				$variable = new VLD\Parser\Definition\BlockVariable($context, (string) $tuple->token);
+				$this->scanner->next();
+				return $variable;
+			}
+			$variable = new VLD\Parser\Definition\BlockRef($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $variable;
+		}
+
 		protected function BlockTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Block {
-			if ($this->isBlockVariable($this->scanner->current())) {
+			$tuple = $this->scanner->current();
+			if ($this->isBlockRef($tuple)) {
+				return $this->BlockRef($context);
+			}
+			if ($this->isBlockVariable($tuple)) {
 				return $this->BlockVariable($context);
 			}
 			$this->Symbol($context, '{');
@@ -214,7 +182,7 @@ namespace Unicity\VLD {
 		protected function BlockVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\BlockVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isBlockVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$variable = new VLD\Parser\Definition\BlockVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -224,7 +192,7 @@ namespace Unicity\VLD {
 		protected function BooleanKey(VLD\Parser\Context $context) : VLD\Parser\Definition\BooleanKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isBooleanVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\BooleanKey($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -244,7 +212,7 @@ namespace Unicity\VLD {
 		protected function BooleanVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\BooleanVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isBooleanVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\BooleanVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -254,7 +222,7 @@ namespace Unicity\VLD {
 		protected function IntegerTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isIntegerTerm($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\IntegerTerm($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -264,7 +232,7 @@ namespace Unicity\VLD {
 		protected function MapKey(VLD\Parser\Context $context) : VLD\Parser\Definition\MapKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isMapVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\MapKey($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -297,7 +265,7 @@ namespace Unicity\VLD {
 		protected function MapVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\MapVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isMapVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\MapVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -307,7 +275,7 @@ namespace Unicity\VLD {
 		protected function MixedKey(VLD\Parser\Context $context) : VLD\Parser\Definition\MixedKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isMixedKey($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\MixedKey($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -340,7 +308,7 @@ namespace Unicity\VLD {
 		protected function MixedVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\MixedVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isMixedVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\MixedVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -350,7 +318,7 @@ namespace Unicity\VLD {
 		protected function NullTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isNullTerm($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\NullTerm($context);
 			$this->scanner->next();
@@ -360,7 +328,7 @@ namespace Unicity\VLD {
 		protected function NumberKey(VLD\Parser\Context $context) : VLD\Parser\Definition\NumberKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isNumberVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\NumberKey($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -381,7 +349,7 @@ namespace Unicity\VLD {
 		protected function NumberVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\NumberVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isNumberVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\NumberVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -391,7 +359,7 @@ namespace Unicity\VLD {
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isRealTerm($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\RealTerm($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -401,7 +369,7 @@ namespace Unicity\VLD {
 		protected function StringKey(VLD\Parser\Context $context) : VLD\Parser\Definition\StringKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isStringVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$key = new VLD\Parser\Definition\StringKey($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -421,7 +389,7 @@ namespace Unicity\VLD {
 		protected function StringVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\StringVariable {
 			$tuple = $this->scanner->current();
 			if (!$this->isStringVariable($tuple)) {
-				$this->SyntaxError($tuple);
+				$this->SyntaxError();
 			}
 			$term = new VLD\Parser\Definition\StringVariable($context, (string) $tuple->token);
 			$this->scanner->next();
@@ -436,7 +404,7 @@ namespace Unicity\VLD {
 					return $this->{$term}($context);
 				}
 			}
-			$this->SyntaxError($tuple);
+			$this->SyntaxError();
 		}
 
 		#endregion
@@ -477,7 +445,7 @@ namespace Unicity\VLD {
 			}
 
 			// Error Handling
-			$this->SyntaxError($tuple);
+			$this->SyntaxError();
 		}
 
 		#endregion
@@ -644,7 +612,8 @@ namespace Unicity\VLD {
 
 		#region Error Handling
 
-		protected function SyntaxError(?Lexer\Scanner\Tuple $tuple) : void {
+		protected function SyntaxError() : void {
+			$tuple = $this->scanner->current();
 			if (is_null($tuple)) {
 				$this->WriteError('VLD Parse error: syntax error, unexpected end of file.');
 			}
@@ -654,8 +623,12 @@ namespace Unicity\VLD {
 		}
 
 		protected function WriteError(string $message, array $variables = null) : void {
+			if (static::$error_handler === null) {
+				$directory = dirname(__FILE__);
+				static::$error_handler = Config\Inc\Reader::load(new IO\File($directory . '/Parser/Config.php'))->read();
+			}
 			$message = empty($variables) ? (string) $message : strtr((string) $message, $variables);
-			$logs = $this->error_handler['logs'];
+			$logs = static::$error_handler['logs'];
 			foreach ($logs as $log) {
 				switch ($log) {
 					case 'stderr':
@@ -668,7 +641,7 @@ namespace Unicity\VLD {
 						break;
 				}
 			}
-			if ($this->error_handler['throw']) {
+			if (static::$error_handler['throw']) {
 				throw new Throwable\Parse\Exception($message);
 			}
 			exit();
@@ -696,8 +669,12 @@ namespace Unicity\VLD {
 			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:BLOCK'));
 		}
 
+		protected function isBlockRef(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isStringTerm($tuple);
+		}
+
 		protected function isBlockTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return $this->isSymbol($tuple, '{') || $this->isBlockVariable($tuple);
+			return $this->isSymbol($tuple, '{') || $this->isBlockRef($tuple) || $this->isBlockVariable($tuple);
 		}
 
 		protected function isBlockVariable(Lexer\Scanner\Tuple $tuple) : bool {

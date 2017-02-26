@@ -19,30 +19,27 @@ namespace Unicity\MappingService\Data {
 		 * @access public
 		 * @static
 		 * @final
-		 * @param Common\HashMap $input                             the input data to be processed
-		 * @param string $script                                    the namespaced name to ".vld" file
+		 * @param string $script                                    the script's name (without the '.vld' suffix)
+		 * @param Common\HashMap $input                             the input data to be validated
 		 * @return Common\IMap                                      the feedback results
 		 * @throws Throwable\FileNotFound\Exception                 indicates that no ".vld" could be found
 		 */
-		public static final function execute(Common\HashMap $input, string $script) : Common\IMap {
-			$components = preg_split('/(\\\|_)+/', trim($script, '\\'));
-
-			$filepath = implode(DIRECTORY_SEPARATOR, $components) . '.vld';
+		public static final function execute(string $script, Common\HashMap $input) : Common\IMap {
+			$script = implode(DIRECTORY_SEPARATOR, preg_split('/(\\\|_)+/', trim($script, '\\'))) . '.vld';
 
 			$file = null;
 			foreach (Bootstrap::$classpaths as $directory) {
-				$uri = Bootstrap::rootPath() . $directory . $filepath;
+				$uri = Bootstrap::rootPath() . $directory . $script;
 				if (file_exists($uri)) {
 					$file = new IO\File($uri);
 					break;
 				}
-				$uri = $directory . $filepath;
+				$uri = $directory . $script;
 				if (file_exists($uri)) {
 					$file = new IO\File($uri);
 					break;
 				}
 			}
-
 			if (is_null($file)) {
 				throw new Throwable\FileNotFound\Exception('Unable to locate file for ":script".', array(':script' => $script));
 			}

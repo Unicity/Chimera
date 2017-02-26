@@ -24,7 +24,6 @@ namespace Unicity\VLD\Parser {
 	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\Throwable;
-	use \Unicity\VLD;
 
 	class Context extends Core\Object {
 
@@ -41,13 +40,15 @@ namespace Unicity\VLD\Parser {
 		 * the initial entity being validated).
 		 *
 		 * @access public
-		 * @param BT\Entity $entity                                 the initial entity to be
-		 *                                                          validated
+		 * @param Common\HashMap $input                             the input data to be validated
 		 */
-		public function __construct(BT\Entity $entity) {
+		public function __construct(Common\HashMap $input) {
 			$this->stack = new Common\Mutable\Stack();
 			$this->stack->push([
-				'entity' => $entity,
+				'entity' => new BT\Entity([
+					'components' => $input,
+					'entity_id' => 0,
+				]),
 				'modules' => new Common\Mutable\HashMap(),
 				'path' => '',
 				'symbols' => new Common\Mutable\HashMap(),
@@ -136,20 +137,23 @@ namespace Unicity\VLD\Parser {
 					return $symbols->getValue($key);
 				}
 			}
+			// default values should key not exist
 			if (strlen($key) > 0) {
 				switch ($key[0]) {
-					case '@':
+					case '@': // array variable
 						return [];
-					case '^':
+					case '^': // block variable
 						return [];
-					case '?':
+					case '?': // boolean variable
 						return false;
-					case '%':
+					case '%': // map variable
 						return [];
-					case '*':
+					case '*': // mixed variable
 						return null;
-					case '#':
+					case '#': // number variable
 						return 0;
+					case '$': // string variable
+						return '';
 				}
 			}
 			return Core\Data\Undefined::instance();
