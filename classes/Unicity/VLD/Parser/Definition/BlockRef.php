@@ -29,7 +29,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function __construct(VLD\Parser\Context $context, string $token) {
 			parent::__construct($context);
-			$this->token = $token;
+			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
 		}
 
 		public function get() {
