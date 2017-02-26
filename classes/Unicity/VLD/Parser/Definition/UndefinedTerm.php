@@ -20,21 +20,20 @@ declare(strict_types = 1);
 
 namespace Unicity\VLD\Parser\Definition {
 
-	use \Unicity\Config;
-	use \Unicity\IO;
+	use \Unicity\Core;
 	use \Unicity\VLD;
 
-	class IncludeStatement extends VLD\Parser\Definition\Statement {
+	class UndefinedTerm extends VLD\Parser\Definition\Term {
 
-		protected $args;
+		protected $value;
 
-		public function __construct(VLD\Parser\Context $context, array $args) {
+		public function __construct(VLD\Parser\Context $context) {
 			parent::__construct($context);
-			$this->args = $args;
+			$this->value = Core\Data\Undefined::instance();
 		}
 
 		public function get() {
-			return new VLD\Parser\Feedback($this->context->getPath());
+			return $this->value;
 		}
 
 	}

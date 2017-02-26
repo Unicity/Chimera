@@ -87,7 +87,7 @@ namespace Unicity\VLD {
 			$this->scanner->addRule(new VLD\Scanner\TokenRule\StringVariable());
 
 			$this->scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'eval', 'include', 'install', 'set', // simple statements
+				'eval', 'install', 'set', // simple statements
 				'do', 'is', 'not', 'run', 'select', // complex statements
 				'false', 'true', // boolean values
 				'null', // null value
@@ -452,9 +452,6 @@ namespace Unicity\VLD {
 			if ($this->isKeyword($tuple, 'eval')) {
 				return $this->EvalStatement($context);
 			}
-			if ($this->isKeyword($tuple, 'include')) {
-				return $this->IncludeStatement($context);
-			}
 			if ($this->isKeyword($tuple, 'install')) {
 				return $this->InstallStatement($context);
 			}
@@ -501,16 +498,6 @@ namespace Unicity\VLD {
 			$this->Symbol($context, ')');
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\EvalStatement($context, $args);
-		}
-
-		protected function IncludeStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IncludeStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ')');
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\IncludeStatement($context, $args);
 		}
 
 		protected function InstallStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\InstallStatement {
