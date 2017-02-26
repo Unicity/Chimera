@@ -23,7 +23,7 @@ namespace Unicity\VLD\Parser\Definition {
 	use \Unicity\IO;
 	use \Unicity\VLD;
 
-	class BlockVariable extends VLD\Parser\Definition\Block implements VLD\Parser\Definition\Variable {
+	class BlockRef extends VLD\Parser\Definition\Block {
 
 		protected $token;
 
@@ -33,14 +33,8 @@ namespace Unicity\VLD\Parser\Definition {
 		}
 
 		public function get() {
-			switch ($this->token[0]) {
-				case '$':
-					$parser = new VLD\Parser(new \Unicity\IO\FileReader(new IO\File($this->context->getValue($this->token))));
-					return $parser->read($this->context);
-				case '^':
-				default:
-					return $this->context->getValue($this->token);
-			}
+			$parser = new VLD\Parser(new \Unicity\IO\FileReader(new IO\File($this->token)));
+			return $parser->read($this->context);
 		}
 
 	}
