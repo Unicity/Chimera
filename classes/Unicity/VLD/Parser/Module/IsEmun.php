@@ -24,17 +24,21 @@ namespace Unicity\VLD\Parser\Module {
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class IsLesserThanOrEqualTo extends VLD\Parser\Module {
+	class IsEnum extends VLD\Parser\Module {
 
 		public function process(BT\Entity $entity, string $root, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback($root);
 
 			$v2 = $this->policy;
 
+			if (is_string($v2)) {
+				$v2 = explode(':', $v2);
+			}
+
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 > $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.le', ['{{value}}' => $v2]);
+				if (!in_array($v1, $v2)) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.enum', ['{{enum}}' => implode(':', $v2)]);
 				}
 			}
 
