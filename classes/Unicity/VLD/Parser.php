@@ -124,6 +124,32 @@ namespace Unicity\VLD {
 
 		#region Productions
 
+		#region Symbols
+
+		protected function Symbol(VLD\Parser\Context $context, string $symbol) : VLD\Parser\Definition\Symbol {
+			$tuple = $this->scanner->current();
+			if (!$this->isSymbol($tuple, $symbol)) {
+				$this->SyntaxError($tuple);
+			}
+			$symbol = new VLD\Parser\Definition\Symbol($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $symbol;
+		}
+
+		protected function Terminal(VLD\Parser\Context $context) : VLD\Parser\Definition\Terminal {
+			$tuple = $this->scanner->current();
+			if (!$this->isTerminal($tuple)) {
+				$this->SyntaxError($tuple);
+			}
+			$terminal = new VLD\Parser\Definition\Terminal($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $terminal;
+		}
+
+		#endregion
+
+		#region Terms
+
 		protected function ArrayKey(VLD\Parser\Context $context) : VLD\Parser\Definition\ArrayKey {
 			$tuple = $this->scanner->current();
 			if (!$this->isArrayVariable($tuple)) {
@@ -225,76 +251,6 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
-		protected function DoStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\DoStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
-			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
-				$args[] = $this->MixedTerm($context);
-			}
-			$this->Symbol($context, ')');
-			$block = $this->BlockTerm($context);
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\DoStatement($context, $args, $block);
-		}
-
-		protected function EvalStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\EvalStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
-			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
-				$args[] = $this->MixedTerm($context);
-			}
-			$this->Symbol($context, ')');
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\EvalStatement($context, $args);
-		}
-
-		protected function IsStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IsStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
-			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
-				$args[] = $this->MixedTerm($context);
-			}
-			$this->Symbol($context, ')');
-			$block = $this->BlockTerm($context);
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\IsStatement($context, $args, $block);
-		}
-
-		protected function IncludeStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IncludeStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ')');
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\IncludeStatement($context, $args);
-		}
-
-		protected function InstallStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\InstallStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ')');
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\InstallStatement($context, $args);
-		}
-
 		protected function IntegerTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isIntegerTerm($tuple)) {
@@ -391,23 +347,6 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
-		protected function NotStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\NotStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->Symbol($context, '(');
-			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
-			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
-				$args[] = $this->MixedTerm($context);
-			}
-			$this->Symbol($context, ')');
-			$block = $this->BlockTerm($context);
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\NotStatement($context, $args, $block);
-		}
-
 		protected function NullTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isNullTerm($tuple)) {
@@ -459,32 +398,129 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
-		protected function RunStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
+		protected function StringKey(VLD\Parser\Context $context) : VLD\Parser\Definition\StringKey {
+			$tuple = $this->scanner->current();
+			if (!$this->isStringVariable($tuple)) {
+				$this->SyntaxError($tuple);
+			}
+			$key = new VLD\Parser\Definition\StringKey($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $key;
+		}
+
+		protected function StringTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
+			$tuple = $this->scanner->current();
+			if ($this->isStringVariable($tuple)) {
+				return $this->StringVariable($context);
+			}
+			$term = new VLD\Parser\Definition\StringTerm($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $term;
+		}
+
+		protected function StringVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\StringVariable {
+			$tuple = $this->scanner->current();
+			if (!$this->isStringVariable($tuple)) {
+				$this->SyntaxError($tuple);
+			}
+			$term = new VLD\Parser\Definition\StringVariable($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $term;
+		}
+
+		protected function Terms(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
+			$tuple = $this->scanner->current();
+			foreach ($terms as $term) {
+				$IsA = 'Is' . $term;
+				if ($this->{$IsA}($tuple)) {
+					return $this->{$term}($context);
+				}
+			}
+			$this->SyntaxError($tuple);
+		}
+
+		#endregion
+
+		#region Statements
+
+		#region General
+
+		protected function Statement(VLD\Parser\Context $context) : VLD\Parser\Definition\Statement {
+			$tuple = $this->scanner->current();
+
+			// Simple Statements
+			if ($this->isKeyword($tuple, 'eval')) {
+				return $this->EvalStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'include')) {
+				return $this->IncludeStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'install')) {
+				return $this->InstallStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'set')) {
+				return $this->SetStatement($context);
+			}
+
+			// Complex Statements
+			if ($this->isKeyword($tuple, 'do')) {
+				return $this->DoStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'is')) {
+				return $this->IsStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'not')) {
+				return $this->NotStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'run')) {
+				return $this->RunStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'select')) {
+				return $this->SelectStatement($context);
+			}
+
+			// Error Handling
+			$this->SyntaxError($tuple);
+		}
+
+		#endregion
+
+		#region Simple Statements
+
+		protected function EvalStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\EvalStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
 			$args[] = $this->StringTerm($context);
+			$this->Symbol($context, ',');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
 			if (!$this->isSymbol($this->scanner->current(), ')')) {
 				$this->Symbol($context, ',');
 				$args[] = $this->MixedTerm($context);
 			}
 			$this->Symbol($context, ')');
-			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\RunStatement($context, $args, $block);
+			return new VLD\Parser\Definition\EvalStatement($context, $args);
 		}
 
-		protected function SelectStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SelectStatement {
+		protected function IncludeStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IncludeStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->Symbol($context, '(');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$args[] = $this->StringTerm($context);
-			}
+			$args[] = $this->StringTerm($context);
 			$this->Symbol($context, ')');
-			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\SelectStatement($context, $args, $block);
+			return new VLD\Parser\Definition\IncludeStatement($context, $args);
+		}
+
+		protected function InstallStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\InstallStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->StringTerm($context);
+			$this->Symbol($context, ')');
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\InstallStatement($context, $args);
 		}
 
 		protected function SetStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SetStatement {
@@ -532,83 +568,94 @@ namespace Unicity\VLD {
 			return new VLD\Parser\Definition\SetStatement($context, $entry);
 		}
 
-		protected function Statement(VLD\Parser\Context $context) : VLD\Parser\Definition\Statement {
-			$tuple = $this->scanner->current();
+		#endregion
 
-			// Simple Statements
-			if ($this->isKeyword($tuple, 'eval')) {
-				return $this->EvalStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'include')) {
-				return $this->IncludeStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'install')) {
-				return $this->InstallStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'set')) {
-				return $this->SetStatement($context);
-			}
+		#region Complex Statements
 
-			// Complex Statements
-			if ($this->isKeyword($tuple, 'do')) {
-				return $this->DoStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'is')) {
-				return $this->IsStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'not')) {
-				return $this->NotStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'run')) {
-				return $this->RunStatement($context);
-			}
-			if ($this->isKeyword($tuple, 'select')) {
-				return $this->SelectStatement($context);
-			}
-
-			// Error Handling
-			$this->SyntaxError($tuple);
-		}
-
-		protected function StringKey(VLD\Parser\Context $context) : VLD\Parser\Definition\StringKey {
-			$tuple = $this->scanner->current();
-			if (!$this->isStringVariable($tuple)) {
-				$this->SyntaxError($tuple);
-			}
-			$key = new VLD\Parser\Definition\StringKey($context, (string) $tuple->token);
+		protected function DoStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\DoStatement {
 			$this->scanner->next();
-			return $key;
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->StringTerm($context);
+			$this->Symbol($context, ',');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->MixedTerm($context);
+			}
+			$this->Symbol($context, ')');
+			$block = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\DoStatement($context, $args, $block);
 		}
 
-		protected function StringTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
-			$tuple = $this->scanner->current();
-			if ($this->isStringVariable($tuple)) {
-				return $this->StringVariable($context);
-			}
-			$term = new VLD\Parser\Definition\StringTerm($context, (string) $tuple->token);
+		protected function IsStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IsStatement {
 			$this->scanner->next();
-			return $term;
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->StringTerm($context);
+			$this->Symbol($context, ',');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->MixedTerm($context);
+			}
+			$this->Symbol($context, ')');
+			$block = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\IsStatement($context, $args, $block);
 		}
 
-		protected function StringVariable(VLD\Parser\Context $context) : VLD\Parser\Definition\StringVariable {
-			$tuple = $this->scanner->current();
-			if (!$this->isStringVariable($tuple)) {
-				$this->SyntaxError($tuple);
-			}
-			$term = new VLD\Parser\Definition\StringVariable($context, (string) $tuple->token);
+		protected function NotStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\NotStatement {
 			$this->scanner->next();
-			return $term;
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->StringTerm($context);
+			$this->Symbol($context, ',');
+			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->MixedTerm($context);
+			}
+			$this->Symbol($context, ')');
+			$block = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\NotStatement($context, $args, $block);
 		}
 
-		protected function Symbol(VLD\Parser\Context $context, string $symbol) : VLD\Parser\Definition\Symbol {
-			$tuple = $this->scanner->current();
-			if (!$this->isSymbol($tuple, $symbol)) {
-				$this->SyntaxError($tuple);
-			}
-			$symbol = new VLD\Parser\Definition\Symbol($context, (string) $tuple->token);
+		protected function RunStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
 			$this->scanner->next();
-			return $symbol;
+			$args = array();
+			$this->Symbol($context, '(');
+			$args[] = $this->StringTerm($context);
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
+				$this->Symbol($context, ',');
+				$args[] = $this->MixedTerm($context);
+			}
+			$this->Symbol($context, ')');
+			$block = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\RunStatement($context, $args, $block);
 		}
+
+		protected function SelectStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SelectStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->Symbol($context, '(');
+			if (!$this->isSymbol($this->scanner->current(), ')')) {
+				$args[] = $this->StringTerm($context);
+			}
+			$this->Symbol($context, ')');
+			$block = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\SelectStatement($context, $args, $block);
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Error Handling
 
 		protected function SyntaxError(?Lexer\Scanner\Tuple $tuple) : void {
 			if (is_null($tuple)) {
@@ -617,27 +664,6 @@ namespace Unicity\VLD {
 			else {
 				$this->WriteError('VLD Parse error: syntax error, unexpected token \':token\' of type \':type\' encountered at :index.', array(':index' => $tuple->index, ':token' => (string) $tuple->token, ':type' => (string) $tuple->type));
 			}
-		}
-
-		protected function Terminal(VLD\Parser\Context $context) : VLD\Parser\Definition\Terminal {
-			$tuple = $this->scanner->current();
-			if (!$this->isTerminal($tuple)) {
-				$this->SyntaxError($tuple);
-			}
-			$terminal = new VLD\Parser\Definition\Terminal($context, (string) $tuple->token);
-			$this->scanner->next();
-			return $terminal;
-		}
-
-		protected function Terms(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
-			$tuple = $this->scanner->current();
-			foreach ($terms as $term) {
-				$IsA = 'Is' . $term;
-				if ($this->{$IsA}($tuple)) {
-					return $this->{$term}($context);
-				}
-			}
-			$this->SyntaxError($tuple);
 		}
 
 		protected function WriteError(string $message, array $variables = null) : void {
@@ -660,6 +686,8 @@ namespace Unicity\VLD {
 			}
 			exit();
 		}
+
+		#endregion
 
 		#endregion
 

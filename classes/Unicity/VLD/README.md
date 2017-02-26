@@ -21,7 +21,7 @@ The syntax of VLD in Backus-Naur Form:
 
 ```
 <array> = <lbrace> (<term> (<comma> <term>)*)? <rbrace>
-<block> = <lcurly> <statement>+ <rcurly>
+<block> = (<lcurly> <statement>+ <rcurly>) | <variable-block>
 <boolean> = false | true
 <colon> = ":"
 <comma> = ","
@@ -46,7 +46,7 @@ The syntax of VLD in Backus-Naur Form:
 <rparen> = ")"
 <run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> <path>? <rparen>  <terminal>
-<set> = set <lparen> <variable> <comma> <term> <rparen> <terminal>
+<set> = set <lparen> <variable> <comma> (<term> | <variable-block>) <rparen> <terminal>
 <statement> =  <do> | <eval> | <is> | <include> | <install> | <not> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
@@ -55,6 +55,7 @@ The syntax of VLD in Backus-Naur Form:
 <uri> = <string> | <variable-string>
 <variable> = <variable-array> | <variable-boolean> | <variable-map> | <variable-mixed> | <variable-number> | <variable-string>
 <variable-array> = '/^@[a-z0-9]$/i'
+<variable-block> = '/^\^[a-z0-9]$/i'
 <variable-boolean> = '/^\?[a-z0-9]$/i'
 <variable-map> = '/^%[a-z0-9]$/i'
 <variable-mixed> = '/^\*[a-z0-9]$/i'
@@ -217,7 +218,8 @@ set(%variable, {}).
 #### Mixed Variables
 
 Mixed variables are prefixed using an asterisk (which is an adaptation of the wildcard
-syntax in many languages).
+syntax in many languages).  A mixed variable may store any other term's value, except for
+a block term.
 
 ```
 *variable
@@ -236,7 +238,7 @@ set(*variable, {}).
 
 #### Block Variables
 
-Block variables are prefixed using an upcart (which is an adaptation of the lambda syntax
+Block variables are prefixed using an upcaret (which is an adaptation of the lambda syntax
 used in Objective-C).
 
 ```
