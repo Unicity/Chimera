@@ -59,7 +59,8 @@ namespace Unicity\VLD {
 
 		public function read(VLD\Parser\Context $context) : array {
 			$statements = array();
-			while ($this->scanner->next()) {
+			$this->scanner->next();
+			while (!is_null($this->scanner->current())) {
 				$statements[] = $this->Statement($context);
 			}
 			return $statements;
