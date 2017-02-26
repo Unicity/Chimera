@@ -34,7 +34,7 @@ namespace Unicity\VLD\Parser\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!preg_match($v2, $v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.regex', [':regex' => $v2]);
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.regex', ['{{regex}}' => $v2]);
 				}
 			}
 

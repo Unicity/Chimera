@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\VLD\Parser\Module {
 
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
@@ -33,8 +34,11 @@ namespace Unicity\VLD\Parser\Module {
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if (is_string($v1) && (strlen($v1) > $v2)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.maximum', [':value' => $v2]);
+				if (is_string($v1) && (strlen($v1) <= $v2)) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.gt.length', ['{{length}}' => $v2]);
+				}
+				else if (($v1 instanceof Common\IList) && ($v1->count() <= $v2)) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.gt.size', ['{{size}}' => $v2]);
 				}
 			}
 
