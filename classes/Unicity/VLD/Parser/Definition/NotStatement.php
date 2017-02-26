@@ -36,8 +36,14 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function get() {
 			$module = $this->context->getModule($this->args[0]->get());
-			$policy = (isset($this->args[2])) ? $this->args[2]->get() : null;
-			$object = new $module($policy);
+			$class = $module['class'];
+			if (isset($this->args[2])) {
+				$policy = $this->args[2]->get();
+			}
+			else {
+				$policy = $module['policy'] ?? null;
+			}
+			$object = new $class($policy);
 			$entity = $this->context->getEntity();
 			$root = $this->context->getPath();
 			$paths = $this->args[1]->get();

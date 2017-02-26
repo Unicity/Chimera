@@ -21,13 +21,12 @@ The syntax of VLD in Backus-Naur Form:
 
 ```
 <array> = <lbrace> (<term> (<comma> <term>)*)? <rbrace>
-<block> = (<lcurly> <statement>+ <rcurly>) | <variable-block>
+<block> = <uri> | (<lcurly> <statement>+ <rcurly>) | <variable-block>
 <boolean> = false | true
 <colon> = ":"
 <comma> = ","
 <control> = <string> | <variable-string>
 <eval> = eval <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <terminal>
-<include> = include <lparen> <uri> <rparen> <terminal>
 <install> = install <lparen> <uri> <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
 <is> = is <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
@@ -47,7 +46,7 @@ The syntax of VLD in Backus-Naur Form:
 <run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
 <select> = select <lparen> <path>? <rparen>  <terminal>
 <set> = set <lparen> <variable> <comma> (<term> | <variable-block>) <rparen> <terminal>
-<statement> =  <do> | <eval> | <is> | <include> | <install> | <not> | <run> | <select> | <set>
+<statement> =  <do> | <eval> | <is> | <install> | <not> | <run> | <select> | <set>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
 <terminal> = "."
@@ -278,9 +277,9 @@ multiple lines.
 
 ## Statements
 
-There are 9 types of statements: `do`, `eval`, `install`, `include`, `is`, `not`, `run`, `select`,
-and `set`.  They are broken into two groups: simple statements and complex statements.  The syntax
-convention for statements in VLD was adapted from Prolog.
+There are 8 types of statements: `do`, `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.
+They are broken into two groups: simple statements and complex statements.  The syntax convention
+for statements was inspired by Prolog's syntax.
 
 ### Simple Statements
 
@@ -324,12 +323,17 @@ These mappings are stored in a PHP config file.
 ```
 <?php
 return array(
-	'eq' => '\\Unicity\\VLD\\Parser\\Module\\IsEqualTo',
-	'gt' => '\\Unicity\\VLD\\Parser\\Module\\IsGreaterThan',
+	'eq' => [
+		'class' => '\\Unicity\\VLD\\Parser\\Module\\IsEqualTo',
+	],
+	'bic' => [
+		'class' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
+		'policy' => '/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/'
+	],
 );
 ```
 
-The keys can then be used with other statements, e.g. the `eval` and `is` statements.
+The keys can then be used with other statements, e.g. the `eval`, `is`, and `not` statements.
 
 #### Eval Statements
 
@@ -349,19 +353,6 @@ eval("module", ["path1", "path2"], *policy).
 1. Required: Defines the module to be executed.
 2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the module's policy parameters.
-
-#### Include Statements
-
-An `include` statement adds the statements in the designated `.vld` file to the current scope
-of the program.
-
-```
-include("classpath:Unicity/MappingService/Impl/Hydra/API/Master/Validator/CreateCustomer.vld").
-```
-
-##### Parameters
-
-1. Required: Defines the location of the `.vld` file to include.
 
 ### Complex Statements
 

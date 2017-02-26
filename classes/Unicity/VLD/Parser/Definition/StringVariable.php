@@ -32,7 +32,7 @@ namespace Unicity\VLD\Parser\Definition {
 		}
 
 		public function get() {
-			return $this->context->getSymbol($this->token);
+			return $this->context->getValue($this->token);
 		}
 
 	}
