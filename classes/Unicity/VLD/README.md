@@ -2,18 +2,23 @@
 
 ## About
 
-The VLD programming language is a simple intuitive scripting language that can be used to quickly
-write validation tests.  It is an interpretive language and has the power of calling PHP directly
-to perfom more complex validations when necessary.
+The VLD programming language is a simple validation scripting language scripting language that can be used
+to quickly write validation scripts.  It is an interpretive language and has the power of calling PHP modules
+directly to handle more complex validations when necessary.
 
-A core function of VLD is derived from behavior tree design in game programming.  Many of the controls
-in this language resemble a number of common task nodes (e.g. the parallel node, the sequence node,
-and the selector node).  The handling of feedback is also handled in a similar way to the way behavior
-trees return success/failed messages.
+VLD has adopted some of its core functionality from behavior tree design in game programming.  Many of the controls
+in this language resemble a number of the common task nodes (e.g. the parallel node, the sequence node,
+and the selector node) from in behavior tree design.  Program feedback is managed by checking for the number of
+violations encountered to determine whether a task (which are called statements in VLD)was successfully or failed.
 
 ## File
 
 A VLD file is a simple text file and uses the file extension `.vld`.
+
+## Parsing
+
+Files are currently executed via a class called `\Unicity\MappingService\Data\Validator`.  At the moment, we provide
+input for processing via MappingService (but we could load the entity just as easily another way).
 
 ## Syntax
 
@@ -297,6 +302,7 @@ set(#variable, 123).
 set(#variable, 12.3).
 set(@variable, []).
 set(%variable, {}).
+set(^variable, { set(*variable, null). }).
 ```
 
 ##### Parameters
@@ -333,7 +339,9 @@ return array(
 );
 ```
 
-The keys can then be used with other statements, e.g. the `eval`, `is`, and `not` statements.
+The keys can then be used with other statements, e.g. the `eval`, `is`, and `not` statements. Note that
+the policy can also be set in the mapping file, which makes it easy to define new modules without having
+to write a new module class or to define it in your `.vld` file.
 
 #### Eval Statements
 
@@ -398,11 +406,11 @@ select("path") {}.
 
 #### Do Statements
 
-A `do` statement is used to apply its block to multiple paths.  The designated control is done on
-the block level, not on the statement level like the `run` statement.  It can be thought of as a hybird
-statement between a `run` statement and multiple `select` statements.  The `do` statement, therefore,
+A `do` statement applys its block to each specified path.  The designated control is done on
+the block level, not on the statement level (like the `run` statement).  It can be thought of as a hybird
+statement in which a `run` statement executes one or more `select` statements.  The `do` statement, therefore,
 performs a context switch for each path specified.  Note that statements in the block itself will be executed
-by defualt according to the `seq` control flow (and not by the control flow designed in the `do` statement').
+by defualt according to the `seq` control flow (and not by the control flow designated in the `do` statement').
 
 ```
 do("seq", "path1") { }.
@@ -466,3 +474,19 @@ not("module", ["path1", "path2"], *policy) { }.
 1. Required: Defines the module to be executed.
 2. Required: Defines the path(s) to the component(s).
 3. Optional: Defines the module's policy parameters.
+
+## Input Stream/Entity
+
+TODO working, just need to write up explanation
+
+## Feedback
+
+TODO working, just need to write up explanation
+
+### Data Structure
+
+TODO working, just need to write up explanation
+
+### Message Localization
+
+TODO working, just need to write up explanation
