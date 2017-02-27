@@ -49,15 +49,17 @@ namespace Unicity\VLD\Scanner\TokenRule {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
 			if (($char !== null) && preg_match('/^' . preg_quote('@'). '$/', $char)) {
-				$lookahead = $index;
-				do {
-					$lookahead++;
-					$next = $reader->readChar($lookahead, false);
+				$lookahead = $index + 1;
+				$next = $reader->readChar($lookahead, false);
+				if (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next)) {
+					do {
+						$lookahead++;
+						$next = $reader->readChar($lookahead, false);
+					} while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
+					$token = $reader->readRange($index, $lookahead);
+					$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::variable_array(), new Common\StringRef($token), $index);
+					return $tuple;
 				}
-				while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::variable_array(), new Common\StringRef($token), $index);
-				return $tuple;
 			}
 			return null;
 		}
