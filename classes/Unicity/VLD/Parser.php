@@ -389,6 +389,17 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
+		protected function OptionTerm(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
+			$tuple = $this->scanner->current();
+			foreach ($terms as $term) {
+				$IsA = 'Is' . $term;
+				if ($this->{$IsA}($tuple)) {
+					return $this->{$term}($context);
+				}
+			}
+			$this->SyntaxError();
+		}
+
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isRealTerm($tuple)) {
@@ -427,17 +438,6 @@ namespace Unicity\VLD {
 			$term = new VLD\Parser\Definition\StringVariable($context, (string) $tuple->token);
 			$this->scanner->next();
 			return $term;
-		}
-
-		protected function Term(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
-			$tuple = $this->scanner->current();
-			foreach ($terms as $term) {
-				$IsA = 'Is' . $term;
-				if ($this->{$IsA}($tuple)) {
-					return $this->{$term}($context);
-				}
-			}
-			$this->SyntaxError();
 		}
 
 		#endregion
@@ -491,7 +491,7 @@ namespace Unicity\VLD {
 			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
 			$this->Comma($context);
-			$args[] = $this->Term($context, 'ArrayTerm', 'StringTerm');
+			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
@@ -566,7 +566,7 @@ namespace Unicity\VLD {
 			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
 			$this->Comma($context);
-			$args[] = $this->Term($context, 'ArrayTerm', 'StringTerm');
+			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
@@ -583,7 +583,7 @@ namespace Unicity\VLD {
 			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
 			$this->Comma($context);
-			$args[] = $this->Term($context, 'ArrayTerm', 'StringTerm');
+			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
@@ -600,7 +600,7 @@ namespace Unicity\VLD {
 			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
 			$this->Comma($context);
-			$args[] = $this->Term($context, 'ArrayTerm', 'StringTerm');
+			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
