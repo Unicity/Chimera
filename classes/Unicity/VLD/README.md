@@ -2,9 +2,9 @@
 
 ## About
 
-The VLD programming language is a simple validation scripting language scripting language that can be used
-to quickly write validation scripts.  It is an interpretive language and has the power of calling PHP modules
-directly to handle more complex validations when necessary.
+The VLD programming language is a simple validation scripting language that can be used to quickly write
+validation scripts.  It is an interpretive language and has the power of calling PHP modules directly to
+handle more complex validations when necessary.
 
 VLD has adopted some of its core functionality from behavior tree design in game programming.  Many of the controls
 in this language resemble a number of the common task nodes (e.g. the parallel node, the sequence node,
@@ -139,6 +139,33 @@ A string is some text surrounded by double quotation marks.
 "some text"
 ```
 
+## Blocks
+
+Blocks are a special term that is used to encapsulate statements.  There are two types of block
+terms: inline blocks and external blocks.
+
+
+### Inline Blocks
+
+An inline block is defined using curly braces.
+
+```
+{}
+```
+
+It may contain any number of other statements and may be stored in the block variable.
+
+### External Blocks
+
+An external block is defined using a string.  The string's text is file path to another
+`.vld` file, which in turn be treated as the body of the block.
+
+```
+"classpath:file.vld"
+```
+
+It too may be stored in the block variable.
+
 ### Variables
 
 A variable is used to store the value of another term.  There are 7 variable types
@@ -253,7 +280,28 @@ To declare a block variable, use the set statement.
 
 ```
 set(^variable, {}).
+set(^variable, "classpath:file.vld").
 ```
+
+#### Default Values
+
+In event that a variable is not initialized, the interpreter will return a default value for that
+variable when requested at runtime.
+
+```
+| Variable  | Default |
+| --------- | ------- |
+| @variable | []      |
+| ^variable | {}      |
+| ?variable | false   |
+| %variable | {}      |
+| *variable | null    |
+| #variable | 0       |
+| $variable | ''      |
+```
+
+Warning: Just note that once a variable is set in that scope or in a parent scope, that variable will no longer return
+that default value.
 
 ## Comments
 
@@ -283,8 +331,8 @@ multiple lines.
 ## Statements
 
 There are 8 types of statements: `do`, `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.
-They are broken into two groups: simple statements and complex statements.  The syntax convention
-for statements was inspired by Prolog's syntax.
+They are separated into two groups: simple statements and complex statements.  The syntax for statements
+used by VDL was inspired by Prolog's syntax.
 
 ### Simple Statements
 
@@ -307,8 +355,8 @@ set(^variable, { set(*variable, null). }).
 
 ##### Parameters
 
-1. Required: Defines the variable to be set.
-2. Required: Defines the value to be assigned to the variable.
+1. Required (Variable): Defines the variable to be set.
+2. Required (Term of the Same Type): Defines the value to be assigned to the variable.
 
 #### Install Statements
 
@@ -320,7 +368,7 @@ install("classpath:Unicity/VLD/Parser/Modules.php").
 
 ##### Parameters
 
-1. Required: Defines the location of the module mapping file.
+1. Required (String): Defines the location of the module mapping file.
 
 ##### Mapping File
 
@@ -358,9 +406,9 @@ eval("module", ["path1", "path2"], *policy).
 
 ##### Parameters
 
-1. Required: Defines the module to be executed.
-2. Required: Defines the path(s) to the component(s).
-3. Optional: Defines the module's policy parameters.
+1. Required (String): Defines the module to be executed.
+2. Required (String|Array): Defines the path(s) to the component(s).
+3. Optional (Any Term): Defines the module's policy parameters.
 
 ### Complex Statements
 
@@ -373,14 +421,14 @@ A `run` statement is used to control the way other statements are processed.  It
 by executing the designated control.
 
 ```
-run("seq") { }.
-run("seq", *policy) { }.
+run("seq") {}.
+run("seq", *policy) {}.
 ```
 
 ##### Parameters
 
-1. Required: Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
-2. Optional: Defines the control's policy parameters.
+1. Required (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
+2. Optional (Any Term): Defines the control's policy parameters.
 
 ##### Control Types
 
@@ -396,13 +444,13 @@ A `select` statement perform a context switch.  By default, statements in its bl
 according to the `seq` control flow.
 
 ```
-select() { }.
+select() {}.
 select("path") {}.
 ```
 
 ##### Parameters
 
-1. Optional: Defines the component's path that will become the new base entity.
+1. Optional (String): Defines the component's path that will become the new base entity.
 
 #### Do Statements
 
@@ -413,18 +461,18 @@ performs a context switch for each path specified.  Note that statements in the 
 by defualt according to the `seq` control flow (and not by the control flow designated in the `do` statement').
 
 ```
-do("seq", "path1") { }.
-do("seq", "path1", *policy) { }.
-do("seq", ["path1"]) { }.
-do("seq", ["path1"], *policy) { }.
-do("seq", ["path1", "path2"], *policy) { }.
+do("seq", "path1") {}.
+do("seq", "path1", *policy) {}.
+do("seq", ["path1"]) {}.
+do("seq", ["path1"], *policy) {}.
+do("seq", ["path1", "path2"], *policy) {}.
 ```
 
 ##### Parameters
 
-1. Required: Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
-2. Required: Defines the path(s) to the component(s).
-3. Optional: Defines the control's policy parameters.
+1. Required (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
+2. Required (String|Array): Defines the path(s) to the component(s).
+3. Optional (Any Term): Defines the control's policy parameters.
 
 ##### Control Types
 
@@ -442,18 +490,18 @@ by executing the designated module first before running its block.  By default, 
 its block are executed according to the `seq` control flow.
 
 ```
-is("module", "path1") { }.
-is("module", "path1", *policy) { }.
-is("module", ["path1"]) { }.
-is("module", ["path1"], *policy) { }.
-is("module", ["path1", "path2"], *policy) { }.
+is("module", "path1") {}.
+is("module", "path1", *policy) {}.
+is("module", ["path1"]) {}.
+is("module", ["path1"], *policy) {}.
+is("module", ["path1", "path2"], *policy) {}.
 ```
 
 ##### Parameters
 
-1. Required: Defines the module to be executed.
-2. Required: Defines the path(s) to the component(s).
-3. Optional: Defines the module's policy parameters.
+1. Required (String): Defines the module to be executed.
+2. Required (String|Array): Defines the path(s) to the component(s).
+3. Optional (Any Term): Defines the module's policy parameters.
 
 #### Not Statements
 
@@ -462,31 +510,96 @@ module first before running its block.  By default, statements in its block are 
 according to the `seq` control flow.
 
 ```
-not("module", "path1") { }.
-not("module", "path1", *policy) { }.
-not("module", ["path1"]) { }.
-not("module", ["path1"], *policy) { }.
-not("module", ["path1", "path2"], *policy) { }.
+not("module", "path1") {}.
+not("module", "path1", *policy) {}.
+not("module", ["path1"]) {}.
+not("module", ["path1"], *policy) {}.
+not("module", ["path1", "path2"], *policy) {}.
 ```
 
 ##### Parameters
 
-1. Required: Defines the module to be executed.
-2. Required: Defines the path(s) to the component(s).
-3. Optional: Defines the module's policy parameters.
-
-## Input Stream/Entity
-
-TODO working, just need to write up explanation
+1. Required (String): Defines the module to be executed.
+2. Required (String|Array): Defines the path(s) to the component(s).
+3. Optional (Any Term): Defines the module's policy parameters.
 
 ## Feedback
 
-TODO working, just need to write up explanation
+Results are stored in a feedback buffer.  A new feedback buffer is created every time a statement
+is called.  Results are then merged up the tree based on the rules defined by the current running
+control.  There are three types of controls: `all`, `sel`, `seq`.
+
+There are two types of feedback stored in a buffer: recommendations and violations.  Recommendations
+are actions that are said to be not critical enough to cause a failure.  These usually can be fixed
+internally by, for example, an API rather than be pushed back to the end-user.  Violations, on the
+other hand, are said to be critical enough to reject further processing.  Generally, all recommendations
+will be reported.  However, violations will be reported in accordance with the rules defined by the
+controls in the program.
 
 ### Data Structure
 
-TODO working, just need to write up explanation
+Feedback is stored in an map. For example:
+
+```
+{
+  "recommendations": [
+    {
+      "fields": [
+        {
+          "field": "customer.id"
+          "from": "integer",
+          "to": "string"
+        }
+      ],
+      "message": "Field value should be typed as "string".",
+      "type": "Set"
+    },
+	{
+	  "fields": [
+		{
+		  "field": "market"
+		  "from": "USA",
+		  "to": "US"
+		}
+	  ],
+	  "message": "Field value must be equal to "US.",
+	  "type": "Set"
+	}
+  ],
+  "violations": [
+    {
+      "fields": [
+        {
+          "field": "customer.draftBankAccount.accountHolder"
+        }
+      ],
+      "message": "Field length must be lesser than or equal to \"22\".",
+      "type": "Mismatch"
+    },
+    {
+      "fields": [
+        {
+          "field": "customer.draftBankAccount.iban"
+        }
+      ],
+      "message": "Field value must match pattern.",
+      "type": "Mismatch"
+    }
+  ]
+}
+```
 
 ### Message Localization
 
-TODO working, just need to write up explanation
+The messages reported back to the end-user can be localized using a simple Java properties file.
+To create a localized properties file duplicate the `Messages.properties` file and change its name
+to your specific local.  For example:
+
+```
+Messages_ko_KR.properties
+```
+
+The first two letters are the language and the next two letters are the country.
+
+To trigger this file to be called, simple set the HTTP header `HTTP_ACCEPT_LANGUAGE` to your specific
+local.
