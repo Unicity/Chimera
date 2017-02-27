@@ -76,6 +76,38 @@ namespace Unicity\VLD {
 
 		#region Symbols
 
+		protected function Colon(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, ':');
+		}
+
+		protected function Comma(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, ',');
+		}
+
+		protected function LeftBracket(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, '[');
+		}
+
+		protected function LeftCurly(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, '{');
+		}
+
+		protected function LeftParen(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, '(');
+		}
+
+		protected function RightBracket(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, ']');
+		}
+
+		protected function RightCurly(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, '}');
+		}
+
+		protected function RightParen(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			return $this->Symbol($context, ')');
+		}
+
 		protected function Symbol(VLD\Parser\Context $context, string $symbol) : VLD\Parser\Definition\Symbol {
 			$tuple = $this->scanner->current();
 			if (!$this->isSymbol($tuple, $symbol)) {
@@ -115,15 +147,15 @@ namespace Unicity\VLD {
 				return $this->ArrayVariable($context);
 			}
 			$terms = array();
-			$this->Symbol($context, '[');
-			if (!$this->isSymbol($this->scanner->current(), ']')) {
+			$this->LeftBracket($context);
+			if (!$this->isRightBracket($this->scanner->current())) {
 				$terms[] = $this->MixedTerm($context);
-				while (!$this->isSymbol($this->scanner->current(), ']')) {
-					$this->Symbol($context, ',');
+				while (!$this->isRightBracket($this->scanner->current())) {
+					$this->Comma($context);
 					$terms[] = $this->MixedTerm($context);
 				}
 			}
-			$this->Symbol($context, ']');
+			$this->RightBracket($context);
 			return new VLD\Parser\Definition\ArrayTerm($context, $terms);
 		}
 
@@ -170,13 +202,13 @@ namespace Unicity\VLD {
 			if ($this->isBlockVariable($tuple)) {
 				return $this->BlockVariable($context);
 			}
-			$this->Symbol($context, '{');
+			$this->LeftCurly($context);
 			$statements = array();
-			while (!$this->isSymbol($this->scanner->current(), '}')) {
+			while (!$this->isRightCurly($this->scanner->current())) {
 				$statements[] = $this->Statement($context);
 			}
 			$term = new VLD\Parser\Definition\BlockTerm($context, $statements);
-			$this->Symbol($context, '}');
+			$this->RightCurly($context);
 			return $term;
 		}
 
@@ -245,21 +277,21 @@ namespace Unicity\VLD {
 				return $this->MapVariable($context);
 			}
 			$entries = array();
-			$this->Symbol($context, '{');
-			if (!$this->isSymbol($this->scanner->current(), '}')) {
+			$this->LeftCurly($context);
+			if (!$this->isRightCurly($this->scanner->current())) {
 				$key = $this->StringTerm($context);
-				$this->Symbol($context, ':');
+				$this->Colon($context);
 				$val = $this->MixedTerm($context);
 				$entries[] = Common\Tuple::box2($key, $val);
-				while (!$this->isSymbol($this->scanner->current(), '}')) {
-					$this->Symbol($context, ',');
+				while (!$this->isRightCurly($this->scanner->current())) {
+					$this->Comma($context);
 					$key = $this->StringTerm($context);
-					$this->Symbol($context, ':');
+					$this->Colon($context);
 					$val = $this->MixedTerm($context);
 					$entries[] = Common\Tuple::box2($key, $val);
 				}
 			}
-			$this->Symbol($context, '}');
+			$this->RightCurly($context);
 			return new VLD\Parser\Definition\MapTerm($context, $entries);
 		}
 
@@ -456,15 +488,15 @@ namespace Unicity\VLD {
 		protected function EvalStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\EvalStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
+			$this->Comma($context);
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
+			if (!$this->isRightParen($this->scanner->current())) {
+				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\EvalStatement($context, $args);
 		}
@@ -472,9 +504,9 @@ namespace Unicity\VLD {
 		protected function InstallStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\InstallStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\InstallStatement($context, $args);
 		}
@@ -482,44 +514,44 @@ namespace Unicity\VLD {
 		protected function SetStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SetStatement {
 			$this->scanner->next();
 			$entry = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$tuple = $this->scanner->current();
 			if ($this->isArrayKey($tuple)) {
 				$entry[] = $this->ArrayKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->ArrayTerm($context);
 			}
 			else if ($this->isBlockKey($tuple)) {
 				$entry[] = $this->BlockKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->BlockTerm($context);
 			}
 			else if ($this->isBooleanKey($tuple)) {
 				$entry[] = $this->BooleanKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->BooleanTerm($context);
 			}
 			else if ($this->isMapKey($tuple)) {
 				$entry[] = $this->MapKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->MapTerm($context);
 			}
 			else if ($this->isMixedKey($tuple)) {
 				$entry[] = $this->MixedKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->MixedTerm($context);
 			}
 			else if ($this->isNumberKey($tuple)) {
 				$entry[] = $this->NumberKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->NumberTerm($context);
 			}
 			else if ($this->isStringKey($tuple)) {
 				$entry[] = $this->StringKey($context);
-				$this->Symbol($context, ',');
+				$this->Comma($context);
 				$entry[] = $this->StringTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\SetStatement($context, $entry);
 		}
@@ -531,15 +563,15 @@ namespace Unicity\VLD {
 		protected function DoStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\DoStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
+			$this->Comma($context);
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
+			if (!$this->isRightParen($this->scanner->current())) {
+				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\DoStatement($context, $args, $block);
@@ -548,15 +580,15 @@ namespace Unicity\VLD {
 		protected function IsStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IsStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
+			$this->Comma($context);
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
+			if (!$this->isRightParen($this->scanner->current())) {
+				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\IsStatement($context, $args, $block);
@@ -565,15 +597,15 @@ namespace Unicity\VLD {
 		protected function NotStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\NotStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
-			$this->Symbol($context, ',');
+			$this->Comma($context);
 			$args[] = $this->Terms($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
+			if (!$this->isRightParen($this->scanner->current())) {
+				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\NotStatement($context, $args, $block);
@@ -582,13 +614,13 @@ namespace Unicity\VLD {
 		protected function RunStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
+			$this->LeftParen($context);
 			$args[] = $this->StringTerm($context);
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
-				$this->Symbol($context, ',');
+			if (!$this->isRightParen($this->scanner->current())) {
+				$this->Comma($context);
 				$args[] = $this->MixedTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\RunStatement($context, $args, $block);
@@ -597,11 +629,11 @@ namespace Unicity\VLD {
 		protected function SelectStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SelectStatement {
 			$this->scanner->next();
 			$args = array();
-			$this->Symbol($context, '(');
-			if (!$this->isSymbol($this->scanner->current(), ')')) {
+			$this->LeftParen($context);
+			if (!$this->isRightParen($this->scanner->current())) {
 				$args[] = $this->StringTerm($context);
 			}
-			$this->Symbol($context, ')');
+			$this->RightParen($context);
 			$block = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\SelectStatement($context, $args, $block);
@@ -659,7 +691,7 @@ namespace Unicity\VLD {
 		}
 
 		protected function isArrayTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return $this->isSymbol($tuple, '[') || $this->isArrayVariable($tuple);
+			return $this->isLeftBracket($tuple) || $this->isArrayVariable($tuple);
 		}
 
 		protected function isArrayVariable(Lexer\Scanner\Tuple $tuple) : bool {
@@ -675,7 +707,7 @@ namespace Unicity\VLD {
 		}
 
 		protected function isBlockTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return $this->isSymbol($tuple, '{') || $this->isBlockRef($tuple) || $this->isBlockVariable($tuple);
+			return $this->isLeftCurly($tuple) || $this->isBlockRef($tuple) || $this->isBlockVariable($tuple);
 		}
 
 		protected function isBlockVariable(Lexer\Scanner\Tuple $tuple) : bool {
@@ -702,12 +734,24 @@ namespace Unicity\VLD {
 			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === $identifier));
 		}
 
+		protected function isLeftBracket(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '[');
+		}
+
+		protected function isLeftCurly(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '{');
+		}
+
+		protected function isLeftParen(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '(');
+		}
+
 		protected function isMapKey(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'VARIABLE:MAP'));
 		}
 
 		protected function isMapTerm(Lexer\Scanner\Tuple $tuple) : bool {
-			return $this->isSymbol($tuple, '{') || $this->isMapVariable($tuple);
+			return $this->isLeftCurly($tuple) || $this->isMapVariable($tuple);
 		}
 
 		protected function isMapVariable(Lexer\Scanner\Tuple $tuple) : bool {
@@ -748,6 +792,18 @@ namespace Unicity\VLD {
 
 		protected function isRealTerm(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:REAL'));
+		}
+
+		protected function isRightBracket(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, ']');
+		}
+
+		protected function isRightCurly(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '}');
+		}
+
+		protected function isRightParen(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, ')');
 		}
 
 		protected function isStringKey(Lexer\Scanner\Tuple $tuple) : bool {

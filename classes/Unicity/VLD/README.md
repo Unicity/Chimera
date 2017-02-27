@@ -25,7 +25,7 @@ input for processing via MappingService (but we could load the entity just as ea
 The syntax of VLD in Backus-Naur Form:
 
 ```
-<array> = <lbrace> (<term> (<comma> <term>)*)? <rbrace>
+<array> = <lbracket> (<term> (<comma> <term>)*)? <rbracket>
 <block> = <uri> | (<lcurly> <statement>+ <rcurly>) | <variable-block>
 <boolean> = false | true
 <colon> = ":"
@@ -35,7 +35,7 @@ The syntax of VLD in Backus-Naur Form:
 <install> = install <lparen> <uri> <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
 <is> = is <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
-<lbrace> = "["
+<lbracket> = "["
 <lcurly> = "{"
 <lparen> = "("
 <map> = <lcurly> (<string> <colon> <term> (<comma> <string> <colon> <term>)*)? <rcurly>
@@ -44,7 +44,7 @@ The syntax of VLD in Backus-Naur Form:
 <null> = null
 <path> = <string> | <variable-string>
 <paths> = <string> | <variable-string> | <array> | <variable-array>
-<rbrace> = "]"
+<rbracket> = "]"
 <rcurly> = "}"
 <real> = '/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/'
 <rparen> = ")"
