@@ -68,7 +68,7 @@ namespace Unicity\VLD {
 
 			$scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
 
-			//while ($scanner->next()) { var_dump($scanner->current()); } exit();
+			while ($scanner->next()) { var_dump($scanner->current()); } exit();
 
 			return $scanner;
 		}
