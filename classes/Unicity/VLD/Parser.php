@@ -31,13 +31,13 @@ namespace Unicity\VLD {
 	class Parser extends Core\Object {
 
 		/**
-		 * This variable stores the config for how errors are handled.
+		 * This variable stores the interpreter's config file.
 		 *
 		 * @access protected
 		 * @static
 		 * @var array
 		 */
-		protected static $error_handler = null;
+		protected static $config = null;
 
 		/**
 		 * This variable stores a reference to the IO reader.
@@ -624,12 +624,12 @@ namespace Unicity\VLD {
 		}
 
 		protected function WriteError(string $message, array $variables = null) : void {
-			if (static::$error_handler === null) {
+			if (static::$config === null) {
 				$directory = dirname(__FILE__);
-				static::$error_handler = Config\Inc\Reader::load(new IO\File($directory . '/Parser/Config.php'))->read();
+				static::$config = Config\Inc\Reader::load(new IO\File($directory . '/Parser/Config.php'))->read();
 			}
 			$message = empty($variables) ? (string) $message : strtr((string) $message, $variables);
-			$logs = static::$error_handler['logs'];
+			$logs = static::$config['logs'];
 			foreach ($logs as $log) {
 				switch ($log) {
 					case 'stderr':
@@ -642,7 +642,7 @@ namespace Unicity\VLD {
 						break;
 				}
 			}
-			if (static::$error_handler['throw']) {
+			if (static::$config['throw']) {
 				throw new Throwable\Parse\Exception($message);
 			}
 			exit();
