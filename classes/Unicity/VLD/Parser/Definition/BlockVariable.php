@@ -33,13 +33,13 @@ namespace Unicity\VLD\Parser\Definition {
 		}
 
 		public function get() {
+			$value = $this->context->getValue($this->token);
 			switch ($this->token[0]) {
 				case '$':
-					$parser = new VLD\Parser(new \Unicity\IO\FileReader(new IO\File($this->context->getValue($this->token))));
+					$parser = new VLD\Parser(new \Unicity\IO\FileReader(new IO\File($value)));
 					return $parser->read($this->context);
-				case '^':
 				default:
-					return $this->context->getValue($this->token);
+					return $value;
 			}
 		}
 
