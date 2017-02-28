@@ -34,7 +34,7 @@ namespace Unicity\VLD\Parser\Definition {
 			if (count($paths) > 0) {
 				foreach ($paths as $path) {
 					$statements[] = new VLD\Parser\Definition\TempStatement($this->context, [
-						'paths' => $path,
+						'path' => $path,
 						'block' => $block,
 					]);
 				}
@@ -47,7 +47,7 @@ namespace Unicity\VLD\Parser\Definition {
 			}
 
 			$class = VLD\Parser\Definition\Control::getControl($control);
-			$object = new $class($this->context, $policy, $block);
+			$object = new $class($this->context, $policy, $statements);
 			return $object->get();
 		}
 
