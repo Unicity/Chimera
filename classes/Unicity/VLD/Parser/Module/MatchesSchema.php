@@ -37,27 +37,36 @@ namespace Unicity\VLD\Parser\Module {
 			foreach ($paths as $path) {
 				$value = $entity->getComponentAtPath($path);
 
-				$expectedType = $this->expectedType($schema);
-				$actualType = $this->actualType($feedback, $path, $schema, $value);
-
-				if ($expectedType !== $actualType) {
-					$feedback->addViolation(RuleType::malformed(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
+				if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($value)) {
+					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+				}
+				else if (isset($schema['nullable']) && !boolval($schema['nullable']) && Core\Data\ToolKit::isUnset($value)) {
+					$expectedType = $this->expectedType($schema);
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
 				}
 				else {
-					switch ($expectedType) {
-						case 'array':
-							$this->matchArray($feedback, $path, $schema, $value);
-							break;
-						case 'integer':
-						case 'number':
-							$this->matchNumber($feedback, $path, $schema, $value);
-							break;
-						case 'object':
-							$this->matchMap($feedback, $path, $schema, $value);
-							break;
-						case 'string':
-							$this->matchString($feedback, $path, $schema, $value);
-							break;
+					$expectedType = $this->expectedType($schema);
+					$actualType = $this->actualType($feedback, $path, $schema, $value);
+
+					if ($expectedType !== $actualType) {
+						$feedback->addViolation(RuleType::malformed(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
+					}
+					else {
+						switch ($expectedType) {
+							case 'array':
+								$this->matchArray($feedback, $path, $schema, $value);
+								break;
+							case 'integer':
+							case 'number':
+								$this->matchNumber($feedback, $path, $schema, $value);
+								break;
+							case 'object':
+								$this->matchMap($feedback, $path, $schema, $value);
+								break;
+							case 'string':
+								$this->matchString($feedback, $path, $schema, $value);
+								break;
+						}
 					}
 				}
 			}
@@ -182,23 +191,32 @@ namespace Unicity\VLD\Parser\Module {
 
 				$ipath = ORM\Query::appendIndex($path, $i);
 
-				$expectedType = $this->expectedType($schema);
-				$actualType = $this->actualType($feedback, $ipath, $schema, $v);
-
-				if ($expectedType !== $actualType) {
-					$feedback->addViolation(RuleType::malformed(), [$ipath], 'value.compare.type', ['{{type}}' => $expectedType]);
+				if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($v)) {
+					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+				}
+				else if (isset($schema['nullable']) && !boolval($schema['nullable']) && Core\Data\ToolKit::isUnset($v)) {
+					$expectedType = $this->expectedType($schema);
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
 				}
 				else {
-					switch ($expectedType) {
-						case 'array':
-							return $this->matchArray($feedback, $ipath, $schema, $v) && $carry;
-						case 'integer':
-						case 'number':
-							return $this->matchNumber($feedback, $ipath, $schema, $v) && $carry;
-						case 'object':
-							return $this->matchMap($feedback, $ipath, $schema, $v) && $carry;
-						case 'string':
-							return $this->matchString($feedback, $ipath, $schema, $v) && $carry;
+					$expectedType = $this->expectedType($schema);
+					$actualType = $this->actualType($feedback, $ipath, $schema, $v);
+
+					if ($expectedType !== $actualType) {
+						$feedback->addViolation(RuleType::malformed(), [$ipath], 'value.compare.type', ['{{type}}' => $expectedType]);
+					}
+					else {
+						switch ($expectedType) {
+							case 'array':
+								return $this->matchArray($feedback, $ipath, $schema, $v) && $carry;
+							case 'integer':
+							case 'number':
+								return $this->matchNumber($feedback, $ipath, $schema, $v) && $carry;
+							case 'object':
+								return $this->matchMap($feedback, $ipath, $schema, $v) && $carry;
+							case 'string':
+								return $this->matchString($feedback, $ipath, $schema, $v) && $carry;
+						}
 					}
 				}
 
@@ -235,23 +253,32 @@ namespace Unicity\VLD\Parser\Module {
 
 					$kpath = ORM\Query::appendKey($path, $k);
 
-					$expectedType = $this->expectedType($schema);
-					$actualType = $this->actualType($feedback, $kpath, $schema, $v);
-
-					if ($expectedType !== $actualType) {
-						$feedback->addViolation(RuleType::malformed(), [$kpath], 'value.compare.type', ['{{type}}' => $expectedType]);
+					if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($v)) {
+						$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+					}
+					else if (isset($schema['nullable']) && !boolval($schema['nullable']) && Core\Data\ToolKit::isUnset($v)) {
+						$expectedType = $this->expectedType($schema);
+						$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
 					}
 					else {
-						switch ($expectedType) {
-							case 'array':
-								return $this->matchArray($feedback, $kpath, $schema, $v) && $carry;
-							case 'integer':
-							case 'number':
-								return $this->matchNumber($feedback, $kpath, $schema, $v) && $carry;
-							case 'object':
-								return $this->matchMap($feedback, $kpath, $schema, $v) && $carry;
-							case 'string':
-								return $this->matchString($feedback, $kpath, $schema, $v) && $carry;
+						$expectedType = $this->expectedType($schema);
+						$actualType = $this->actualType($feedback, $kpath, $schema, $v);
+
+						if ($expectedType !== $actualType) {
+							$feedback->addViolation(RuleType::malformed(), [$kpath], 'value.compare.type', ['{{type}}' => $expectedType]);
+						}
+						else {
+							switch ($expectedType) {
+								case 'array':
+									return $this->matchArray($feedback, $kpath, $schema, $v) && $carry;
+								case 'integer':
+								case 'number':
+									return $this->matchNumber($feedback, $kpath, $schema, $v) && $carry;
+								case 'object':
+									return $this->matchMap($feedback, $kpath, $schema, $v) && $carry;
+								case 'string':
+									return $this->matchString($feedback, $kpath, $schema, $v) && $carry;
+							}
 						}
 					}
 
