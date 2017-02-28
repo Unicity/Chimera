@@ -31,7 +31,9 @@ The syntax of VLD in Backus-Naur Form:
 <colon> = ":"
 <comma> = ","
 <control> = <string> | <variable-string>
+<dump> = dump <lparen> <rparen> <larrow> <paths> <terminal>
 <eval> = eval <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> <terminal>
+<halt> = halt <lparen> <rparen> <terminal>
 <install> = install <lparen> <uri> <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
 <is> = is <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> do <block> <terminal>
@@ -52,7 +54,7 @@ The syntax of VLD in Backus-Naur Form:
 <select> = select <lparen> (<control> (<comma> <term>)?)? <rparen> (<larrow> <paths>)? do <block> <terminal>
 <set> = set <lparen> (<variable-term> | <variable-block>) <comma> (<term> | <block>) <rparen> <terminal>
 <statement> = <statement-simple> | <statement-complex>
-<statement-simple> = <eval> | <install> | <set>
+<statement-simple> = <dump> | <eval> | <halt> | <install> | <set>
 <statement-complex> = <is> | <not> | <run> | <select>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable-term>
@@ -331,13 +333,21 @@ multiple lines.
 
 ## Statements
 
-There are 7 types of statements: `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.  They are separated
+There are 9 types of statements: `dump`, `eval`, `halt`, `install`, `is`, `not`, `run`, `select`, and `set`.  They are separated
 into two groups: simple statements and complex statements.
 
 ### Simple Statements
 
 Simple statements can be thought of as one-line statements (even though technically they can span
 onto multiple lines).
+
+#### Halt Statement
+
+A `halt` statement is used to terminate the program.
+
+```
+halt().
+```
 
 #### Set Statement
 
@@ -357,6 +367,16 @@ set(^variable, { set(*variable, null). }).
 
 1. Required (Variable): Defines the variable to be set.
 2. Required (Term of the Same Type): Defines the value to be assigned to the variable.
+
+#### Dump Statement
+
+A `dump` statement is used to print out variable details.
+
+```
+dump().
+dump() <- ["path"].
+dump() <- ["path1", "path2"].
+```
 
 #### Install Statements
 
@@ -446,6 +466,7 @@ select() do {}.
 select() <- ["path"] do {}.
 select() <- ["path1", "path2"] do {}.
 select("seq") <- ["path1", "path2"] do {}.
+select("seq", *policy) <- ["path1", "path2"] do {}.
 ```
 
 ##### Parameters
