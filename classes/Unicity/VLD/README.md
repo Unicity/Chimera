@@ -8,8 +8,10 @@ handle more complex validations when necessary.
 
 VLD has adopted some of its core functionality from behavior tree design in game programming.  Many of the controls
 in this language resemble a number of the common task nodes (e.g. the parallel node, the sequence node,
-and the selector node) from in behavior tree design.  Program feedback is managed by checking for the number of
-violations encountered to determine whether a task (which are called statements in VLD) was successfully or failed.
+and the selector node) in behavior tree design.  Program feedback is managed by checking for the number of
+violations encountered to determine whether a task (which are called statements in VLD) was successful or failed.
+Generally, a statement is considered to have executed successfully if it returns 0 violations and statement is
+considered to have failed when it returns 1 or more violations.
 
 ## File
 
@@ -293,19 +295,19 @@ In event that a variable is not initialized, the interpreter will return a defau
 variable when requested at runtime.
 
 ```
-| Variable  | Default |
-| --------- | ------- |
-| @variable | []      |
-| ^variable | {}      |
-| ?variable | false   |
-| %variable | {}      |
-| *variable | null    |
-| #variable | 0       |
-| $variable | ''      |
+| Type    | Variable  | Default |
+| ------- | --------- | ------- |
+| array   | @variable | []      |
+| block   | ^variable | {}      |
+| boolean | ?variable | false   |
+| map     | %variable | {}      |
+| mixed   | *variable | null    |
+| number  | #variable | 0       |
+| string  | $variable | ''      |
 ```
 
-Warning: Just note that once a variable is set in that scope or in a parent scope, that variable will no longer return
-that default value.
+Warning: Just note that once a variable is set in that scope or in a parent scope, that variable will no
+longer return that default value.
 
 ## Comments
 
