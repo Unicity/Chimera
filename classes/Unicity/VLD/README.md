@@ -330,9 +330,8 @@ multiple lines.
 
 ## Statements
 
-There are 8 types of statements: `do`, `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.
-They are separated into two groups: simple statements and complex statements.  The syntax for statements
-used by VDL was inspired by Prolog's syntax.
+There are 8 types of statements: `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.  They are separated
+into two groups: simple statements and complex statements.
 
 ### Simple Statements
 

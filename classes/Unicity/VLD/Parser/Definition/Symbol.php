@@ -28,7 +28,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function __construct(VLD\Parser\Context $context, string $token) {
 			parent::__construct($context);
-			$this->token = false;
+			$this->token = $token;
 		}
 
 		public function get() {

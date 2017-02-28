@@ -35,8 +35,9 @@ namespace Unicity\VLD {
 			$scanner->addRule(new Lexer\Scanner\TokenRule\BlockComment('/*', '*/'));
 			$scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment('`'));
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
+			$scanner->addRule(new VLD\Scanner\TokenRule\LeftArrow());
 
+			$scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Number());
 
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('('));
@@ -47,6 +48,7 @@ namespace Unicity\VLD {
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('}'));
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(','));
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
+
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
 
 			$scanner->addRule(new VLD\Scanner\TokenRule\ArrayVariable());
@@ -59,7 +61,8 @@ namespace Unicity\VLD {
 
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
 				'eval', 'install', 'set', // simple statements
-				'do', 'is', 'not', 'run', 'select', // complex statements
+				'is', 'not', 'run', 'select', // complex statements
+				'do', // symbols
 				'false', 'true', // boolean values
 				'null', // null value
 			]));

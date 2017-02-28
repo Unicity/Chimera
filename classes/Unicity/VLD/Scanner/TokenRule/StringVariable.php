@@ -48,7 +48,7 @@ namespace Unicity\VLD\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if (($char !== null) && preg_match('/^' . preg_quote('$'). '$/', $char)) {
+			if (($char !== null) && ($char === '$')) {
 				$lookahead = $index + 1;
 				$next = $reader->readChar($lookahead, false);
 				if (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next)) {

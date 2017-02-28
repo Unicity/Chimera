@@ -24,15 +24,8 @@ namespace Unicity\VLD\Parser\Definition {
 
 	class SetStatement extends VLD\Parser\Definition\Statement {
 
-		protected $entry;
-
-		public function __construct(VLD\Parser\Context $context, array $entry) {
-			parent::__construct($context);
-			$this->entry = $entry;
-		}
-
 		public function get() {
-			$this->context->putEntry($this->entry[0]->get(), $this->entry[1]->get());
+			$this->context->putEntry($this->args['key']->get(), $this->args['term']->get());
 			return new VLD\Parser\Feedback($this->context->getPath());
 		}
 

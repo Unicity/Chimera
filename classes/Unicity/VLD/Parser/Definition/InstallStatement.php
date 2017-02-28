@@ -26,15 +26,8 @@ namespace Unicity\VLD\Parser\Definition {
 
 	class InstallStatement extends VLD\Parser\Definition\Statement {
 
-		protected $args;
-
-		public function __construct(VLD\Parser\Context $context, array $args) {
-			parent::__construct($context);
-			$this->args = $args;
-		}
-
 		public function get() {
-			$modules = Config\Inc\Reader::load(new IO\File($this->args[0]->get()))->read();
+			$modules = Config\Inc\Reader::load(new IO\File($this->args['uri']->get()))->read();
 			$this->context->addModules($modules);
 			return new VLD\Parser\Feedback($this->context->getPath());
 		}

@@ -84,6 +84,26 @@ namespace Unicity\VLD {
 			return $this->Symbol($context, ',');
 		}
 
+		protected function DoSentinel(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			$tuple = $this->scanner->current();
+			if (!$this->isDoSentinel($tuple)) {
+				$this->SyntaxError();
+			}
+			$symbol = new VLD\Parser\Definition\Symbol($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $symbol;
+		}
+
+		protected function LeftArrow(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
+			$tuple = $this->scanner->current();
+			if (!$this->isLeftArrow($tuple)) {
+				$this->SyntaxError();
+			}
+			$symbol = new VLD\Parser\Definition\Symbol($context, (string) $tuple->token);
+			$this->scanner->next();
+			return $symbol;
+		}
+
 		protected function LeftBracket(VLD\Parser\Context $context) : VLD\Parser\Definition\Symbol {
 			return $this->Symbol($context, '[');
 		}
@@ -389,17 +409,6 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
-		protected function OptionTerm(VLD\Parser\Context $context, ...$terms) : VLD\Parser\Definition\Term {
-			$tuple = $this->scanner->current();
-			foreach ($terms as $term) {
-				$IsA = 'Is' . $term;
-				if ($this->{$IsA}($tuple)) {
-					return $this->{$term}($context);
-				}
-			}
-			$this->SyntaxError();
-		}
-
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isRealTerm($tuple)) {
@@ -461,9 +470,6 @@ namespace Unicity\VLD {
 			}
 
 			// Complex Statements
-			if ($this->isKeyword($tuple, 'do')) {
-				return $this->DoStatement($context);
-			}
 			if ($this->isKeyword($tuple, 'is')) {
 				return $this->IsStatement($context);
 			}
@@ -489,14 +495,14 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->LeftParen($context);
-			$args[] = $this->StringTerm($context);
-			$this->Comma($context);
-			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
+			$args['module'] = $this->StringTerm($context);
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
-				$args[] = $this->MixedTerm($context);
+				$args['policy'] = $this->MixedTerm($context);
 			}
 			$this->RightParen($context);
+			$this->LeftArrow($context);
+			$args['paths'] = $this->ArrayTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\EvalStatement($context, $args);
 		}
@@ -505,7 +511,7 @@ namespace Unicity\VLD {
 			$this->scanner->next();
 			$args = array();
 			$this->LeftParen($context);
-			$args[] = $this->StringTerm($context);
+			$args['uri'] = $this->StringTerm($context);
 			$this->RightParen($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\InstallStatement($context, $args);
@@ -513,117 +519,108 @@ namespace Unicity\VLD {
 
 		protected function SetStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SetStatement {
 			$this->scanner->next();
-			$entry = array();
+			$args = array();
 			$this->LeftParen($context);
 			$tuple = $this->scanner->current();
 			if ($this->isArrayKey($tuple)) {
-				$entry[] = $this->ArrayKey($context);
+				$args['key'] = $this->ArrayKey($context);
 				$this->Comma($context);
-				$entry[] = $this->ArrayTerm($context);
+				$args['term'] = $this->ArrayTerm($context);
 			}
 			else if ($this->isBlockKey($tuple)) {
-				$entry[] = $this->BlockKey($context);
+				$args['key'] = $this->BlockKey($context);
 				$this->Comma($context);
-				$entry[] = $this->BlockTerm($context);
+				$args['term'] = $this->BlockTerm($context);
 			}
 			else if ($this->isBooleanKey($tuple)) {
-				$entry[] = $this->BooleanKey($context);
+				$args['key'] = $this->BooleanKey($context);
 				$this->Comma($context);
-				$entry[] = $this->BooleanTerm($context);
+				$args['term'] = $this->BooleanTerm($context);
 			}
 			else if ($this->isMapKey($tuple)) {
-				$entry[] = $this->MapKey($context);
+				$args['key'] = $this->MapKey($context);
 				$this->Comma($context);
-				$entry[] = $this->MapTerm($context);
+				$args['term'] = $this->MapTerm($context);
 			}
 			else if ($this->isMixedKey($tuple)) {
-				$entry[] = $this->MixedKey($context);
+				$args['key'] = $this->MixedKey($context);
 				$this->Comma($context);
-				$entry[] = $this->MixedTerm($context);
+				$args['term'] = $this->MixedTerm($context);
 			}
 			else if ($this->isNumberKey($tuple)) {
-				$entry[] = $this->NumberKey($context);
+				$args['key'] = $this->NumberKey($context);
 				$this->Comma($context);
-				$entry[] = $this->NumberTerm($context);
+				$args['term'] = $this->NumberTerm($context);
 			}
 			else if ($this->isStringKey($tuple)) {
-				$entry[] = $this->StringKey($context);
+				$args['key'] = $this->StringKey($context);
 				$this->Comma($context);
-				$entry[] = $this->StringTerm($context);
+				$args['term'] = $this->StringTerm($context);
+			}
+			else {
+				$this->SyntaxError();
 			}
 			$this->RightParen($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\SetStatement($context, $entry);
+			return new VLD\Parser\Definition\SetStatement($context, $args);
 		}
 
 		#endregion
 
 		#region Complex Statements
 
-		protected function DoStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\DoStatement {
-			$this->scanner->next();
-			$args = array();
-			$this->LeftParen($context);
-			$args[] = $this->StringTerm($context);
-			$this->Comma($context);
-			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
-			if (!$this->isRightParen($this->scanner->current())) {
-				$this->Comma($context);
-				$args[] = $this->MixedTerm($context);
-			}
-			$this->RightParen($context);
-			$block = $this->BlockTerm($context);
-			$this->Terminal($context);
-			return new VLD\Parser\Definition\DoStatement($context, $args, $block);
-		}
-
 		protected function IsStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IsStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->LeftParen($context);
-			$args[] = $this->StringTerm($context);
-			$this->Comma($context);
-			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
+			$args['module'] = $this->StringTerm($context);
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
-				$args[] = $this->MixedTerm($context);
+				$args['policy'] = $this->MixedTerm($context);
 			}
 			$this->RightParen($context);
-			$block = $this->BlockTerm($context);
+			$this->LeftArrow($context);
+			$args['paths'] = $this->ArrayTerm($context);
+			$this->DoSentinel($context);
+			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\IsStatement($context, $args, $block);
+			return new VLD\Parser\Definition\IsStatement($context, $args);
 		}
 
 		protected function NotStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\NotStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->LeftParen($context);
-			$args[] = $this->StringTerm($context);
-			$this->Comma($context);
-			$args[] = $this->OptionTerm($context, 'ArrayTerm', 'StringTerm');
+			$args['module'] = $this->StringTerm($context);
 			if (!$this->isRightParen($this->scanner->current())) {
 				$this->Comma($context);
-				$args[] = $this->MixedTerm($context);
+				$args['policy'] = $this->MixedTerm($context);
 			}
 			$this->RightParen($context);
-			$block = $this->BlockTerm($context);
+			$this->LeftArrow($context);
+			$args['paths'] = $this->ArrayTerm($context);
+			$this->DoSentinel($context);
+			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\NotStatement($context, $args, $block);
+			return new VLD\Parser\Definition\NotStatement($context, $args);
 		}
 
 		protected function RunStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
 			$this->scanner->next();
 			$args = array();
 			$this->LeftParen($context);
-			$args[] = $this->StringTerm($context);
 			if (!$this->isRightParen($this->scanner->current())) {
-				$this->Comma($context);
-				$args[] = $this->MixedTerm($context);
+				$args['control'] = $this->StringTerm($context);
+				if (!$this->isRightParen($this->scanner->current())) {
+					$this->Comma($context);
+					$args['policy'] = $this->MixedTerm($context);
+				}
 			}
 			$this->RightParen($context);
-			$block = $this->BlockTerm($context);
+			$this->DoSentinel($context);
+			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\RunStatement($context, $args, $block);
+			return new VLD\Parser\Definition\RunStatement($context, $args);
 		}
 
 		protected function SelectStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\SelectStatement {
@@ -631,12 +628,21 @@ namespace Unicity\VLD {
 			$args = array();
 			$this->LeftParen($context);
 			if (!$this->isRightParen($this->scanner->current())) {
-				$args[] = $this->StringTerm($context);
+				$args['control'] = $this->StringTerm($context);
+				if (!$this->isRightParen($this->scanner->current())) {
+					$this->Comma($context);
+					$args['policy'] = $this->MixedTerm($context);
+				}
 			}
 			$this->RightParen($context);
-			$block = $this->BlockTerm($context);
+			if ($this->isLeftArrow($this->scanner->current())) {
+				$this->LeftArrow($context);
+				$args['paths'] = $this->ArrayTerm($context);
+			}
+			$this->DoSentinel($context);
+			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
-			return new VLD\Parser\Definition\SelectStatement($context, $args, $block);
+			return new VLD\Parser\Definition\SelectStatement($context, $args);
 		}
 
 		#endregion
@@ -726,12 +732,20 @@ namespace Unicity\VLD {
 			return $this->isBooleanKey($tuple);
 		}
 
+		protected function isDoSentinel(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isKeyword($tuple, 'do');
+		}
+
 		protected function isIntegerTerm(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'NUMBER:INTEGER'));
 		}
 
 		protected function isKeyword(Lexer\Scanner\Tuple $tuple, string $identifier) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'KEYWORD') && ((string) $tuple->token === $identifier));
+		}
+
+		protected function isLeftArrow(Lexer\Scanner\Tuple $tuple) : bool {
+			return (!is_null($tuple) && ((string) $tuple->type === 'ARROW:LEFT'));
 		}
 
 		protected function isLeftBracket(Lexer\Scanner\Tuple $tuple) : bool {
