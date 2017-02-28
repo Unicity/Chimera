@@ -459,8 +459,14 @@ namespace Unicity\VLD {
 			$tuple = $this->scanner->current();
 
 			// Simple Statements
+			if ($this->isKeyword($tuple, 'dump')) {
+				return $this->DumpStatement($context);
+			}
 			if ($this->isKeyword($tuple, 'eval')) {
 				return $this->EvalStatement($context);
+			}
+			if ($this->isKeyword($tuple, 'halt')) {
+				return $this->HaltStatement($context);
 			}
 			if ($this->isKeyword($tuple, 'install')) {
 				return $this->InstallStatement($context);
@@ -491,6 +497,17 @@ namespace Unicity\VLD {
 
 		#region Simple Statements
 
+		protected function DumpStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\DumpStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->LeftParen($context);
+			$this->RightParen($context);
+			$this->LeftArrow($context);
+			$args['paths'] = $this->ArrayTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\DumpStatement($context, $args);
+		}
+
 		protected function EvalStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\EvalStatement {
 			$this->scanner->next();
 			$args = array();
@@ -505,6 +522,15 @@ namespace Unicity\VLD {
 			$args['paths'] = $this->ArrayTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\EvalStatement($context, $args);
+		}
+
+		protected function HaltStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\HaltStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->LeftParen($context);
+			$this->RightParen($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\HaltStatement($context, $args);
 		}
 
 		protected function InstallStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\InstallStatement {
