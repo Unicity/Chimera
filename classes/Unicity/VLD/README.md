@@ -495,6 +495,13 @@ iterate("seq") do {}.
 iterate("seq", *policy) do {}.
 ```
 
+##### Parameters
+
+1. Optional (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
+2. Optional (Any Term): Defines the control's policy parameters.
+
+##### Control Types
+
 It uses the same control types as a `select` statement.
 
 #### Is Statements
