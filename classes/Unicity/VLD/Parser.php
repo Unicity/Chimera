@@ -479,6 +479,9 @@ namespace Unicity\VLD {
 			if ($this->isKeyword($tuple, 'is')) {
 				return $this->IsStatement($context);
 			}
+			if ($this->isKeyword($tuple, 'iterate')) {
+				return $this->IterateStatement($context);
+			}
 			if ($this->isKeyword($tuple, 'not')) {
 				return $this->NotStatement($context);
 			}
@@ -613,6 +616,24 @@ namespace Unicity\VLD {
 			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\IsStatement($context, $args);
+		}
+
+		protected function IterateStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\IterateStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->LeftParen($context);
+			if (!$this->isRightParen($this->scanner->current())) {
+				$args['control'] = $this->StringTerm($context);
+				if (!$this->isRightParen($this->scanner->current())) {
+					$this->Comma($context);
+					$args['policy'] = $this->MixedTerm($context);
+				}
+			}
+			$this->RightParen($context);
+			$this->DoSentinel($context);
+			$args['block'] = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\IterateStatement($context, $args);
 		}
 
 		protected function NotStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\NotStatement {

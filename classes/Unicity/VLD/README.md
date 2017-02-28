@@ -9,7 +9,7 @@ handle more complex validations when necessary.
 VLD has adopted some of its core functionality from behavior tree design in game programming.  Many of the controls
 in this language resemble a number of the common task nodes (e.g. the parallel node, the sequence node,
 and the selector node) from in behavior tree design.  Program feedback is managed by checking for the number of
-violations encountered to determine whether a task (which are called statements in VLD)was successfully or failed.
+violations encountered to determine whether a task (which are called statements in VLD) was successfully or failed.
 
 ## File
 
@@ -31,12 +31,13 @@ The syntax of VLD in Backus-Naur Form:
 <colon> = ":"
 <comma> = ","
 <control> = <string> | <variable-string>
-<dump> = dump <lparen> <rparen> <larrow> <paths> <terminal>
+<dump> = dump <lparen> <rparen> (<larrow> <paths>)? <terminal>
 <eval> = eval <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> <terminal>
 <halt> = halt <lparen> <rparen> <terminal>
 <install> = install <lparen> <uri> <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
 <is> = is <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> do <block> <terminal>
+<iterate> = iterate <lparen> (<control> (<comma> <term>)?)? <rparen> do <block> <terminal>
 <larrow> = "<-"
 <lbracket> = "["
 <lcurly> = "{"
@@ -333,8 +334,8 @@ multiple lines.
 
 ## Statements
 
-There are 9 types of statements: `dump`, `eval`, `halt`, `install`, `is`, `not`, `run`, `select`, and `set`.  They are separated
-into two groups: simple statements and complex statements.
+There are 10 types of statements: `dump`, `eval`, `halt`, `install`, `is`, `iterate`, `not`, `run`, `select`,
+and `set`.  They are separated into two groups: simple statements and complex statements.
 
 ### Simple Statements
 
@@ -370,7 +371,7 @@ set(^variable, { set(*variable, null). }).
 
 #### Dump Statement
 
-A `dump` statement is used to print out variable details.
+A `dump` statement is used to print out component details.
 
 ```
 dump().
@@ -481,6 +482,20 @@ There are three types of controls: `all`, `sel`, and `seq`.
 * `all` executes all blocks in order and will reports all violations, except when the number of successes meets the number required to not report any violations; however, it will always report all recommendations encountered.
 * `sel` executes all blocks in order until one block does not report any violations.  It will only report violations when no blocks reports any violations.  It will always report all recommendations encountered.
 * `seq` executes all blocks in order until one block reports a violation.  It will always report all recommendations encountered.
+
+#### Iterate Statement
+
+An `iterate` statement is a similar to a `select` statement, except that it does a context switch on each item in the
+current entity.  The designated control is done on the block level, not on the statement level (like the `run` statement).
+By default, statements in its block are executed according to the `seq` control flow.
+
+```
+iterate() do {}.
+iterate("seq") do {}.
+iterate("seq", *policy) do {}.
+```
+
+It uses the same control types as a `select` statement.
 
 #### Is Statements
 
