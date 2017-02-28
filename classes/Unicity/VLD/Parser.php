@@ -502,8 +502,10 @@ namespace Unicity\VLD {
 			$args = array();
 			$this->LeftParen($context);
 			$this->RightParen($context);
-			$this->LeftArrow($context);
-			$args['paths'] = $this->ArrayTerm($context);
+			if ($this->isLeftArrow($this->scanner->current())) {
+				$this->LeftArrow($context);
+				$args['paths'] = $this->ArrayTerm($context);
+			}
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\DumpStatement($context, $args);
 		}
