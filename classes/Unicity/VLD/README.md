@@ -31,33 +31,33 @@ The syntax of VLD in Backus-Naur Form:
 <colon> = ":"
 <comma> = ","
 <control> = <string> | <variable-string>
-<eval> = eval <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <terminal>
+<eval> = eval <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> <terminal>
 <install> = install <lparen> <uri> <rparen> <terminal>
 <integer> = '/^[+-]?(0|[1-9][0-9]*)$/'
-<is> = is <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
+<is> = is <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> do <block> <terminal>
+<larrow> = "<-"
 <lbracket> = "["
 <lcurly> = "{"
 <lparen> = "("
 <map> = <lcurly> (<string> <colon> <term> (<comma> <string> <colon> <term>)*)? <rcurly>
 <module> = <string> | <variable-string>
-<not> = not <lparen> <module> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
+<not> = not <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> do <block> <terminal>
 <null> = null
-<path> = <string> | <variable-string>
-<paths> = <string> | <variable-string> | <array> | <variable-array>
+<paths> = <array> | <variable-array>
 <rbracket> = "]"
 <rcurly> = "}"
 <real> = '/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/'
 <rparen> = ")"
-<run> = run <lparen> <control> (<comma> <term>)? <rparen> <block> <terminal>
-<select> = select <lparen> <path>? <rparen>  <terminal>
-<set> = set <lparen> <variable> <comma> (<term> | <variable-block>) <rparen> <terminal>
-<statement> =  <do> | <eval> | <is> | <install> | <not> | <run> | <select> | <set>
+<run> = run <lparen> (<control> (<comma> <term>)?)? <rparen> do <block> <terminal>
+<select> = select <lparen> (<control> (<comma> <term>)?)? <rparen> (<larrow> <paths>)? do <block> <terminal>
+<set> = set <lparen> (<variable-term> | <variable-block>) <comma> (<term> | <block>) <rparen> <terminal>
+<statement> = <statement-simple> | <statement-complex>
+<statement-simple> = <eval> | <install> | <set>
+<statement-complex> = <is> | <not> | <run> | <select>
 <string> = '/^"[^"]*"$/'
-<term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable>
+<term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable-term>
 <terminal> = "."
-<do> = do <lparen> <control> <comma> <paths> (<comma> <term>)? <rparen> <block> <terminal>
 <uri> = <string> | <variable-string>
-<variable> = <variable-array> | <variable-boolean> | <variable-map> | <variable-mixed> | <variable-number> | <variable-string>
 <variable-array> = '/^@[a-z0-9]$/i'
 <variable-block> = '/^\^[a-z0-9]$/i'
 <variable-boolean> = '/^\?[a-z0-9]$/i'
@@ -65,6 +65,7 @@ The syntax of VLD in Backus-Naur Form:
 <variable-mixed> = '/^\*[a-z0-9]$/i'
 <variable-number> = '/^#[a-z0-9]$/i'
 <variable-string> = '/^\$[a-z0-9]$/i'
+<variable-term> = <variable-array> | <variable-boolean> | <variable-map> | <variable-mixed> | <variable-number> | <variable-string>
 ```
 
 ## Terms
@@ -330,7 +331,7 @@ multiple lines.
 
 ## Statements
 
-There are 8 types of statements: `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.  They are separated
+There are 7 types of statements: `eval`, `install`, `is`, `not`, `run`, `select`, and `set`.  They are separated
 into two groups: simple statements and complex statements.
 
 ### Simple Statements
@@ -396,18 +397,15 @@ An `eval` statement is used to perform some type of validation operation.  It do
 executing the designated module.
 
 ```
-eval("module", "path1").
-eval("module", "path1", *policy).
-eval("module", ["path1"]).
-eval("module", ["path1"], *policy).
-eval("module", ["path1", "path2"], *policy).
+eval("module") <- ["path"].
+eval("module", *policy) <- ["path"].
+eval("module", *policy) <- ["path1", "path2"].
 ```
 
 ##### Parameters
 
 1. Required (String): Defines the module to be executed.
-2. Required (String|Array): Defines the path(s) to the component(s).
-3. Optional (Any Term): Defines the module's policy parameters.
+2. Optional (Any Term): Defines the module's policy parameters.
 
 ### Complex Statements
 
@@ -420,13 +418,13 @@ A `run` statement is used to control the way other statements are processed.  It
 by executing the designated control.
 
 ```
-run("seq") {}.
-run("seq", *policy) {}.
+run("seq") do {}.
+run("seq", *policy) do {}.
 ```
 
 ##### Parameters
 
-1. Required (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
+1. Optional (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
 2. Optional (Any Term): Defines the control's policy parameters.
 
 ##### Control Types
@@ -439,39 +437,21 @@ There are three types of controls: `all`, `sel`, and `seq`.
 
 #### Select Statements
 
-A `select` statement perform a context switch.  By default, statements in its block are executed
-according to the `seq` control flow.
+A `select` statement perform a context switch.  A `select` statement applys its block to each specified path.  The
+designated control is done on the block level, not on the statement level (like the `run` statement).  By default,
+statements in its block are executed according to the `seq` control flow.
 
 ```
-select() {}.
-select("path") {}.
-```
-
-##### Parameters
-
-1. Optional (String): Defines the component's path that will become the new base entity.
-
-#### Do Statements
-
-A `do` statement applys its block to each specified path.  The designated control is done on
-the block level, not on the statement level (like the `run` statement).  It can be thought of as a hybird
-statement in which a `run` statement executes one or more `select` statements.  The `do` statement, therefore,
-performs a context switch for each path specified.  Note that statements in the block itself will be executed
-by defualt according to the `seq` control flow (and not by the control flow designated in the `do` statement').
-
-```
-do("seq", "path1") {}.
-do("seq", "path1", *policy) {}.
-do("seq", ["path1"]) {}.
-do("seq", ["path1"], *policy) {}.
-do("seq", ["path1", "path2"], *policy) {}.
+select() do {}.
+select() <- ["path"] do {}.
+select() <- ["path1", "path2"] do {}.
+select("seq") <- ["path1", "path2"] do {}.
 ```
 
 ##### Parameters
 
-1. Required (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
-2. Required (String|Array): Defines the path(s) to the component(s).
-3. Optional (Any Term): Defines the control's policy parameters.
+1. Optional (String): Defines the control to be executed (e.g. `all`, `sel`, and `seq`).
+2. Optional (Any Term): Defines the control's policy parameters.
 
 ##### Control Types
 
@@ -481,7 +461,6 @@ There are three types of controls: `all`, `sel`, and `seq`.
 * `sel` executes all blocks in order until one block does not report any violations.  It will only report violations when no blocks reports any violations.  It will always report all recommendations encountered.
 * `seq` executes all blocks in order until one block reports a violation.  It will always report all recommendations encountered.
 
-
 #### Is Statements
 
 An `is` statement is used to evaluate whether to execute a block of statements.  It does so
@@ -489,18 +468,15 @@ by executing the designated module first before running its block.  By default, 
 its block are executed according to the `seq` control flow.
 
 ```
-is("module", "path1") {}.
-is("module", "path1", *policy) {}.
-is("module", ["path1"]) {}.
-is("module", ["path1"], *policy) {}.
-is("module", ["path1", "path2"], *policy) {}.
+is("module") <- ["path"] do {}.
+is("module", *policy) <- ["path"] do {}.
+is("module", *policy) <- ["path1", "path2"] do {}.
 ```
 
 ##### Parameters
 
 1. Required (String): Defines the module to be executed.
-2. Required (String|Array): Defines the path(s) to the component(s).
-3. Optional (Any Term): Defines the module's policy parameters.
+2. Optional (Any Term): Defines the module's policy parameters.
 
 #### Not Statements
 
@@ -509,18 +485,15 @@ module first before running its block.  By default, statements in its block are 
 according to the `seq` control flow.
 
 ```
-not("module", "path1") {}.
-not("module", "path1", *policy) {}.
-not("module", ["path1"]) {}.
-not("module", ["path1"], *policy) {}.
-not("module", ["path1", "path2"], *policy) {}.
+not("module") <- ["path"] do {}.
+not("module", *policy) <- ["path"] do {}.
+not("module", *policy) <- ["path1", "path2"] do {}.
 ```
 
 ##### Parameters
 
 1. Required (String): Defines the module to be executed.
-2. Required (String|Array): Defines the path(s) to the component(s).
-3. Optional (Any Term): Defines the module's policy parameters.
+2. Optional (Any Term): Defines the module's policy parameters.
 
 ## Feedback
 
