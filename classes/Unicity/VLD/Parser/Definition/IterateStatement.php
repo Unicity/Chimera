@@ -22,28 +22,42 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class SelectStatement extends VLD\Parser\Definition\Statement {
+	class IterateStatement extends VLD\Parser\Definition\Statement {
 
 		public function get() {
 			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
-			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
-			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
+			if (isset($this->args['policy'])) {
+				$policy = $this->args['policy']->get();
+				if (!is_array($policy)) {
+					$policy = array();
+				}
+			}
+			else {
+				$policy = array();
+			}
 			$block = $this->args['block']->get();
+			$direction = $policy['direction'] ?? 'forward';
+			$step = intval($policy['step']) ?? 1;
+
+			$components = $this->context->getEntity()->getComponents();
+			$length = count($components);
 
 			$statements = array();
-			if (count($paths) > 0) {
-				foreach ($paths as $path) {
+			if ($direction === 'reverse') {
+				for ($i = $length - 1; $i >= 0; $i -= $step) {
 					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-						'path' => $path,
+						'path' => $components[$i],
 						'block' => $block,
 					]);
 				}
 			}
 			else {
-				$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-					'path' => null,
-					'block' => $block,
-				]);
+				for ($i = 0; $i < $length; $i += $step) {
+					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
+						'path' => $components[$i],
+						'block' => $block,
+					]);
+				}
 			}
 
 			$class = VLD\Parser\Definition\Control::getControl($control);

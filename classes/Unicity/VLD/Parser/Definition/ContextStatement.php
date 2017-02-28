@@ -22,7 +22,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class TempStatement extends VLD\Parser\Definition\Statement {
+	class ContextStatement extends VLD\Parser\Definition\Statement {
 
 		public function get() {
 			$this->context->push($this->args['path']);

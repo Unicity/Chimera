@@ -61,7 +61,7 @@ namespace Unicity\VLD {
 
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
 				'dump', 'eval', 'halt', 'install', 'set', // simple statements
-				'is', 'not', 'run', 'select', // complex statements
+				'is', 'iterate', 'not', 'run', 'select', // complex statements
 				'do', // symbols
 				'false', 'true', // boolean values
 				'null', // null value

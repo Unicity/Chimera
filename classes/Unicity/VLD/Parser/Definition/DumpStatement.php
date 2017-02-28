@@ -32,11 +32,11 @@ namespace Unicity\VLD\Parser\Definition {
 				$components = array_map(function($path) use($entity) {
 					return $entity->getComponentAtPath($path);
 				}, $paths);
-				call_user_func_array('var_dump', $components);
 			}
 			else {
-				var_dump($this->context->getEntity());
+				$components = $this->context->getEntity()->getComponents();
 			}
+			call_user_func_array('var_dump', $components);
 
 			return new VLD\Parser\Feedback($this->context->getPath());
 		}
