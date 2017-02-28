@@ -24,30 +24,18 @@ namespace Unicity\VLD\Parser\Definition {
 
 	class IsStatement extends VLD\Parser\Definition\Statement {
 
-		protected $args;
-
-		protected $block;
-
-		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
-			parent::__construct($context);
-			$this->args = $args;
-			$this->block = $block;
-		}
-
 		public function get() {
-			$module = $this->context->getModule($this->args[0]->get());
-			$class = $module['class'];
-			$policy = (isset($this->args[2])) ? $this->args[2]->get() : ($module['policy'] ?? null);
-			$object = new $class($policy);
+			$module = $this->args['module']->get();
+			$config = $this->context->getModule($module);
+			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : ($config['policy'] ?? null);
 			$entity = $this->context->getEntity();
 			$root = $this->context->getPath();
-			$paths = $this->args[1]->get();
-			if (!is_array($paths)) {
-				$paths = [$paths];
-			}
+			$paths = $this->args['paths']->get();
+			$class = $config['class'];
+			$object = new $class($policy);
 			$feedback = call_user_func_array([$object, 'process'], [$entity, $root, $paths]);
 			if ($feedback->getNumberOfViolations() === 0) {
-				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->block->get());
+				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
 				return $object->get();
 			}
 			return new VLD\Parser\Feedback($root);

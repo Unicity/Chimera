@@ -24,20 +24,12 @@ namespace Unicity\VLD\Parser\Definition {
 
 	class RunStatement extends VLD\Parser\Definition\Statement {
 
-		protected $args;
-
-		protected $block;
-
-		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
-			parent::__construct($context);
-			$this->args = $args;
-			$this->block = $block;
-		}
-
 		public function get() {
-			$control = VLD\Parser\Definition\Control::getControl($this->args[0]->get());
-			$policy = (isset($this->args[1])) ? $this->args[1]->get() : null;
-			$object = new $control($this->context, $policy, $this->block->get());
+			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
+			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
+			$block = $this->args['block']->get();
+			$class = VLD\Parser\Definition\Control::getControl($control);
+			$object = new $class($this->context, $policy, $block);
 			return $object->get();
 		}
 

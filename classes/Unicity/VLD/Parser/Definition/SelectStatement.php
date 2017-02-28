@@ -24,26 +24,31 @@ namespace Unicity\VLD\Parser\Definition {
 
 	class SelectStatement extends VLD\Parser\Definition\Statement {
 
-		protected $args;
-
-		protected $block;
-
-		public function __construct(VLD\Parser\Context $context, array $args, VLD\Parser\Definition\Block $block) {
-			parent::__construct($context);
-			$this->args = $args;
-			$this->block = $block;
-		}
-
 		public function get() {
-			$path = (isset($this->args[0])) ? $this->args[0]->get() : null;
-			$this->context->push($path);
+			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
+			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
+			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
+			$block = $this->args['block']->get();
 
-			$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->block->get());
-			$feedback = $object->get();
+			$statements = array();
+			if (count($paths) > 0) {
+				foreach ($paths as $path) {
+					$statements[] = new VLD\Parser\Definition\TempStatement($this->context, [
+						'paths' => $path,
+						'block' => $block,
+					]);
+				}
+			}
+			else {
+				$statements[] = new VLD\Parser\Definition\TempStatement($this->context, [
+					'path' => null,
+					'block' => $block,
+				]);
+			}
 
-			$this->context->pop();
-
-			return $feedback;
+			$class = VLD\Parser\Definition\Control::getControl($control);
+			$object = new $class($this->context, $policy, $block);
+			return $object->get();
 		}
 
 	}

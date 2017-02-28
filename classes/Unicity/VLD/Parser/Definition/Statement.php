@@ -22,6 +22,15 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	abstract class Statement extends VLD\Parser\Definition { }
+	abstract class Statement extends VLD\Parser\Definition {
+
+		protected $args;
+
+		public function __construct(VLD\Parser\Context $context, array $args) {
+			parent::__construct($context);
+			$this->args = $args;
+		}
+
+	}
 
 }

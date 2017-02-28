@@ -22,17 +22,17 @@ namespace Unicity\VLD\Parser\Definition {
 
 	use \Unicity\VLD;
 
-	class TempTerm extends VLD\Parser\Definition\Term {
-
-		protected $token;
-
-		public function __construct(VLD\Parser\Context $context, string $token) {
-			parent::__construct($context);
-			$this->token = $token;
-		}
+	class TempStatement extends VLD\Parser\Definition\Statement {
 
 		public function get() {
-			return $this->token;
+			$this->context->push($this->args['path']);
+
+			$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']);
+			$feedback = $object->get();
+
+			$this->context->pop();
+
+			return $feedback;
 		}
 
 	}

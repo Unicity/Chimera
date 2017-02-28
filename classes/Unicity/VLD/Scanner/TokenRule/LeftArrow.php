@@ -28,14 +28,14 @@ namespace Unicity\VLD\Scanner\TokenRule {
 	use \Unicity\VLD;
 
 	/**
-	 * This class represents the rule definition for a "map variable" token, which the
+	 * This class represents the rule definition for an "array variable" token, which the
 	 * tokenizer will use to tokenize a string.
 	 *
 	 * @access public
 	 * @class
 	 * @package VLD
 	 */
-	class MapVariable extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class LeftArrow extends Core\Object implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.
@@ -48,16 +48,11 @@ namespace Unicity\VLD\Scanner\TokenRule {
 		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
 			$index = $reader->position();
 			$char = $reader->readChar($index, false);
-			if (($char !== null) && ($char === '%')) {
-				$lookahead = $index + 1;
-				$next = $reader->readChar($lookahead, false);
-				if (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next)) {
-					do {
-						$lookahead++;
-						$next = $reader->readChar($lookahead, false);
-					} while (($next !== null) && preg_match('/^[_a-z0-9]$/i', $next));
-					$token = $reader->readRange($index, $lookahead);
-					$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::variable_map(), new Common\StringRef($token), $index);
+			if (($char !== null) && ($char === '<')) {
+				$next = $reader->readChar($index + 1, false);
+				if (($next !== null) && ($next === '-')) {
+					$token = $reader->readRange($index, $index + 2);
+					$tuple = new Lexer\Scanner\Tuple(VLD\Scanner\TokenType::arrow_left(), new Common\StringRef($token), $index);
 					return $tuple;
 				}
 			}
