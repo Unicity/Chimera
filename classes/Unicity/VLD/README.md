@@ -458,6 +458,18 @@ There are three types of controls: `all`, `sel`, and `seq`.
 * `sel` executes all statements in order until one statement does not report any violations.  It will only report violations when no statements reports any violation.  It will always report all recommendations encountered.
 * `seq` executes all statements in order until one statement reports a violation.  It will always report all recommendations encountered.
 
+##### Shortcuts
+
+Each of the three `run` statement control types may be expressed using a shortcut inside a block term.
+
+```
+| Long Form         | Short Form |
+| ----------------- | ---------- |
+| run("all") do {}. | []         |
+| run("sel") do {}. | ()         |
+| run("seq") do {}. | {}         |
+```
+
 #### Select Statements
 
 A `select` statement perform a context switch.  A `select` statement applys its block to each specified path.  The

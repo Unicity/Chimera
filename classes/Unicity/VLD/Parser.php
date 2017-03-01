@@ -492,6 +492,17 @@ namespace Unicity\VLD {
 				return $this->SelectStatement($context);
 			}
 
+			// Shortcut Statements
+			if ($this->isLeftBracket($tuple)) {
+				return $this->AllStatement($context); // run("all") do {}.
+			}
+			if ($this->isLeftCurly($tuple)) {
+				return $this->SeqStatement($context); // run("seq") do {}.
+			}
+			if ($this->isLeftParen($tuple)) {
+				return $this->SelStatement($context); // run("sel") do {}.
+			}
+
 			// Error Handling
 			$this->SyntaxError();
 		}
@@ -692,6 +703,61 @@ namespace Unicity\VLD {
 			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\SelectStatement($context, $args);
+		}
+
+		#endregion
+
+		#region Shortcut Statements
+
+		protected function AllStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
+			$tuple = $this->scanner->current();
+			if (!$this->isLeftBracket($tuple)) {
+				$this->SyntaxError();
+			}
+			$this->scanner->next();
+			$args = array();
+			$args['control'] = new VLD\Parser\Definition\StringTerm($context, '"all"');
+			$statements = array();
+			while (!$this->isRightBracket($this->scanner->current())) {
+				$statements[] = $this->Statement($context);
+			}
+			$args['block'] = new VLD\Parser\Definition\BlockTerm($context, $statements);
+			$this->RightBracket($context);
+			return new VLD\Parser\Definition\RunStatement($context, $args);
+		}
+
+		protected function SelStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
+			$tuple = $this->scanner->current();
+			if (!$this->isLeftParen($tuple)) {
+				$this->SyntaxError();
+			}
+			$this->scanner->next();
+			$args = array();
+			$args['control'] = new VLD\Parser\Definition\StringTerm($context, '"sel"');
+			$statements = array();
+			while (!$this->isRightParen($this->scanner->current())) {
+				$statements[] = $this->Statement($context);
+			}
+			$args['block'] = new VLD\Parser\Definition\BlockTerm($context, $statements);
+			$this->RightParen($context);
+			return new VLD\Parser\Definition\RunStatement($context, $args);
+		}
+
+		protected function SeqStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
+			$tuple = $this->scanner->current();
+			if (!$this->isLeftCurly($tuple)) {
+				$this->SyntaxError();
+			}
+			$this->scanner->next();
+			$args = array();
+			$args['control'] = new VLD\Parser\Definition\StringTerm($context, '"seq"');
+			$statements = array();
+			while (!$this->isRightCurly($this->scanner->current())) {
+				$statements[] = $this->Statement($context);
+			}
+			$args['block'] = new VLD\Parser\Definition\BlockTerm($context, $statements);
+			$this->RightCurly($context);
+			return new VLD\Parser\Definition\RunStatement($context, $args);
 		}
 
 		#endregion
