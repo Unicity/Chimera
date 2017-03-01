@@ -25,7 +25,7 @@ namespace Unicity\VLD\Parser\Definition {
 	class PathTerm extends VLD\Parser\Definition\Term {
 
 		public function get() {
-			return array('.');
+			return array('@');
 		}
 
 	}

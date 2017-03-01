@@ -101,7 +101,7 @@ namespace Unicity\BT {
 		 * @return mixed                                            the component
 		 */
 		public function getComponentAtPath(string $path) {
-			if ($path === '.') {
+			if ($path === '@') {
 				return $this->components;
 			}
 			return ORM\Query::getValue($this->components, $path);
@@ -172,7 +172,7 @@ namespace Unicity\BT {
 		 * @return boolean                                          whether this entity has the component
 		 */
 		public function hasComponentAtPath(string $path) : bool {
-			if ($path === '.') {
+			if ($path === '@') {
 				return !Core\Data\ToolKit::isUndefined($this->components);
 			}
 			return ORM\Query::hasPath($this->components, $path);
