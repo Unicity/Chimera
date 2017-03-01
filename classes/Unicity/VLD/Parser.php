@@ -409,6 +409,19 @@ namespace Unicity\VLD {
 			return $term;
 		}
 
+		protected function PathTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
+			$tuple = $this->scanner->current();
+			if ($this->isArrayTerm($tuple)) {
+				return $this->ArrayTerm($context);
+			}
+			if (!$this->isUnderscore($tuple)) {
+				$this->SyntaxError();
+			}
+			$term = new VLD\Parser\Definition\PathTerm($context);
+			$this->scanner->next();
+			return $term;
+		}
+
 		protected function RealTerm(VLD\Parser\Context $context) : VLD\Parser\Definition\Term {
 			$tuple = $this->scanner->current();
 			if (!$this->isRealTerm($tuple)) {
@@ -518,7 +531,7 @@ namespace Unicity\VLD {
 			$this->RightParen($context);
 			if ($this->isLeftArrow($this->scanner->current())) {
 				$this->LeftArrow($context);
-				$args['paths'] = $this->ArrayTerm($context);
+				$args['paths'] = $this->PathTerm($context);
 			}
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\DumpStatement($context, $args);
@@ -535,7 +548,7 @@ namespace Unicity\VLD {
 			}
 			$this->RightParen($context);
 			$this->LeftArrow($context);
-			$args['paths'] = $this->ArrayTerm($context);
+			$args['paths'] = $this->PathTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\EvalStatement($context, $args);
 		}
@@ -622,7 +635,7 @@ namespace Unicity\VLD {
 			}
 			$this->RightParen($context);
 			$this->LeftArrow($context);
-			$args['paths'] = $this->ArrayTerm($context);
+			$args['paths'] = $this->PathTerm($context);
 			$this->DoSentinel($context);
 			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
@@ -658,7 +671,7 @@ namespace Unicity\VLD {
 			}
 			$this->RightParen($context);
 			$this->LeftArrow($context);
-			$args['paths'] = $this->ArrayTerm($context);
+			$args['paths'] = $this->PathTerm($context);
 			$this->DoSentinel($context);
 			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
@@ -697,7 +710,7 @@ namespace Unicity\VLD {
 			$this->RightParen($context);
 			if ($this->isLeftArrow($this->scanner->current())) {
 				$this->LeftArrow($context);
-				$args['paths'] = $this->ArrayTerm($context);
+				$args['paths'] = $this->PathTerm($context);
 			}
 			$this->DoSentinel($context);
 			$args['block'] = $this->BlockTerm($context);
@@ -953,6 +966,10 @@ namespace Unicity\VLD {
 
 		protected function isTerminal(Lexer\Scanner\Tuple $tuple) : bool {
 			return (!is_null($tuple) && ((string) $tuple->type === 'TERMINAL'));
+		}
+
+		protected function isUnderscore(Lexer\Scanner\Tuple $tuple) : bool {
+			return $this->isSymbol($tuple, '_');
 		}
 
 		#endregion
