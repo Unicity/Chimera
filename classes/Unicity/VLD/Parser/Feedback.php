@@ -53,9 +53,9 @@ namespace Unicity\VLD\Parser {
 
 		public function addRecommendation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void {
 			ksort($values);
-			sort($fields);
+			ksort($fields);
 			$this->recommendations->putValue([
-				'fields' => static::mapFields($this->root, $fields),
+				'fields' => static::mapRecommendations($this->root, $fields),
 				'message' => strtr(static::localize($message), $values),
 				'type' => (string) $type,
 			]);
@@ -69,7 +69,7 @@ namespace Unicity\VLD\Parser {
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
-				'fields' => static::mapFields($this->root, $fields),
+				'fields' => static::mapViolations($this->root, $fields),
 				'message' => strtr(static::localize($message), $values),
 				'type' => (string) $type,
 			]);
@@ -120,10 +120,21 @@ namespace Unicity\VLD\Parser {
 			return Config\Properties\Reader::load(new IO\File($uri))->read();
 		}
 
-		protected static function mapFields(string $root, array $fields) {
+		protected static function mapRecommendations(string $root, array $fields) {
 			$buffer = array();
-			foreach ($fields as $i => $field) {
-				$buffer[$i]['field'] = ORM\Query::appendKey($root, (string) $field);
+			$i = 0;
+			foreach ($fields as $k => $v) {
+				$buffer[$i]['field'] = ORM\Query::appendKey($root, (string) $k);
+				$buffer[$i]['to'] = $v;
+				$i++;
+			}
+			return $buffer;
+		}
+
+		protected static function mapViolations(string $root, array $fields) {
+			$buffer = array();
+			foreach ($fields as $i => $v) {
+				$buffer[$i]['field'] = ORM\Query::appendKey($root, (string) $v);
 			}
 			return $buffer;
 		}

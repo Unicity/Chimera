@@ -109,22 +109,22 @@ namespace Unicity\VLD\Parser\Module {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				$feedback->addRecommendation(RuleType::set(), [$path], 'value.retype', ['{{type}}' => $expectedType]);
+				$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				$feedback->addRecommendation(RuleType::set(), [$path], 'value.retype', ['{{type}}' => $expectedType]);
+				$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					$feedback->addRecommendation(RuleType::set(), [$path], 'value.retype', ['{{type}}' => $expectedType]);
+					$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					$feedback->addRecommendation(RuleType::set(), [$path], 'value.retype', ['{{type}}' => $expectedType]);
+					$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
 					return $expectedType;
 				}
 			}

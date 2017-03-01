@@ -576,8 +576,7 @@ Feedback is stored in an map. For example:
       "fields": [
         {
           "field": "customer.id"
-          "from": "integer",
-          "to": "string"
+          "to": "1234567890"
         }
       ],
       "message": "Field value should be typed as "string".",
@@ -587,7 +586,6 @@ Feedback is stored in an map. For example:
 	  "fields": [
 		{
 		  "field": "market"
-		  "from": "USA",
 		  "to": "US"
 		}
 	  ],
