@@ -40,10 +40,6 @@ namespace Unicity\VLD\Parser\Module {
 				if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($value)) {
 					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
 				}
-				else if (isset($schema['nullable']) && !boolval($schema['nullable']) && Core\Data\ToolKit::isUnset($value)) {
-					$expectedType = $this->expectedType($schema);
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
-				}
 				else {
 					$expectedType = $this->expectedType($schema);
 					$actualType = $this->actualType($feedback, $path, $schema, $value);
@@ -106,6 +102,9 @@ namespace Unicity\VLD\Parser\Module {
 			}
 
 			if ($actualType == 'null') {
+				if (isset($schema['nullable']) && !$schema['nullable']) {
+					return $actualType;
+				}
 				return $expectedType;
 			}
 
@@ -194,10 +193,6 @@ namespace Unicity\VLD\Parser\Module {
 				if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($v)) {
 					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
 				}
-				else if (isset($schema['nullable']) && !boolval($schema['nullable']) && Core\Data\ToolKit::isUnset($v)) {
-					$expectedType = $this->expectedType($schema);
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
-				}
 				else {
 					$expectedType = $this->expectedType($schema);
 					$actualType = $this->actualType($feedback, $ipath, $schema, $v);
@@ -255,10 +250,6 @@ namespace Unicity\VLD\Parser\Module {
 
 					if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($v)) {
 						$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
-					}
-					else if (isset($schema['nullable']) && !boolval($schema['nullable']) && Core\Data\ToolKit::isUnset($v)) {
-						$expectedType = $this->expectedType($schema);
-						$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
 					}
 					else {
 						$expectedType = $this->expectedType($schema);
