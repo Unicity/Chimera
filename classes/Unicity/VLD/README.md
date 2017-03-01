@@ -416,8 +416,8 @@ to write a new module class or to define it in your `.vld` file.
 
 #### Eval Statements
 
-An `eval` statement is used to perform some type of validation operation.  It does so by
-executing the designated module.
+An `eval` statement is used to perform the validation operation.  It does so by executing the designated
+module.
 
 ```
 eval("module") <- ["path"].
@@ -432,13 +432,13 @@ eval("module", *policy) <- ["path1", "path2"].
 
 ### Complex Statements
 
-A complex statement (or block statement) is a statement that encapsulates other statements
-and is typically used to control the execution.
+A complex statement (or block statement) is a statement that encapsulates 0 or more
+statements and is typically used to control the flow of execution.
 
 #### Run Statements
 
-A `run` statement is used to control the way other statements are processed.  It does so
-by executing the designated control.
+A `run` statement is used to control the way statements are processed within its block.  It
+does so by executing the designated control.
 
 ```
 run("seq") do {}.
