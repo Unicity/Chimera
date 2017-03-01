@@ -34,7 +34,7 @@ namespace Unicity\VLD\Parser\Definition {
 				}, $paths);
 			}
 			else {
-				$components = $this->context->getEntity()->getComponents();
+				$components = array($this->context->getEntity()->getComponents());
 			}
 			call_user_func_array('var_dump', $components);
 
