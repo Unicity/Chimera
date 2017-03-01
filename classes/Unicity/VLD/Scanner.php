@@ -48,6 +48,7 @@ namespace Unicity\VLD {
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('}'));
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(','));
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
+			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('_'));
 
 			$scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
 
