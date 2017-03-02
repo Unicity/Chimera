@@ -48,6 +48,7 @@ The syntax of VLD in Backus-Naur Form:
 <module> = <string> | <variable-string>
 <not> = not <lparen> <module> (<comma> <term>)? <rparen> <larrow> <paths> do <block> <terminal>
 <null> = null
+<on> = on <lparen> <event> <rparen> do <block> <terminal>
 <paths> = <array> | <variable-array>
 <rbracket> = "]"
 <rcurly> = "}"
@@ -58,7 +59,7 @@ The syntax of VLD in Backus-Naur Form:
 <set> = set <lparen> (<variable-term> | <variable-block>) <comma> (<term> | <block>) <rparen> <terminal>
 <statement> = <statement-simple> | <statement-complex>
 <statement-simple> = <dump> | <eval> | <halt> | <install> | <set>
-<statement-complex> = <is> | <not> | <run> | <select>
+<statement-complex> = <is> | <not> | <on> | <run> | <select>
 <string> = '/^"[^"]*"$/'
 <term> = <array> | <boolean> | <integer> | <map> | <null> | <real> | <string> | <variable-term>
 <terminal> = "."
@@ -385,8 +386,8 @@ select() do {}.
 
 ## Statements
 
-There are 10 types of statements: `dump`, `eval`, `halt`, `install`, `is`, `iterate`, `not`, `run`, `select`,
-and `set`.  They are separated into two groups: simple statements and complex statements.
+There are 10 types of statements: `dump`, `eval`, `halt`, `install`, `is`, `iterate`, `on`, `not`, `run`,
+`select`, and `set`.  They are separated into two groups: simple statements and complex statements.
 
 ### Simple Statements
 
@@ -600,6 +601,35 @@ not("module", *policy) <- ["path1", "path2"] do {}.
 
 1. Required (String): Defines the module to be executed.
 2. Optional (Any Term): Defines the module's policy parameters.
+
+#### On Statements
+
+An `on` statement is used to trigger its block when a particular event occurs.  By default, statements in
+its block are executed according to the `seq` control flow.
+
+```
+on("event") do {}.
+```
+
+##### Parameters
+
+1. Required (String): Defines the event to be listen for.
+
+##### Event Types
+
+An event can be any string of text.  This string will then be used to match against the value passed
+in the HTTP header `X-Event-Type`.
+
+```
+X-Event-Type: submit
+```
+
+To allow for multiple events to be passed via this HTTP header
+name, it is possible to send a semicolon-separated list of event types. 
+
+```
+X-Event-Type: click; change; submit
+```
 
 ## Feedback
 

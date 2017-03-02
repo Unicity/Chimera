@@ -499,6 +499,9 @@ namespace Unicity\VLD {
 			if ($this->isKeyword($tuple, 'not')) {
 				return $this->NotStatement($context);
 			}
+			if ($this->isKeyword($tuple, 'on')) {
+				return $this->OnStatement($context);
+			}
 			if ($this->isKeyword($tuple, 'run')) {
 				return $this->RunStatement($context);
 			}
@@ -671,6 +674,18 @@ namespace Unicity\VLD {
 			$args['block'] = $this->BlockTerm($context);
 			$this->Terminal($context);
 			return new VLD\Parser\Definition\NotStatement($context, $args);
+		}
+
+		protected function OnStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\OnStatement {
+			$this->scanner->next();
+			$args = array();
+			$this->LeftParen($context);
+			$args['event'] = $this->StringTerm($context);
+			$this->RightParen($context);
+			$this->DoSentinel($context);
+			$args['block'] = $this->BlockTerm($context);
+			$this->Terminal($context);
+			return new VLD\Parser\Definition\OnStatement($context, $args);
 		}
 
 		protected function RunStatement(VLD\Parser\Context $context) : VLD\Parser\Definition\RunStatement {
