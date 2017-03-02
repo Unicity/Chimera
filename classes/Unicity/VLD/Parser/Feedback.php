@@ -162,7 +162,7 @@ namespace Unicity\VLD\Parser {
 					$buffer[] = is_numeric($segment) ? "[{$segment}]" : $segment;
 				}
 			}
-			return preg_replace('/\.\[(0|[1-9][0-9]*)\]/', '[$1]', implode('.', $buffer));
+			return preg_replace('/[^$]\.\[(0|[1-9][0-9]*)\]/', '[$1]', implode('.', $buffer));
 		}
 
 	}
