@@ -172,14 +172,14 @@ An external block is defined using a string.  The string's text is file path to 
 
 It too may be stored in the block variable.
 
-### Variables
+## Variables
 
 A variable is used to store the value of another term.  There are 7 variable types
 in the VLD language: array variables, block variables, boolean variables, map variables,
 mixed variables, number variables, and string variables.  Each variable type has its own
 unique prefix.
 
-#### Boolean Variables
+### Boolean Variables
 
 Boolean variables are prefixed using a question mark (which is an adaptation of the
 syntax used in Ruby).
@@ -194,7 +194,7 @@ To declare a boolean variable, use the set statement.
 set(?variable, true).
 ```
 
-#### Number Variables
+### Number Variables
 
 Number variables are prefixed using a hash/number symbol.
 
@@ -209,7 +209,7 @@ set(#variable, 123).
 set(#variable, 12.3).
 ```
 
-#### String Variables
+### String Variables
 
 String variables are prefixed using a dollar sign (which is an adaptation of the syntax
 used in Perl and PHP).
@@ -224,7 +224,7 @@ To declare a boolean variable, use the set statement.
 set($variable, "some text").
 ```
 
-#### Array Variables
+### Array Variables
 
 Array variables are prefixed using an `@` sign (which is the same syntax used in Perl).
 
@@ -238,7 +238,7 @@ To declare an array variable, use the set statement.
 set(@variable, []).
 ```
 
-#### Map Variables
+### Map Variables
 
 Map variables are prefixed using a percent sign (which is the same syntax used in Perl).
 
@@ -252,7 +252,7 @@ To declare a map variable, use the set statement.
 set(%variable, {}).
 ```
 
-#### Mixed Variables
+### Mixed Variables
 
 Mixed variables are prefixed using an asterisk (which is an adaptation of the wildcard
 syntax in many languages).  A mixed variable may store any other term's value, except for
@@ -273,7 +273,7 @@ set(*variable, []).
 set(*variable, {}).
 ```
 
-#### Block Variables
+### Block Variables
 
 Block variables are prefixed using an upcaret (which is an adaptation of the lambda syntax
 used in Objective-C).
@@ -289,7 +289,7 @@ set(^variable, {}).
 set(^variable, "classpath:file.vld").
 ```
 
-#### Default Values
+### Default Values
 
 In event that a variable is not initialized, the interpreter will return a default value for that
 variable when requested at runtime.
@@ -332,6 +332,49 @@ multiple lines.
 /*
   some comment
 */
+```
+
+## Paths
+
+A path is used to identify the key/index of a particular component in the entity.  Paths are, generally,
+written as strings encapsulated in an array.
+
+```
+["path"]
+["path1", "path2"]
+```
+
+### Dot Syntax
+
+At the momement, scripts uses dot syntax to represent a component's path.
+
+```
+order.customer.id
+order.lines.items.0.quantity
+```
+
+### JSONPath
+
+[JSONPath](http://goessner.net/articles/JsonPath/) is used in the feedback report.
+
+```
+$.order.customer.id
+$.order.lines.items[0].quantity
+```
+
+### Wildcards
+
+In order to minimize verbose scripts, VLD offers the use of a wildcard symbol to represent the current
+path/context.  A wildcard symbol is denoted by an underscore.
+
+```
+_
+```
+
+It can be used instead of an array to represent the path.
+
+```
+select() <- _ do {}.
 ```
 
 ## Statements
@@ -575,7 +618,7 @@ Feedback is stored in an map. For example:
     {
       "fields": [
         {
-          "field": "customer.id"
+          "field": "$.customer.id"
           "to": "1234567890"
         }
       ],
@@ -585,7 +628,7 @@ Feedback is stored in an map. For example:
 	{
 	  "fields": [
 		{
-		  "field": "market"
+		  "field": "$.market"
 		  "to": "US"
 		}
 	  ],
@@ -597,7 +640,7 @@ Feedback is stored in an map. For example:
     {
       "fields": [
         {
-          "field": "customer.draftBankAccount.accountHolder"
+          "field": "$.customer.draftBankAccount.accountHolder"
         }
       ],
       "message": "Field length must be lesser than or equal to \"22\".",
@@ -606,7 +649,7 @@ Feedback is stored in an map. For example:
     {
       "fields": [
         {
-          "field": "customer.draftBankAccount.iban"
+          "field": "$.customer.draftBankAccount.iban"
         }
       ],
       "message": "Field value must match pattern.",
@@ -615,6 +658,8 @@ Feedback is stored in an map. For example:
   ]
 }
 ```
+
+The fields are represented using [JSONPath](http://goessner.net/articles/JsonPath/).
 
 ### Message Localization
 

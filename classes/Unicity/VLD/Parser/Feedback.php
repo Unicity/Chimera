@@ -124,7 +124,7 @@ namespace Unicity\VLD\Parser {
 			$buffer = array();
 			$i = 0;
 			foreach ($fields as $k => $v) {
-				$buffer[$i]['field'] = ORM\Query::appendKey($root, (string) $k);
+				$buffer[$i]['field'] = static::formatKey($root, (string) $k);
 				$buffer[$i]['to'] = $v;
 				$i++;
 			}
@@ -134,9 +134,35 @@ namespace Unicity\VLD\Parser {
 		protected static function mapViolations(string $root, array $fields) {
 			$buffer = array();
 			foreach ($fields as $i => $v) {
-				$buffer[$i]['field'] = ORM\Query::appendKey($root, (string) $v);
+				$buffer[$i]['field'] = static::formatKey($root, (string) $v);
 			}
 			return $buffer;
+		}
+
+		/**
+		 * This method returns the JSONPath for the given key.
+		 *
+		 * @access protected
+		 * @static
+		 * @param string $path                                      the current path
+		 * @param string $key                                       the key to be affixed
+		 * @return string                                           the new path
+		 */
+		protected static function formatKey(?string $path, string $key) {
+			$buffer = array('$');
+			$pattern = (!is_null($path)) ? explode('.', $path) : array();
+			foreach ($pattern as $segment) {
+				if (!in_array($segment, ['', '$', '@'])) {
+					$buffer[] = $segment;
+				}
+			}
+			$pattern = explode('.', $key);
+			foreach ($pattern as $segment) {
+				if (!in_array($segment, ['', '@'])) {
+					$buffer[] = $segment;
+				}
+			}
+			return implode('.', $buffer);
 		}
 
 	}
