@@ -25,8 +25,8 @@ namespace Unicity\VLD\Parser\Definition {
 	class OnStatement extends VLD\Parser\Definition\Statement {
 
 		public function get() {
-			if (isset($_SERVER['X-Event-Type'])) {
-				$events = preg_split('/\s*;\s*/', $_SERVER['X-Event-Type']);
+			if (isset($_SERVER['HTTP_X_EVENT_TYPE'])) {
+				$events = array_map('trim', explode(';', $_SERVER['HTTP_X_EVENT_TYPE']));
 				$event = $this->args['event']->get();
 				if (in_array($event, $events)) {
 					$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
