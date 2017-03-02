@@ -377,6 +377,12 @@ It can be used instead of an array to represent the path.
 select() <- _ do {}.
 ```
 
+An alternative to using the wildcard is to leave out the `<- _` segment completely.
+
+```
+select() do {}.
+```
+
 ## Statements
 
 There are 10 types of statements: `dump`, `eval`, `halt`, `install`, `is`, `iterate`, `not`, `run`, `select`,
