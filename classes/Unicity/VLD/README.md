@@ -624,8 +624,8 @@ in the HTTP header `X-Event-Type`.
 X-Event-Type: submit
 ```
 
-To allow for multiple events to be passed via this HTTP header
-name, it is possible to send a semicolon-separated list of event types. 
+To allow for multiple events to be passed via this HTTP header name, it is possible to send a semicolon-separated
+list of event types. 
 
 ```
 X-Event-Type: click; change; submit
