@@ -153,16 +153,16 @@ namespace Unicity\VLD\Parser {
 			$pattern = (!is_null($path)) ? explode('.', $path) : array();
 			foreach ($pattern as $segment) {
 				if (!in_array($segment, ['', '$', '@'])) {
-					$buffer[] = $segment;
+					$buffer[] = is_numeric($segment) ? "[{$segment}]" : $segment;
 				}
 			}
 			$pattern = explode('.', $key);
 			foreach ($pattern as $segment) {
-				if (!in_array($segment, ['', '@'])) {
-					$buffer[] = $segment;
+				if (!in_array($segment, ['', '$', '@'])) {
+					$buffer[] = is_numeric($segment) ? "[{$segment}]" : $segment;
 				}
 			}
-			return implode('.', $buffer);
+			return preg_replace('/\.\[(0|[1-9][0-9]*)\]/', '[$1]', implode('.', $buffer));
 		}
 
 	}
