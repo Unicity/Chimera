@@ -24,16 +24,23 @@ namespace Unicity\VLD\Parser\Definition {
 
 	class OnStatement extends VLD\Parser\Definition\Statement {
 
+		protected static $events = null;
+
 		public function get() {
-			if (isset($_SERVER['HTTP_X_EVENT_TYPE'])) {
-				$events = array_map('trim', explode(';', $_SERVER['HTTP_X_EVENT_TYPE']));
-				$event = $this->args['event']->get();
-				if (in_array($event, $events)) {
-					$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
-					return $object->get();
-				}
+			if (in_array($this->args['event']->get(), static::getEvents())) {
+				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
+				return $object->get();
 			}
 			return new VLD\Parser\Feedback($this->context->getPath());
+		}
+
+		protected static function getEvents() {
+			if (static::$events === null) {
+				static::$events = (isset($_SERVER['HTTP_X_EVENT_TYPE']))
+					? array_map('trim', explode(';', $_SERVER['HTTP_X_EVENT_TYPE']))
+					: array();
+			}
+			return static::$events;
 		}
 
 	}
