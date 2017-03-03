@@ -28,20 +28,13 @@ namespace Unicity\VLD\Parser\Definition {
 			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
 			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
 			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
+			$paths = $this->context->getAbsolutePaths($paths);
 			$block = $this->args['block']->get();
 
 			$statements = array();
-			if (count($paths) > 0) {
-				foreach ($paths as $path) {
-					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-						'path' => $path,
-						'block' => $block,
-					]);
-				}
-			}
-			else {
+			foreach ($paths as $path) {
 				$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-					'path' => null,
+					'path' => $path,
 					'block' => $block,
 				]);
 			}

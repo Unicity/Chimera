@@ -26,7 +26,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function get() {
 			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
-			$paths = $this->context->getAbsolutePaths($this->args['paths']->get());
+			$paths = $this->context->getAbsolutePaths($paths);
 
 			$entity = $this->context->getEntity();
 			$components = array_map(function($path) use($entity) {

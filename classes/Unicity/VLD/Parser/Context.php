@@ -93,12 +93,24 @@ namespace Unicity\VLD\Parser {
 		 *                                                          relative paths
 		 */
 		public function getAbsolutePaths(array $paths) : array {
+			$root = $this->getCurrentPath();
+			if (!empty($paths)) {
+				return array_map(function($path) use ($root) {
+					return ORM\Query::appendKey($root, $path);
+				}, $paths);
+			}
+			return [$root];
+		}
+
+		/**
+		 * This method returns the current path.
+		 *
+		 * @access public
+		 * @return string                                           the current path
+		 */
+		public function getCurrentPath() : string {
 			$context = $this->current();
-			$root = $context['path'];
-			$paths = array_map(function($path) use ($root) {
-				return ORM\Query::appendKey($root, $path);
-			}, $paths);
-			return $paths;
+			return $context['path'];
 		}
 
 		/**
@@ -190,18 +202,17 @@ namespace Unicity\VLD\Parser {
 		 * @param string $path                                      the path to the sub-entity
 		 */
 		public function push(?string $path) : void {
-			$context = $this->current();
-			if (is_null($path) || in_array($path, ['.', ''])) {
+			if (is_null($path) || in_array($path, ['@', ''])) {
 				$this->stack->push([
 					'modules' => new Common\Mutable\HashMap(),
-					'path' => $context['path'],
+					'path' => $this->getCurrentPath(),
 					'symbols' => new Common\Mutable\HashMap()
 				]);
 			}
 			else {
 				$this->stack->push([
 					'modules' => new Common\Mutable\HashMap(),
-					'path' => implode('.', [$context['path'], $path]),
+					'path' => $path,
 					'symbols' => new Common\Mutable\HashMap(),
 				]);
 			}
