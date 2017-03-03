@@ -118,7 +118,7 @@ namespace Unicity\VLD\Parser {
 			$buffer = array();
 			$i = 0;
 			foreach ($fields as $k => $v) {
-				$buffer[$i]['field'] = (string) $k;
+				$buffer[$i]['field'] = static::formatKey((string) $k);
 				$buffer[$i]['to'] = $v;
 				$i++;
 			}
@@ -128,7 +128,7 @@ namespace Unicity\VLD\Parser {
 		protected static function mapViolations(array $fields) {
 			$buffer = array();
 			foreach ($fields as $i => $v) {
-				$buffer[$i]['field'] = (string) $v;
+				$buffer[$i]['field'] = static::formatKey((string) $v);
 			}
 			return $buffer;
 		}
