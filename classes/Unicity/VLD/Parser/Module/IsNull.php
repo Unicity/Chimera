@@ -26,8 +26,8 @@ namespace Unicity\VLD\Parser\Module {
 
 	class IsNull extends VLD\Parser\Module {
 
-		public function process(BT\Entity $entity, string $root, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback($root);
+		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
+			$feedback = new VLD\Parser\Feedback();
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);

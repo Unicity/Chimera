@@ -23,9 +23,18 @@ namespace Unicity\VLD\Parser {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
+	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
 	class Context extends Core\Object {
+
+		/**
+		 * This variable stores a reference to the entity.
+		 *
+		 * @access protected
+		 * @var BT\Entity
+		 */
+		protected $entity;
 
 		/**
 		 * This variable stores the stack for maintaining context switches.
@@ -43,12 +52,12 @@ namespace Unicity\VLD\Parser {
 		 * @param Common\HashMap $input                             the input data to be validated
 		 */
 		public function __construct(Common\HashMap $input) {
+			$this->entity = new BT\Entity([
+				'components' => $input,
+				'entity_id' => 0,
+			]);
 			$this->stack = new Common\Mutable\Stack();
 			$this->stack->push([
-				'entity' => new BT\Entity([
-					'components' => $input,
-					'entity_id' => 0,
-				]),
 				'modules' => new Common\Mutable\HashMap(),
 				'path' => '',
 				'symbols' => new Common\Mutable\HashMap(),
@@ -77,6 +86,22 @@ namespace Unicity\VLD\Parser {
 		}
 
 		/**
+		 * This method returns the absolute paths for the relative paths.
+		 *
+		 * @access public
+		 * @return array                                            the absolute paths for the given
+		 *                                                          relative paths
+		 */
+		public function getAbsolutePaths(array $paths) : array {
+			$context = $this->current();
+			$root = $context['path'];
+			$paths = array_map(function($path) use ($root) {
+				return ORM\Query::appendKey($root, $path);
+			}, $paths);
+			return $paths;
+		}
+
+		/**
 		 * This method returns the entity in the current context.
 		 *
 		 * @access public
@@ -84,8 +109,7 @@ namespace Unicity\VLD\Parser {
 		 *                                                          context
 		 */
 		public function getEntity() : BT\Entity {
-			$context = $this->current();
-			return $context['entity'];
+			return $this->entity;
 		}
 
 		/**
@@ -107,17 +131,6 @@ namespace Unicity\VLD\Parser {
 				}
 			}
 			throw new Throwable\KeyNotFound\Exception('Unable to get element. Key ":key" does not exist.', array(':key' => $key));
-		}
-
-		/**
-		 * This method returns the path to the current entity from the initial entity.
-		 *
-		 * @access public
-		 * @return string                                           the path to the current entity
-		 */
-		public function getPath() : string {
-			$context = $this->current();
-			return $context['path'];
 		}
 
 		/**
@@ -180,7 +193,6 @@ namespace Unicity\VLD\Parser {
 			$context = $this->current();
 			if (is_null($path) || in_array($path, ['.', ''])) {
 				$this->stack->push([
-					'entity' => $context['entity'],
 					'modules' => new Common\Mutable\HashMap(),
 					'path' => $context['path'],
 					'symbols' => new Common\Mutable\HashMap()
@@ -188,10 +200,6 @@ namespace Unicity\VLD\Parser {
 			}
 			else {
 				$this->stack->push([
-					'entity' => new BT\Entity([
-						'components' => $context['entity']->getComponentAtPath($path),
-						'entity_id' => $this->stack->count(),
-					]),
 					'modules' => new Common\Mutable\HashMap(),
 					'path' => implode('.', [$context['path'], $path]),
 					'symbols' => new Common\Mutable\HashMap(),

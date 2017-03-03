@@ -28,17 +28,16 @@ namespace Unicity\VLD\Parser\Definition {
 			$module = $this->args['module']->get();
 			$config = $this->context->getModule($module);
 			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : ($config['policy'] ?? null);
+			$paths = $this->context->getAbsolutePaths($this->args['paths']->get());
 			$entity = $this->context->getEntity();
-			$root = $this->context->getPath();
-			$paths = $this->args['paths']->get();
 			$class = $config['class'];
 			$object = new $class($policy);
-			$feedback = call_user_func_array([$object, 'process'], [$entity, $root, $paths]);
+			$feedback = call_user_func_array([$object, 'process'], [$entity, $paths]);
 			if ($feedback->getNumberOfViolations() > 0) {
 				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
 				return $object->get();
 			}
-			return new VLD\Parser\Feedback($root);
+			return new VLD\Parser\Feedback();
 		}
 
 	}

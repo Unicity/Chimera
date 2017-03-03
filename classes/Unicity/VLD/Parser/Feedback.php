@@ -36,17 +36,11 @@ namespace Unicity\VLD\Parser {
 		protected $recommendations;
 
 		/**
-		 * @var string
-		 */
-		protected $root;
-
-		/**
 		 * @var Common\Mutable\HashSet
 		 */
 		protected $violations;
 
-		public function __construct(string $root) {
-			$this->root = $root;
+		public function __construct() {
 			$this->recommendations = new Common\Mutable\HashSet();
 			$this->violations = new Common\Mutable\HashSet();
 		}
@@ -55,7 +49,7 @@ namespace Unicity\VLD\Parser {
 			ksort($values);
 			ksort($fields);
 			$this->recommendations->putValue([
-				'fields' => static::mapRecommendations($this->root, $fields),
+				'fields' => static::mapRecommendations($fields),
 				'message' => strtr(static::localize($message), $values),
 				'type' => (string) $type,
 			]);
@@ -69,7 +63,7 @@ namespace Unicity\VLD\Parser {
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
-				'fields' => static::mapViolations($this->root, $fields),
+				'fields' => static::mapViolations($fields),
 				'message' => strtr(static::localize($message), $values),
 				'type' => (string) $type,
 			]);
@@ -120,21 +114,21 @@ namespace Unicity\VLD\Parser {
 			return Config\Properties\Reader::load(new IO\File($uri))->read();
 		}
 
-		protected static function mapRecommendations(string $root, array $fields) {
+		protected static function mapRecommendations(array $fields) {
 			$buffer = array();
 			$i = 0;
 			foreach ($fields as $k => $v) {
-				$buffer[$i]['field'] = static::formatKey($root, (string) $k);
+				$buffer[$i]['field'] = (string) $k;
 				$buffer[$i]['to'] = $v;
 				$i++;
 			}
 			return $buffer;
 		}
 
-		protected static function mapViolations(string $root, array $fields) {
+		protected static function mapViolations(array $fields) {
 			$buffer = array();
 			foreach ($fields as $i => $v) {
-				$buffer[$i]['field'] = static::formatKey($root, (string) $v);
+				$buffer[$i]['field'] = (string) $v;
 			}
 			return $buffer;
 		}
@@ -148,15 +142,9 @@ namespace Unicity\VLD\Parser {
 		 * @param string $key                                       the key to be affixed
 		 * @return string                                           the new path
 		 */
-		protected static function formatKey(?string $path, string $key) {
+		protected static function formatKey(string $path) {
 			$buffer = array('$');
 			$pattern = (!is_null($path)) ? explode('.', $path) : array();
-			foreach ($pattern as $segment) {
-				if (!in_array($segment, ['', '$', '@'])) {
-					$buffer[] = is_numeric($segment) ? "[{$segment}]" : $segment;
-				}
-			}
-			$pattern = explode('.', $key);
 			foreach ($pattern as $segment) {
 				if (!in_array($segment, ['', '$', '@'])) {
 					$buffer[] = is_numeric($segment) ? "[{$segment}]" : $segment;

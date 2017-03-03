@@ -26,19 +26,15 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function get() {
 			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
+			$paths = $this->context->getAbsolutePaths($this->args['paths']->get());
 
 			$entity = $this->context->getEntity();
-			if (count($paths) > 0) {
-				$components = array_map(function($path) use($entity) {
-					return $entity->getComponentAtPath($path);
-				}, $paths);
-			}
-			else {
-				$components = array($this->context->getEntity()->getComponents());
-			}
+			$components = array_map(function($path) use($entity) {
+				return $entity->getComponentAtPath($path);
+			}, $paths);
 			call_user_func_array('var_dump', $components);
 
-			return new VLD\Parser\Feedback($this->context->getPath());
+			return new VLD\Parser\Feedback();
 		}
 
 	}

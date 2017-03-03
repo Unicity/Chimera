@@ -31,7 +31,7 @@ namespace Unicity\VLD\Parser\Definition {
 				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
 				return $object->get();
 			}
-			return new VLD\Parser\Feedback($this->context->getPath());
+			return new VLD\Parser\Feedback();
 		}
 
 		protected static function getEvents() {

@@ -32,7 +32,7 @@ namespace Unicity\VLD\Parser {
 			$this->policy = $policy;
 		}
 
-		public abstract function process(BT\Entity $entity, string $root, array $paths) : VLD\Parser\Feedback;
+		public abstract function process(BT\Entity $entity, array $paths) : VLD\Parser\Feedback;
 
 	}
 
