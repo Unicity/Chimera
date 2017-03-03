@@ -35,11 +35,12 @@ namespace Unicity\VLD\Parser\Definition {
 			else {
 				$policy = array();
 			}
+			$path = $this->context->getCurrentPath();
 			$block = $this->args['block']->get();
 			$direction = $policy['direction'] ?? 'forward';
 			$step = intval($policy['step']) ?? 1;
 
-			$components = $this->context->getEntity()->getComponents();
+			$components = $this->context->getEntity()->getComponentAtPath($path);
 			$length = count($components);
 
 			$statements = array();

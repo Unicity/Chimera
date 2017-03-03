@@ -62,6 +62,9 @@ namespace Unicity\ORM {
 			if (is_null($path) || in_array($path, ['.', ''])) {
 				return trim($key, '.');
 			}
+			if ($key === '@') {
+				return $path;
+			}
 			return trim(implode('.', [$path, $key]), '.');
 		}
 
