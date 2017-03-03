@@ -27,8 +27,8 @@ namespace Unicity\VLD\Parser\Module {
 
 	class IsUnset extends VLD\Parser\Module {
 
-		public function process(BT\Entity $entity, string $root, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback($root);
+		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
+			$feedback = new VLD\Parser\Feedback();
 
 			foreach ($paths as $path) {
 				if (!Core\Data\ToolKit::isUnset($entity->getComponentAtPath($path))) {

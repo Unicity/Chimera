@@ -46,7 +46,7 @@ namespace Unicity\VLD\Parser\Definition {
 				$successesRequired = count($this->statements);
 			}
 
-			$feedback = new VLD\Parser\Feedback($this->context->getPath());
+			$feedback = new VLD\Parser\Feedback();
 
 			$results = array();
 			$successes = 0;

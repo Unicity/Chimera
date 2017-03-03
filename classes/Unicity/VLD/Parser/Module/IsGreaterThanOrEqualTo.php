@@ -26,8 +26,8 @@ namespace Unicity\VLD\Parser\Module {
 
 	class IsGreaterThanOrEqualTo extends VLD\Parser\Module {
 
-		public function process(BT\Entity $entity, string $root, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback($root);
+		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
+			$feedback = new VLD\Parser\Feedback();
 
 			$v2 = $this->policy;
 

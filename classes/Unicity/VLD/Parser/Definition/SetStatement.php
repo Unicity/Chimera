@@ -26,7 +26,7 @@ namespace Unicity\VLD\Parser\Definition {
 
 		public function get() {
 			$this->context->putEntry($this->args['key']->get(), $this->args['term']->get());
-			return new VLD\Parser\Feedback($this->context->getPath());
+			return new VLD\Parser\Feedback();
 		}
 
 	}
