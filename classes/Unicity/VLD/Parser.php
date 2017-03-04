@@ -799,7 +799,7 @@ namespace Unicity\VLD {
 		protected function WriteError(string $message, array $variables = null) : void {
 			if (static::$config === null) {
 				$directory = dirname(__FILE__);
-				static::$config = Config\Inc\Reader::load(new IO\File($directory . '/Parser/Config.php'))->read();
+				static::$config = Config\JSON\Reader::load(new IO\File($directory . '/Parser/Config.php'))->read();
 			}
 			$message = empty($variables) ? (string) $message : strtr((string) $message, $variables);
 			$logs = static::$config['logs'];
