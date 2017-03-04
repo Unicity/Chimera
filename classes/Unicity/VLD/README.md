@@ -451,10 +451,10 @@ These mappings are stored in a PHP config file.
 <?php
 return array(
 	'eq' => [
-		'class' => '\\Unicity\\VLD\\Parser\\Module\\IsEqualTo',
+		'class' => '\\Unicity\\VLD\\Module\\IsEqualTo',
 	],
 	'bic' => [
-		'class' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
+		'class' => '\\Unicity\\VLD\\Module\\MatchesRegex',
 		'policy' => '/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/'
 	],
 );

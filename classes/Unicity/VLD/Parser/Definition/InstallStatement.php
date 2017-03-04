@@ -27,7 +27,7 @@ namespace Unicity\VLD\Parser\Definition {
 	class InstallStatement extends VLD\Parser\Definition\Statement {
 
 		public function get() {
-			$modules = Config\Inc\Reader::load(new IO\File($this->args['uri']->get()))->read();
+			$modules = Config\JSON\Reader::load(new IO\File($this->args['uri']->get()))->read();
 			$this->context->addModules($modules);
 			return new VLD\Parser\Feedback();
 		}

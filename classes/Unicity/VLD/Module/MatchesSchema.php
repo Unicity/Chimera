@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Parser\Module {
+namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\Common;
@@ -27,7 +27,7 @@ namespace Unicity\VLD\Parser\Module {
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class MatchesSchema extends VLD\Parser\Module {
+	class MatchesSchema extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths) : VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();

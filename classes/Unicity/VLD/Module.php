@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Parser {
+namespace Unicity\VLD {
 
 	use \Unicity\BT;
 	use \Unicity\Core;
