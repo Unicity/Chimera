@@ -18,13 +18,13 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Parser\Module {
+namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class IsLesserThan extends VLD\Parser\Module {
+	class MatchesRegex extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
@@ -33,8 +33,8 @@ namespace Unicity\VLD\Parser\Module {
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 >= $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.lt', ['{{value}}' => $v2]);
+				if (!preg_match($v2, $v1)) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.regex', ['{{regex}}' => $v2]);
 				}
 			}
 

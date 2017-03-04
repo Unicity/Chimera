@@ -1,0 +1,66 @@
+{
+	"bic": {
+		"class": "\\Unicity\\VLD\\Module\\MatchesRegex",
+		"policy": "/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/"
+	},
+	"eq": {
+		"class": "\\Unicity\\VLD\\Module\\IsEqualTo"
+	},
+	"eq_length": {
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToLength"
+	},
+	"ge": {
+		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanOrEqualTo"
+	},
+	"ge_length": {
+		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanOrEqualToLength"
+	},
+	"gt": {
+		"class": "\\Unicity\\VLD\\Module\\IsGreaterThan"
+	},
+	"gt_length": {
+		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanLength"
+	},
+	"iban": {
+		"class": "\\Unicity\\VLD\\Module\\IsIBAN"
+	},
+	"in": {
+		"class": "\\Unicity\\VLD\\Module\\IsEnum"
+	},
+	"le": {
+		"class": "\\Unicity\\VLD\\Module\\IsLesserThanOrEqualTo"
+	},
+	"le_length": {
+		"class": "\\Unicity\\VLD\\Module\\IsLesserThanOrEqualToLength"
+	},
+	"lt": {
+		"class": "\\Unicity\\VLD\\Module\\IsLesserThan"
+	},
+	"lt_length": {
+		"class": "\\Unicity\\VLD\\Module\\IsLesserThanLength"
+	},
+	"ne": {
+		"class": "\\Unicity\\VLD\\Module\\IsNotEqualTo"
+	},
+	"ne_length": {
+		"class": "\\Unicity\\VLD\\Module\\IsNotEqualToLength"
+	},
+	"null": {
+		"class": "\\Unicity\\VLD\\Module\\IsNull"
+	},
+	"regex": {
+		"class": "\\Unicity\\VLD\\Module\\MatchesRegex"
+	},
+	"required": {
+		"class": "\\Unicity\\VLD\\Module\\IsRequired"
+	},
+	"schema": {
+		"class": "\\Unicity\\VLD\\Module\\MatchesSchema"
+	},
+	"undefined": {
+		"class": "\\Unicity\\VLD\\Module\\IsUndefined"
+	},
+	"unset": {
+		"class": "\\Unicity\\VLD\\Module\\IsUnset"
+	}
+}
