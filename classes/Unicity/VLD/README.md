@@ -436,7 +436,7 @@ dump() <- ["path1", "path2"].
 An `install` statement adds the module mappings into the current context.
 
 ```
-install("classpath:Unicity/VLD/Parser/Modules.php").
+install("classpath:Unicity/VLD/Modules.json").
 ```
 
 ##### Parameters
@@ -445,19 +445,18 @@ install("classpath:Unicity/VLD/Parser/Modules.php").
 
 ##### Mapping File
 
-These mappings are stored in a PHP config file.
+These mappings are stored in a JSON config file.
 
 ```
-<?php
-return array(
-	'eq' => [
-		'class' => '\\Unicity\\VLD\\Parser\\Module\\IsEqualTo',
-	],
-	'bic' => [
-		'class' => '\\Unicity\\VLD\\Parser\\Module\\MatchesRegex',
-		'policy' => '/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/'
-	],
-);
+{
+	"eq": {
+		"class": "\\Unicity\\VLD\\Module\\IsEqualTo",
+	},
+	"bic": {
+		"class": "\\Unicity\\VLD\\Module\\MatchesRegex",
+		"policy": "/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/"
+	}
+}
 ```
 
 The keys can then be used with other statements, e.g. the `eval`, `is`, and `not` statements. Note that

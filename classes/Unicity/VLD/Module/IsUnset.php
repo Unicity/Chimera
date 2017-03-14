@@ -18,27 +18,21 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Parser\Module {
+namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
-	use \Unicity\Common;
+	use \Unicity\Core;
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class IsEqualToLength extends VLD\Parser\Module {
+	class IsUnset extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
 
-			$v2 = $this->policy;
-
 			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if (is_string($v1) && (strlen($v1) < $v2)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.eq.length', ['{{length}}' => $v2]);
-				}
-				else if (($v1 instanceof Common\IList) && ($v1->count() < $v2)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.eq.size', ['{{size}}' => $v2]);
+				if (!Core\Data\ToolKit::isUnset($entity->getComponentAtPath($path))) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.unset');
 				}
 			}
 

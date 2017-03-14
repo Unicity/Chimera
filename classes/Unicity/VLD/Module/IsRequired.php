@@ -18,23 +18,20 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Parser\Module {
+namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class IsEqualTo extends VLD\Parser\Module {
+	class IsRequired extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
 
-			$v2 = $this->policy;
-
 			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 !== $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.eq', ['{{value}}' => $v2]);
+				if (!$entity->hasComponentAtPath($path)) {
+					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
 				}
 			}
 

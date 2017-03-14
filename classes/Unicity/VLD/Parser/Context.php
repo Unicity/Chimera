@@ -202,20 +202,11 @@ namespace Unicity\VLD\Parser {
 		 * @param string $path                                      the path to the sub-entity
 		 */
 		public function push(?string $path) : void {
-			if (is_null($path) || in_array($path, ['@', ''])) {
-				$this->stack->push([
-					'modules' => new Common\Mutable\HashMap(),
-					'path' => $this->getCurrentPath(),
-					'symbols' => new Common\Mutable\HashMap()
-				]);
-			}
-			else {
-				$this->stack->push([
-					'modules' => new Common\Mutable\HashMap(),
-					'path' => $path,
-					'symbols' => new Common\Mutable\HashMap(),
-				]);
-			}
+			$this->stack->push([
+				'modules' => new Common\Mutable\HashMap(),
+				'path' => (is_null($path) || in_array($path, ['@', ''])) ? $this->getCurrentPath() : $path,
+				'symbols' => new Common\Mutable\HashMap()
+			]);
 		}
 
 		/**

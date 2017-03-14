@@ -18,13 +18,14 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\VLD\Parser\Module {
+namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
+	use \Unicity\Common;
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class IsLesserThanOrEqualTo extends VLD\Parser\Module {
+	class IsNotEqualToLength extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
@@ -33,8 +34,11 @@ namespace Unicity\VLD\Parser\Module {
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 > $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.le', ['{{value}}' => $v2]);
+				if (is_string($v1) && (strlen($v1) === $v2)) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ne.length', ['{{length}}' => $v2]);
+				}
+				else if (($v1 instanceof Common\IList) && ($v1->count() === $v2)) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ne.size', ['{{size}}' => $v2]);
 				}
 			}
 
