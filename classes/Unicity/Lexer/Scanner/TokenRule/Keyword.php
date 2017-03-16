@@ -44,7 +44,8 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 */
 		protected $keywords;
 
-		/* This constructor initializes the class.
+		/**
+		 * This constructor initializes the class.
 		 *
 		 * @access public
 		 * @param mixed $keywords                                   a list of reserved keywords
