@@ -53,7 +53,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 				if ($char == '0') {
 					$lookahead++;
 					$next = $reader->readChar($lookahead, false);
-					if (($next == 'x') OR ($next == 'X')) {
+					if (($next == 'x') || ($next == 'X')) {
 						do {
 							$lookahead++;
 							$next = $reader->readChar($lookahead, false);

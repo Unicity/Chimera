@@ -44,11 +44,12 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 */
 		protected $terminal;
 
-		/* This constructor initializes the class.
-		*
-		* @access public
-		* @param string $terminal                                   the terminal character
-		*/
+		/**
+		 * This constructor initializes the class.
+		 *
+		 * @access public
+		 * @param string $terminal                                  the terminal character
+		 */
 		public function __construct(string $terminal) {
 			$this->terminal = $terminal;
 		}

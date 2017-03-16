@@ -40,7 +40,7 @@ namespace Unicity\Lexer {
 		 * This variable stores the current tuple.
 		 *
 		 * @access protected
-		 * @var \Unicity\Lexer\Scanner\ITokenRule
+		 * @var \Unicity\Lexer\Scanner\Tuple
 		 */
 		protected $current;
 
@@ -120,7 +120,7 @@ namespace Unicity\Lexer {
 		 * This method returns the current value.
 		 *
 		 * @access public
-		 * @return mixed                                            the current value
+		 * @return Scanner\Tuple                                    the current value
 		 */
 		public function current() {
 			return $this->current;

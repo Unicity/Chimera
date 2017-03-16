@@ -44,11 +44,12 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 		 */
 		protected $delimiter;
 
-		/* This constructor initializes the class.
-		*
-		* @access public
-		* @param string $delimiter                                  the delimiter character
-		*/
+		/*
+		 * This constructor initializes the class.
+		 *
+		 * @access public
+		 * @param string $delimiter                                 the delimiter character
+		 */
 		public function __construct(string $delimiter) {
 			$this->delimiter = $delimiter;
 		}
