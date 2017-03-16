@@ -60,8 +60,15 @@ namespace Unicity\VLD {
 		public function read(VLD\Parser\Context $context) : array {
 			$statements = array();
 			$this->scanner->next();
-			while (!is_null($this->scanner->current())) {
-				$statements[] = $this->getStatement($context);
+			$tuple = $this->scanner->current();
+			while (!is_null($tuple)) {
+				if (!$this->isTerminal($tuple)) {
+					$statements[] = $this->getStatement($context);
+				}
+				else {
+					$this->getTerminal($context);
+				}
+				$tuple = $this->scanner->current();
 			}
 			return $statements;
 		}
@@ -224,8 +231,15 @@ namespace Unicity\VLD {
 			}
 			$this->getLeftCurly($context);
 			$statements = array();
-			while (!$this->isRightCurly($this->scanner->current())) {
-				$statements[] = $this->getStatement($context);
+			$tuple = $this->scanner->current();
+			while (!$this->isRightCurly($tuple)) {
+				if (!$this->isTerminal($tuple)) {
+					$statements[] = $this->getStatement($context);
+				}
+				else {
+					$this->getTerminal($context);
+				}
+				$tuple = $this->scanner->current();
 			}
 			$term = new VLD\Parser\Definition\BlockTerm($context, $statements);
 			$this->getRightCurly($context);
@@ -738,8 +752,15 @@ namespace Unicity\VLD {
 			$args = array();
 			$args['control'] = new VLD\Parser\Definition\StringTerm($context, '"all"');
 			$statements = array();
-			while (!$this->isRightBracket($this->scanner->current())) {
-				$statements[] = $this->getStatement($context);
+			$tuple = $this->scanner->current();
+			while (!$this->isRightBracket($tuple)) {
+				if (!$this->isTerminal($tuple)) {
+					$statements[] = $this->getStatement($context);
+				}
+				else {
+					$this->getTerminal($context);
+				}
+				$tuple = $this->scanner->current();
 			}
 			$args['block'] = new VLD\Parser\Definition\BlockTerm($context, $statements);
 			$this->getRightBracket($context);
@@ -755,8 +776,15 @@ namespace Unicity\VLD {
 			$args = array();
 			$args['control'] = new VLD\Parser\Definition\StringTerm($context, '"sel"');
 			$statements = array();
-			while (!$this->isRightParen($this->scanner->current())) {
-				$statements[] = $this->getStatement($context);
+			$tuple = $this->scanner->current();
+			while (!$this->isRightParen($tuple)) {
+				if (!$this->isTerminal($tuple)) {
+					$statements[] = $this->getStatement($context);
+				}
+				else {
+					$this->getTerminal($context);
+				}
+				$tuple = $this->scanner->current();
 			}
 			$args['block'] = new VLD\Parser\Definition\BlockTerm($context, $statements);
 			$this->getRightParen($context);
@@ -772,8 +800,15 @@ namespace Unicity\VLD {
 			$args = array();
 			$args['control'] = new VLD\Parser\Definition\StringTerm($context, '"seq"');
 			$statements = array();
-			while (!$this->isRightCurly($this->scanner->current())) {
-				$statements[] = $this->getStatement($context);
+			$tuple = $this->scanner->current();
+			while (!$this->isRightCurly($tuple)) {
+				if (!$this->isTerminal($tuple)) {
+					$statements[] = $this->getStatement($context);
+				}
+				else {
+					$this->getTerminal($context);
+				}
+				$tuple = $this->scanner->current();
 			}
 			$args['block'] = new VLD\Parser\Definition\BlockTerm($context, $statements);
 			$this->getRightCurly($context);
