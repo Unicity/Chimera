@@ -6,6 +6,9 @@
 	"eq": {
 		"class": "\\Unicity\\VLD\\Module\\IsEqualTo"
 	},
+	"eq_field": {
+		"class": "\\Unicity\\VLD\\Module\\MatchesField"
+	},
 	"eq_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsEqualToLength"
 	},
@@ -43,7 +46,7 @@
 		"class": "\\Unicity\\VLD\\Module\\IsNotEqualTo"
 	},
 	"ne_field": {
-		"class": "\\Unicity\\VLD\\Module\\MatchesField"
+		"class": "\\Unicity\\VLD\\Module\\NotMatchesField"
 	},
 	"ne_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsNotEqualToLength"

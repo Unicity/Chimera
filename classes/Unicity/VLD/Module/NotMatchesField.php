@@ -24,7 +24,7 @@ namespace Unicity\VLD\Module {
 	use \Unicity\VLD;
 	use \Unicity\VLD\Parser\RuleType;
 
-	class MatchesField extends VLD\Module {
+	class NotMatchesField extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
@@ -34,8 +34,8 @@ namespace Unicity\VLD\Module {
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v2 !== $v1) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'field.compare.eq', ['{{field}}' => VLD\Parser\Feedback::formatKey($field)]);
+				if ($v2 === $v1) {
+					$feedback->addViolation(RuleType::mismatch(), [$path], 'field.compare.ne', ['{{field}}' => VLD\Parser\Feedback::formatKey($field)]);
 				}
 			}
 
