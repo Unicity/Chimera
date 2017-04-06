@@ -42,6 +42,9 @@
 	"ne": {
 		"class": "\\Unicity\\VLD\\Module\\IsNotEqualTo"
 	},
+	"ne_field": {
+		"class": "\\Unicity\\VLD\\Module\\MatchesField"
+	},
 	"ne_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsNotEqualToLength"
 	},
