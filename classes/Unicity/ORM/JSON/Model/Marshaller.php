@@ -43,7 +43,8 @@ namespace Unicity\ORM\JSON\Model {
 			if (($path !== null) && !$case_sensitive) {
 				$path = strtolower($path);
 			}
-			$schema = ORM\JSON\Model\Helper::resolveJSONSchema($policy['schema']);
+			$schema = isset($policy['schema']) ? $policy['schema'] : array();
+			$schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
 			$type = isset($schema['type']) ? $schema['type'] : 'object';
 			switch ($type) {
 				case 'array':

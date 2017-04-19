@@ -136,13 +136,12 @@ namespace Unicity\VLD\Parser {
 		/**
 		 * This method returns the JSONPath for the given key.
 		 *
-		 * @access protected
+		 * @access public
 		 * @static
 		 * @param string $path                                      the current path
-		 * @param string $key                                       the key to be affixed
 		 * @return string                                           the new path
 		 */
-		protected static function formatKey(string $path) {
+		public static function formatKey(string $path) {
 			$buffer = array('$');
 			$pattern = (!is_null($path)) ? explode('.', $path) : array();
 			foreach ($pattern as $segment) {
