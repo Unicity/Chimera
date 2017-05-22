@@ -57,7 +57,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$weight = $order->terms->weight;
+			$weight = $order->lines->aggregate->weight->amount;
 
 			$freight = Trade\Money::make($order->terms->freight->amount, $order->currency);
 			$breakpoint = Core\Convert::toDouble($this->policy->getValue('breakpoint'));
