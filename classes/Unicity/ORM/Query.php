@@ -111,44 +111,61 @@ namespace Unicity\ORM {
 		 */
 		public static function getValue($collection, string $path) {
 			$paths = array_map('trim', explode('||', $path));
-			foreach ($paths as $temp_path) {
-				$segments = array_map('trim', explode('.', $temp_path));
-				if (count($segments) > 0) {
-					$element = $collection;
-					foreach ($segments as $segment) {
-						if (is_array($element)) {
-							if (array_key_exists($segment, $element)) {
-								$element = $element[$segment];
-								continue;
-							}
+			foreach ($paths as $tpath) {
+				$value = static::getValue_($collection, $tpath);
+				if (!Core\Data\ToolKit::isUndefined($value)) {
+					return $value;
+				}
+			}
+			return Core\Data\Undefined::instance();
+		}
+
+		/**
+		 * This method returns the value associated with the specified path.
+		 *
+		 * @access protected
+		 * @static
+		 * @param mixed $collection                                 the collection to be searched
+		 * @param string $path                                      the path to the value to be returned
+		 * @return mixed                                            the element associated with the specified path
+		 */
+		protected static function getValue_($collection, string $path) {
+			$segments = array_map('trim', explode('.', $path));
+			if (count($segments) > 0) {
+				$element = $collection;
+				foreach ($segments as $segment) {
+					if (is_array($element)) {
+						if (array_key_exists($segment, $element)) {
+							$element = $element[$segment];
+							continue;
 						}
-						else {
-							if (is_object($element)) {
-								if ($element instanceof Common\IList) {
-									$index = (int)$segment;
-									if ($element->hasIndex($index)) {
-										$element = $element->getValue($index);
-										continue;
-									}
+					}
+					else {
+						if (is_object($element)) {
+							if ($element instanceof Common\IList) {
+								$index = (int)$segment;
+								if ($element->hasIndex($index)) {
+									$element = $element->getValue($index);
+									continue;
+								}
+							}
+							else {
+								if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
+									$element = $element->getValue($segment);
+									continue;
 								}
 								else {
-									if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
-										$element = $element->getValue($segment);
+									if ($element instanceof \stdClass) {
+										$element = $element->$segment;
 										continue;
-									}
-									else {
-										if ($element instanceof \stdClass) {
-											$element = $element->$segment;
-											continue;
-										}
 									}
 								}
 							}
 						}
-						return Core\Data\Undefined::instance();
 					}
-					return $element;
+					return Core\Data\Undefined::instance();
 				}
+				return $element;
 			}
 			return Core\Data\Undefined::instance();
 		}
