@@ -110,36 +110,45 @@ namespace Unicity\ORM {
 		 * @return mixed                                            the element associated with the specified path
 		 */
 		public static function getValue($collection, string $path) {
-			$segments = explode('.', $path);
-			if (count($segments) > 0) {
-				$element = $collection;
-				foreach ($segments as $segment) {
-					if (is_array($element)) {
-						if (array_key_exists($segment, $element)) {
-							$element = $element[$segment];
-							continue;
-						}
-					}
-					else if (is_object($element)) {
-						if ($element instanceof Common\IList) {
-							$index = (int) $segment;
-							if ($element->hasIndex($index)) {
-								$element = $element->getValue($index);
+			$paths = array_map('trim', explode('||', $path));
+			foreach ($paths as $temp_path) {
+				$segments = array_map('trim', explode('.', $temp_path));
+				if (count($segments) > 0) {
+					$element = $collection;
+					foreach ($segments as $segment) {
+						if (is_array($element)) {
+							if (array_key_exists($segment, $element)) {
+								$element = $element[$segment];
 								continue;
 							}
 						}
-						else if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
-							$element = $element->getValue($segment);
-							continue;
+						else {
+							if (is_object($element)) {
+								if ($element instanceof Common\IList) {
+									$index = (int)$segment;
+									if ($element->hasIndex($index)) {
+										$element = $element->getValue($index);
+										continue;
+									}
+								}
+								else {
+									if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
+										$element = $element->getValue($segment);
+										continue;
+									}
+									else {
+										if ($element instanceof \stdClass) {
+											$element = $element->$segment;
+											continue;
+										}
+									}
+								}
+							}
 						}
-						else if ($element instanceof \stdClass) {
-							$element = $element->$segment;
-							continue;
-						}
+						return Core\Data\Undefined::instance();
 					}
-					return Core\Data\Undefined::instance();
+					return $element;
 				}
-				return $element;
 			}
 			return Core\Data\Undefined::instance();
 		}

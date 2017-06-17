@@ -81,36 +81,45 @@ namespace Unicity\Config {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
 		public function getValue(string $path) {
-			$segments = explode('.', $path);
-			if (count($segments) > 0) {
-				$element = $this->collection;
-				foreach ($segments as $segment) {
-					if (is_array($element)) {
-						if (array_key_exists($segment, $element)) {
-							$element = $element[$segment];
-							continue;
-						}
-					}
-					else if (is_object($element)) {
-						if ($element instanceof Common\IList) {
-							$index = (int) $segment;
-							if ($element->hasIndex($index)) {
-								$element = $element->getValue($index);
+			$paths = array_map('trim', explode('||', $path));
+			foreach ($paths as $temp_path) {
+				$segments = array_map('trim', explode('.', $temp_path));
+				if (count($segments) > 0) {
+					$element = $this->collection;
+					foreach ($segments as $segment) {
+						if (is_array($element)) {
+							if (array_key_exists($segment, $element)) {
+								$element = $element[$segment];
 								continue;
 							}
 						}
-						else if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
-							$element = $element->getValue($segment);
-							continue;
+						else {
+							if (is_object($element)) {
+								if ($element instanceof Common\IList) {
+									$index = (int)$segment;
+									if ($element->hasIndex($index)) {
+										$element = $element->getValue($index);
+										continue;
+									}
+								}
+								else {
+									if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
+										$element = $element->getValue($segment);
+										continue;
+									}
+									else {
+										if ($element instanceof \stdClass) {
+											$element = $element->$segment;
+											continue;
+										}
+									}
+								}
+							}
 						}
-						else if ($element instanceof \stdClass) {
-							$element = $element->$segment;
-							continue;
-						}
+						return null;
 					}
-					return null;
+					return $element;
 				}
-				return $element;
 			}
 			return null;
 		}
