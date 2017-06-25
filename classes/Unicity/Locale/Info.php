@@ -42,6 +42,19 @@ namespace Unicity\Locale {
 		 */
 		public static function getLanguages() : array {
 			if (static::$languages === null) {
+				if (isset($_GET['_httpHeaderAccept-Language'])) {
+					$matches = array();
+					if (preg_match('/^([a-zA-Z]{2})\\-([a-zA-Z]{2})/', $_GET['_httpHeaderAccept-Language'], $matches)) {
+						$buffer = array();
+						$codes = [$matches[1], $matches[2]];
+						$key = strtolower($codes[0]) . (isset($codes[1]) ? '-' . strtoupper($codes[1]) : '');
+						$value = (isset($tuples[1])) ? (float)$tuples[1] : 1.0;
+						$buffer[$key] = $value;
+						static::$languages = $buffer;
+						return static::$languages;
+					}
+					unset($matches);
+				}
 				if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && is_string($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 					$languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 					if (count($languages) > 0) {
