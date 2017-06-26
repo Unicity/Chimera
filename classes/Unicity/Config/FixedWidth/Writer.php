@@ -60,7 +60,7 @@ namespace Unicity\Config\FixedWidth {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = static::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
 				'eol' => "\r\n", // defaults to CRLF because this is the most common EOL for the file type

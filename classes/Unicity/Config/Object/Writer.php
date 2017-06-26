@@ -38,7 +38,7 @@ namespace Unicity\Config\Object {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = static::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'ext' => '.txt',
 				'mime' => 'application/x-php-serialized-object',

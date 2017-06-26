@@ -39,7 +39,7 @@ namespace Unicity\Config\TXT {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = static::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'builder' => null,
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),

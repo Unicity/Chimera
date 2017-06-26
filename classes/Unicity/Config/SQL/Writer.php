@@ -40,7 +40,7 @@ namespace Unicity\Config\SQL {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = Common\Collection::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'builder' => '',
 				'command' => 'insert', // 'update'
