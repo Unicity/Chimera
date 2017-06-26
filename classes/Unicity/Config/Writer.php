@@ -319,7 +319,7 @@ namespace Unicity\Config {
 							}
 						}
 					}
-					return $buffer;
+					return (object) $buffer;
 				}
 				else if ($data instanceof \stdClass) {
 					$data = get_object_vars($data);
@@ -329,7 +329,7 @@ namespace Unicity\Config {
 							$buffer[$key] = static::useArrays($value);
 						}
 					}
-					return $buffer;
+					return (object) $buffer;
 				}
 			}
 			else if (is_array($data)) {
