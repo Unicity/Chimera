@@ -231,6 +231,9 @@ namespace Unicity\Config\SOAP {
 
 			$root->registerXPathNamespace($prefix, $uri);
 			$children = $root->xpath("./{$prefix}:Body");
+			if (empty($children)) {
+				$children = $root->xpath("./Body");
+			}
 
 			foreach ($children as $child) {
 				$list->addValue($this->parseBodyElement($child));

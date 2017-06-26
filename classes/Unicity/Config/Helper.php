@@ -81,7 +81,26 @@ namespace Unicity\Config {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
 		public function getValue(string $path) {
-			$segments = explode('.', $path);
+			$paths = array_map('trim', explode('||', $path));
+			foreach ($paths as $tpath) {
+				$value = $this->getValue_($tpath);
+				if ($value !== null) {
+					return $value;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * This method returns the value associated with the specified path.
+		 *
+		 * @access protected
+		 * @param string $path                                      the path to the value to be returned
+		 * @return mixed                                            the element associated with the specified path
+		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
+		 */
+		protected function getValue_(string $path) {
+			$segments = array_map('trim', explode('.', $path));
 			if (count($segments) > 0) {
 				$element = $this->collection;
 				foreach ($segments as $segment) {
@@ -93,19 +112,21 @@ namespace Unicity\Config {
 					}
 					else if (is_object($element)) {
 						if ($element instanceof Common\IList) {
-							$index = (int) $segment;
+							$index = (int)$segment;
 							if ($element->hasIndex($index)) {
 								$element = $element->getValue($index);
 								continue;
 							}
 						}
 						else if (($element instanceof Common\IMap) && ($element->hasKey($segment))) {
-							$element = $element->getValue($segment);
-							continue;
+								$element = $element->getValue($segment);
+								continue;
 						}
-						else if ($element instanceof \stdClass) {
-							$element = $element->$segment;
-							continue;
+						else {
+							if ($element instanceof \stdClass) {
+								$element = $element->$segment;
+								continue;
+							}
 						}
 					}
 					return null;

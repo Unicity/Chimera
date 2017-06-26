@@ -40,6 +40,35 @@ namespace Unicity {
 		public static $classpaths = array('');
 
 		/**
+		 * This method returns the resource's URI for the given resource.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $resource                                  the resource
+		 * @return string                                           the resource's URI
+		 */
+		public static function getResourceURI($resource) {
+			$resource = trim($resource, '\\');
+
+			$components = preg_split('/(\\\|_)+/', $resource);
+
+			$resource = implode(DIRECTORY_SEPARATOR, $components);
+
+			foreach (static::$classpaths as $directory) {
+				$uri = static::rootPath() . $directory . $resource;
+				if (file_exists($uri)) {
+					return $uri;
+				}
+				$uri = $directory . $resource;
+				if (file_exists($uri)) {
+					return $uri;
+				}
+			}
+
+			return $resource;
+		}
+
+		/**
 		 * This method imports a class so that it can be used there-on-after.
 		 *
 		 * @access public
