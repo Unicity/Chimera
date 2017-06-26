@@ -23,44 +23,26 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	class EventBroker extends Core\Object {
+	class CommandBroker extends Core\Object {
 
-		protected $events;
-
-		protected $commands;
-
-		protected $queries;
+		protected $listeners;
 
 		public function __construct() {
-			$this->events = array();
-			$this->commands = array();
-			$this->queries = array();
+			$this->listeners = array();
 		}
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->events);
-			unset($this->commands);
-			unset($this->queries);
+			unset($this->listeners);
 		}
 
-		public function addCommandListener(callable $listener) {
-			$this->commands[] = $listener;
+		public function addListener(callable $listener) {
+			$this->listeners[] = $listener;
 		}
 
-		public function addQueryListener(callable $listener) {
-			$this->queries[] = $listener;
-		}
-
-		public function executeCommand(EVT\Command $command) {
-			foreach ($this->commands as $listener) {
+		public function notify(EVT\Command $command) {
+			foreach ($this->listeners as $listener) {
 				$listener($this, $command);
-			}
-		}
-
-		public function executeQuery(EVT\Query $query) {
-			foreach ($this->queries as $listener) {
-				$listener($this, $query);
 			}
 		}
 

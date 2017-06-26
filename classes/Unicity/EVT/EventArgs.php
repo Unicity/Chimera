@@ -21,12 +21,13 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 
 	abstract class EventArgs extends Core\Object { // subclass using "present" tense
 
 		protected $target;
 
-		public function __construct($target) {
+		public function __construct(EVT\Target $target) {
 			$this->target = $target;
 		}
 

@@ -21,36 +21,29 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 
-	class Target extends Core\Object {
+	class QueryBroker extends Core\Object {
 
-		protected $id; // i.e aggregate id or primary (composite) key
-		protected $type; // i.e. class type
+		protected $listeners;
 
-		public function __construct($type, $id) {
-			$this->type = $type;
-			$this->id = $id;
+		public function __construct() {
+			$this->listeners = array();
 		}
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->type);
-			unset($this->id);
+			unset($this->listeners);
 		}
 
-		public function getId() {
-			return $this->id;
+		public function addListener(callable $listener) {
+			$this->listeners[] = $listener;
 		}
 
-		public function getType() {
-			return $this->type;
-		}
-
-		public function jsonSerialize() {
-			return [
-				'id' => $this->id,
-				'type' => $this->type,
-			];
+		public function notify(EVT\Query $query) {
+			foreach ($this->listeners as $listener) {
+				$listener($this, $query);
+			}
 		}
 
 	}

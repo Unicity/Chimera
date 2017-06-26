@@ -27,7 +27,7 @@ namespace Unicity\EVT {
 		protected $after;
 		protected $before;
 
-		public function __construct($target, $before, $after) {
+		public function __construct(EVT\Target $target, $before, $after) {
 			parent::__construct($target);
 			$this->before = $before;
 			$this->after = $after;

@@ -26,7 +26,7 @@ namespace Unicity\EVT {
 
 		protected $value;
 
-		public function __construct($target, $value = null) {
+		public function __construct(EVT\Target $target, $value = null) {
 			parent::__construct($target);
 			$this->value = $value;
 		}

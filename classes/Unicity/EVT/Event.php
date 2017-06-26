@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 
 	abstract class Event extends Core\Object { // subclass using "past" tense
 
@@ -30,8 +31,8 @@ namespace Unicity\EVT {
 		protected $type; // i.e. class type
 		protected $version;
 
-		public function __construct($target) {
-			$this->id = 'object:' . spl_object_hash($this);
+		public function __construct(EVT\Target $target) {
+			$this->id = uniqid();
 			$this->target = $target;
 			$this->timestamp = self::timestamp();
 			$this->type = get_class($this);
