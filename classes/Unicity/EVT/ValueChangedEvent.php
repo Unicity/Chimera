@@ -49,9 +49,14 @@ namespace Unicity\EVT {
 
 		public function jsonSerialize() {
 			return [
-				'target' => $this->target,
-				'before' => $this->before,
-				'after' => $this->after,
+				'id' => $this->id,
+				'details' => [
+					'target' => $this->target,
+					'after' => $this->after,
+					'before' => $this->before,
+				],
+				'timestamp' => $this->timestamp,
+				'type' => $this->type,
 			];
 		}
 

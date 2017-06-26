@@ -24,12 +24,18 @@ namespace Unicity\EVT {
 
 	class Target extends Core\Object {
 
-		protected $type; // i.e. class type
 		protected $id;
+		protected $type; // i.e. class type
 
 		public function __construct($type, $id) {
 			$this->type = $type;
 			$this->id = $id;
+		}
+
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->type);
+			unset($this->id);
 		}
 
 		public function getId() {
@@ -42,9 +48,13 @@ namespace Unicity\EVT {
 
 		public function jsonSerialize() {
 			return [
-				'type' => $this->type,
 				'id' => $this->id,
+				'type' => $this->type,
 			];
+		}
+
+		public static function make($object) {
+			return new Target(get_class($object), 'object:' . spl_object_hash($object));
 		}
 
 	}

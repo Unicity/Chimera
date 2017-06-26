@@ -24,18 +24,28 @@ namespace Unicity\EVT {
 
 	abstract class Event extends Core\Object { // subclass using "past" tense
 
+		protected $id;
 		protected $target;
 		protected $timestamp;
+		protected $type; // i.e. class type
 
 		public function __construct($target) {
+			$this->id = 'object:' . spl_object_hash($this);
 			$this->target = $target;
 			$this->timestamp = self::timestamp();
+			$this->type = get_class($this);
 		}
 
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->target);
 			unset($this->timestamp);
+			unset($this->type);
+			unset($this->id);
+		}
+
+		public function getId() {
+			return $this->id;
 		}
 
 		public function getTarget() {
@@ -46,10 +56,18 @@ namespace Unicity\EVT {
 			return $this->timestamp;
 		}
 
+		public function getType() {
+			return $this->type;
+		}
+
 		public function jsonSerialize() {
 			return [
-				'target' => $this->target,
+				'id' => $this->id,
+				'details' => [
+					'target' => $this->target,
+				],
 				'timestamp' => $this->timestamp,
+				'type' => $this->type,
 			];
 		}
 
