@@ -28,12 +28,14 @@ namespace Unicity\EVT {
 		protected $target;
 		protected $timestamp;
 		protected $type; // i.e. class type
+		protected $version;
 
 		public function __construct($target) {
 			$this->id = 'object:' . spl_object_hash($this);
 			$this->target = $target;
 			$this->timestamp = self::timestamp();
 			$this->type = get_class($this);
+			$this->version = 1.0;
 		}
 
 		public function __destruct() {
@@ -42,6 +44,7 @@ namespace Unicity\EVT {
 			unset($this->timestamp);
 			unset($this->type);
 			unset($this->id);
+			unset($this->version);
 		}
 
 		public function getId() {
@@ -60,6 +63,10 @@ namespace Unicity\EVT {
 			return $this->type;
 		}
 
+		public function getVersion() {
+			return $this->version;
+		}
+
 		public function jsonSerialize() {
 			return [
 				'id' => $this->id,
@@ -68,6 +75,7 @@ namespace Unicity\EVT {
 				],
 				'timestamp' => $this->timestamp,
 				'type' => $this->type,
+				'version' => $this->version,
 			];
 		}
 

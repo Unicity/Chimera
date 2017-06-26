@@ -41,10 +41,9 @@ namespace Unicity\EVT {
 		}
 
 		public function jsonSerialize() {
-			return [
-				'target' => $this->target,
-				'result' => $this->result,
-			];
+			$serialized = parent::jsonSerialize();
+			$serialized['result'] = $this->result;
+			return $serialized;
 		}
 
 	}

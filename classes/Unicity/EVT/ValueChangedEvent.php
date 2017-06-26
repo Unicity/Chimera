@@ -31,6 +31,7 @@ namespace Unicity\EVT {
 			parent::__construct($target);
 			$this->before = $before;
 			$this->after = $after;
+			$this->version = 1.0;
 		}
 
 		public function __destruct() {
@@ -48,16 +49,10 @@ namespace Unicity\EVT {
 		}
 
 		public function jsonSerialize() {
-			return [
-				'id' => $this->id,
-				'details' => [
-					'target' => $this->target,
-					'after' => $this->after,
-					'before' => $this->before,
-				],
-				'timestamp' => $this->timestamp,
-				'type' => $this->type,
-			];
+			$serialized = parent::jsonSerialize();
+			$serialized['details']['after'] = $this->after;
+			$serialized['details']['before'] = $this->before;
+			return $serialized;
 		}
 
 	}
