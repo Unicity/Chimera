@@ -320,7 +320,10 @@ namespace Unicity\Config {
 							}
 						}
 					}
-					return (object) $buffer;
+					if (!$only) {
+						return (object) $buffer;
+					}
+					return $buffer;
 				}
 				else if ($data instanceof \stdClass) {
 					$data = get_object_vars($data);
@@ -330,7 +333,10 @@ namespace Unicity\Config {
 							$buffer[$key] = static::useArrays($value, $only);
 						}
 					}
-					return (object) $buffer;
+					if (!$only) {
+						return (object) $buffer;
+					}
+					return $buffer;
 				}
 			}
 			else if (is_array($data)) {
