@@ -24,10 +24,12 @@ namespace Unicity\EVT {
 
 	class Command extends EVT\EventArgs { // subclass using "present" tense
 
+		protected $register;
 		protected $value;
 
-		public function __construct(EVT\Target $target, $value = null) {
+		public function __construct(EVT\Target $target, $value = null, $register = true) {
 			parent::__construct($target);
+			$this->register = $register;
 			$this->value = $value;
 		}
 
@@ -44,6 +46,10 @@ namespace Unicity\EVT {
 			$serialized = parent::jsonSerialize();
 			$serialized['value'] = $this->value;
 			return $serialized;
+		}
+
+		public function register() {
+			return $this->register;
 		}
 
 	}

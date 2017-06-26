@@ -26,6 +26,7 @@ namespace Unicity\EVT {
 	abstract class Event extends Core\Object { // subclass using "past" tense
 
 		protected $id;
+		protected $published;
 		protected $target;
 		protected $timestamp;
 		protected $type; // i.e. class type
@@ -33,6 +34,7 @@ namespace Unicity\EVT {
 
 		public function __construct(EVT\Target $target) {
 			$this->id = uniqid();
+			$this->published = false;
 			$this->target = $target;
 			$this->timestamp = self::timestamp();
 			$this->type = get_class($this);
@@ -74,6 +76,7 @@ namespace Unicity\EVT {
 				'details' => [
 					'target' => $this->target,
 				],
+				'published' => $this->published,
 				'timestamp' => $this->timestamp,
 				'type' => $this->type,
 				'version' => $this->version,
