@@ -312,6 +312,10 @@ namespace Unicity\Config {
 								$buffer[$key] = static::useArrays($value, $only);
 							}
 						}
+						if (!$only) {
+							return (object) $buffer;
+						}
+						return $buffer;
 					}
 					else {
 						foreach ($data as $value) {
@@ -319,11 +323,8 @@ namespace Unicity\Config {
 								$buffer[] = static::useArrays($value, $only);
 							}
 						}
+						return $buffer;
 					}
-					if (!$only) {
-						return (object) $buffer;
-					}
-					return $buffer;
 				}
 				else if ($data instanceof \stdClass) {
 					$data = get_object_vars($data);
@@ -346,6 +347,9 @@ namespace Unicity\Config {
 						if (!($value instanceof Core\Data\Undefined)) {
 							$buffer[$key] = static::useArrays($value, $only);
 						}
+					}
+					if (!$only) {
+						return (object) $buffer;
 					}
 				}
 				else {
