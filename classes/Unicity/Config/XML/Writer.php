@@ -42,7 +42,7 @@ namespace Unicity\Config\XML {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = static::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'declaration' => true,
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),

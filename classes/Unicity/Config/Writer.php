@@ -299,35 +299,43 @@ namespace Unicity\Config {
 		 * @access protected
 		 * @static
 		 * @param mixed $data                                       the data to be converted
+		 * @param boolean $only                                     a flag that we enforce "only" arrays
 		 * @return mixed                                            the converted data
 		 */
-		protected static function useArrays($data) {
+		protected static function useArrays($data, bool $only = true) {
 			if (is_object($data)) {
 				if ($data instanceof Common\ICollection) {
 					$buffer = array();
 					if ($data instanceof Common\IMap) {
 						foreach ($data as $key => $value) {
 							if (!($value instanceof Core\Data\Undefined)) {
-								$buffer[$key] = static::useArrays($value);
+								$buffer[$key] = static::useArrays($value, $only);
 							}
 						}
+						if (!$only) {
+							return (object) $buffer;
+						}
+						return $buffer;
 					}
 					else {
 						foreach ($data as $value) {
 							if (!($value instanceof Core\Data\Undefined)) {
-								$buffer[] = static::useArrays($value);
+								$buffer[] = static::useArrays($value, $only);
 							}
 						}
+						return $buffer;
 					}
-					return $buffer;
 				}
 				else if ($data instanceof \stdClass) {
 					$data = get_object_vars($data);
 					$buffer = array();
 					foreach ($data as $key => $value) {
 						if (!($value instanceof Core\Data\Undefined)) {
-							$buffer[$key] = static::useArrays($value);
+							$buffer[$key] = static::useArrays($value, $only);
 						}
+					}
+					if (!$only) {
+						return (object) $buffer;
 					}
 					return $buffer;
 				}
@@ -337,14 +345,17 @@ namespace Unicity\Config {
 				if (static::isDictionary($data)) {
 					foreach ($data as $key => $value) {
 						if (!($value instanceof Core\Data\Undefined)) {
-							$buffer[$key] = static::useArrays($value);
+							$buffer[$key] = static::useArrays($value, $only);
 						}
+					}
+					if (!$only) {
+						return (object) $buffer;
 					}
 				}
 				else {
 					foreach ($data as $value) {
 						if (!($value instanceof Core\Data\Undefined)) {
-							$buffer[] = static::useArrays($value);
+							$buffer[] = static::useArrays($value, $only);
 						}
 					}
 				}

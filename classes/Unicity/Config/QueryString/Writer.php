@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Unicity\Config\QueryString {
 
-	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
 
@@ -40,7 +39,7 @@ namespace Unicity\Config\QueryString {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = Common\Collection::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'builder' => null,
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),

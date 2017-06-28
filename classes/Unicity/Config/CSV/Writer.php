@@ -40,7 +40,7 @@ namespace Unicity\Config\CSV {
 		 * @param mixed $data                                       the data to be written
 		 */
 		public function __construct($data) {
-			$this->data = static::useArrays($data);
+			$this->data = static::useArrays($data, true);
 			$this->metadata = array(
 				'delimiter' => ',',
 				'enclosure' => '"',
