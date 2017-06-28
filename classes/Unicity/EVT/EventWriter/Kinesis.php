@@ -20,9 +20,18 @@ declare(strict_types = 1);
 
 namespace Unicity\EVT {
 
+	use \Aws\Kinesis\KinesisClient;
 	use \Unicity\EVT;
 
 	class Kinesis extends EVT\EventWriter {
+
+		/**
+		 * This variable stores a reference to the Kinesis client.
+		 *
+		 * @access protected
+		 * @var string
+		 */
+		protected $client;
 
 		/**
 		 * This constructor initializes the class with the specified resource.
@@ -32,6 +41,21 @@ namespace Unicity\EVT {
 		 */
 		public function __construct(array $metadata = array()) {
 			parent::__construct($metadata);
+			$this->client = KinesisClient::factory(array(
+				'key' => $metadata['key'],
+				'secret' => $metadata['secret'],
+				'region'  => $metadata['region'],
+			));
+		}
+
+		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->client);
 		}
 
 		/**
@@ -42,7 +66,11 @@ namespace Unicity\EVT {
 		 */
 		public function write(array $events) {
 			foreach ($events as $event) {
-				// write to the event stream
+				$this->client->putRecord([
+					'Data' => json_encode($event),
+					'PartitionKey' => $this->metadata['partition'],
+					'StreamName' => $this->metadata['stream'],
+				]);
 			}
 		}
 
