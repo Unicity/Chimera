@@ -73,7 +73,7 @@ namespace Unicity\Log\XML {
 							foreach ($elements as $element) {
 								$attributes = $element->attributes;
 								$attribute = $attributes->getNamedItem($attrName);
-								if ($attribute === null) {
+								if ($attribute !== null) {
 									$attribute->nodeValue = $filter($attribute->nodeValue);
 								}
 							}
