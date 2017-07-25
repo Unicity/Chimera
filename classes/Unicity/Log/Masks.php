@@ -31,20 +31,30 @@ namespace Unicity\Log {
 	 */
 	class Masks extends Core\Object {
 
-		public static function all($value, $symbol = '*') {
+		public static function all($value, $symbol = 'x') {
 			if ($value !== null) {
 				return str_repeat($symbol, strlen(Core\Convert::toString($value)));
 			}
 			return $value;
 		}
 
-		public static function creditCard($value, $symbol = '*') {
+		public static function creditCard($value, $symbol = 'x') {
 			if ($value !== null) {
 				$value = preg_replace('/[^0-9]/', '', Core\Convert::toString($value));
 				$length = strlen($value);
 				if ($length > 10) {
 					return substr($value, 0, 6) . str_repeat($symbol, $length - 10) . substr($value, -4, 4);
 				}
+			}
+			return $value;
+		}
+
+		public static function ipAddress($value, $symbol = 'x') {
+			if ($value !== null) {
+				$segments = explode('.', Core\Convert::toString($value));
+				$size = count($segments);
+				$segments[$size - 1] = str_repeat($symbol, strlen($segments[$size - 1]));
+				return implode('.', $segments);
 			}
 			return $value;
 		}
