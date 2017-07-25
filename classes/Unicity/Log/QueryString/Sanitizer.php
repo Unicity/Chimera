@@ -18,12 +18,10 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\CSV {
+namespace Unicity\Log\QueryString {
 
-	use \Unicity\Config;
 	use \Unicity\IO;
 	use \Unicity\Log;
-	use \Unicity\Throwable;
 
 	/**
 	 * This class defines the contract for sanitizing messages.
@@ -34,38 +32,7 @@ namespace Unicity\Log\CSV {
 	 */
 	class Sanitizer extends Log\Sanitizer {
 
-		protected $entries;
-
-		public function __construct(IO\File $file) {
-			$config = Config\JSON\Reader::load($file)->read();
-			$this->entries = array();
-			foreach ($config['rules'] as $rule) {
-				$filter = $rule['filter'];
-				foreach ($rule['fields'] as $field) {
-					$this->entries[] = [
-						'filter' => $filter,
-						'column_name' => $field['column_name'],
-					];
-				}
-			}
-		}
-
 		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
-			$records = Config\CSV\Reader::load($input, $metadata)->read();
-			foreach ($records as $record) {
-				foreach ($this->entries as $entry) {
-					$filter = $entry['filter'];
-					$column_name = $entry['column_name'];
-					if ($filter !== null) {
-						if (isset($record->$column_name)) {
-							$record->$column_name = $filter($record->$column_name);
-						}
-					}
-					else {
-						// TODO remove value if filter is null
-					}
-				}
-			}
 			return new IO\StringRef($input->getBytes());
 		}
 

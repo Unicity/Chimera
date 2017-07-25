@@ -42,11 +42,11 @@ namespace Unicity\Log\FixedWidth {
 			foreach ($config['rules'] as $rule) {
 				$filter = $rule['filter'];
 				foreach ($rule['fields'] as $field) {
-					$index = (int) $field['row-index'];
+					$index = (int) $field['row_index'];
 					$this->rows[$index][] = [
 						'filter' => $filter,
-						'offset' => $field['column-offset'],
-						'length' => $field['column-length'],
+						'offset' => $field['column_offset'],
+						'length' => $field['column_length'],
 					];
 				}
 			}
