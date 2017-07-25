@@ -20,6 +20,10 @@ declare(strict_types = 1);
 
 namespace Unicity\Log\QueryString {
 
+	use \Peekmo\JsonPath;
+	use \Unicity\Common;
+	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Log;
 
@@ -32,8 +36,46 @@ namespace Unicity\Log\QueryString {
 	 */
 	class Sanitizer extends Log\Sanitizer {
 
+		protected $filters;
+
+		public function __construct(IO\File $file) {
+			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
+			$this->filters = array();
+			foreach ($config->filters as $filter) {
+				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
+				foreach ($filter->rules as $rule) {
+					$this->filters[] = (object) [
+						'delegate' => $delegate,
+						'query' => Core\Convert::toString($rule->query),
+					];
+				}
+			}
+		}
+
 		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
-			return new IO\StringRef($input->getBytes());
+			$buffer = array();
+			parse_str(ltrim($input->getBytes(), '?'), $buffer);
+			$store = new JsonPath\JsonStore($buffer);
+			unset($buffer);
+			foreach ($this->filters as $filter) {
+				$delegate = $filter->delegate;
+				if (is_callable($delegate)) {
+					$results = $store->get($filter->query);
+					if ($elements =& $results) {
+						foreach ($elements as &$element) {
+							$element = $delegate($element);
+						}
+					}
+				}
+				else {
+					$store->remove($filter->query);
+				}
+			}
+			$query = http_build_query($store->toArray());
+			if (!empty($query)) {
+				$query = '?' . $query;
+			}
+			return new IO\StringRef($query);
 		}
 
 	}
