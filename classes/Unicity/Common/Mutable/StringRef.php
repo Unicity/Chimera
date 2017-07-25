@@ -45,7 +45,7 @@ namespace Unicity\Common\Mutable {
 		public function append(/*$value, $mixed...*/) {
 			$argc = func_num_args();
 
-			$buffer = ($argc > 1)
+			$buffer = ($argc >= 1)
 				? (string)func_get_arg(0)
 				: '';
 

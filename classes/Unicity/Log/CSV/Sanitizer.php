@@ -22,6 +22,7 @@ namespace Unicity\Log\CSV {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Log;
 
@@ -44,7 +45,7 @@ namespace Unicity\Log\CSV {
 				foreach ($filter->rules as $rule) {
 					$this->filters[] = (object) [
 						'delegate' => $delegate,
-						'column_name' => $rule->column_name,
+						'column_name' => Core\Convert::toString($rule->column_name),
 					];
 				}
 			}

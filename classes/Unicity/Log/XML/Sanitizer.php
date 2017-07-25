@@ -22,6 +22,7 @@ namespace Unicity\Log\XML {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Log;
 
@@ -44,15 +45,15 @@ namespace Unicity\Log\XML {
 				foreach ($filter->rules as $rule) {
 					if ($rule->hasKey('attribute')) {
 						$this->filters[] = (object) [
-							'attribute' => $rule->attribute,
+							'attribute' => Core\Convert::toString($rule->attribute),
 							'delegate' => $delegate,
-							'query' => $rule->query,
+							'query' => Core\Convert::toString($rule->query),
 						];
 					}
 					else {
 						$this->filters[] = (object) [
 							'delegate' => $delegate,
-							'query' => $rule->query,
+							'query' => Core\Convert::toString($rule->query),
 						];
 					}
 				}

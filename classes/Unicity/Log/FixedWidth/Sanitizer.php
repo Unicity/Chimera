@@ -22,6 +22,7 @@ namespace Unicity\Log\FixedWidth {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Log;
 
@@ -34,43 +35,41 @@ namespace Unicity\Log\FixedWidth {
 	 */
 	class Sanitizer extends Log\Sanitizer {
 
-		protected $rows;
+		protected $filters;
 
 		public function __construct(IO\File $file) {
 			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
-			$this->rows = array();
-			foreach ($config['rules'] as $rule) {
-				$filter = $rule['filter'];
-				foreach ($rule['fields'] as $field) {
-					$index = (int) $field['row_index'];
-					$this->rows[$index][] = [
-						'filter' => $filter,
-						'offset' => $field['column_offset'],
-						'length' => $field['column_length'],
+			$this->filters = array();
+			foreach ($config->filters as $filter) {
+				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
+				foreach ($filter->rules as $rule) {
+					$row_index = Core\Convert::toInteger($rule->row_index);
+					$this->filters[$row_index][] = (object) [
+						'delegate' => $delegate,
+						'column_offset' => Core\Convert::toInteger($rule->column_offset),
+						'column_length' => Core\Convert::toInteger($rule->column_length),
 					];
 				}
 			}
-			ksort($this->rows);
 		}
 
 		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
 			$buffer = new Common\Mutable\StringRef();
 			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
-				if (isset($this->rows[$index])) {
-					$entries = $this->rows[$index];
-					foreach ($entries as $entry) {
-						$filter = $entry['filter'];
-						$offset = $entry['offset'];
-						$length = $entry['length'];
-						if ($filter !== null) {
-							$line = substr_replace($line, str_pad($filter(substr($line, $offset, $length)), $length, ' '), $offset, $length);
+				if (isset($this->filters[$index])) {
+					foreach ($this->filters[$index] as $filter) {
+						$delegate = $filter->delegate;
+						$offset = $filter->column_offset;
+						$length = $filter->column_length;
+						if (is_callable($delegate)) {
+							$line = substr_replace($line, str_pad($delegate(substr($line, $offset, $length)), $length, ' '), $offset, $length);
 						}
 						else {
-							$line = substr_replace($line, str_pad('', $length, ' '), $offset, $length);
+							$line = substr_replace($line, str_repeat(' ', $length), $offset, $length);
 						}
 					}
-					$buffer->append($line);
 				}
+				$buffer->append($line);
 			});
 			return new IO\StringRef($buffer);
 		}
