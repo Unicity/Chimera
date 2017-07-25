@@ -49,10 +49,9 @@ namespace Unicity\Log\XML {
 							'query' => $rule->query,
 						];
 					}
-					else if ($rule->hasKey('element')) {
+					else {
 						$this->filters[] = (object) [
 							'delegate' => $delegate,
-							'element' => $rule->element,
 							'query' => $rule->query,
 						];
 					}
@@ -79,12 +78,8 @@ namespace Unicity\Log\XML {
 							}
 						}
 						else {
-							if (isset($filter->element)) {
-								foreach ($elements as $element) {
-									if ($element->nodeName == $filter->element) {
-										$element->nodeValue = $delegate($element->nodeValue);
-									}
-								}
+							foreach ($elements as $element) {
+								$element->nodeValue = $delegate($element->nodeValue);
 							}
 						}
 					}
