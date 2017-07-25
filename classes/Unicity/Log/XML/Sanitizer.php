@@ -67,7 +67,7 @@ namespace Unicity\Log\XML {
 				$elements = $xpath->query($filter->query);
 				if (!empty($elements)) {
 					$delegate = $filter->delegate;
-					if ($delegate !== null) {
+					if (is_callable($delegate)) {
 						if (isset($filter->attribute)) {
 							foreach ($elements as $element) {
 								$attributes = $element->attributes;

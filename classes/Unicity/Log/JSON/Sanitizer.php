@@ -55,7 +55,7 @@ namespace Unicity\Log\JSON {
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
 			foreach ($this->filters as $filter) {
 				$delegate = $filter->delegate;
-				if ($delegate !== null) {
+				if (is_callable($delegate)) {
 					$results = $store->get($filter->query);
 					if ($elements =& $results) {
 						foreach ($elements as &$element) {
