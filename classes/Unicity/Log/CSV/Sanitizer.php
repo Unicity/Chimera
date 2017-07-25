@@ -37,7 +37,7 @@ namespace Unicity\Log\CSV {
 		protected $entries;
 
 		public function __construct(IO\File $file) {
-			$config = Config\JSON\Reader::load($file)->read();
+			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
 			$this->entries = array();
 			foreach ($config['rules'] as $rule) {
 				$filter = $rule['filter'];

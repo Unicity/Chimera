@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\Log\JSON {
 
 	use \Peekmo\JsonPath;
+	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\IO;
 	use \Unicity\Log;
@@ -34,17 +35,17 @@ namespace Unicity\Log\JSON {
 	 */
 	class Sanitizer extends Log\Sanitizer {
 
-		protected $entries;
+		protected $filters;
 
 		public function __construct(IO\File $file) {
-			$config = Config\JSON\Reader::load($file)->read();
-			$this->entries = array();
-			foreach ($config['rules'] as $rule) {
-				$filter = $rule['filter'];
-				foreach ($rule['fields'] as $field) {
-					$this->entries[] = [
-						'filter' => $filter,
-						'query' => $field['query'],
+			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
+			$this->filters = array();
+			foreach ($config->filters as $filter) {
+				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
+				foreach ($filter->rules as $rule) {
+					$this->filters[] = (object) [
+						'delegate' => $delegate,
+						'query' => $rule->query,
 					];
 				}
 			}
@@ -52,19 +53,18 @@ namespace Unicity\Log\JSON {
 
 		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
-			foreach ($this->entries as $entry) {
-				$filter = $entry['filter'];
-				$query = $entry['query'];
-				if ($filter !== null) {
-					$results = &$store->get($query);
-					if (!empty($results)) {
-						foreach ($results as &$result) {
-							$result = $filter($result);
+			foreach ($this->filters as $filter) {
+				$delegate = $filter->delegate;
+				if ($delegate !== null) {
+					$results = $store->get($filter->query);
+					if ($elements =& $results) {
+						foreach ($elements as &$element) {
+							$element = $delegate($element);
 						}
 					}
 				}
 				else {
-					$store->remove($query);
+					$store->remove($filter->query);
 				}
 			}
 			return new IO\StringRef($store->toString());

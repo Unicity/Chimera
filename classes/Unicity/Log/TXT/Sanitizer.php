@@ -38,7 +38,7 @@ namespace Unicity\Log\TXT {
 		protected $entries;
 
 		public function __construct($file) {
-			$config = Config\JSON\Reader::load($file)->read();
+			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
 			$this->entries = array();
 			foreach ($config['rules'] as $rule) {
 				$filter = $rule['filter'];

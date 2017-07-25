@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\Log\XML {
 
+	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\IO;
 	use \Unicity\Log;
@@ -33,26 +34,26 @@ namespace Unicity\Log\XML {
 	 */
 	class Sanitizer extends Log\Sanitizer {
 
-		protected $entries;
+		protected $filters;
 
 		public function __construct(IO\File $file) {
-			$config = Config\JSON\Reader::load($file)->read();
-			$this->entries = array();
-			foreach ($config['rules'] as $rule) {
-				$filter = $rule['filter'];
-				foreach ($rule['fields'] as $field) {
-					if (isset($field['attribute'])) {
-						$this->entries[] = [
-							'filter' => $filter,
-							'attribute' => $field['attribute'],
-							'query' => $field['query'],
+			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
+			$this->filters = array();
+			foreach ($config->filters as $filter) {
+				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
+				foreach ($filter->rules as $rule) {
+					if ($rule->hasKey('attribute')) {
+						$this->filters[] = (object) [
+							'attribute' => $rule->attribute,
+							'delegate' => $delegate,
+							'query' => $rule->query,
 						];
 					}
-					else if (isset($field['element'])) {
-						$this->entries[] = [
-							'filter' => $filter,
-							'element' => $field['element'],
-							'query' => $field['query'],
+					else if ($rule->hasKey('element')) {
+						$this->filters[] = (object) [
+							'delegate' => $delegate,
+							'element' => $rule->element,
+							'query' => $rule->query,
 						];
 					}
 				}
@@ -62,28 +63,26 @@ namespace Unicity\Log\XML {
 		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
 			$document = new \DOMDocument();
 			$document->loadXML($input->getBytes());
-			foreach ($this->entries as $entry) {
+			foreach ($this->filters as $filter) {
 				$xpath = new \DOMXpath($document);
-				$elements = $xpath->query($entry['query']);
+				$elements = $xpath->query($filter->query);
 				if (!empty($elements)) {
-					$filter = $entry['filter'];
-					if ($filter !== null) {
-						if (isset($entry['attribute'])) {
-							$attrName = $entry['attribute'];
+					$delegate = $filter->delegate;
+					if ($delegate !== null) {
+						if (isset($filter->attribute)) {
 							foreach ($elements as $element) {
 								$attributes = $element->attributes;
-								$attribute = $attributes->getNamedItem($attrName);
+								$attribute = $attributes->getNamedItem($filter->attribute);
 								if ($attribute !== null) {
-									$attribute->nodeValue = $filter($attribute->nodeValue);
+									$attribute->nodeValue = $delegate($attribute->nodeValue);
 								}
 							}
 						}
 						else {
-							if (isset($entry['element'])) {
-								$nodeName = $entry['element'];
+							if (isset($filter->element)) {
 								foreach ($elements as $element) {
-									if ($nodeName == $element->nodeName) {
-										$element->nodeValue = $filter($element->nodeValue);
+									if ($element->nodeName == $filter->element) {
+										$element->nodeValue = $delegate($element->nodeValue);
 									}
 								}
 							}
