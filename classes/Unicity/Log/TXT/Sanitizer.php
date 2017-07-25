@@ -67,8 +67,8 @@ namespace Unicity\Log\TXT {
 										return '${1}' . Core\Convert::toString($delegate($matches[1])) . '${2}';
 									}, $line);
 									$line = preg_replace($search, $replacement, $line);
-									break;
 								}
+								break;
 							case 'simple':
 								$separator = '(?:%[A-Za-z0-9]{1,2}|\W|\s)';
 								$search = '#(' . $separator . '+' . $filter->pattern . $separator . '+' . ')[a-zA-Z0-9\-]+(?!>)(?=' . $separator . ')#i';
