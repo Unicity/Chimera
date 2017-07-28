@@ -26,16 +26,14 @@ namespace Unicity\EVT {
 	abstract class Event extends Core\Object { // subclass using "past" tense
 
 		protected $id;
-		protected $published;
-		protected $target;
+		protected $source;
 		protected $timestamp;
 		protected $type; // i.e. class type
 		protected $version;
 
-		public function __construct(EVT\Target $target) {
+		public function __construct(EVT\Source $source) {
 			$this->id = uniqid();
-			$this->published = false;
-			$this->target = $target;
+			$this->source = $source;
 			$this->timestamp = self::timestamp();
 			$this->type = get_class($this);
 			$this->version = 1.0;
@@ -43,10 +41,10 @@ namespace Unicity\EVT {
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->target);
+			unset($this->id);
+			unset($this->source);
 			unset($this->timestamp);
 			unset($this->type);
-			unset($this->id);
 			unset($this->version);
 		}
 
@@ -54,8 +52,8 @@ namespace Unicity\EVT {
 			return $this->id;
 		}
 
-		public function getTarget() {
-			return $this->target;
+		public function getSource() {
+			return $this->source;
 		}
 
 		public function getTimestamp() {
@@ -74,9 +72,8 @@ namespace Unicity\EVT {
 			return [
 				'id' => $this->id,
 				'details' => [
-					'target' => $this->target,
+					'source' => $this->source,
 				],
-				'published' => $this->published,
 				'timestamp' => $this->timestamp,
 				'type' => $this->type,
 				'version' => $this->version,

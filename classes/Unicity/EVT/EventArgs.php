@@ -36,7 +36,7 @@ namespace Unicity\EVT {
 			unset($this->target);
 		}
 
-		public function getTarget() {
+		public function getTarget() : EVT\Target {
 			return $this->target;
 		}
 

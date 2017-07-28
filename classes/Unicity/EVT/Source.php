@@ -23,28 +23,31 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	abstract class Command extends EVT\EventArgs { // subclass using "present" tense
+	class Source extends Core\Object {
 
-		protected $register;
+		protected $actor;
 
-		public function __construct(EVT\Target $target, boolean $register) {
-			parent::__construct($target);
-			$this->register = $register;
+		public function __construct($actor) {
+			$this->actor;
 		}
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->register);
+			unset($this->actor);
+		}
+
+		public function getActor() {
+			return $this->actor;
 		}
 
 		public function jsonSerialize() {
-			$serialized = parent::jsonSerialize();
-			$serialized['register'] = $this->register;
-			return $serialized;
+			return [
+				'actor' => $this->actor,
+			];
 		}
 
-		public function register() : boolean {
-			return $this->register;
+		public function toTarget() : EVT\Target {
+			return new EVT\Target($this->actor);
 		}
 
 	}

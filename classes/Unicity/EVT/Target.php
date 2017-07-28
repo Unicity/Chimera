@@ -21,36 +21,33 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 
 	class Target extends Core\Object {
 
-		protected $id; // i.e aggregate id or primary (composite) key
-		protected $type; // i.e. class type
+		protected $actor;
 
-		public function __construct($type, $id) {
-			$this->type = $type;
-			$this->id = $id;
+		public function __construct($actor) {
+			$this->actor;
 		}
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->type);
-			unset($this->id);
+			unset($this->actor);
 		}
 
-		public function getId() {
-			return $this->id;
-		}
-
-		public function getType() {
-			return $this->type;
+		public function getActor() {
+			return $this->actor;
 		}
 
 		public function jsonSerialize() {
 			return [
-				'id' => $this->id,
-				'type' => $this->type,
+				'actor' => $this->actor,
 			];
+		}
+
+		public function toSource() : EVT\Source {
+			return new EVT\Source($this->actor);
 		}
 
 	}

@@ -18,34 +18,21 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\EVT {
+namespace Unicity\HTTP {
 
-	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	abstract class Command extends EVT\EventArgs { // subclass using "present" tense
+	interface Request {
 
-		protected $register;
+		public function getBody() : string;
 
-		public function __construct(EVT\Target $target, boolean $register) {
-			parent::__construct($target);
-			$this->register = $register;
-		}
+		public function getHeaders() : array;
 
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->register);
-		}
+		public function getTarget() : EVT\Target;
 
-		public function jsonSerialize() {
-			$serialized = parent::jsonSerialize();
-			$serialized['register'] = $this->register;
-			return $serialized;
-		}
+		public function getURL() : string;
 
-		public function register() : boolean {
-			return $this->register;
-		}
+		public function jsonSerialize();
 
 	}
 

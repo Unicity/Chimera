@@ -22,13 +22,13 @@ namespace Unicity\EVT {
 
 	use \Unicity\EVT;
 
-	class Query extends EVT\EventArgs { // subclass using "present" tense
+	abstract class Query extends EVT\EventArgs { // subclass using "present" tense
 
 		protected $result;
 
-		public function __construct(EVT\Target $target) {
+		public function __construct(EVT\Target $target, $result = null) {
 			parent::__construct($target);
-			$this->result = null;
+			$this->result = $result;
 		}
 
 		public function __destruct() {

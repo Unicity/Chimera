@@ -18,33 +18,22 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\EVT {
+namespace Unicity\HTTP {
 
-	use \Unicity\Core;
-	use \Unicity\EVT;
+	use \Unicity\HTTP;
 
-	abstract class Command extends EVT\EventArgs { // subclass using "present" tense
+	class RequestAdapter implements HTTP\RequestListener {
 
-		protected $register;
-
-		public function __construct(EVT\Target $target, boolean $register) {
-			parent::__construct($target);
-			$this->register = $register;
+		public function requestInitiated(HTTP\RequestEvent $request) {
+			// do nothing
 		}
 
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->register);
+		public function requestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) {
+			// do nothing
 		}
 
-		public function jsonSerialize() {
-			$serialized = parent::jsonSerialize();
-			$serialized['register'] = $this->register;
-			return $serialized;
-		}
-
-		public function register() : boolean {
-			return $this->register;
+		public function requestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) {
+			// do nothing
 		}
 
 	}

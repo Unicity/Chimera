@@ -18,40 +18,48 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\EVT {
+namespace Unicity\HTTP {
 
 	use \Unicity\EVT;
+	use \Unicity\HTTP;
 
-	class ValueChangedEvent extends EVT\Event {
+	class RequestCommand extends EVT\Command implements HTTP\Request {
 
-		protected $after;
-		protected $before;
+		protected $body;
+		protected $headers;
+		protected $url;
 
-		public function __construct(EVT\Source $source, $before, $after) {
-			parent::__construct($source);
-			$this->before = $before;
-			$this->after = $after;
-			$this->version = 1.0;
+		public function __construct(EVT\Target $target, string $url, string $body, array $headers = []) {
+			parent::__construct($target, false);
+			$this->body = $body;
+			$this->headers = $headers;
+			$this->url = $url;
 		}
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->before);
-			unset($this->after);
+			unset($this->body);
+			unset($this->headers);
+			unset($this->url);
 		}
 
-		public function getAfter() {
-			return $this->after;
+		public function getBody() : string {
+			return $this->body;
 		}
 
-		public function getBefore() {
-			return $this->before;
+		public function getHeaders() : array {
+			return $this->headers;
+		}
+
+		public function getURL() : string {
+			return $this->url;
 		}
 
 		public function jsonSerialize() {
 			$serialized = parent::jsonSerialize();
-			$serialized['details']['after'] = $this->after;
-			$serialized['details']['before'] = $this->before;
+			$serialized['body'] = $this->body;
+			$serialized['headers'] = $this->headers;
+			$serialized['url'] = $this->url;
 			return $serialized;
 		}
 
