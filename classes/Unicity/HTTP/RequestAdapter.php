@@ -24,15 +24,15 @@ namespace Unicity\HTTP {
 
 	class RequestAdapter implements HTTP\RequestListener {
 
-		public function requestInitiated(HTTP\RequestEvent $request) {
+		public function requestInitiated(HTTP\RequestEvent $request) : void {
 			// do nothing
 		}
 
-		public function requestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) {
+		public function requestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void {
 			// do nothing
 		}
 
-		public function requestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) {
+		public function requestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void {
 			// do nothing
 		}
 

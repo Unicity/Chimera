@@ -29,7 +29,7 @@ namespace Unicity\HTTP {
 			// do nothing
 		}
 
-		protected function doRequest(ConnectionBroker $broker, HTTP\Request $request) {
+		protected function doRequest(ConnectionBroker $broker, HTTP\Request $request) : void {
 			$source = $request->getTarget()->toSource();
 
 			$requestEvent = new HTTP\RequestEvent(
@@ -76,11 +76,11 @@ namespace Unicity\HTTP {
 			}
 		}
 
-		public function execute(ConnectionBroker $broker, HTTP\RequestCommand $command) {
+		public function execute(ConnectionBroker $broker, HTTP\RequestCommand $command) : void {
 			$this->doRequest($broker, $command);
 		}
 
-		public function query(ConnectionBroker $broker, HTTP\RequestQuery $query) {
+		public function query(ConnectionBroker $broker, HTTP\RequestQuery $query) : void {
 			$this->doRequest($broker, $query);
 		}
 

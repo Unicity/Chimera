@@ -24,9 +24,9 @@ namespace Unicity\HTTP {
 
 	interface RequestListener {
 
-		public function requestInitiated(HTTP\RequestEvent $request);
-		public function requestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response);
-		public function requestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response);
+		public function requestInitiated(HTTP\RequestEvent $request) : void;
+		public function requestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void;
+		public function requestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void;
 
 	}
 

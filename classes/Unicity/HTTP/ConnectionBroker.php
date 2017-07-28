@@ -37,36 +37,39 @@ namespace Unicity\HTTP {
 			unset($this->listeners);
 		}
 
-		public function addRequestListener(HTTP\RequestListener $listener) {
+		public function addRequestListener(HTTP\RequestListener $listener) : HTTP\ConnectionBroker {
 			$this->listeners[] = $listener;
+			return $this;
 		}
 
-		public function emitRequestInitiated(HTTP\RequestEvent $request) {
+		public function emitRequestInitiated(HTTP\RequestEvent $request) : void {
 			foreach ($this->listeners as $listeners) {
 				$listeners->requestInitiated($request);
 			}
 		}
 
-		public function emitRequestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) {
+		public function emitRequestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void {
 			foreach ($this->listeners as $listeners) {
 				$listeners->requestSucceeded($request, $response);
 			}
 		}
 
-		public function emitRequestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) {
+		public function emitRequestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void {
 			foreach ($this->listeners as $listeners) {
 				$listeners->requestFailed($request, $response);
 			}
 		}
 
-		public function execute(string $url, string $body, array $headers = []) {
+		public function execute(string $url, string $body, array $headers = []) : HTTP\ConnectionBroker {
 			$connection = new HTTP\Connection();
 			$connection->execute($this, new HTTP\RequestCommand(new EVT\Target($connection), $url, $body, $headers));
+			return $this;
 		}
 
-		public function query(string $url, string $body, array $headers = []) {
+		public function query(string $url, string $body, array $headers = []) : HTTP\ConnectionBroker {
 			$connection = new HTTP\Connection();
 			$connection->query($this, new HTTP\RequestQuery(new EVT\Target($connection), $url, $body, $headers));
+			return $this;
 		}
 
 	}
