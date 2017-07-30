@@ -40,15 +40,15 @@ namespace Unicity\REST {
 			$method = (isset($_SERVER['REQUEST_METHOD'])) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 
 			$uri = $_SERVER['REQUEST_URI'] ?? '';
-			$qs = $_SERVER['QUERY_STRING'] ?? '';
-			$path = explode('/', trim($this->substr_replace_last($qs, '', $uri), '/? '));
+			$query_string = $_SERVER['QUERY_STRING'] ?? '';
+			$path = explode('/', trim($this->substr_replace_last($query_string, '', $uri), '/? '));
 			$pathCt = count($path);
 
 			$routes = $this->routes;
-			$routes = array_filter($routes, function($route) use ($method, $pathCt) {
+			$routes = array_filter($routes, function(REST\Route $route) use ($method, $pathCt) : bool {
 				return in_array($method, $route->methods) && ($pathCt === count($route->path));
 			});
-			$routes = array_filter($routes, function($route) use ($path, $pathCt) {
+			$routes = array_filter($routes, function(REST\Route $route) use ($path, $pathCt) : bool {
 				for ($i = 0; $i < $pathCt; $i++) {
 					$seqment = $route->path[$i];
 					if (preg_match('/^\{.*\}$/', $seqment)) {
@@ -58,6 +58,14 @@ namespace Unicity\REST {
 						}
 					}
 					else if ($path[$i] !== $seqment) {
+						return false;
+					}
+				}
+				return true;
+			});
+			$routes = array_filter($routes, function(REST\Route $route) : bool {
+				foreach ($route->when as $when) {
+					if (!$when()) {
 						return false;
 					}
 				}
