@@ -58,41 +58,75 @@ namespace Unicity\REST {
 		 * @param REST\Route $route                                 the route to be added
 		 * @return REST\Router                                      a reference to this class
 		 */
-		public function route(REST\Route $route) : REST\Router {
+		public function onRoute(REST\Route $route) : REST\Router {
 			$this->routes = $route;
 			return $this;
 		}
 
+		/**
+		 * This method adds an error handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the error handler to be added
+		 *
+		 * @see http://php.net/manual/en/function.set-error-handler.php
+		 */
+		public function onError(callable $handler) : void {
+			set_error_handler($handler);
+		}
+
+		/**
+		 * This method adds a shutdown handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the shutdown handler to be added
+		 *
+		 * @see http://php.net/manual/en/function.register-shutdown-function.php
+		 */
+		public function onShutdown(callable $handler) : void {
+			register_shutdown_function($handler);
+		}
+
+		/**
+		 * This method runs the router by trying to match a route.
+		 *
+		 * @access public
+		 * @throws Throwable\RouteNotFound\Exception                indicates that no route could be
+		 *                                                          matched
+		 */
 		public function run() : void {
 			$method = (isset($_SERVER['REQUEST_METHOD'])) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 
 			$uri = $_SERVER['REQUEST_URI'] ?? '';
 			$query_string = $_SERVER['QUERY_STRING'] ?? '';
-			$path = explode('/', trim($this->substr_replace_last($query_string, '', $uri), '/? '));
-			$pathCt = count($path);
+			$path = trim($this->substr_replace_last($query_string, '', $uri), '/? ');
+			$segments = explode('/', $path);
+			$segmentCt = count($segments);
+			$args = [];
 
 			$routes = $this->routes;
-			$routes = array_filter($routes, function(REST\Route $route) use ($method, $pathCt) : bool {
-				return in_array($method, $route->methods) && ($pathCt === count($route->path));
+			$routes = array_filter($routes, function(REST\Route $route) use ($method, $segmentCt) : bool {
+				return in_array($method, $route->methods) && ($segmentCt === count($route->path));
 			});
-			$routes = array_filter($routes, function(REST\Route $route) use ($path, $pathCt) : bool {
-				for ($i = 0; $i < $pathCt; $i++) {
-					$seqment = $route->path[$i];
-					if (preg_match('/^\{.*\}$/', $seqment)) {
-						$regex = $route->replacements[$seqment] ?? '/^.+$/';
-						if (!preg_match($regex, $path[$i])) {
+			$routes = array_filter($routes, function(REST\Route $route) use ($segments, $segmentCt, &$args) : bool {
+				for ($i = 0; $i < $segmentCt; $i++) {
+					$segment = $route->path[$i];
+					if (preg_match('/^\{.*\}$/', $segment)) {
+						$regex = $route->replacements[$segment] ?? '/^.+$/';
+						if (!preg_match($regex, $segments[$i])) {
 							return false;
 						}
+						$args[$i] = $segments[$i];
 					}
-					else if ($path[$i] !== $seqment) {
+					else if ($segments[$i] !== $segment) {
 						return false;
 					}
 				}
 				return true;
 			});
-			$routes = array_filter($routes, function(REST\Route $route) : bool {
+			$routes = array_filter($routes, function(REST\Route $route) use($path) : bool {
 				foreach ($route->when as $when) {
-					if (!$when()) {
+					if (!$when($path)) {
 						return false;
 					}
 				}
@@ -101,7 +135,7 @@ namespace Unicity\REST {
 
 			if (!empty($routes)) {
 				$pipeline = end($routes)->pipeline;
-				$pipeline();
+				call_user_func($pipeline, array_values($args));
 			}
 			else {
 				throw new Throwable\RouteNotFound\Exception();
