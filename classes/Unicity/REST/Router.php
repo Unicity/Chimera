@@ -68,11 +68,13 @@ namespace Unicity\REST {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the error handler to be added
+		 * @return REST\Router                                      a reference to this class
 		 *
 		 * @see http://php.net/manual/en/function.set-error-handler.php
 		 */
-		public function onError(callable $handler) : void {
+		public function onError(callable $handler) : REST\Router {
 			set_error_handler($handler);
+			return $this;
 		}
 
 		/**
@@ -80,11 +82,13 @@ namespace Unicity\REST {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the shutdown handler to be added
+		 * @return REST\Router                                      a reference to this class
 		 *
 		 * @see http://php.net/manual/en/function.register-shutdown-function.php
 		 */
-		public function onShutdown(callable $handler) : void {
+		public function onShutdown(callable $handler) : REST\Router {
 			register_shutdown_function($handler);
+			return $this;
 		}
 
 		/**
