@@ -18,9 +18,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\REST {
 
-	class Router {
+	use \Unicity\Core;
+	use \Unicity\REST;
+
+	class Router extends Core\Object {
 
 		protected $routes;
 
@@ -28,13 +31,8 @@ namespace Unicity\HTTP {
 			$this->routes = [];
 		}
 
-		public function route(string $method, string $path, callable $pipeline, array $replacements = []) : Router {
-			$this->routes[] = (object) [
-				'methods' => array_map('trim', explode('|', strtoupper($method))),
-				'path' => array_map('trim', explode('/', trim($path, '/? '))),
-				'pipeline' => $pipeline,
-				'replacements' => $replacements,
-			];
+		public function route(REST\Route $route) {
+			$this->routes = $route;
 			return $this;
 		}
 
@@ -67,7 +65,7 @@ namespace Unicity\HTTP {
 			});
 
 			if (!empty($routes)) {
-				$pipeline = reset($routes)->pipeline;
+				$pipeline = end($routes)->pipeline;
 				$pipeline();
 			}
 			else {
