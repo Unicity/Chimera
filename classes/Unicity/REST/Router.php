@@ -52,18 +52,6 @@ namespace Unicity\REST {
 		}
 
 		/**
-		 * This method adds a route.
-		 *
-		 * @access public
-		 * @param REST\Route $route                                 the route to be added
-		 * @return REST\Router                                      a reference to this class
-		 */
-		public function onRoute(REST\Route $route) : REST\Router {
-			$this->routes = $route;
-			return $this;
-		}
-
-		/**
 		 * This method adds an error handler.
 		 *
 		 * @access public
@@ -74,6 +62,18 @@ namespace Unicity\REST {
 		 */
 		public function onError(callable $handler) : REST\Router {
 			set_error_handler($handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a route.
+		 *
+		 * @access public
+		 * @param REST\Route $route                                 the route to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onRoute(REST\Route $route) : REST\Router {
+			$this->routes = $route;
 			return $this;
 		}
 
