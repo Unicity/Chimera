@@ -22,15 +22,42 @@ namespace Unicity\REST {
 
 	use \Unicity\Core;
 	use \Unicity\REST;
+	use \Unicity\Throwable;
 
 	class Router extends Core\Object {
 
+		/**
+		 * This variable stores a singleton instance of this class.
+		 *
+		 * @access protected
+		 * @var REST\Router
+		 */
+		protected static $singleton = null;
+
+		/**
+		 * This variable stores the routes.
+		 *
+		 * @access protected
+		 * @var array
+		 */
 		protected $routes;
 
+		/**
+		 * This constructor initializes the class.
+		 *
+		 * @access public
+		 */
 		public function __construct() {
 			$this->routes = [];
 		}
 
+		/**
+		 * This method adds a route.
+		 *
+		 * @access public
+		 * @param REST\Route $route                                 the route to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
 		public function route(REST\Route $route) : REST\Router {
 			$this->routes = $route;
 			return $this;
@@ -77,15 +104,38 @@ namespace Unicity\REST {
 				$pipeline();
 			}
 			else {
-				throw new \Exception();
+				throw new Throwable\RouteNotFound\Exception();
 			}
 		}
 
-		protected function substr_replace_last($search, $replace, $string) : string {
-			if (($position = strrpos($string, $search)) !== false) {
-				$string = substr_replace($string, $replace, $position, strlen($search));
+		/**
+		 * This method replaces the last occurrence in the string.
+		 *
+		 * @access protected
+		 * @param string $search                                    the substring to be searched for
+		 * @param string $replace                                   the replacement string
+		 * @param string $subject                                   the subject string
+		 * @return string                                           the result string
+		 */
+		protected function substr_replace_last(string $search, string $replace, string $subject) : string {
+			if (($position = strrpos($subject, $search)) !== false) {
+				$subject = substr_replace($subject, $replace, $position, strlen($search));
 			}
-			return $string;
+			return $subject;
+		}
+
+		/**
+		 * This method returns a singleton instance of this class.
+		 *
+		 * @access public
+		 * @static
+		 * @return REST\Router                                      the singleton instance of this class
+		 */
+		public static function instance() : REST\Router {
+			if (static::$singleton === null) {
+				static::$singleton = new REST\Router();
+			}
+			return static::$singleton;
 		}
 
 	}

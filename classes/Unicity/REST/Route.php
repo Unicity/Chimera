@@ -25,12 +25,55 @@ namespace Unicity\REST {
 
 	class Route extends Core\Object {
 
+		/**
+		 * This variable stores the HTTP methods.
+		 *
+		 * @access public
+		 * @var array
+		 */
 		public $methods;
+
+		/**
+		 * This variable stores the path segments.
+		 *
+		 * @access public
+		 * @var array
+		 */
 		public $path;
+
+		/**
+		 * This variable stores the pipeline.
+		 *
+		 * @access public
+		 * @var callable
+		 */
 		public $pipeline;
+
+		/**
+		 * This variable stores the replacement mappings for dynamic path segments.
+		 *
+		 * @access public
+		 * @var array
+		 */
 		public $replacements;
+
+		/**
+		 * This variable stores the "when" predicates.
+		 *
+		 * @access public
+		 * @var array
+		 */
 		public $when;
 
+		/**
+		 * This constructor initializes the class with the specified parameters.
+		 *
+		 * @access public
+		 * @param array $methods                                    the methods to be routed
+		 * @param array $path                                       the path segments to be routed
+		 * @param array $replacements                               the replacement mappings for the dynamic
+		 *                                                          path segments
+		 */
 		public function __construct(array $methods, array $path, array $replacements) {
 			$this->methods = $methods;
 			$this->path = $path;
@@ -39,6 +82,17 @@ namespace Unicity\REST {
 			$this->when = [];
 		}
 
+		/**
+		 * This method returns a new route definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $method                                    the method(s) to be routed
+		 * @param string $path                                      the path to be routed
+		 * @param array $replacements                               the replacement mappings for the dynamic
+		 *                                                          path segments
+		 * @return REST\RouteDefinition                             the new route definition
+		 */
 		public static function request(string $method, string $path, array $replacements = []) : REST\RouteDefinition {
 			return new REST\RouteDefinition($method, $path, $replacements);
 		}

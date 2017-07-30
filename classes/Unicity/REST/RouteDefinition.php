@@ -25,8 +25,23 @@ namespace Unicity\REST {
 
 	class RouteDefinition extends Core\Object {
 
+		/**
+		 * This variable stores the route's definition.
+		 *
+		 * @access protected
+		 * @var REST\Route
+		 */
 		protected $route;
 
+		/**
+		 * This constructor initializes the class with the specified parameters.
+		 *
+		 * @access public
+		 * @param string $method                                    the method(s) to be routed
+		 * @param string $path                                      the path to be routed
+		 * @param array $replacements                               the replacement mappings for the dynamic
+		 *                                                          path segments
+		 */
 		public function __construct(string $method, string $path, array $replacements) {
 			$this->route = new REST\Route(
 				array_map('trim', explode('|', strtoupper($method))),
@@ -35,11 +50,25 @@ namespace Unicity\REST {
 			);
 		}
 
+		/**
+		 * This method sets a predicate to be used in the route evaluation process.
+		 *
+		 * @access public
+		 * @param callable $predicate                               the predicate to be set
+		 * @return REST\RouteDefinition                             a reference to this class
+		 */
 		public function when(callable $predicate) : REST\RouteDefinition {
 			$this->route->when[] = $predicate;
 			return $this;
 		}
 
+		/**
+		 * This method sets the route's pipeline.
+		 *
+		 * @access public
+		 * @param callable $pipeline                                the pipeline to be set
+		 * @return REST\Route                                       the route
+		 */
 		public function to(callable $pipeline) : REST\Route {
 			$this->route->pipeline = $pipeline;
 			return $this->route;
