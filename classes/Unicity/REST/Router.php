@@ -31,12 +31,12 @@ namespace Unicity\REST {
 			$this->routes = [];
 		}
 
-		public function route(REST\Route $route) {
+		public function route(REST\Route $route) : REST\Router {
 			$this->routes = $route;
 			return $this;
 		}
 
-		public function run() {
+		public function run() : void {
 			$method = (isset($_SERVER['REQUEST_METHOD'])) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 
 			$uri = $_SERVER['REQUEST_URI'] ?? '';
@@ -81,7 +81,7 @@ namespace Unicity\REST {
 			}
 		}
 
-		protected function substr_replace_last($search, $replace, $string) {
+		protected function substr_replace_last($search, $replace, $string) : string {
 			if (($position = strrpos($string, $search)) !== false) {
 				$string = substr_replace($string, $replace, $position, strlen($search));
 			}

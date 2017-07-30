@@ -35,8 +35,9 @@ namespace Unicity\REST {
 			);
 		}
 
-		public function when(callable $predicate) {
+		public function when(callable $predicate) : REST\RouteDefinition {
 			$this->route->when[] = $predicate;
+			return $this;
 		}
 
 		public function to(callable $pipeline) : REST\Route {
