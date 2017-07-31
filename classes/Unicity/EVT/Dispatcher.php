@@ -70,8 +70,6 @@ namespace Unicity\EVT {
 		 * @return EVT\Dispatcher                                   a reference to this class
 		 */
 		public function subscribe(string $channel, callable $subscriber) : EVT\Dispatcher {
-			$info = Core\DataType::info($subscriber);
-			$this->subscribers[$channel][$info->hash] = $subscriber;
 			if (!isset($this->subscribers[$channel])) {
 				$this->subscribers[$channel] = [];
 			}
