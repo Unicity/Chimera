@@ -75,8 +75,9 @@ namespace Unicity\Core {
 		 *
 		 * @see https://chortle.ccsu.edu/java5/Notes/chap09C/ch09C_2.html
 		 * @see http://php.net/manual/en/function.gettype.php
+		 * @see https://stackoverflow.com/questions/20249551/how-to-compute-a-unique-hash-for-a-callable
 		 */
-		public static function info($value) : \stdClass { // TODO handle callable types
+		public static function info($value) : \stdClass {
 			$type = ($value !== null) ? gettype($value) : 'NULL';
 			$info = new \stdClass();
 			switch ($type) {
@@ -84,6 +85,11 @@ namespace Unicity\Core {
 					$info->class = 'primitive';
 					$info->type = $type;
 					$info->hash = $type . ':' . (($value) ? 'true' : 'false');
+					break;
+				case 'callable':
+					$info->class = 'closure';
+					$info->type = $type;
+					$info->hash = $type . ':' . spl_object_hash((object) $value);
 					break;
 				case 'double':
 				case 'integer':
