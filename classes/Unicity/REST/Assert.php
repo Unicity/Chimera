@@ -30,6 +30,11 @@ namespace Unicity\REST {
 			return (json_last_error() == JSON_ERROR_NONE);
 		}
 
+		public static function isXML(string $method, string $path) : bool {
+			$input = new IO\InputBuffer();
+			return (@simplexml_load_string($input) !== false);
+		}
+
 	}
 
 }
