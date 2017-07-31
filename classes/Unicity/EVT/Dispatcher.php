@@ -33,6 +33,8 @@ namespace Unicity\EVT {
 	 */
 	class Dispatcher extends Core\Object {
 
+		protected static $singletons = array();
+
 		/**
 		 * This variable stores a list of subscribers.
 		 *
@@ -121,6 +123,34 @@ namespace Unicity\EVT {
 				while (!$this->queue->isEmpty());
 			}
 			return $this;
+		}
+
+		/**
+		 * This method returns a singleton instance for the specified name.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $name                                      the name of the instance
+		 * @return EVT\Dispatcher                                   an instance of this class
+		 */
+		public static function instance(string $name) : EVT\Dispatcher {
+			if (!isset(static::$singletons[$name])) {
+				static::$singletons[$name] = new EVT\Dispatcher();
+			}
+			return static::$singletons[$name];
+		}
+
+		/**
+		 * This method destroys a singleton instance with the specified name.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $name                                      the name of the instance
+		 */
+		public static function destroy(string $name) : void {
+			if (isset(static::$singletons[$name])) {
+				unset(static::$singletons[$name]);
+			}
 		}
 
 	}
