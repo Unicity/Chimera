@@ -83,6 +83,20 @@ namespace Unicity\REST {
 		}
 
 		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->methods);
+			unset($this->path);
+			unset($this->pipeline);
+			unset($this->replacements);
+			unset($this->when);
+		}
+
+		/**
 		 * This method returns a new route definition.
 		 *
 		 * @access public

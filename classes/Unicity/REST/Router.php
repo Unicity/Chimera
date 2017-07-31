@@ -35,6 +35,12 @@ namespace Unicity\REST {
 		protected static $singleton = null;
 
 		/**
+		 * This variable stores a list of success handlers.
+		 * @var array
+		 */
+		protected $handlers;
+
+		/**
 		 * This variable stores the routes.
 		 *
 		 * @access protected
@@ -48,7 +54,19 @@ namespace Unicity\REST {
 		 * @access public
 		 */
 		public function __construct() {
+			$this->handlers = [];
 			$this->routes = [];
+		}
+
+		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->handlers);
+			unset($this->routes);
 		}
 
 		/**
@@ -88,6 +106,18 @@ namespace Unicity\REST {
 		 */
 		public function onShutdown(callable $handler) : REST\Router {
 			register_shutdown_function($handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a success handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the success handler to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onSuccess(callable $handler) : REST\Router {
+			$this->handlers[] = $handler;
 			return $this;
 		}
 
@@ -140,6 +170,9 @@ namespace Unicity\REST {
 			if (!empty($routes)) {
 				$pipeline = end($routes)->pipeline;
 				call_user_func($pipeline, array_values($args));
+				foreach ($this->handlers as $handler) {
+					$handler($method, $path);
+				}
 			}
 			else {
 				throw new Throwable\RouteNotFound\Exception();

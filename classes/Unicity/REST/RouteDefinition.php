@@ -51,6 +51,16 @@ namespace Unicity\REST {
 		}
 
 		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->route);
+		}
+
+		/**
 		 * This method sets a predicate to be used in the route evaluation process.
 		 *
 		 * @access public
