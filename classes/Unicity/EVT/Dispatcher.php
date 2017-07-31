@@ -131,7 +131,7 @@ namespace Unicity\EVT {
 		 * @param string $name                                      the name of the instance
 		 * @return EVT\Dispatcher                                   an instance of this class
 		 */
-		public static function instance(string $name) : EVT\Dispatcher {
+		public static function instance(string $name = 'main') : EVT\Dispatcher {
 			if (!isset(static::$singletons[$name])) {
 				static::$singletons[$name] = new EVT\Dispatcher();
 			}
