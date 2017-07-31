@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Core {
+namespace Unicity\Pipeline {
 
 	final class Payload {
 
