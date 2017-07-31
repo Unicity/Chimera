@@ -55,7 +55,10 @@ namespace Unicity\REST {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->handlers = [];
+			$this->handlers = [
+				'succeeded' => [],
+				'errored' => [],
+			];
 			$this->routes = [];
 		}
 
@@ -81,6 +84,18 @@ namespace Unicity\REST {
 		 */
 		public function onError(callable $handler) : REST\Router {
 			set_error_handler($handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a route.
+		 *
+		 * @access public
+		 * @param REST\Route $route                                 the route to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onException(callable $handler) : REST\Router {
+			$this->handlers['errored'][] = $handler;
 			return $this;
 		}
 
@@ -118,7 +133,7 @@ namespace Unicity\REST {
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onSuccess(callable $handler) : REST\Router {
-			$this->handlers[] = $handler;
+			$this->handlers['succeeded'][] = $handler;
 			return $this;
 		}
 
@@ -130,61 +145,70 @@ namespace Unicity\REST {
 		 *                                                          matched
 		 */
 		public function run() : void {
-			$method = (isset($_SERVER['REQUEST_METHOD'])) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+			try {
+				$method = (isset($_SERVER['REQUEST_METHOD'])) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 
-			$uri = $_SERVER['REQUEST_URI'] ?? '';
-			$query_string = $_SERVER['QUERY_STRING'] ?? '';
-			$path = trim($this->substr_replace_last($query_string, '', $uri), '/? ');
-			$segments = explode('/', $path);
-			$segmentCt = count($segments);
-			$params = [];
+				$uri = $_SERVER['REQUEST_URI'] ?? '';
+				$query_string = $_SERVER['QUERY_STRING'] ?? '';
+				$path = trim($this->substr_replace_last($query_string, '', $uri), '/? ');
+				$segments = explode('/', $path);
+				$segmentCt = count($segments);
+				$params = [];
 
-			$routes = $this->routes;
-			$routes = array_filter($routes, function(REST\Route $route) use ($method, $segmentCt) : bool {
-				return in_array($method, $route->methods) && ($segmentCt === count($route->path));
-			});
-			$routes = array_filter($routes, function(REST\Route $route) use ($segments, $segmentCt, &$params) : bool {
-				for ($i = 0; $i < $segmentCt; $i++) {
-					$segment = $route->path[$i];
-					if (preg_match('/^\{.*\}$/', $segment)) {
-						$regex = $route->replacements[$segment] ?? '/^.+$/';
-						if (!preg_match($regex, $segments[$i])) {
+				$routes = $this->routes;
+				$routes = array_filter($routes, function(REST\Route $route) use ($method, $segmentCt) : bool {
+					return in_array($method, $route->methods) && ($segmentCt === count($route->path));
+				});
+				$routes = array_filter($routes, function(REST\Route $route) use ($segments, $segmentCt, &$params) : bool {
+					for ($i = 0; $i < $segmentCt; $i++) {
+						$segment = $route->path[$i];
+						if (preg_match('/^\{.*\}$/', $segment)) {
+							$regex = $route->replacements[$segment] ?? '/^.+$/';
+							if (!preg_match($regex, $segments[$i])) {
+								return false;
+							}
+							$params[$segment] = $segments[$i];
+						}
+						else {
+							if ($segments[$i] !== $segment) {
+								return false;
+							}
+						}
+					}
+					return true;
+				});
+
+				$message = (object)[
+					'body' => new IO\InputBuffer(),
+					'method' => $method,
+					'path' => $path,
+					'params' => $params,
+				];
+
+				$routes = array_filter($routes, function(REST\Route $route) use ($message) : bool {
+					foreach ($route->when as $when) {
+						if (!$when($message)) {
 							return false;
 						}
-						$params[$segment] = $segments[$i];
 					}
-					else if ($segments[$i] !== $segment) {
-						return false;
-					}
-				}
-				return true;
-			});
+					return true;
+				});
 
-			$message = (object) [
-				'body' => new IO\InputBuffer(),
-				'method' => $method,
-				'path' => $path,
-				'params' => $params,
-			];
-
-			$routes = array_filter($routes, function(REST\Route $route) use($message) : bool {
-				foreach ($route->when as $when) {
-					if (!$when($message)) {
-						return false;
+				if (!empty($routes)) {
+					$pipeline = end($routes)->pipeline;
+					call_user_func($pipeline, $message);
+					foreach ($this->handlers['succeeded'] as $handler) {
+						$handler($message);
 					}
 				}
-				return true;
-			});
-
-			if (!empty($routes)) {
-				$pipeline = end($routes)->pipeline;
-				call_user_func($pipeline, $message);
-				foreach ($this->handlers as $handler) {
-					$handler($message);
+				else {
+					throw new Throwable\RouteNotFound\Exception('Unable to route message.');
 				}
 			}
-			else {
-				throw new Throwable\RouteNotFound\Exception();
+			catch (\Throwable $throwable) {
+				foreach ($this->handlers['errored'] as $handler) {
+					$handler($throwable);
+				}
 			}
 		}
 
