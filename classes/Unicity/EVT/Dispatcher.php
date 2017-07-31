@@ -70,11 +70,11 @@ namespace Unicity\EVT {
 		 * @return EVT\Dispatcher                                   a reference to this class
 		 */
 		public function subscribe(string $channel, callable $subscriber) : EVT\Dispatcher {
-			if (!isset($this->subscribers[$channel])) {
+			if (!isset($this->subscribers[$channel]) && !is_array($this->subscribers[$channel])) {
 				$this->subscribers[$channel] = [];
 			}
-			is_callable($subscriber, true, $key);
-			$this->subscribers[$channel][$key] = $subscriber;
+			$info = Core\DataType::info($subscriber);
+			$this->subscribers[$channel][$info->hash] = $subscriber;
 			return $this;
 		}
 
@@ -87,9 +87,9 @@ namespace Unicity\EVT {
 		 * @return EVT\Dispatcher                                   a reference to this class
 		 */
 		public function unsubscribe(string $channel, callable $subscriber) : EVT\Dispatcher {
-			if (isset($this->subscribers[$channel])) {
-				is_callable($subscriber, true, $key);
-				unset($this->subscribers[$channel][$key]);
+			if (isset($this->subscribers[$channel]) && is_array($this->subscribers[$channel])) {
+				$info = Core\DataType::info($subscriber);
+				unset($this->subscribers[$channel][$info->hash]);
 			}
 			return $this;
 		}
@@ -102,7 +102,7 @@ namespace Unicity\EVT {
 		 * @param mixed $payload                                    the payload to be published
 		 * @return EVT\Dispatcher                                   a reference to this class
 		 */
-		public function publish(string $channel, $payload) : EVT\Dispatcher {
+		public function publish(string $channel, $payload = null) : EVT\Dispatcher {
 			$this->queue->enqueue((object) [
 				'channel' => $channel,
 				'payload' => $payload,

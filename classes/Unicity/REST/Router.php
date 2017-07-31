@@ -128,9 +128,9 @@ namespace Unicity\REST {
 				}
 				return true;
 			});
-			$routes = array_filter($routes, function(REST\Route $route) use($path) : bool {
+			$routes = array_filter($routes, function(REST\Route $route) use($method, $path) : bool {
 				foreach ($route->when as $when) {
-					if (!$when($path)) {
+					if (!$when($method, $path)) {
 						return false;
 					}
 				}
