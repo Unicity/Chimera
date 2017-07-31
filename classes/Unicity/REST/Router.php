@@ -137,19 +137,13 @@ namespace Unicity\REST {
 			$path = trim($this->substr_replace_last($query_string, '', $uri), '/? ');
 			$segments = explode('/', $path);
 			$segmentCt = count($segments);
-			$args = [];
-
-			$message = (object) [
-				'body' => new IO\InputBuffer(),
-				'method' => $method,
-				'path' => $path,
-			];
+			$params = [];
 
 			$routes = $this->routes;
 			$routes = array_filter($routes, function(REST\Route $route) use ($method, $segmentCt) : bool {
 				return in_array($method, $route->methods) && ($segmentCt === count($route->path));
 			});
-			$routes = array_filter($routes, function(REST\Route $route) use ($segments, $segmentCt, &$args) : bool {
+			$routes = array_filter($routes, function(REST\Route $route) use ($segments, $segmentCt, &$params) : bool {
 				for ($i = 0; $i < $segmentCt; $i++) {
 					$segment = $route->path[$i];
 					if (preg_match('/^\{.*\}$/', $segment)) {
@@ -157,7 +151,7 @@ namespace Unicity\REST {
 						if (!preg_match($regex, $segments[$i])) {
 							return false;
 						}
-						$args[$i] = $segments[$i];
+						$params[$segment] = $segments[$i];
 					}
 					else if ($segments[$i] !== $segment) {
 						return false;
@@ -165,9 +159,16 @@ namespace Unicity\REST {
 				}
 				return true;
 			});
+
+			$message = (object) [
+				'body' => new IO\InputBuffer(),
+				'method' => $method,
+				'path' => $path,
+				'params' => $params,
+			];
+
 			$routes = array_filter($routes, function(REST\Route $route) use($message) : bool {
 				foreach ($route->when as $when) {
-					var_dump('here');
 					if (!$when($message)) {
 						return false;
 					}
@@ -177,7 +178,7 @@ namespace Unicity\REST {
 
 			if (!empty($routes)) {
 				$pipeline = end($routes)->pipeline;
-				call_user_func($pipeline, array_values($args));
+				call_user_func($pipeline, $message);
 				foreach ($this->handlers as $handler) {
 					$handler($message);
 				}
