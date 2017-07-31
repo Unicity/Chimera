@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\SOAP {
 
 	use \Unicity\EVT;
 
