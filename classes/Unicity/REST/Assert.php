@@ -20,20 +20,34 @@ declare(strict_types = 1);
 
 namespace Unicity\REST {
 
+	use \Unicity\Core;
 	use \Unicity\IO;
 
 	class Assert {
 
-		public static function isJSON(string $method, string $path) : bool {
-			$input = new IO\InputBuffer();
-			json_decode($input->getBytes());
+		#region Assertions
+
+		public static function isJSON(\stdClass $message) : bool {
+			json_decode(static::getBody($message));
 			return (json_last_error() == JSON_ERROR_NONE);
 		}
 
-		public static function isXML(string $method, string $path) : bool {
-			$input = new IO\InputBuffer();
-			return (@simplexml_load_string($input) !== false);
+		public static function isXML(\stdClass $message) : bool {
+			return (@simplexml_load_string(static::getBody($message)) !== false);
 		}
+
+		#endregion
+
+		#region Helpers
+
+		private static function getBody(\stdClass $message) : string {
+			if (is_object($message->body) && ($message->body instanceof IO\File)) {
+				return $message->body->getBytes();
+			}
+			return Core\Convert::toString($message->body);
+		}
+
+		#endregion
 
 	}
 

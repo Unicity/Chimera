@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\REST {
 
 	use \Unicity\Core;
+	use \Unicity\IO;
 	use \Unicity\REST;
 	use \Unicity\Throwable;
 
@@ -138,6 +139,12 @@ namespace Unicity\REST {
 			$segmentCt = count($segments);
 			$args = [];
 
+			$message = (object) [
+				'body' => new IO\InputBuffer(),
+				'method' => $method,
+				'path' => $path,
+			];
+
 			$routes = $this->routes;
 			$routes = array_filter($routes, function(REST\Route $route) use ($method, $segmentCt) : bool {
 				return in_array($method, $route->methods) && ($segmentCt === count($route->path));
@@ -158,9 +165,10 @@ namespace Unicity\REST {
 				}
 				return true;
 			});
-			$routes = array_filter($routes, function(REST\Route $route) use($method, $path) : bool {
+			$routes = array_filter($routes, function(REST\Route $route) use($message) : bool {
 				foreach ($route->when as $when) {
-					if (!$when($method, $path)) {
+					var_dump('here');
+					if (!$when($message)) {
 						return false;
 					}
 				}
@@ -171,7 +179,7 @@ namespace Unicity\REST {
 				$pipeline = end($routes)->pipeline;
 				call_user_func($pipeline, array_values($args));
 				foreach ($this->handlers as $handler) {
-					$handler($method, $path);
+					$handler($message);
 				}
 			}
 			else {

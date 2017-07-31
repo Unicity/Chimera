@@ -90,7 +90,7 @@ namespace Unicity\IO {
 					$this->temporary = true;
 				}
 				else if ($stdin) {
-					$buffer = new InputBuffer();
+					$buffer = new IO\InputBuffer();
 					$this->uri = $buffer->uri;
 					$this->temporary = false;
 				}
