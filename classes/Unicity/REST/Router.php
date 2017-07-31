@@ -73,7 +73,7 @@ namespace Unicity\REST {
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onRoute(REST\Route $route) : REST\Router {
-			$this->routes = $route;
+			$this->routes[] = $route;
 			return $this;
 		}
 
