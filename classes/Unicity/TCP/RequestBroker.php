@@ -18,13 +18,13 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\TCP {
 
 	use \Unicity\Core;
 	use \Unicity\EVT;
-	use \Unicity\HTTP;
+	use \Unicity\TCP;
 
-	class Request extends Core\Object{
+	class RequestBroker extends Core\Object{
 
 		/**
 		 * This variable stores a reference to the dispatcher.
@@ -58,9 +58,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the initialization handler to be added
-		 * @return HTTP\Request                                     a reference to this class
+		 * @return TCP\RequestBroker                                a reference to this class
 		 */
-		public function onInitiation(callable $handler) : HTTP\Request {
+		public function onInitiation(callable $handler) : TCP\RequestBroker {
 			$this->dispatcher->subscribe('requestInitiated', $handler);
 			return $this;
 		}
@@ -70,9 +70,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the success handler to be added
-		 * @return HTTP\Request                                     a reference to this class
+		 * @return TCP\RequestBroker                                a reference to this class
 		 */
-		public function onSuccess(callable $handler) : HTTP\Request {
+		public function onSuccess(callable $handler) : TCP\RequestBroker {
 			$this->dispatcher->subscribe('requestSucceeded', $handler);
 			return $this;
 		}
@@ -82,9 +82,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the failure handler to be added
-		 * @return HTTP\Request                                     a reference to this class
+		 * @return TCP\RequestBroker                                a reference to this class
 		 */
-		public function onFailure(callable $handler) : HTTP\Request {
+		public function onFailure(callable $handler) : TCP\RequestBroker {
 			$this->dispatcher->subscribe('requestFailed', $handler);
 			return $this;
 		}
@@ -99,57 +99,37 @@ namespace Unicity\HTTP {
 		public function execute(\stdClass $request) : bool {
 			$this->dispatcher->publish('requestInitiated', $request);
 
-			$resource = curl_init();
-
+			$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
 			if (is_resource($resource)) {
-				curl_setopt($resource, CURLOPT_POST, 1);
-				curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-				curl_setopt($resource, CURLOPT_URL, $request->url);
-				curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
-				$body = curl_exec($resource);
-				if (curl_errno($resource)) {
-					$error = curl_error($resource);
-					@curl_close($resource);
-					$response = (object) [
-						'body' => $error,
-						'headers' => [
-							'http_code' => 503,
-						],
-						'status' => 503,
-						'url' => $request->url,
-					];
-					$this->dispatcher->publish('requestFailed', $response);
-					return false;
-				}
-				else {
-					$headers = curl_getinfo($resource);
-					@curl_close($resource);
-					$response = (object)[
-						'body' => $body,
-						'headers' => $headers,
-						'status' => $headers['http_code'],
-						'url' => $request->url,
-					];
-					if (($response->status >= 200) && ($response->status < 300)) {
-						$this->dispatcher->publish('requestSucceeded', $response);
-						return true;
+				if (isset($request->headers) && !empty($request->headers)) {
+					foreach ($request->headers as $name => $value) {
+						fwrite($resource, $name . ': ' . trim($value) . "\r\n");
 					}
-					else {
-						$this->dispatcher->publish('requestFailed', $response);
-						return false;
-					}
+					fwrite($resource, "\r\n");
 				}
+				fwrite($resource, $request->body);
+				fwrite($resource, "\r\n");
+				$body = '';
+				while (!feof($resource)) {
+					$body .= fgets($resource, 4096);
+				}
+				@fclose($resource);
+				$response = (object) [
+					'body' => $body,
+					'host' => $request->host,
+					'port' => $request->port,
+				];
+				$this->dispatcher->publish('requestSucceeded', $response);
+				return true;
 			}
 			else {
 				$response = (object) [
-					'body' => 'Failed to create cURL resource.',
+					'body' => $errstr,
 					'headers' => [
-						'http_code' => 503,
+						'error_code' => $errno,
 					],
-					'status' => 503,
-					'url' => $request->url,
+					'host' => $request->host,
+					'port' => $request->port,
 				];
 				$this->dispatcher->publish('requestFailed', $response);
 				return false;

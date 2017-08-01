@@ -24,7 +24,7 @@ namespace Unicity\SOAP {
 	use \Unicity\EVT;
 	use \Unicity\SOAP;
 
-	class Request extends Core\Object{
+	class RequestBroker extends Core\Object{
 
 		/**
 		 * This variable stores a reference to the dispatcher.
@@ -58,9 +58,9 @@ namespace Unicity\SOAP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the initialization handler to be added
-		 * @return SOAP\Request                                     a reference to this class
+		 * @return SOAP\RequestBroker                               a reference to this class
 		 */
-		public function onInitiation(callable $handler) : SOAP\Request {
+		public function onInitiation(callable $handler) : SOAP\RequestBroker {
 			$this->dispatcher->subscribe('requestInitiated', $handler);
 			return $this;
 		}
@@ -70,9 +70,9 @@ namespace Unicity\SOAP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the success handler to be added
-		 * @return SOAP\Request                                     a reference to this class
+		 * @return SOAP\RequestBroker                               a reference to this class
 		 */
-		public function onSuccess(callable $handler) : SOAP\Request {
+		public function onSuccess(callable $handler) : SOAP\RequestBroker {
 			$this->dispatcher->subscribe('requestSucceeded', $handler);
 			return $this;
 		}
@@ -82,9 +82,9 @@ namespace Unicity\SOAP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the failure handler to be added
-		 * @return SOAP\Request                                     a reference to this class
+		 * @return SOAP\RequestBroker                               a reference to this class
 		 */
-		public function onFailure(callable $handler) : SOAP\Request {
+		public function onFailure(callable $handler) : SOAP\RequestBroker {
 			$this->dispatcher->subscribe('requestFailed', $handler);
 			return $this;
 		}
