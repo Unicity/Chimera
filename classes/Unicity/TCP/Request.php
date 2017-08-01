@@ -20,14 +20,84 @@ declare(strict_types = 1);
 
 namespace Unicity\TCP {
 
+	use \Unicity\Core;
 	use \Unicity\EVT;
+	use \Unicity\TCP;
 
-	class Request {
+	class Request extends Core\Object{
 
-		public static function execute(\stdClass $request, string $dispatcher = null) : bool {
-			if ($dispatcher !== null) {
-				EVT\Dispatcher::instance($dispatcher)->publish('requestInitiated', $request);
-			}
+		/**
+		 * This variable stores a reference to the dispatcher.
+		 *
+		 * @access protected
+		 * @var EVT\Dispatcher
+		 */
+		protected $dispatcher;
+
+		/**
+		 * This constructor initializes the class.
+		 *
+		 * @access public
+		 */
+		public function __construct() {
+			$this->dispatcher = new EVT\Dispatcher();
+		}
+
+		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->dispatcher);
+		}
+
+		/**
+		 * This method adds an initialization handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the initialization handler to be added
+		 * @return TCP\Request                                      a reference to this class
+		 */
+		public function onInitiation(callable $handler) : TCP\Request {
+			$this->dispatcher->subscribe('requestInitiated', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a success handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the success handler to be added
+		 * @return TCP\Request                                      a reference to this class
+		 */
+		public function onSuccess(callable $handler) : TCP\Request {
+			$this->dispatcher->subscribe('requestSucceeded', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a failure handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the failure handler to be added
+		 * @return TCP\Request                                      a reference to this class
+		 */
+		public function onFailure(callable $handler) : TCP\Request {
+			$this->dispatcher->subscribe('requestFailed', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method executes the given request.
+		 *
+		 * @access public
+		 * @param \stdClass $request                                the request to be sent
+		 * @return bool                                             whether the request was successful
+		 */
+		public function execute(\stdClass $request) : bool {
+			$this->dispatcher->publish('requestInitiated', $request);
 
 			$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
 			if (is_resource($resource)) {
@@ -44,28 +114,24 @@ namespace Unicity\TCP {
 					$body .= fgets($resource, 4096);
 				}
 				@fclose($resource);
-				if ($dispatcher !== null) {
-					$response = (object) [
-						'body' => $body,
-						'host' => $request->host,
-						'port' => $request->port,
-					];
-					EVT\Dispatcher::instance($dispatcher)->publish('requestSucceeded', $response);
-				}
+				$response = (object) [
+					'body' => $body,
+					'host' => $request->host,
+					'port' => $request->port,
+				];
+				$this->dispatcher->publish('requestSucceeded', $response);
 				return true;
 			}
 			else {
-				if ($dispatcher !== null) {
-					$response = (object) [
-						'body' => $errstr,
-						'headers' => [
-							'error_code' => $errno,
-						],
-						'host' => $request->host,
-						'port' => $request->port,
-					];
-					EVT\Dispatcher::instance($dispatcher)->publish('requestFailed', $response);
-				}
+				$response = (object) [
+					'body' => $errstr,
+					'headers' => [
+						'error_code' => $errno,
+					],
+					'host' => $request->host,
+					'port' => $request->port,
+				];
+				$this->dispatcher->publish('requestFailed', $response);
 				return false;
 			}
 		}

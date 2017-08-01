@@ -20,14 +20,84 @@ declare(strict_types = 1);
 
 namespace Unicity\SOAP {
 
+	use \Unicity\Core;
 	use \Unicity\EVT;
+	use \Unicity\SOAP;
 
-	class Request {
+	class Request extends Core\Object{
 
-		public static function execute(\stdClass $request, string $dispatcher = null) : bool {
-			if ($dispatcher !== null) {
-				EVT\Dispatcher::instance($dispatcher)->publish('requestInitiated', $request);
-			}
+		/**
+		 * This variable stores a reference to the dispatcher.
+		 *
+		 * @access protected
+		 * @var EVT\Dispatcher
+		 */
+		protected $dispatcher;
+
+		/**
+		 * This constructor initializes the class.
+		 *
+		 * @access public
+		 */
+		public function __construct() {
+			$this->dispatcher = new EVT\Dispatcher();
+		}
+
+		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->dispatcher);
+		}
+
+		/**
+		 * This method adds an initialization handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the initialization handler to be added
+		 * @return SOAP\Request                                     a reference to this class
+		 */
+		public function onInitiation(callable $handler) : SOAP\Request {
+			$this->dispatcher->subscribe('requestInitiated', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a success handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the success handler to be added
+		 * @return SOAP\Request                                     a reference to this class
+		 */
+		public function onSuccess(callable $handler) : SOAP\Request {
+			$this->dispatcher->subscribe('requestSucceeded', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a failure handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the failure handler to be added
+		 * @return SOAP\Request                                     a reference to this class
+		 */
+		public function onFailure(callable $handler) : SOAP\Request {
+			$this->dispatcher->subscribe('requestFailed', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method executes the given request.
+		 *
+		 * @access public
+		 * @param \stdClass $request                                the request to be sent
+		 * @return bool                                             whether the request was successful
+		 */
+		public function execute(\stdClass $request) : bool {
+			$this->dispatcher->publish('requestInitiated', $request);
 
 			$resource = curl_init();
 
@@ -42,17 +112,15 @@ namespace Unicity\SOAP {
 				if (curl_errno($resource)) {
 					$error = curl_error($resource);
 					@curl_close($resource);
-					if ($dispatcher !== null) {
-						$response = (object) [
-							'body' => $error,
-							'headers' => [
-								'http_code' => 503,
-							],
-							'status' => 503,
-							'url' => $request->url,
-						];
-						EVT\Dispatcher::instance($dispatcher)->publish('requestFailed', $response);
-					}
+					$response = (object) [
+						'body' => $error,
+						'headers' => [
+							'http_code' => 503,
+						],
+						'status' => 503,
+						'url' => $request->url,
+					];
+					$this->dispatcher->publish('requestFailed', $response);
 					return false;
 				}
 				else {
@@ -65,31 +133,25 @@ namespace Unicity\SOAP {
 						'url' => $request->url,
 					];
 					if (($response->status >= 200) && ($response->status < 300)) {
-						if ($dispatcher !== null) {
-							EVT\Dispatcher::instance($dispatcher)->publish('requestSucceeded', $response);
-						}
+						$this->dispatcher->publish('requestSucceeded', $response);
 						return true;
 					}
 					else {
-						if ($dispatcher !== null) {
-							EVT\Dispatcher::instance($dispatcher)->publish('requestFailed', $response);
-						}
+						$this->dispatcher->publish('requestFailed', $response);
 						return false;
 					}
 				}
 			}
 			else {
-				if ($dispatcher !== null) {
-					$response = (object) [
-						'body' => 'Failed to create cURL resource.',
-						'headers' => [
-							'http_code' => 503,
-						],
-						'status' => 503,
-						'url' => $request->url,
-					];
-					EVT\Dispatcher::instance($dispatcher)->publish('requestFailed', $response);
-				}
+				$response = (object) [
+					'body' => 'Failed to create cURL resource.',
+					'headers' => [
+						'http_code' => 503,
+					],
+					'status' => 503,
+					'url' => $request->url,
+				];
+				$this->dispatcher->publish('requestFailed', $response);
 				return false;
 			}
 		}

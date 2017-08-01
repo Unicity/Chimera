@@ -62,6 +62,17 @@ namespace Unicity\EVT {
 		}
 
 		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->subscribers);
+			unset($this->queue);
+		}
+
+		/**
 		 * This method adds a subscriber to receive payloads on the specified channel.
 		 *
 		 * @access public
