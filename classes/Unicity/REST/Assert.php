@@ -27,11 +27,55 @@ namespace Unicity\REST {
 
 		#region Assertions
 
+		/**
+		 * This method returns whether the message body contains JSON.
+		 *
+		 * @access public
+		 * @static
+		 * @param \stdClass $message                                the message to be evaluated
+		 * @return bool                                             whether the message body contains
+		 *                                                          JSON
+		 */
 		public static function isJSON(\stdClass $message) : bool {
 			json_decode(static::getBody($message));
 			return (json_last_error() == JSON_ERROR_NONE);
 		}
 
+		/**
+		 * This method returns whether the message body contains a URL.
+		 *
+		 * @access public
+		 * @static
+		 * @param \stdClass $message                                the message to be evaluated
+		 * @return bool                                             whether the message body contains
+		 *                                                          a URL
+		 */
+		public static function isURL(\stdClass $message) : bool {
+			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL);
+		}
+
+		/**
+		 * This method returns whether the message body contains a URL with a a query string.
+		 *
+		 * @access public
+		 * @static
+		 * @param \stdClass $message                                the message to be evaluated
+		 * @return bool                                             whether the message body contains
+		 *                                                          a URL with a query string
+		 */
+		public static function isURLWithQueryString(\stdClass $message) : bool {
+			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
+		}
+
+		/**
+		 * This method returns whether the message body contains XML.
+		 *
+		 * @access public
+		 * @static
+		 * @param \stdClass $message                                the message to be evaluated
+		 * @return bool                                             whether the message body contains
+		 *                                                          XML
+		 */
 		public static function isXML(\stdClass $message) : bool {
 			return (@simplexml_load_string(static::getBody($message)) !== false);
 		}
@@ -40,7 +84,14 @@ namespace Unicity\REST {
 
 		#region Helpers
 
-		private static function getBody(\stdClass $message) : string {
+		/**
+		 * This method returns the message body as a string.
+		 *
+		 * @access protected
+		 * @param \stdClass $message                                the message to be processed
+		 * @return string                                           the message body as a string
+		 */
+		protected static function getBody(\stdClass $message) : string {
 			if (is_object($message->body) && ($message->body instanceof IO\File)) {
 				return $message->body->getBytes();
 			}
