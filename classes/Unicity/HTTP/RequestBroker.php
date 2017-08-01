@@ -102,12 +102,26 @@ namespace Unicity\HTTP {
 			$resource = curl_init();
 
 			if (is_resource($resource)) {
-				curl_setopt($resource, CURLOPT_POST, 1);
 				curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
 				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 				curl_setopt($resource, CURLOPT_URL, $request->url);
-				curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+
+				$method = strtoupper($request->method);
+				switch ($method) {
+					case 'GET':
+						// do nothing
+						break;
+					case 'POST':
+						curl_setopt($resource, CURLOPT_POST, 1);
+						curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+						break;
+					default:
+						curl_setopt($resource, CURLOPT_CUSTOMREQUEST, $method);
+						curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+						break;
+				}
+
 				$body = curl_exec($resource);
 				if (curl_errno($resource)) {
 					$error = curl_error($resource);
