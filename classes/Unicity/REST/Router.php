@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\REST {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 	use \Unicity\IO;
 	use \Unicity\REST;
 	use \Unicity\Throwable;
@@ -36,10 +37,12 @@ namespace Unicity\REST {
 		protected static $singleton = null;
 
 		/**
-		 * This variable stores a list of success handlers.
-		 * @var array
+		 * This variable stores a reference to the dispatcher.
+		 *
+		 * @access protected
+		 * @var EVT\Dispatcher
 		 */
-		protected $handlers;
+		protected $dispatcher;
 
 		/**
 		 * This variable stores the routes.
@@ -55,10 +58,7 @@ namespace Unicity\REST {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->handlers = [
-				'succeeded' => [],
-				'errored' => [],
-			];
+			$this->dispatcher = new EVT\Dispatcher();
 			$this->routes = [];
 		}
 
@@ -69,7 +69,7 @@ namespace Unicity\REST {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->handlers);
+			unset($this->dispatcher);
 			unset($this->routes);
 		}
 
@@ -88,14 +88,14 @@ namespace Unicity\REST {
 		}
 
 		/**
-		 * This method adds a route.
+		 * This method adds an exception handler.
 		 *
 		 * @access public
-		 * @param REST\Route $route                                 the route to be added
+		 * @param callable $handler                                 the exception handler to be added
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onException(callable $handler) : REST\Router {
-			$this->handlers['errored'][] = $handler;
+			$this->dispatcher->subscribe('routeErrored', $handler);
 			return $this;
 		}
 
@@ -133,7 +133,7 @@ namespace Unicity\REST {
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onSuccess(callable $handler) : REST\Router {
-			$this->handlers['succeeded'][] = $handler;
+			$this->dispatcher->subscribe('routeSucceeded', $handler);
 			return $this;
 		}
 
@@ -197,18 +197,14 @@ namespace Unicity\REST {
 				if (!empty($routes)) {
 					$pipeline = end($routes)->pipeline;
 					call_user_func($pipeline, $message);
-					foreach ($this->handlers['succeeded'] as $handler) {
-						$handler($message);
-					}
+					$this->dispatcher->publish('routeSucceeded', $message);
 				}
 				else {
 					throw new Throwable\RouteNotFound\Exception('Unable to route message.');
 				}
 			}
 			catch (\Throwable $throwable) {
-				foreach ($this->handlers['errored'] as $handler) {
-					$handler($throwable);
-				}
+				$this->dispatcher->publish('routeErrored', $throwable);
 			}
 		}
 
