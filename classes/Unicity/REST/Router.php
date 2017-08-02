@@ -183,6 +183,7 @@ namespace Unicity\REST {
 					'method' => $method,
 					'path' => $path,
 					'params' => $params,
+					'uri' => $uri,
 				];
 
 				$routes = array_filter($routes, function(REST\Route $route) use ($message) : bool {

@@ -174,9 +174,18 @@ namespace Unicity\HTTP {
 			$resource = curl_init();
 
 			if (is_resource($resource)) {
+				curl_setopt($resource, CURLOPT_HEADER, false);
+				if (isset($request->headers) && !empty($request->headers)) {
+					$headers = array();
+					foreach ($request->headers as $name => $value) {
+						$headers[] = "{$name}: {$value}";
+					}
+					curl_setopt($resource, CURLOPT_HTTPHEADER, $headers);
+				}
+
 				curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($resource, CURLOPT_URL, $request->url);
 
 				$method = strtoupper($request->method);
@@ -186,11 +195,15 @@ namespace Unicity\HTTP {
 						break;
 					case 'POST':
 						curl_setopt($resource, CURLOPT_POST, 1);
-						curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+						if (isset($request->body)) {
+							curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+						}
 						break;
 					default:
 						curl_setopt($resource, CURLOPT_CUSTOMREQUEST, $method);
-						curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+						if (isset($request->body)) {
+							curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+						}
 						break;
 				}
 

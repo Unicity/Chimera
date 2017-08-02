@@ -18,12 +18,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\REST {
+namespace Unicity\REST\Body {
 
 	use \Unicity\Core;
 	use \Unicity\IO;
 
-	class Assert {
+	class Assert extends Core\Object {
 
 		#region Assertions
 
@@ -36,7 +36,7 @@ namespace Unicity\REST {
 		 * @return bool                                             whether the message body contains
 		 *                                                          JSON
 		 */
-		public static function isJSON(\stdClass $message) : bool {
+		public static function hasJSON(\stdClass $message) : bool {
 			json_decode(static::getBody($message));
 			return (json_last_error() == JSON_ERROR_NONE);
 		}
@@ -50,7 +50,7 @@ namespace Unicity\REST {
 		 * @return bool                                             whether the message body contains
 		 *                                                          a URL
 		 */
-		public static function isURL(\stdClass $message) : bool {
+		public static function hasURL(\stdClass $message) : bool {
 			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL);
 		}
 
@@ -63,7 +63,7 @@ namespace Unicity\REST {
 		 * @return bool                                             whether the message body contains
 		 *                                                          a URL with a query string
 		 */
-		public static function isURLWithQueryString(\stdClass $message) : bool {
+		public static function hasURLWithQueryString(\stdClass $message) : bool {
 			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
 		}
 
@@ -76,7 +76,7 @@ namespace Unicity\REST {
 		 * @return bool                                             whether the message body contains
 		 *                                                          XML
 		 */
-		public static function isXML(\stdClass $message) : bool {
+		public static function hasXML(\stdClass $message) : bool {
 			return (@simplexml_load_string(static::getBody($message)) !== false);
 		}
 
