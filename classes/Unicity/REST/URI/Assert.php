@@ -36,7 +36,7 @@ namespace Unicity\REST\URI {
 		 *                                                          a URL with a query string
 		 */
 		public static function hasQueryString(\stdClass $message) : bool {
-			return (bool) filter_var($message->uri, FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
+			return (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']));
 		}
 
 		#endregion
