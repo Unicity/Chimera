@@ -138,18 +138,19 @@ namespace Unicity\REST {
 		}
 
 		/**
-		 * This method runs the router by trying to match a route.
+		 * This method executes the router by trying to match a route.
 		 *
 		 * @access public
+		 * @param array $request                                    the request message (i.e. $_SERVER)
 		 * @throws Throwable\RouteNotFound\Exception                indicates that no route could be
 		 *                                                          matched
 		 */
-		public function run() : void {
+		public function execute(array $request) : void {
 			try {
-				$method = (isset($_SERVER['REQUEST_METHOD'])) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+				$method = (isset($request['REQUEST_METHOD'])) ? strtoupper($request['REQUEST_METHOD']) : 'GET';
 
-				$uri = $_SERVER['REQUEST_URI'] ?? '';
-				$query_string = $_SERVER['QUERY_STRING'] ?? '';
+				$uri = $request['REQUEST_URI'] ?? '';
+				$query_string = $request['QUERY_STRING'] ?? '';
 				$path = trim($this->substr_replace_last($query_string, '', $uri), '/? ');
 				$segments = explode('/', $path);
 				$segmentCt = count($segments);
