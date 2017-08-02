@@ -90,6 +90,18 @@ namespace Unicity\TCP {
 		}
 
 		/**
+		 * This method adds a completion handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the completion handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onCompletion(callable $handler) : TCP\RequestBroker {
+			$this->dispatcher->subscribe('requestCompleted', $handler);
+			return $this;
+		}
+
+		/**
 		 * This method executes the given request.
 		 *
 		 * @access public
@@ -120,6 +132,7 @@ namespace Unicity\TCP {
 					'port' => $request->port,
 				];
 				$this->dispatcher->publish('requestSucceeded', $response);
+				$this->dispatcher->publish('requestCompleted', $response);
 				return true;
 			}
 			else {
@@ -132,6 +145,7 @@ namespace Unicity\TCP {
 					'port' => $request->port,
 				];
 				$this->dispatcher->publish('requestFailed', $response);
+				$this->dispatcher->publish('requestCompleted', $response);
 				return false;
 			}
 		}
