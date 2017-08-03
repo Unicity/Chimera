@@ -145,7 +145,10 @@ namespace Unicity\REST {
 		 * @throws Throwable\RouteNotFound\Exception                indicates that no route could be
 		 *                                                          matched
 		 */
-		public function execute(array $request) : void {
+		public function execute(array $request = null) : void {
+			if ($request === null) {
+				$request = $_SERVER;
+			}
 			try {
 				$method = (isset($request['REQUEST_METHOD'])) ? strtoupper($request['REQUEST_METHOD']) : 'GET';
 
