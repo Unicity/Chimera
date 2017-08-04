@@ -42,6 +42,32 @@ namespace Unicity\REST\Body {
 		}
 
 		/**
+		 * This method returns whether the message body contains an SQL statement.
+		 *
+		 * @access public
+		 * @static
+		 * @param \stdClass $message                                the message to be evaluated
+		 * @return bool                                             whether the message body contains
+		 *                                                          an SQL statement
+		 */
+		public static function hasSQLStatement(\stdClass $message) : bool {
+			$body = static::getBody($message);
+			if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
+				return true;
+			}
+			if (preg_match('/^SELECT.+FROM/i', $body)) {
+				return true;
+			}
+			if (preg_match('/^UPDATE.+SET/i', $body)) {
+				return true;
+			}
+			if (preg_match('/^DELETE.+FROM/i', $body)) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
 		 * This method returns whether the message body contains a URL.
 		 *
 		 * @access public
