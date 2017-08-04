@@ -50,7 +50,7 @@ namespace Unicity\REST\Body {
 		 * @return bool                                             whether the message body contains
 		 *                                                          an SQL statement
 		 */
-		public static function hasSQLStatement(\stdClass $message) : bool {
+		public static function hasSQL(\stdClass $message) : bool {
 			$body = static::getBody($message);
 			if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
 				return true;
