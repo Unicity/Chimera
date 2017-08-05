@@ -187,6 +187,9 @@ namespace Unicity\SOAP {
 				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($resource, CURLOPT_URL, $request->url);
+				if (preg_match('/^https/', $request->url)) {
+					curl_setopt($resource, CURLOPT_SSL_VERIFYHOST, 0);
+				}
 
 				$method = strtoupper($request->method);
 				switch ($method) {
@@ -205,6 +208,12 @@ namespace Unicity\SOAP {
 							curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
 						}
 						break;
+				}
+
+				if (isset($request->options) && !empty($request->options)) {
+					foreach ($request->options as $name => $value) {
+						curl_setopt($resource, $name, $value);
+					}
 				}
 
 				$body = curl_exec($resource);
