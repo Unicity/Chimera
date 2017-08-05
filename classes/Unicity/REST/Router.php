@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\REST {
 
+	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\EVT;
 	use \Unicity\IO;
@@ -71,6 +72,27 @@ namespace Unicity\REST {
 			parent::__destruct();
 			unset($this->dispatcher);
 			unset($this->routes);
+		}
+
+		/**
+		 * This method adds routes from a config file.
+		 *
+		 * @access public
+		 * @param IO\File $file                                     the route config file
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function addRoutes(IO\File $file) : REST\Router {
+			$records = Config\Inc\Reader::load($file)->read();
+			foreach ($records as $record) {
+				$route = REST\Route::request($record['method'], $record['path'], $record['patterns'] ?? []);
+				if (isset($record['when']) && is_array($record['when'])) {
+					foreach ($record['when'] as $when) {
+						$route->when($when);
+					}
+				}
+				$this->onRoute($route->to($record['to']));
+			}
+			return $this;
 		}
 
 		/**
