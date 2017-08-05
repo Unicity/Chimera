@@ -40,7 +40,7 @@ namespace Unicity\REST {
 		 * @param string $method                                    the method(s) to be routed
 		 * @param string $path                                      the path to be routed
 		 * @param array $patterns                                   the patterns for evaluating path
-		 *                                                          tokens
+		 *                                                          segments
 		 */
 		public function __construct(string $method, string $path, array $patterns) {
 			$this->route = new REST\Route(

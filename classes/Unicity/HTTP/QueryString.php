@@ -22,7 +22,7 @@ namespace Unicity\HTTP {
 
 	use \Unicity\Core;
 
-	class QueryBuilder extends Core\Object {
+	class QueryString extends Core\Object {
 
 		public static function build(array $parameters) {
 			$query_string = http_build_query($parameters);
