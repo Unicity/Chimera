@@ -24,7 +24,7 @@ namespace Unicity\SOAP {
 	use \Unicity\EVT;
 	use \Unicity\SOAP;
 
-	class RequestBroker extends Core\Object{
+	class RequestBroker extends Core\Object {
 
 		/**
 		 * This variable stores the HTTP status codes and descriptions.

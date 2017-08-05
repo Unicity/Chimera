@@ -24,7 +24,7 @@ namespace Unicity\TCP {
 	use \Unicity\EVT;
 	use \Unicity\TCP;
 
-	class RequestBroker extends Core\Object{
+	class RequestBroker extends Core\Object {
 
 		/**
 		 * This variable stores a reference to the dispatcher.
