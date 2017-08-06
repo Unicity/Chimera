@@ -119,7 +119,7 @@ namespace Unicity\REST {
 		 * @param IO\File $file                                     the route config file
 		 * @return REST\Router                                      a reference to this class
 		 */
-		public function onSetup(IO\File $file) : REST\Router {
+		public function onRouteConfiguration(IO\File $file) : REST\Router {
 			$records = Config\Inc\Reader::load($file)->read();
 			foreach ($records as $record) {
 				$route = REST\Route::request($record['method'], $record['path'], $record['patterns'] ?? []);
