@@ -18,21 +18,10 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\SOAP {
 
-	use \Unicity\EVT;
+	use \Unicity\HTTP;
 
-	class RequestMessage extends EVT\Message {
-
-		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
-				'body' => '',
-				'headers' => [],
-				'method' => 'GET',
-				'url' => '',
-			]));
-		}
-
-	}
+	class ResponseMessage extends HTTP\ResponseMessage { }
 
 }

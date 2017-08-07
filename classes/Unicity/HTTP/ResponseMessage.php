@@ -91,6 +91,7 @@ namespace Unicity\HTTP {
 				'protocol' => 'HTTP/1.1',
 				'status' => 200,
 				'statusText' => 'OK',
+				'url' => '',
 			]));
 		}
 

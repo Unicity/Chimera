@@ -23,6 +23,7 @@ namespace Unicity\REST {
 	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\EVT;
+	use \Unicity\HTTP;
 	use \Unicity\IO;
 	use \Unicity\REST;
 	use \Unicity\Throwable;
@@ -204,13 +205,13 @@ namespace Unicity\REST {
 					return true;
 				});
 
-				$message = (object)[
+				$message = new HTTP\ResponseMessage([
 					'body' => new IO\InputBuffer(),
 					'method' => $method,
 					'path' => $path,
 					'params' => $params,
 					'uri' => $uri,
-				];
+				]);
 
 				$routes = array_filter($routes, function(REST\Route $route) use ($message) : bool {
 					foreach ($route->when as $when) {

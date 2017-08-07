@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\TCP {
 
 	use \Unicity\EVT;
 
@@ -28,8 +28,8 @@ namespace Unicity\HTTP {
 			parent::__construct(array_merge($map, [
 				'body' => '',
 				'headers' => [],
-				'method' => 'GET',
-				'url' => '',
+				'host' => '',
+				'port' => 80,
 			]));
 		}
 

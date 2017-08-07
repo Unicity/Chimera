@@ -105,10 +105,10 @@ namespace Unicity\TCP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param EVT\Message $request                              the request to be sent
+		 * @param TCP\RequestMessage $request                       the request to be sent
 		 * @return bool                                             whether the request was successful
 		 */
-		public function execute(EVT\Message $request) : bool {
+		public function execute(TCP\RequestMessage $request) : bool {
 			$this->dispatcher->publish('requestInitiated', $request);
 
 			$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
@@ -126,24 +126,24 @@ namespace Unicity\TCP {
 					$body .= fgets($resource, 4096);
 				}
 				@fclose($resource);
-				$response = (object) [
+				$response = new TCP\ResponseMessage([
 					'body' => $body,
 					'host' => $request->host,
 					'port' => $request->port,
-				];
+				]);
 				$this->dispatcher->publish('requestSucceeded', $response);
 				$this->dispatcher->publish('requestCompleted', $response);
 				return true;
 			}
 			else {
-				$response = (object) [
+				$response = new TCP\ResponseMessage([
 					'body' => $errstr,
 					'headers' => [
 						'error_code' => $errno,
 					],
 					'host' => $request->host,
 					'port' => $request->port,
-				];
+				]);
 				$this->dispatcher->publish('requestFailed', $response);
 				$this->dispatcher->publish('requestCompleted', $response);
 				return false;
