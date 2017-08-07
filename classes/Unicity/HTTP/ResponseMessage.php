@@ -92,7 +92,7 @@ namespace Unicity\HTTP {
 				'status' => 200,
 				'statusText' => 'OK',
 				'url' => '',
-			]), $map);
+			], $map));
 		}
 
 		public static function getStatusText(int $status) : string {
