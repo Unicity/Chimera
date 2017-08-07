@@ -94,8 +94,8 @@ namespace Unicity\HTTP {
 			]));
 		}
 
-		public static function getStatusText(int $status) {
-			return static::$statuses[$status];
+		public static function getStatusText(int $status) : string {
+			return static::$statuses[$status] ?? '';
 		}
 
 	}
