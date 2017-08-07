@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Common;
+	use \Unicity\EVT;
 
 	/**
 	 * This class creates an immutable message.
@@ -237,6 +238,29 @@ namespace Unicity\EVT {
 		 */
 		public final function valid() : bool {
 			return ($this->key() !== null);
+		}
+
+		/**
+		 * This method returns a new instance with the specified map.
+		 *
+		 * @access public
+		 * @param array $map                                        the map containing the data
+		 * @return EVT\Message                                      a new message
+		 */
+		public static function factory(array $map = []) {
+			return new static($map);
+		}
+
+		/**
+		 * This method returns a new instance with the specified map merged.
+		 *
+		 * @access public
+		 * @param Message $message                                  the base message
+		 * @param array $map                                        the map containing the data
+		 * @return EVT\Message                                      a new message
+		 */
+		public static function merge(EVT\Message $message, array $map = []) {
+			return new static(array_merge($map, $message->map));
 		}
 
 	}
