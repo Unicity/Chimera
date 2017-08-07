@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\REST\URI {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 
 	class Assert extends Core\Object {
 
@@ -31,11 +32,11 @@ namespace Unicity\REST\URI {
 		 *
 		 * @access public
 		 * @static
-		 * @param \stdClass $message                                the message to be evaluated
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return bool                                             whether the message body contains
 		 *                                                          a URL with a query string
 		 */
-		public static function hasQueryString(\stdClass $message) : bool {
+		public static function hasQueryString(EVT\Message $message) : bool {
 			return (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']));
 		}
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\REST\Body {
 
 	use \Unicity\Core;
+	use \Unicity\EVT;
 	use \Unicity\IO;
 
 	class Assert extends Core\Object {
@@ -32,11 +33,11 @@ namespace Unicity\REST\Body {
 		 *
 		 * @access public
 		 * @static
-		 * @param \stdClass $message                                the message to be evaluated
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return bool                                             whether the message body contains
 		 *                                                          JSON
 		 */
-		public static function hasJSON(\stdClass $message) : bool {
+		public static function hasJSON(EVT\Message $message) : bool {
 			json_decode(static::getBody($message));
 			return (json_last_error() == JSON_ERROR_NONE);
 		}
@@ -46,11 +47,11 @@ namespace Unicity\REST\Body {
 		 *
 		 * @access public
 		 * @static
-		 * @param \stdClass $message                                the message to be evaluated
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return bool                                             whether the message body contains
 		 *                                                          an SQL statement
 		 */
-		public static function hasSQL(\stdClass $message) : bool {
+		public static function hasSQL(EVT\Message $message) : bool {
 			$body = static::getBody($message);
 			if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
 				return true;
@@ -72,11 +73,11 @@ namespace Unicity\REST\Body {
 		 *
 		 * @access public
 		 * @static
-		 * @param \stdClass $message                                the message to be evaluated
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return bool                                             whether the message body contains
 		 *                                                          a URL
 		 */
-		public static function hasURL(\stdClass $message) : bool {
+		public static function hasURL(EVT\Message $message) : bool {
 			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL);
 		}
 
@@ -85,11 +86,11 @@ namespace Unicity\REST\Body {
 		 *
 		 * @access public
 		 * @static
-		 * @param \stdClass $message                                the message to be evaluated
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return bool                                             whether the message body contains
 		 *                                                          a URL with a query string
 		 */
-		public static function hasURLWithQueryString(\stdClass $message) : bool {
+		public static function hasURLWithQueryString(EVT\Message $message) : bool {
 			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
 		}
 
@@ -98,11 +99,11 @@ namespace Unicity\REST\Body {
 		 *
 		 * @access public
 		 * @static
-		 * @param \stdClass $message                                the message to be evaluated
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return bool                                             whether the message body contains
 		 *                                                          XML
 		 */
-		public static function hasXML(\stdClass $message) : bool {
+		public static function hasXML(EVT\Message $message) : bool {
 			return (@simplexml_load_string(static::getBody($message)) !== false);
 		}
 
@@ -114,10 +115,10 @@ namespace Unicity\REST\Body {
 		 * This method returns the message body as a string.
 		 *
 		 * @access protected
-		 * @param \stdClass $message                                the message to be processed
+		 * @param EVT\Message $message                              the message to be evaluated
 		 * @return string                                           the message body as a string
 		 */
-		protected static function getBody(\stdClass $message) : string {
+		protected static function getBody(EVT\Message $message) : string {
 			if (is_object($message->body) && ($message->body instanceof IO\File)) {
 				return $message->body->getBytes();
 			}

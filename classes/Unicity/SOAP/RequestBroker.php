@@ -165,10 +165,10 @@ namespace Unicity\SOAP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param \stdClass $request                                the request to be sent
+		 * @param EVT\Message $request                              the request to be sent
 		 * @return bool                                             whether the request was successful
 		 */
-		public function execute(\stdClass $request) : bool {
+		public function execute(EVT\Message $request) : bool {
 			$this->dispatcher->publish('requestInitiated', $request);
 
 			$resource = curl_init();
