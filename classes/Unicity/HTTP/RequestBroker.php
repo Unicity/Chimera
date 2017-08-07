@@ -161,7 +161,7 @@ namespace Unicity\HTTP {
 					$error = curl_error($resource);
 					@curl_close($resource);
 					$status = 503;
-					$response = HTTP\RequestMessage::factory([
+					$response = HTTP\ResponseMessage::factory([
 						'body' => $error,
 						'headers' => [
 							'http_code' => $status,
@@ -178,7 +178,7 @@ namespace Unicity\HTTP {
 					$headers = curl_getinfo($resource);
 					@curl_close($resource);
 					$status = $headers['http_code'];
-					$response = HTTP\RequestMessage::factory([
+					$response = HTTP\ResponseMessage::factory([
 						'body' => $body,
 						'headers' => $headers,
 						'status' => $status,
@@ -199,7 +199,7 @@ namespace Unicity\HTTP {
 			}
 			else {
 				$status = 503;
-				$response = HTTP\RequestMessage::factory([
+				$response = HTTP\ResponseMessage::factory([
 					'body' => 'Failed to create cURL resource.',
 					'headers' => [
 						'http_code' => $status,

@@ -244,6 +244,7 @@ namespace Unicity\EVT {
 		 * This method returns a new instance with the specified map.
 		 *
 		 * @access public
+		 * @static
 		 * @param array $map                                        the map containing the data
 		 * @return EVT\Message                                      a new message
 		 */
@@ -255,12 +256,13 @@ namespace Unicity\EVT {
 		 * This method returns a new instance with the specified map merged.
 		 *
 		 * @access public
+		 * @static
 		 * @param Message $message                                  the base message
 		 * @param array $map                                        the map containing the data
 		 * @return EVT\Message                                      a new message
 		 */
 		public static function merge(EVT\Message $message, array $map = []) {
-			return new static(array_merge($map, $message->map));
+			return new static(array_merge($message->map, $map));
 		}
 
 	}
