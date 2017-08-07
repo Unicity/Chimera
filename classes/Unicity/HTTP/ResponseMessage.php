@@ -85,14 +85,14 @@ namespace Unicity\HTTP {
 		);
 
 		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
+			parent::__construct(array_merge([
 				'body' => '',
 				'headers' => [],
 				'protocol' => 'HTTP/1.1',
 				'status' => 200,
 				'statusText' => 'OK',
 				'url' => '',
-			]));
+			]), $map);
 		}
 
 		public static function getStatusText(int $status) : string {

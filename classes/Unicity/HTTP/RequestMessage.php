@@ -25,12 +25,12 @@ namespace Unicity\HTTP {
 	class RequestMessage extends EVT\Message {
 
 		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
+			parent::__construct(array_merge([
 				'body' => '',
 				'headers' => [],
 				'method' => 'GET',
 				'url' => '',
-			]));
+			], $map));
 		}
 
 	}
