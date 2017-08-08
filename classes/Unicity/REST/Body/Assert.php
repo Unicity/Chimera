@@ -52,7 +52,7 @@ namespace Unicity\REST\Body {
 		 *                                                          an SQL statement
 		 */
 		public static function hasSQL(EVT\Message $message) : bool {
-			$body = static::getBody($message);
+			$body = urlencode(static::getBody($message));
 			if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
 				return true;
 			}
