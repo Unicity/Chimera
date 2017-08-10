@@ -25,15 +25,13 @@ namespace Unicity\EVT {
 	use \Unicity\Multithreading;
 
 	/**
-	 * This class publishes payloads to registered subscribers.
+	 * This class publishes messages to registered subscribers.
 	 *
 	 * @access public
 	 * @class
 	 * @package EVT
 	 */
 	class AsyncDispatcher extends Core\Object {
-
-		protected static $singletons = array();
 
 		/**
 		 * This variable stores a list of subscribers.
@@ -63,7 +61,30 @@ namespace Unicity\EVT {
 		}
 
 		/**
-		 * This method adds a subscriber to receive payloads on the specified channel.
+		 * This method publishes a message to the specified channel.
+		 *
+		 * @access public
+		 * @param string $channel                                   the message channel to publish on
+		 * @param mixed $message                                    the message to be published
+		 * @return EVT\AsyncDispatcher                              a reference to this class
+		 */
+		public function publish(string $channel, $message = null) : EVT\AsyncDispatcher {
+			$event = (object) [
+				'channel' => $channel,
+				'message' => $message,
+			];
+			if (isset($this->subscribers[$event->channel])) {
+				$subscribers = $this->subscribers[$event->channel]; // copy over subscriber list in case a new subscriber is added
+				foreach ($subscribers as $subscriber) {
+					$thread = new Multithreading\ThreadWorker($subscriber($event->message, $this));
+					$thread->run();
+				}
+			}
+			return $this;
+		}
+
+		/**
+		 * This method adds a subscriber to receive messages on the specified channel.
 		 *
 		 * @access public
 		 * @param string $channel                                   the message channel to listen on
@@ -80,7 +101,7 @@ namespace Unicity\EVT {
 		}
 
 		/**
-		 * This method removes a subscriber from receiving payloads on the specified channel.
+		 * This method removes a subscriber from receiving messages on the specified channel.
 		 *
 		 * @access public
 		 * @param string $channel                                   the message channel to unsubscribe from
@@ -93,57 +114,6 @@ namespace Unicity\EVT {
 				unset($this->subscribers[$channel][$info->hash]);
 			}
 			return $this;
-		}
-
-		/**
-		 * This method publishes a payload to the specified channel.
-		 *
-		 * @access public
-		 * @param string $channel                                   the message channel to publish on
-		 * @param mixed $payload                                    the payload to be published
-		 * @return EVT\AsyncDispatcher                              a reference to this class
-		 */
-		public function publish(string $channel, $payload = null) : EVT\AsyncDispatcher {
-			$message = (object) [
-				'channel' => $channel,
-				'payload' => $payload,
-			];
-			if (isset($this->subscribers[$message->channel])) {
-				$subscribers = $this->subscribers[$message->channel]; // copy over subscriber list in case a new subscriber is added
-				foreach ($subscribers as $subscriber) {
-					$thread = new Multithreading\ThreadWorker($subscriber($message->payload));
-					$thread->run();
-				}
-			}
-			return $this;
-		}
-
-		/**
-		 * This method returns a singleton instance for the specified name.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $name                                      the name of the instance
-		 * @return EVT\AsyncDispatcher                              an instance of this class
-		 */
-		public static function instance(string $name = 'EventThread.Main') : EVT\AsyncDispatcher {
-			if (!isset(static::$singletons[$name])) {
-				static::$singletons[$name] = new EVT\AsyncDispatcher();
-			}
-			return static::$singletons[$name];
-		}
-
-		/**
-		 * This method destroys a singleton instance with the specified name.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $name                                      the name of the instance
-		 */
-		public static function destroy(string $name) : void {
-			if (isset(static::$singletons[$name])) {
-				unset(static::$singletons[$name]);
-			}
 		}
 
 	}
