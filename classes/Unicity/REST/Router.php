@@ -224,7 +224,7 @@ namespace Unicity\REST {
 
 				if (!empty($routes)) {
 					$pipeline = end($routes)->pipeline;
-					call_user_func($pipeline, $message);
+					call_user_func_array($pipeline, [$message, $this->dispatcher]);
 					$this->dispatcher->publish('routeSucceeded', $message);
 				}
 				else {
