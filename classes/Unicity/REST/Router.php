@@ -223,7 +223,8 @@ namespace Unicity\REST {
 				});
 
 				if (!empty($routes)) {
-					call_user_func(end($routes)->pipeline, $message);
+					$pipeline = end($routes)->pipeline;
+					$pipeline($message);
 					$this->dispatcher->publish('routeSucceeded', $message);
 				}
 				else {

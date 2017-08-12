@@ -30,9 +30,9 @@ namespace Unicity\HTTP {
 		 * This variable stores a reference to the dispatcher.
 		 *
 		 * @access protected
-		 * @var EVT\Server
+		 * @var EVT\IServer
 		 */
-		protected $dispatcher;
+		protected $server;
 
 		/**
 		 * This constructor initializes the class.
@@ -40,7 +40,7 @@ namespace Unicity\HTTP {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->dispatcher = new EVT\Server();
+			$this->server = new EVT\Server();
 		}
 
 		/**
@@ -50,7 +50,7 @@ namespace Unicity\HTTP {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->dispatcher);
+			unset($this->server);
 		}
 
 		/**
@@ -61,7 +61,7 @@ namespace Unicity\HTTP {
 		 * @return HTTP\RequestBroker                               a reference to this class
 		 */
 		public function onInitiation(callable $handler) : HTTP\RequestBroker {
-			$this->dispatcher->subscribe('requestInitiated', $handler);
+			$this->server->subscribe('requestInitiated', $handler);
 			return $this;
 		}
 
@@ -73,7 +73,7 @@ namespace Unicity\HTTP {
 		 * @return HTTP\RequestBroker                               a reference to this class
 		 */
 		public function onSuccess(callable $handler) : HTTP\RequestBroker {
-			$this->dispatcher->subscribe('requestSucceeded', $handler);
+			$this->server->subscribe('requestSucceeded', $handler);
 			return $this;
 		}
 
@@ -85,7 +85,7 @@ namespace Unicity\HTTP {
 		 * @return HTTP\RequestBroker                               a reference to this class
 		 */
 		public function onFailure(callable $handler) : HTTP\RequestBroker {
-			$this->dispatcher->subscribe('requestFailed', $handler);
+			$this->server->subscribe('requestFailed', $handler);
 			return $this;
 		}
 
@@ -97,7 +97,7 @@ namespace Unicity\HTTP {
 		 * @return HTTP\RequestBroker                               a reference to this class
 		 */
 		public function onCompletion(callable $handler) : HTTP\RequestBroker {
-			$this->dispatcher->subscribe('requestCompleted', $handler);
+			$this->server->subscribe('requestCompleted', $handler);
 			return $this;
 		}
 
@@ -109,7 +109,7 @@ namespace Unicity\HTTP {
 		 * @return bool                                             whether the request was successful
 		 */
 		public function execute(HTTP\RequestMessage $request) : bool {
-			$this->dispatcher->publish('requestInitiated', $request);
+			$this->server->publish('requestInitiated', $request);
 
 			$resource = curl_init();
 
@@ -170,8 +170,8 @@ namespace Unicity\HTTP {
 						'statusText' => HTTP\ResponseMessage::getStatusText($status),
 						'url' => $request->url,
 					]);
-					$this->dispatcher->publish('requestFailed', $response);
-					$this->dispatcher->publish('requestCompleted', $response);
+					$this->server->publish('requestFailed', $response);
+					$this->server->publish('requestCompleted', $response);
 					return false;
 				}
 				else {
@@ -186,13 +186,13 @@ namespace Unicity\HTTP {
 						'url' => $request->url,
 					]);
 					if (($status >= 200) && ($status < 300)) {
-						$this->dispatcher->publish('requestSucceeded', $response);
-						$this->dispatcher->publish('requestCompleted', $response);
+						$this->server->publish('requestSucceeded', $response);
+						$this->server->publish('requestCompleted', $response);
 						return true;
 					}
 					else {
-						$this->dispatcher->publish('requestFailed', $response);
-						$this->dispatcher->publish('requestCompleted', $response);
+						$this->server->publish('requestFailed', $response);
+						$this->server->publish('requestCompleted', $response);
 						return false;
 					}
 				}
@@ -208,8 +208,8 @@ namespace Unicity\HTTP {
 					'statusText' => HTTP\ResponseMessage::getStatusText($status),
 					'url' => $request->url,
 				]);
-				$this->dispatcher->publish('requestFailed', $response);
-				$this->dispatcher->publish('requestCompleted', $response);
+				$this->server->publish('requestFailed', $response);
+				$this->server->publish('requestCompleted', $response);
 				return false;
 			}
 		}
