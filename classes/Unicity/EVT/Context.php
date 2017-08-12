@@ -46,7 +46,7 @@ namespace Unicity\EVT {
 		 * @param string $server                                    the dispatch service's name
 		 * @param string $channel                                   the channel the message was published on
 		 */
-		public function __construct(string $server, string $channel) {
+		public function __construct(?string $server, string $channel) {
 			$timestamp = date('Y-m-d H:i:s.u');
 			$this->map = [
 				'channel' => $channel,
