@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace Unicity\EVT {
 
+	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\EVT;
-	use \Unicity\Multithreading;
 
 	/**
 	 * This class publishes messages to registered subscribers.
@@ -31,7 +31,15 @@ namespace Unicity\EVT {
 	 * @class
 	 * @package EVT
 	 */
-	class AsyncDispatcher extends Core\Object {
+	class Server extends Core\Object implements EVT\IServer {
+
+		/**
+		 * This variable stores the name for this dispatcher.
+		 *
+		 * @access public
+		 * @var string
+		 */
+		protected $name;
 
 		/**
 		 * This variable stores a list of subscribers.
@@ -42,12 +50,23 @@ namespace Unicity\EVT {
 		protected $subscribers;
 
 		/**
+		 * This variable stores messages being published.
+		 *
+		 * @access protected
+		 * @var Common\Mutable\Queue
+		 */
+		protected $queue;
+
+		/**
 		 * This constructor initializes the class.
 		 *
 		 * @access public
+		 * @param string $name                                      the name of the dispatcher
 		 */
-		public function __construct() {
+		public function __construct(string $name = null) {
+			$this->name = $name;
 			$this->subscribers = [];
+			$this->queue = new Common\Mutable\Queue();
 		}
 
 		/**
@@ -58,6 +77,7 @@ namespace Unicity\EVT {
 		public function __destruct() {
 			parent::__destruct();
 			unset($this->subscribers);
+			unset($this->queue);
 		}
 
 		/**
@@ -66,19 +86,25 @@ namespace Unicity\EVT {
 		 * @access public
 		 * @param string $channel                                   the message channel to publish on
 		 * @param mixed $message                                    the message to be published
-		 * @return EVT\AsyncDispatcher                              a reference to this class
+		 * @return EVT\IServer                                      a reference to the server
 		 */
-		public function publish(string $channel, $message = null) : EVT\AsyncDispatcher {
-			$event = (object) [
-				'channel' => $channel,
+		public function publish(string $channel, $message = null) : EVT\IServer {
+			$this->queue->enqueue((object) [
+				'context' => new EVT\Context($this->name, $channel),
 				'message' => $message,
-			];
-			if (isset($this->subscribers[$event->channel])) {
-				$subscribers = $this->subscribers[$event->channel]; // copy over subscriber list in case a new subscriber is added
-				foreach ($subscribers as $subscriber) {
-					$thread = new Multithreading\ThreadWorker($subscriber($event->message, $this));
-					$thread->run();
+			]);
+			if ($this->queue->count() === 1) {
+				do {
+					$event = $this->queue->peek();
+					if (isset($this->subscribers[$event->context->channel])) {
+						$subscribers = $this->subscribers[$event->context->channel]; // copy over subscriber list in case a new subscriber is added
+						foreach ($subscribers as $subscriber) {
+							$subscriber($event->message, $event->context);
+						}
+					}
+					$this->queue->dequeue();
 				}
+				while (!$this->queue->isEmpty());
 			}
 			return $this;
 		}
@@ -89,9 +115,9 @@ namespace Unicity\EVT {
 		 * @access public
 		 * @param string $channel                                   the message channel to listen on
 		 * @param callable $subscriber                              the subscriber
-		 * @return EVT\AsyncDispatcher                              a reference to this class
+		 * @return EVT\IServer                                      a reference to the server
 		 */
-		public function subscribe(string $channel, callable $subscriber) : EVT\AsyncDispatcher {
+		public function subscribe(string $channel, callable $subscriber) : EVT\IServer {
 			if (!isset($this->subscribers[$channel]) || !is_array($this->subscribers[$channel])) {
 				$this->subscribers[$channel] = [];
 			}
@@ -106,9 +132,9 @@ namespace Unicity\EVT {
 		 * @access public
 		 * @param string $channel                                   the message channel to unsubscribe from
 		 * @param callable $subscriber                              the subscriber
-		 * @return EVT\AsyncDispatcher                              a reference to this class
+		 * @return EVT\IServer                                      a reference to the server
 		 */
-		public function unsubscribe(string $channel, callable $subscriber) : EVT\AsyncDispatcher {
+		public function unsubscribe(string $channel, callable $subscriber) : EVT\IServer {
 			if (isset($this->subscribers[$channel]) && is_array($this->subscribers[$channel])) {
 				$info = Core\DataType::info($subscriber);
 				unset($this->subscribers[$channel][$info->hash]);

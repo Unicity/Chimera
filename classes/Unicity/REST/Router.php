@@ -42,7 +42,7 @@ namespace Unicity\REST {
 		 * This variable stores a reference to the dispatcher.
 		 *
 		 * @access protected
-		 * @var EVT\Dispatcher
+		 * @var EVT\Server
 		 */
 		protected $dispatcher;
 
@@ -60,7 +60,7 @@ namespace Unicity\REST {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->dispatcher = new EVT\Dispatcher();
+			$this->dispatcher = new EVT\Server();
 			$this->routes = [];
 		}
 
@@ -223,8 +223,7 @@ namespace Unicity\REST {
 				});
 
 				if (!empty($routes)) {
-					$pipeline = end($routes)->pipeline;
-					call_user_func_array($pipeline, [$message, $this->dispatcher]);
+					call_user_func(end($routes)->pipeline, $message);
 					$this->dispatcher->publish('routeSucceeded', $message);
 				}
 				else {

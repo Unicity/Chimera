@@ -30,7 +30,7 @@ namespace Unicity\SOAP {
 		 * This variable stores a reference to the dispatcher.
 		 *
 		 * @access protected
-		 * @var EVT\Dispatcher
+		 * @var EVT\Server
 		 */
 		protected $dispatcher;
 
@@ -40,7 +40,7 @@ namespace Unicity\SOAP {
 		 * @access public
 		 */
 		public function __construct() {
-			$this->dispatcher = new EVT\Dispatcher();
+			$this->dispatcher = new EVT\Server();
 		}
 
 		/**
