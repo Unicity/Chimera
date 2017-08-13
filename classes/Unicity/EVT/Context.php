@@ -52,8 +52,8 @@ namespace Unicity\EVT {
 			$this->map = [
 				'channel' => $channel,
 				'message_id' => md5(implode('|', [$server, $channel, $timestamp, uniqid()])),
-				'session_id' => session_id(),
 				'server' => $server,
+				'session_id' => session_id(),
 				'timestamp' => $timestamp,
 			];
 		}

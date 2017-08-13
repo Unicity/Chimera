@@ -32,38 +32,102 @@ namespace Unicity\EVT\Server {
 	 */
 	final class Manager extends Core\Object {
 
+		/**
+		 * This variable stores an singleton instance of this class.
+		 *
+		 * @access private
+		 * @static
+		 * @var EVT\Server\Manager
+		 */
 		private static $singleton = null;
 
+		/**
+		 * This variable stores a list of servers.
+		 *
+		 * @access private
+		 * @var array
+		 */
 		private $servers;
 
+		/**
+		 * This constructor initializes the class.
+		 *
+		 * @access private
+		 */
 		private function __construct() {
 			$this->servers = [];
 			$this->servers['default'] = new EVT\Server('default');
 		}
 
-		public function get(string $name) : EVT\Server {
+		/**
+		 * This destructor ensures that any resources are properly disposed.
+		 *
+		 * @access public
+		 */
+		public function __destruct() {
+			parent::__destruct();
+			unset($this->servers);
+		}
+
+		/**
+		 * This method returns the server matching the specified name.
+		 *
+		 * @access public
+		 * @param string $name                                      the name of server
+		 * @return EVT\Server                                       the server matching the specified name
+		 */
+		public function get(string $name = 'default') : EVT\Server {
 			return $this->servers[$name];
 		}
 
+		/**
+		 * This method returns whether there is a server matching the specified name.
+		 *
+		 * @access public
+		 * @param string $name                                      the name of server
+		 * @return bool                                             whether there is a server matching
+		 *                                                          the specified name
+		 */
 		public function has(string $name) : bool {
 			return isset($this->servers[$name]);
 		}
 
+		/**
+		 * This method returns the specified server.
+		 *
+		 * @access public
+		 * @param string $name                                      the name of server
+		 */
 		public function remove(string $name) {
 			if (($name !== '') && isset($this->servers[$name])) {
 				unset($this->servers[$name]);
 			}
 		}
 
+		/**
+		 * This method create a server of the specified type and assigns it a name.
+		 *
+		 * @access public
+		 * @param string $name                                      the name of server
+		 * @param string $type                                      the type of server to create
+		 */
 		public function set(string $name, string $type) {
 			if ($name !== 'default') {
-				$dispatcher =  new $type($name);
-				if ($dispatcher instanceof EVT\Server) {
-					$this->servers[$name] = $dispatcher;
+				$server =  new $type($name);
+				if ($server instanceof EVT\IServer) {
+					$this->servers[$name] = $server;
 				}
 			}
 		}
 
+		/**
+		 * This method returns a singleton instance of this class.
+		 *
+		 * @access public
+		 * @static
+		 * @return EVT\Server\Manager                                   a singleton instance of this
+		 *                                                              class
+		 */
 		public static function instance() : EVT\Server\Manager {
 			if (static::$singleton === null) {
 				static::$singleton = new EVT\Server\Manager();
