@@ -48,9 +48,11 @@ namespace Unicity\EVT {
 		 */
 		public function __construct(?string $server, string $channel) {
 			$timestamp = date('Y-m-d H:i:s.u');
+			if (empty(session_id())) { session_start(); }
 			$this->map = [
 				'channel' => $channel,
-				'id' => sha1(implode('|', [$server, $channel, $timestamp, uniqid()])),
+				'message_id' => md5(implode('|', [$server, $channel, $timestamp, uniqid()])),
+				'session_id' => session_id(),
 				'server' => $server,
 				'timestamp' => $timestamp,
 			];
