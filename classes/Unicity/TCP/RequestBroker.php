@@ -54,54 +54,6 @@ namespace Unicity\TCP {
 		}
 
 		/**
-		 * This method adds an initialization handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the initialization handler to be added
-		 * @return TCP\RequestBroker                                a reference to this class
-		 */
-		public function onInitiation(callable $handler) : TCP\RequestBroker {
-			$this->server->subscribe('requestInitiated', $handler);
-			return $this;
-		}
-
-		/**
-		 * This method adds a success handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the success handler to be added
-		 * @return TCP\RequestBroker                                a reference to this class
-		 */
-		public function onSuccess(callable $handler) : TCP\RequestBroker {
-			$this->server->subscribe('requestSucceeded', $handler);
-			return $this;
-		}
-
-		/**
-		 * This method adds a failure handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the failure handler to be added
-		 * @return TCP\RequestBroker                                a reference to this class
-		 */
-		public function onFailure(callable $handler) : TCP\RequestBroker {
-			$this->server->subscribe('requestFailed', $handler);
-			return $this;
-		}
-
-		/**
-		 * This method adds a completion handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the completion handler to be added
-		 * @return TCP\RequestBroker                                a reference to this class
-		 */
-		public function onCompletion(callable $handler) : TCP\RequestBroker {
-			$this->server->subscribe('requestCompleted', $handler);
-			return $this;
-		}
-
-		/**
 		 * This method executes the given request.
 		 *
 		 * @access public
@@ -148,6 +100,54 @@ namespace Unicity\TCP {
 				$this->server->publish('requestCompleted', $response);
 				return false;
 			}
+		}
+
+		/**
+		 * This method adds a completion handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the completion handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onCompletion(callable $handler) : TCP\RequestBroker {
+			$this->server->subscribe('requestCompleted', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds an initialization handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the initialization handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onInitiation(callable $handler) : TCP\RequestBroker {
+			$this->server->subscribe('requestInitiated', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a failure handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the failure handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onFailure(callable $handler) : TCP\RequestBroker {
+			$this->server->subscribe('requestFailed', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a success handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the success handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onSuccess(callable $handler) : TCP\RequestBroker {
+			$this->server->subscribe('requestSucceeded', $handler);
+			return $this;
 		}
 
 	}
