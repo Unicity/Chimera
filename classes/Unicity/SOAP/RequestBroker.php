@@ -109,11 +109,30 @@ namespace Unicity\SOAP {
 		 * @return bool                                             whether the request was successful
 		 */
 		public function execute(SOAP\RequestMessage $request) : bool {
-			$this->server->publish('requestInitiated', $request);
+			return $this->executeAll([$request]);
+		}
 
-			$resource = curl_init();
+		/**
+		 * This method executes the given requests.
+		 *
+		 * @access public
+		 * @param array $requests                                   the requests to be sent
+		 * @return bool                                             whether all requests were successful
+		 */
+		public function executeAll(array $requests) : bool {
+			$success = true;
 
-			if (is_resource($resource)) {
+			$dispatcher = curl_multi_init();
+			$resources = array();
+			$count = count($requests);
+
+			for ($i = 0; $i < $count; $i++) {
+				$request = $requests[$i];
+
+				$this->server->publish('requestInitiated', $request);
+
+				$resource = curl_init();
+
 				curl_setopt($resource, CURLOPT_HEADER, false);
 				if (isset($request->headers) && !empty($request->headers)) {
 					$headers = array();
@@ -156,7 +175,22 @@ namespace Unicity\SOAP {
 					}
 				}
 
-				$body = curl_exec($resource);
+				$resources[$i] = curl_copy_handle($resource);
+				curl_multi_add_handle($dispatcher, $resources[$i]);
+			}
+
+			$running = null;
+			do {
+				curl_multi_exec($dispatcher, $running);
+			}
+			while ($running);
+
+			for ($i = 0; $i < $count; $i++) {
+				$resource = $resources[$i];
+				$request = $requests[$i];
+
+				curl_multi_remove_handle($dispatcher, $resource);
+				$body = curl_multi_getcontent($resource);
 				if (curl_errno($resource)) {
 					$error = curl_error($resource);
 					@curl_close($resource);
@@ -172,7 +206,7 @@ namespace Unicity\SOAP {
 					]);
 					$this->server->publish('requestFailed', $response);
 					$this->server->publish('requestCompleted', $response);
-					return false;
+					$success |= false;
 				}
 				else {
 					$headers = curl_getinfo($resource);
@@ -188,30 +222,18 @@ namespace Unicity\SOAP {
 					if (($status >= 200) && ($status < 300)) {
 						$this->server->publish('requestSucceeded', $response);
 						$this->server->publish('requestCompleted', $response);
-						return true;
+						$success |= true;
 					}
 					else {
 						$this->server->publish('requestFailed', $response);
 						$this->server->publish('requestCompleted', $response);
-						return false;
+						$success |= false;
 					}
 				}
 			}
-			else {
-				$status = 503;
-				$response = SOAP\ResponseMessage::factory([
-					'body' => 'Failed to create cURL resource.',
-					'headers' => [
-						'http_code' => $status,
-					],
-					'status' => $status,
-					'statusText' => SOAP\ResponseMessage::getStatusText($status),
-					'url' => $request->url,
-				]);
-				$this->server->publish('requestFailed', $response);
-				$this->server->publish('requestCompleted', $response);
-				return false;
-			}
+			curl_multi_close($dispatcher);
+
+			return $success;
 		}
 
 	}
