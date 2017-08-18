@@ -185,6 +185,7 @@ namespace Unicity\HTTP {
 			}
 			curl_multi_close($dispatcher);
 
+			$success = boolval($success);
 			$this->server->publish('responseReceived', $success);
 
 			return $success;
