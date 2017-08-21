@@ -58,9 +58,9 @@ namespace Unicity\SOAP {
 		 *
 		 * @access public
 		 * @param SOAP\RequestMessage $request                      the request to be sent
-		 * @return bool                                             whether the request was successful
+		 * @return int                                              the response status
 		 */
-		public function execute(SOAP\RequestMessage $request) : bool {
+		public function execute(SOAP\RequestMessage $request) : int {
 			return $this->executeAll([$request]);
 		}
 
@@ -69,10 +69,12 @@ namespace Unicity\SOAP {
 		 *
 		 * @access public
 		 * @param array $requests                                   the requests to be sent
-		 * @return bool                                             whether all requests were successful
+		 * @return int                                              the response status
 		 */
-		public function executeAll(array $requests) : bool {
-			$success = true;
+		public function executeAll(array $requests) : int {
+			$this->server->publish('requestOpening');
+
+			$http_code = 200;
 
 			$dispatcher = curl_multi_init();
 			$resources = array();
@@ -158,7 +160,7 @@ namespace Unicity\SOAP {
 					]);
 					$this->server->publish('requestFailed', $response);
 					$this->server->publish('requestCompleted', $response);
-					$success |= false;
+					$http_code = max($http_code, $status);
 				}
 				else {
 					$headers = curl_getinfo($resource);
@@ -174,21 +176,20 @@ namespace Unicity\SOAP {
 					if (($status >= 200) && ($status < 300)) {
 						$this->server->publish('requestSucceeded', $response);
 						$this->server->publish('requestCompleted', $response);
-						$success |= true;
+						$http_code = max($http_code, $status);
 					}
 					else {
 						$this->server->publish('requestFailed', $response);
 						$this->server->publish('requestCompleted', $response);
-						$success |= false;
+						$http_code = max($http_code, $status);
 					}
 				}
 			}
 			curl_multi_close($dispatcher);
 
-			$success = boolval($success);
-			$this->server->publish('responseReceived', $success);
+			$this->server->publish('responseReceived', $http_code);
 
-			return $success;
+			return $http_code;
 		}
 
 		/**
@@ -236,6 +237,18 @@ namespace Unicity\SOAP {
 		 */
 		public function onInitiation(callable $handler) : SOAP\RequestBroker {
 			$this->server->subscribe('requestInitiated', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds an opening handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the opening handler to be added
+		 * @return SOAP\RequestBroker                               a reference to this class
+		 */
+		public function onOpening(callable $handler) : SOAP\RequestBroker {
+			$this->server->subscribe('requestOpened', $handler);
 			return $this;
 		}
 
