@@ -72,7 +72,7 @@ namespace Unicity\SOAP {
 		 * @return int                                              the response status
 		 */
 		public function executeAll(array $requests) : int {
-			$this->server->publish('requestOpening');
+			$this->server->publish('requestOpened');
 
 			$http_code = 200;
 
