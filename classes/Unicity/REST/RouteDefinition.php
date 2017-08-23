@@ -39,14 +39,14 @@ namespace Unicity\REST {
 		 * @access public
 		 * @param string $method                                    the method(s) to be routed
 		 * @param string $path                                      the path to be routed
-		 * @param array $replacements                               the replacement mappings for the dynamic
-		 *                                                          path segments
+		 * @param array $patterns                                   the patterns for evaluating path
+		 *                                                          segments
 		 */
-		public function __construct(string $method, string $path, array $replacements) {
+		public function __construct(string $method, string $path, array $patterns) {
 			$this->route = new REST\Route(
 				array_map('trim', explode('|', strtoupper($method))),
 				array_map('trim', explode('/', trim($path, '/? '))),
-				$replacements
+				$patterns
 			);
 		}
 

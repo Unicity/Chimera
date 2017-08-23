@@ -92,9 +92,9 @@ namespace Unicity\Core {
 		 *
 		 * @see http://www.php.net/manual/datetime.construct
 		 */
-		public static function formatted_time($datetime_str = 'now', $timestamp_format = NULL, $timezone = NULL) {
-			$timestamp_format = ($timestamp_format == NULL) ? static::$timestamp_format : $timestamp_format;
-			$timezone = ($timezone === NULL) ? static::$timezone : $timezone;
+		public static function formatted_time($datetime_str = 'now', $timestamp_format = null, $timezone = null) {
+			$timestamp_format = ($timestamp_format == null) ? static::$timestamp_format : $timestamp_format;
+			$timezone = ($timezone === null) ? static::$timezone : $timezone;
 
 			$tz = new \DateTimeZone($timezone ? $timezone : date_default_timezone_get());
 			$time = new \DateTime($datetime_str, $tz);
@@ -113,8 +113,8 @@ namespace Unicity\Core {
 		 * @static
 		 * @return string
 		 */
-		public static function now() : string {
-			return date('Y-m-d H:i:s');
+		public static function now(string $format = 'Y-m-d H:i:s') : string {
+			return date($format);
 		}
 
 		/**

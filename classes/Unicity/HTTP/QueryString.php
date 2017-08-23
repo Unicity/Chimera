@@ -18,36 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\REST {
+namespace Unicity\HTTP {
 
 	use \Unicity\Core;
-	use \Unicity\IO;
 
-	class Assert {
+	class QueryString extends Core\Object {
 
-		#region Assertions
-
-		public static function isJSON(\stdClass $message) : bool {
-			json_decode(static::getBody($message));
-			return (json_last_error() == JSON_ERROR_NONE);
-		}
-
-		public static function isXML(\stdClass $message) : bool {
-			return (@simplexml_load_string(static::getBody($message)) !== false);
-		}
-
-		#endregion
-
-		#region Helpers
-
-		private static function getBody(\stdClass $message) : string {
-			if (is_object($message->body) && ($message->body instanceof IO\File)) {
-				return $message->body->getBytes();
+		public static function build(array $parameters) {
+			$query_string = http_build_query($parameters);
+			if (!empty($query_string)) {
+				$query_string = '?' . $query_string;
 			}
-			return Core\Convert::toString($message->body);
+			return $query_string;
 		}
-
-		#endregion
 
 	}
 

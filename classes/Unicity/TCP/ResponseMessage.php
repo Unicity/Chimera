@@ -18,21 +18,20 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\TCP {
 
 	use \Unicity\EVT;
 
-	interface Request {
+	class ResponseMessage extends EVT\Message {
 
-		public function getBody() : string;
-
-		public function getHeaders() : array;
-
-		public function getTarget() : EVT\Target;
-
-		public function getURL() : string;
-
-		public function jsonSerialize();
+		public function __construct(array $map = []) {
+			parent::__construct(array_merge($map, [
+				'body' => '',
+				'headers' => [],
+				'host' => '',
+				'port' => 80,
+			]));
+		}
 
 	}
 

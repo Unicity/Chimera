@@ -50,12 +50,12 @@ namespace Unicity\REST {
 		public $pipeline;
 
 		/**
-		 * This variable stores the replacement mappings for dynamic path segments.
+		 * This variable stores the patterns for evaluating path segments.
 		 *
 		 * @access public
 		 * @var array
 		 */
-		public $replacements;
+		public $patterns;
 
 		/**
 		 * This variable stores the "when" predicates.
@@ -71,14 +71,14 @@ namespace Unicity\REST {
 		 * @access public
 		 * @param array $methods                                    the methods to be routed
 		 * @param array $path                                       the path segments to be routed
-		 * @param array $replacements                               the replacement mappings for the dynamic
-		 *                                                          path segments
+		 * @param array $patterns                                   the patterns for evaluating path
+		 *                                                          segments
 		 */
-		public function __construct(array $methods, array $path, array $replacements) {
+		public function __construct(array $methods, array $path, array $patterns) {
 			$this->methods = $methods;
 			$this->path = $path;
 			$this->pipeline = null;
-			$this->replacements = $replacements;
+			$this->patterns = $patterns;
 			$this->when = [];
 		}
 
@@ -92,7 +92,7 @@ namespace Unicity\REST {
 			unset($this->methods);
 			unset($this->path);
 			unset($this->pipeline);
-			unset($this->replacements);
+			unset($this->patterns);
 			unset($this->when);
 		}
 
@@ -103,12 +103,12 @@ namespace Unicity\REST {
 		 * @static
 		 * @param string $method                                    the method(s) to be routed
 		 * @param string $path                                      the path to be routed
-		 * @param array $replacements                               the replacement mappings for the dynamic
-		 *                                                          path segments
+		 * @param array $patterns                                   the patterns for evaluating path
+		 *                                                          segments
 		 * @return REST\RouteDefinition                             the new route definition
 		 */
-		public static function request(string $method, string $path, array $replacements = []) : REST\RouteDefinition {
-			return new REST\RouteDefinition($method, $path, $replacements);
+		public static function request(string $method, string $path, array $patterns = []) : REST\RouteDefinition {
+			return new REST\RouteDefinition($method, $path, $patterns);
 		}
 
 	}

@@ -18,16 +18,10 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\SOAP {
 
 	use \Unicity\HTTP;
 
-	interface RequestListener {
-
-		public function requestInitiated(HTTP\RequestEvent $request) : void;
-		public function requestSucceeded(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void;
-		public function requestFailed(HTTP\RequestEvent $request, HTTP\ResponseEvent $response) : void;
-
-	}
+	class RequestMessage extends HTTP\RequestMessage { }
 
 }
