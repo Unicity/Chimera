@@ -112,13 +112,21 @@ namespace Unicity\HTTP {
 					case 'POST':
 						curl_setopt($resource, CURLOPT_POST, 1);
 						if (isset($request->body)) {
-							curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+							$body = $request->body;
+							if (is_array($body)) {
+								$body = http_build_query($body);
+							}
+							curl_setopt($resource, CURLOPT_POSTFIELDS, $body);
 						}
 						break;
 					default:
 						curl_setopt($resource, CURLOPT_CUSTOMREQUEST, $method);
 						if (isset($request->body)) {
-							curl_setopt($resource, CURLOPT_POSTFIELDS, $request->body);
+							$body = $request->body;
+							if (is_array($body)) {
+								$body = http_build_query($body);
+							}
+							curl_setopt($resource, CURLOPT_POSTFIELDS, $body);
 						}
 						break;
 				}
