@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\Core\Data {
 
+	use \Unicity\Common;
 	use \Unicity\Core;
 
 	/**
@@ -183,7 +184,7 @@ namespace Unicity\Core\Data {
 		 * @return boolean                                          whether the value is "empty"
 		 */
 		public static function isEmpty($value) : bool {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (is_string($value) && ($value === '')));
+			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (Common\StringRef::isTypeOf($value) && ((string) $value === '')));
 		}
 
 		/**
