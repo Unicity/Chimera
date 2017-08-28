@@ -25,7 +25,7 @@ namespace Unicity\EVT\Aggregator {
 			if ($this->isMatch($message, $context)) {
 				$this->list->addValue($message);
 			}
-			if ($this->isComplete($this->list)) {
+			if ($this->isSatisfied($this->list)) {
 				$list = $this->list;
 				$this->list = new Common\Mutable\ArrayList();
 				$this->aggregate($list);
@@ -34,7 +34,7 @@ namespace Unicity\EVT\Aggregator {
 
 		abstract public function aggregate(Common\ArrayList $list) : void;
 
-		abstract public function isComplete(Common\ArrayList $list) : bool;
+		abstract public function isSatisfied(Common\ArrayList $list) : bool;
 
 		public function isMatch($message, EVT\Context $context) : bool {
 			return true;
