@@ -59,6 +59,9 @@ namespace Unicity\Config\CSV {
 				'strict_mapping' => true,
 				'strip_invalid_chars' => false,
 			), $metadata);
+			if ($this->metadata['delimiter'] == '\\t') {
+				$this->metadata['delimiter'] = "\t";
+			}
 		}
 
 		/**
