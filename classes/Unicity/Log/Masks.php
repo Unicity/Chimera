@@ -31,25 +31,28 @@ namespace Unicity\Log {
 	 */
 	class Masks extends Core\Object {
 
-		public static function all($value, $symbol = 'x') {
+		public static function all($value, string $symbol = 'x') {
 			if ($value !== null) {
 				return str_repeat($symbol, strlen(Core\Convert::toString($value)));
 			}
 			return $value;
 		}
 
-		public static function creditCard($value, $symbol = 'x') {
+		public static function creditCard($value, string $symbol = 'x', bool $first6 = false) {
 			if ($value !== null) {
 				$value = preg_replace('/[^0-9]/', '', Core\Convert::toString($value));
 				$length = strlen($value);
 				if ($length > 10) {
-					return substr($value, 0, 6) . str_repeat($symbol, $length - 10) . substr($value, -4, 4);
+					if ($first6) {
+						return substr($value, 0, 6) . str_repeat($symbol, $length - 10) . substr($value, -4, 4);
+					}
+					return str_repeat($symbol, $length - 4) . substr($value, -4, 4);
 				}
 			}
 			return $value;
 		}
 
-		public static function ipAddress($value, $symbol = 'x') {
+		public static function ipAddress($value, string $symbol = 'x') {
 			if ($value !== null) {
 				$segments = explode('.', Core\Convert::toString($value));
 				$size = count($segments);
