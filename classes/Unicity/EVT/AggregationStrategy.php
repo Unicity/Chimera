@@ -8,7 +8,7 @@ namespace Unicity\EVT\Aggregator {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	abstract class ListAggregationStrategy extends Core\Object {
+	abstract class AggregationStrategy extends Core\Object {
 
 		protected $list;
 
@@ -34,11 +34,11 @@ namespace Unicity\EVT\Aggregator {
 
 		abstract public function aggregate(Common\ArrayList $list) : void;
 
-		abstract public function isSatisfied(Common\ArrayList $list) : bool;
-
 		public function isMatch($message, EVT\Context $context) : bool {
 			return true;
 		}
+
+		abstract public function isSatisfied(Common\ArrayList $list) : bool;
 
 	}
 
