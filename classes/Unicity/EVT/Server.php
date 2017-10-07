@@ -89,17 +89,17 @@ namespace Unicity\EVT {
 		 * @return EVT\IServer                                      a reference to the server
 		 */
 		public function publish(string $channel, $message = null) : EVT\IServer {
-			$this->queue->enqueue((object) [
+			$this->queue->enqueue(new EVT\Exchange([
 				'context' => new EVT\Context($this->name, $channel),
 				'message' => $message,
-			]);
+			]));
 			if ($this->queue->count() === 1) {
 				do {
-					$event = $this->queue->peek();
-					if (isset($this->subscribers[$event->context->channel])) {
-						$subscribers = $this->subscribers[$event->context->channel]; // copy over subscriber list in case a new subscriber is added
+					$exchange = $this->queue->peek();
+					if (isset($this->subscribers[$exchange->context->channel])) {
+						$subscribers = $this->subscribers[$exchange->context->channel]; // copy over subscriber list in case a new subscriber is added
 						foreach ($subscribers as $subscriber) {
-							$subscriber($event->message, $event->context);
+							$subscriber($exchange->message, $exchange->context);
 						}
 					}
 					$this->queue->dequeue();

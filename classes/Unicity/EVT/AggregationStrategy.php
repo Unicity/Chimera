@@ -2,43 +2,48 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\EVT\Aggregator {
+namespace Unicity\EVT {
 
-	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
 	abstract class AggregationStrategy extends Core\Object {
 
-		protected $list;
+		protected $oldExchange;
 
 		public function __construct() {
-			$this->list = new Common\Mutable\ArrayList();
+			$this->oldExchange = new EVT\Exchange();
 		}
 
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->list);
+			unset($this->oldExchange);
 		}
 
 		public final function __invoke($message, EVT\Context $context) {
-			if ($this->isMatch($message, $context)) {
-				$this->list->addValue($message);
+			$newExchange = new EVT\Exchange([
+				'context' => $context,
+				'message' => $message,
+			]);
+
+			if ($this->isMatch($newExchange)) {
+				$this->oldExchange = $this->aggregate($this->oldExchange, $newExchange);
 			}
-			if ($this->isSatisfied($this->list)) {
-				$list = $this->list;
-				$this->list = new Common\Mutable\ArrayList();
-				$this->aggregate($list);
+
+			if ($this->isComplete($this->oldExchange)) {
+				$this->onCompletion($this->oldExchange);
 			}
 		}
 
-		abstract public function aggregate(Common\ArrayList $list) : void;
+		abstract public function aggregate(EVT\Exchange $oldExchange, EVT\Exchange $newExchange) : EVT\Exchange;
 
-		public function isMatch($message, EVT\Context $context) : bool {
+		abstract public function isComplete(EVT\Exchange $exchange) : bool;
+
+		public function isMatch(EVT\Exchange $exchange) : bool {
 			return true;
 		}
 
-		abstract public function isSatisfied(Common\ArrayList $list) : bool;
+		abstract public function onCompletion(EVT\Exchange $exchange) : void;
 
 	}
 
