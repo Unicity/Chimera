@@ -254,15 +254,37 @@ namespace Unicity\EVT {
 		}
 
 		/**
+		 * This method returns a new instance with the specified map combined.
+		 *
+		 * @access public
+		 * @static
+		 * @param EVT\Exchange $exchange0                            the first exchange
+		 * @param EVT\Exchange $exchange1                            the second exchange
+		 * @return EVT\Exchange                                      a new exchange
+		 */
+		public static function merge(?EVT\Exchange $exchange0, ?EVT\Exchange $exchange1) {
+			if (($exchange0 !== null) && ($exchange1 !== null)) {
+				return new static(array_merge($exchange0->map, $exchange1->map));
+			}
+			if ($exchange0 !== null) {
+				return new static($exchange0->map);
+			}
+			if ($exchange1 !== null) {
+				return new static($exchange1->map);
+			}
+			return new static();
+		}
+
+		/**
 		 * This method returns a new instance with the specified map merged.
 		 *
 		 * @access public
 		 * @static
-		 * @param Exchange $exchange                                the base exchange
+		 * @param EVT\Exchange $exchange                            the base exchange
 		 * @param array $map                                        the map containing the data
 		 * @return EVT\Exchange                                     a new exchange
 		 */
-		public static function merge(EVT\Exchange $exchange, array $map = []) {
+		public static function put(?EVT\Exchange $exchange, array $map = []) {
 			if ($exchange !== null) {
 				return new static(array_merge($exchange->map, $map));
 			}
