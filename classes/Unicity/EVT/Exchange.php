@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Common;
+	use \Unicity\Core;
 	use \Unicity\EVT;
 
 	/**
@@ -91,12 +92,12 @@ namespace Unicity\EVT {
 		 */
 		public final function __get($key) {
 			if (isset($this->map[$key])) {
-				if (is_object($this->map[$key])) {
+				if (is_object($this->map[$key]) && !($this->map[$key] instanceof Core\Data\Undefined)) {
 					return clone $this->map[$key];
 				}
 				return $this->map[$key];
 			}
-			return null;
+			return Core\Data\Undefined::instance();
 		}
 
 		/**
@@ -108,7 +109,7 @@ namespace Unicity\EVT {
 		 * @return bool                                             whether the key exists
 		 */
 		public final function __isset($key) : bool {
-			return isset($this->map[$key]);
+			return isset($this->map[$key]) && !($this->map[$key] instanceof Core\Data\Undefined);
 		}
 
 		/**
@@ -152,7 +153,7 @@ namespace Unicity\EVT {
 		 * @return bool                                             whether the offset exists
 		 */
 		public final function offsetExists($offset) : bool {
-			return isset($this->map[$offset]);
+			return isset($this->map[$offset]) && !($this->map[$offset] instanceof Core\Data\Undefined);
 		}
 
 		/*
@@ -165,12 +166,12 @@ namespace Unicity\EVT {
 		 */
 		public final function offsetGet($offset) {
 			if (isset($this->map[$offset])) {
-				if (is_object($this->map[$offset])) {
+				if (is_object($this->map[$offset]) && !($this->map[$offset] instanceof Core\Data\Undefined)) {
 					return clone $this->map[$offset];
 				}
 				return $this->map[$offset];
 			}
-			return null;
+			return Core\Data\Undefined::instance();
 		}
 
 		/**
@@ -262,7 +263,10 @@ namespace Unicity\EVT {
 		 * @return EVT\Exchange                                     a new exchange
 		 */
 		public static function merge(EVT\Exchange $exchange, array $map = []) {
-			return new static(array_merge($exchange->map, $map));
+			if ($exchange !== null) {
+				return new static(array_merge($exchange->map, $map));
+			}
+			return new static($map);
 		}
 
 	}

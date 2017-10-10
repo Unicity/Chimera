@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Unicity\EVT {
 
 	use \Unicity\Common;
+	use \Unicity\Core;
 	use \Unicity\EVT;
 
 	/**
@@ -91,12 +92,12 @@ namespace Unicity\EVT {
 		 */
 		public final function __get($key) {
 			if (isset($this->map[$key])) {
-				if (is_object($this->map[$key])) {
+				if (is_object($this->map[$key]) && !($this->map[$key] instanceof Core\Data\Undefined)) {
 					return clone $this->map[$key];
 				}
 				return $this->map[$key];
 			}
-			return null;
+			return Core\Data\Undefined::instance();
 		}
 
 		/**
@@ -108,7 +109,7 @@ namespace Unicity\EVT {
 		 * @return bool                                             whether the key exists
 		 */
 		public final function __isset($key) : bool {
-			return isset($this->map[$key]);
+			return isset($this->map[$key]) && !($this->map[$key] instanceof Core\Data\Undefined);
 		}
 
 		/**
@@ -152,7 +153,7 @@ namespace Unicity\EVT {
 		 * @return bool                                             whether the offset exists
 		 */
 		public final function offsetExists($offset) : bool {
-			return isset($this->map[$offset]);
+			return isset($this->map[$offset]) && !($this->map[$offset] instanceof Core\Data\Undefined);
 		}
 
 		/*
@@ -165,12 +166,12 @@ namespace Unicity\EVT {
 		 */
 		public final function offsetGet($offset) {
 			if (isset($this->map[$offset])) {
-				if (is_object($this->map[$offset])) {
+				if (is_object($this->map[$offset]) && !($this->map[$offset] instanceof Core\Data\Undefined)) {
 					return clone $this->map[$offset];
 				}
 				return $this->map[$offset];
 			}
-			return null;
+			return Core\Data\Undefined::instance();
 		}
 
 		/**
@@ -253,16 +254,41 @@ namespace Unicity\EVT {
 		}
 
 		/**
+		 * This method returns a new instance with the specified map combined.
+		 *
+		 * @access public
+		 * @static
+		 * @param EVT\Message $message0                             the first message
+		 * @param EVT\Message $message1                             the second message
+		 * @return EVT\Message                                      a new message
+		 */
+		public static function merge(?EVT\Message $message0, ?EVT\Message $message1) {
+			if (($message0 !== null) && ($message1 !== null)) {
+				return new static(array_merge($message0->map, $message1->map));
+			}
+			if ($message0 !== null) {
+				return new static($message0->map);
+			}
+			if ($message1 !== null) {
+				return new static($message1->map);
+			}
+			return new static();
+		}
+
+		/**
 		 * This method returns a new instance with the specified map merged.
 		 *
 		 * @access public
 		 * @static
-		 * @param Message $message                                  the base message
+		 * @param EVT\Message $message                              the base message
 		 * @param array $map                                        the map containing the data
 		 * @return EVT\Message                                      a new message
 		 */
-		public static function merge(EVT\Message $message, array $map = []) {
-			return new static(array_merge($message->map, $map));
+		public static function put(?EVT\Message $message, array $map = []) {
+			if ($message !== null) {
+				return new static(array_merge($message->map, $map));
+			}
+			return new static($map);
 		}
 
 	}
