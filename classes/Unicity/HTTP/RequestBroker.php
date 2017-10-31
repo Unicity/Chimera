@@ -137,6 +137,13 @@ namespace Unicity\HTTP {
 					}
 				}
 
+				if (isset($request->credentials) && !empty($request->credentials)) {
+					curl_setopt($resource, CURLOPT_HTTPAUTH, $request->credentials['method'] ?? CURLAUTH_ANY);
+					if (isset($request->credentials['username']) && isset($request->credentials['password'])) {
+						curl_setopt($resource, CURLOPT_USERPWD, sprintf('%s:%s', $request->credentials['username'], $request->credentials['password']));
+					}
+				}
+
 				$resources[$i] = curl_copy_handle($resource);
 				curl_multi_add_handle($dispatcher, $resources[$i]);
 			}
