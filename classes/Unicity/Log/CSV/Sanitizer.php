@@ -37,15 +37,15 @@ namespace Unicity\Log\CSV {
 
 		protected $filters;
 
-		public function __construct($config) {
-			$config = Log\Sanitizer::loadConfig($config);
+		public function __construct($filters) {
+			$filters = static::filters($filters);
 			$this->filters = array();
-			foreach ($config->filters as $filter) {
-				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
-				foreach ($filter->rules as $rule) {
+			foreach ($filters as $filter) {
+				$rule = $filter->hasKey('rule') ? $filter->rule : null;
+				foreach ($filter->keys as $key) {
 					$this->filters[] = (object) [
-						'delegate' => $delegate,
-						'column_name' => Core\Convert::toString($rule->column_name),
+						'name' => $key->name,
+						'rule' => $rule,
 					];
 				}
 			}
@@ -55,10 +55,10 @@ namespace Unicity\Log\CSV {
 			$records = Common\Collection::useCollections(Config\CSV\Reader::load($input, $metadata)->read());
 			foreach ($records as $record) {
 				foreach ($this->filters as $filter) {
-					$delegate = $filter->delegate;
-					$column_name = $filter->column_name;
-					if ($record->hasKey($column_name)) {
-						$record->$column_name = is_callable($delegate) ? $delegate($record->$column_name) : '';
+					$rule = $filter->rule;
+					$name = $filter->name;
+					if ($record->hasKey($name)) {
+						$record->$name = is_callable($rule) ? $rule($record->$name) : '';
 					}
 				}
 			}

@@ -38,16 +38,16 @@ namespace Unicity\Log\TXT {
 
 		protected $filters;
 
-		public function __construct($config) {
-			$config = Log\Sanitizer::loadConfig($config);
+		public function __construct($filters) {
+			$filters = static::filters($filters);
 			$this->filters = array();
-			foreach ($config->filters as $filter) {
-				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
-				foreach ($filter->rules as $rule) {
+			foreach ($filters as $filter) {
+				$rule = $filter->hasKey('rule') ? $filter->rule : null;
+				foreach ($filter->keys as $key) {
 					$this->filters[] = (object) [
-						'delegate' => $delegate,
-						'pattern' => Core\Convert::toString($rule->pattern),
-						'type' => $rule->hasKey('type') ? strtolower(Core\Convert::toString($rule->type)) : 'simple',
+						'pattern' => Core\Convert::toString($key->pattern),
+						'rule' => $rule,
+						'type' => $key->hasKey('type') ? strtolower(Core\Convert::toString($key->type)) : 'simple',
 					];
 				}
 			}
@@ -57,26 +57,26 @@ namespace Unicity\Log\TXT {
 			$buffer = new Common\Mutable\StringRef();
 			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
 				foreach ($this->filters as $filter) {
-					$delegate = $filter->delegate;
-					if (is_callable($delegate)) {
+					$rule = $filter->rule;
+					if (is_callable($rule)) {
 						switch ($filter->type) {
 							case 'complex':
-								$search = $filter->pattern;
-								if (preg_match($search, $line)) {
-									$replacement = preg_replace_callback($search, function($matches) use ($delegate) {
-										return '${1}' . Core\Convert::toString($delegate($matches[1])) . '${2}';
+								$pattern = $filter->pattern;
+								if (preg_match($pattern, $line)) {
+									$replacement = preg_replace_callback($pattern, function($matches) use ($rule) {
+										return '${1}' . Core\Convert::toString($rule($matches[1])) . '${2}';
 									}, $line);
-									$line = preg_replace($search, $replacement, $line);
+									$line = preg_replace($pattern, $replacement, $line);
 								}
 								break;
 							case 'simple':
 								$separator = '(?:%[A-Za-z0-9]{1,2}|\W|\s)';
-								$search = '#(' . $separator . '+' . $filter->pattern . $separator . '+' . ')[a-zA-Z0-9\-]+(?!>)(?=' . $separator . ')#i';
-								if (preg_match($search, $line)) {
-									$replacement = preg_replace_callback($search, function($matches) use ($delegate) {
-										return '${1}' . Core\Convert::toString($delegate($matches[0]));
+								$pattern = '#(' . $separator . '+' . $filter->pattern . $separator . '+' . ')[a-zA-Z0-9\-]+(?!>)(?=' . $separator . ')#i';
+								if (preg_match($pattern, $line)) {
+									$replacement = preg_replace_callback($pattern, function($matches) use ($rule) {
+										return '${1}' . Core\Convert::toString($rule($matches[0]));
 									}, $line);
-									$line = preg_replace($search, $replacement, $line);
+									$line = preg_replace($pattern, $replacement, $line);
 								}
 								break;
 						}

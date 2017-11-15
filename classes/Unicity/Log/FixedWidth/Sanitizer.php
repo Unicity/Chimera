@@ -37,17 +37,17 @@ namespace Unicity\Log\FixedWidth {
 
 		protected $filters;
 
-		public function __construct($config) {
-			$config = Log\Sanitizer::loadConfig($config);
+		public function __construct($filters) {
+			$filters = static::filters($filters);
 			$this->filters = array();
-			foreach ($config->filters as $filter) {
-				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
-				foreach ($filter->rules as $rule) {
-					$row_index = Core\Convert::toInteger($rule->row_index);
-					$this->filters[$row_index][] = (object) [
-						'delegate' => $delegate,
-						'column_offset' => Core\Convert::toInteger($rule->column_offset),
-						'column_length' => Core\Convert::toInteger($rule->column_length),
+			foreach ($filters as $filter) {
+				$rule = $filter->hasKey('rule') ? $filter->rule : null;
+				foreach ($filter->keys as $key) {
+					$index = Core\Convert::toInteger($key->index);
+					$this->filters[$index][] = (object) [
+						'length' => Core\Convert::toInteger($key->length),
+						'offset' => Core\Convert::toInteger($key->offset),
+						'rule' => $rule,
 					];
 				}
 			}
@@ -58,11 +58,11 @@ namespace Unicity\Log\FixedWidth {
 			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
 				if (isset($this->filters[$index])) {
 					foreach ($this->filters[$index] as $filter) {
-						$delegate = $filter->delegate;
-						$offset = $filter->column_offset;
-						$length = $filter->column_length;
-						if (is_callable($delegate)) {
-							$line = substr_replace($line, str_pad($delegate(substr($line, $offset, $length)), $length, ' '), $offset, $length);
+						$rule = $filter->rule;
+						$offset = $filter->offset;
+						$length = $filter->length;
+						if (is_callable($rule)) {
+							$line = substr_replace($line, str_pad($rule(substr($line, $offset, $length)), $length, ' '), $offset, $length);
 						}
 						else {
 							$line = substr_replace($line, str_repeat(' ', $length), $offset, $length);

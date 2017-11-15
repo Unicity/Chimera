@@ -37,23 +37,23 @@ namespace Unicity\Log\XML {
 
 		protected $filters;
 
-		public function __construct($config) {
-			$config = Log\Sanitizer::loadConfig($config);
+		public function __construct($filters) {
+			$filters = Log\Sanitizer::filters($filters);
 			$this->filters = array();
-			foreach ($config->filters as $filter) {
-				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
-				foreach ($filter->rules as $rule) {
-					if ($rule->hasKey('attribute')) {
+			foreach ($filters as $filter) {
+				$rule = $filter->hasKey('rule') ? $filter->rule : null;
+				foreach ($filter->keys as $key) {
+					if ($key->hasKey('attribute')) {
 						$this->filters[] = (object) [
-							'attribute' => Core\Convert::toString($rule->attribute),
-							'delegate' => $delegate,
-							'query' => Core\Convert::toString($rule->query),
+							'attribute' => Core\Convert::toString($key->attribute),
+							'path' => Core\Convert::toString($key->path),
+							'rule' => $rule,
 						];
 					}
 					else {
 						$this->filters[] = (object) [
-							'delegate' => $delegate,
-							'query' => Core\Convert::toString($rule->query),
+							'path' => Core\Convert::toString($key->path),
+							'rule' => $rule,
 						];
 					}
 				}
@@ -65,22 +65,22 @@ namespace Unicity\Log\XML {
 			$document->loadXML($input->getBytes());
 			foreach ($this->filters as $filter) {
 				$xpath = new \DOMXpath($document);
-				$elements = $xpath->query($filter->query);
+				$elements = $xpath->query($filter->path);
 				if (!empty($elements)) {
-					$delegate = $filter->delegate;
-					if (is_callable($delegate)) {
+					$rule = $filter->rule;
+					if (is_callable($rule)) {
 						if (isset($filter->attribute)) {
 							foreach ($elements as $element) {
 								$attributes = $element->attributes;
 								$attribute = $attributes->getNamedItem($filter->attribute);
 								if ($attribute !== null) {
-									$attribute->nodeValue = $delegate($attribute->nodeValue);
+									$attribute->nodeValue = $rule($attribute->nodeValue);
 								}
 							}
 						}
 						else {
 							foreach ($elements as $element) {
-								$element->nodeValue = $delegate($element->nodeValue);
+								$element->nodeValue = $rule($element->nodeValue);
 							}
 						}
 					}

@@ -36,15 +36,15 @@ namespace Unicity\Log {
 
 		public abstract function sanitize(IO\File $input, array $metadata = array()) : string;
 
-		public static function loadConfig($config) : Common\IMap {
-			if ($config instanceof IO\File) {
-				return Common\Collection::useCollections(Config\JSON\Reader::load($config)->read());
+		protected static function filters($filter) : Common\IList {
+			if ($filter instanceof IO\File) {
+				return Common\Collection::useCollections(Config\JSON\Reader::load($filter)->read());
 			}
-			else if (is_string($config)) {
-				return Common\Collection::useCollections(json_decode($config));
+			else if (is_string($filter)) {
+				return Common\Collection::useCollections(json_decode($filter));
 			}
 			else {
-				return Common\Collection::useCollections($config);
+				return Common\Collection::useCollections($filter);
 			}
 		}
 

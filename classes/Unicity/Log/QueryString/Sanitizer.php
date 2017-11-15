@@ -38,15 +38,15 @@ namespace Unicity\Log\QueryString {
 
 		protected $filters;
 
-		public function __construct($config) {
-			$config = Log\Sanitizer::loadConfig($config);
+		public function __construct($filters) {
+			$filters = Log\Sanitizer::filters($filters);
 			$this->filters = array();
-			foreach ($config->filters as $filter) {
-				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
-				foreach ($filter->rules as $rule) {
+			foreach ($filters as $filter) {
+				$rule = $filter->hasKey('rule') ? $filter->rule : null;
+				foreach ($filter->keys as $key) {
 					$this->filters[] = (object) [
-						'delegate' => $delegate,
-						'query' => Core\Convert::toString($rule->query),
+						'path' => $key->path,
+						'rule' => $rule,
 					];
 				}
 			}
@@ -58,17 +58,17 @@ namespace Unicity\Log\QueryString {
 			$store = new JsonPath\JsonStore($buffer);
 			unset($buffer);
 			foreach ($this->filters as $filter) {
-				$delegate = $filter->delegate;
-				if (is_callable($delegate)) {
-					$results = $store->get($filter->query);
+				$rule = $filter->rule;
+				if (is_callable($rule)) {
+					$results = $store->get($filter->path);
 					if ($elements =& $results) {
 						foreach ($elements as &$element) {
-							$element = $delegate($element);
+							$element = $rule($element);
 						}
 					}
 				}
 				else {
-					$store->remove($filter->query);
+					$store->remove($filter->path);
 				}
 			}
 			$query = http_build_query($store->toArray());
