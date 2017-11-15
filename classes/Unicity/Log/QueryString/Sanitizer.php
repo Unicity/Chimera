@@ -38,8 +38,8 @@ namespace Unicity\Log\QueryString {
 
 		protected $filters;
 
-		public function __construct(IO\File $file) {
-			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
+		public function __construct($config) {
+			$config = Log\Sanitizer::loadConfig($config);
 			$this->filters = array();
 			foreach ($config->filters as $filter) {
 				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;

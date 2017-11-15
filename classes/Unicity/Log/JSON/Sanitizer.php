@@ -21,9 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\Log\JSON {
 
 	use \Peekmo\JsonPath;
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Log;
 
@@ -38,15 +35,15 @@ namespace Unicity\Log\JSON {
 
 		protected $filters;
 
-		public function __construct(IO\File $file) {
-			$config = Common\Collection::useCollections(Config\JSON\Reader::load($file)->read());
+		public function __construct($config) {
+			$config = Log\Sanitizer::loadConfig($config);
 			$this->filters = array();
 			foreach ($config->filters as $filter) {
 				$delegate = $filter->hasKey('delegate') ? $filter->delegate : null;
 				foreach ($filter->rules as $rule) {
 					$this->filters[] = (object) [
 						'delegate' => $delegate,
-						'query' => Core\Convert::toString($rule->query),
+						'query' => $rule->query,
 					];
 				}
 			}
@@ -54,6 +51,7 @@ namespace Unicity\Log\JSON {
 
 		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
+			var_dump($store); exit();
 			foreach ($this->filters as $filter) {
 				$delegate = $filter->delegate;
 				if (is_callable($delegate)) {

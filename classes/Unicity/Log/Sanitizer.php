@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace Unicity\Log {
 
+	use \Unicity\Common;
+	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
 
@@ -33,6 +35,18 @@ namespace Unicity\Log {
 	abstract class Sanitizer extends Core\Object {
 
 		public abstract function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef;
+
+		public static function loadConfig($config) : Common\IMap {
+			if ($config instanceof IO\File) {
+				return Common\Collection::useCollections(Config\JSON\Reader::load($config)->read());
+			}
+			else if (is_string($config)) {
+				return Common\Collection::useCollections(json_decode($config));
+			}
+			else {
+				return Common\Collection::useCollections($config);
+			}
+		}
 
 	}
 
