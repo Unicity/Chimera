@@ -51,7 +51,8 @@ namespace Unicity\Log\CSV {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : string {
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = static::input($input);
 			$records = Common\Collection::useCollections(Config\CSV\Reader::load($input, $metadata)->read());
 			foreach ($records as $record) {
 				foreach ($this->filters as $filter) {

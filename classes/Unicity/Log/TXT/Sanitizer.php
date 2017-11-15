@@ -53,7 +53,8 @@ namespace Unicity\Log\TXT {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : string {
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = static::input($input);
 			$buffer = new Common\Mutable\StringRef();
 			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
 				foreach ($this->filters as $filter) {

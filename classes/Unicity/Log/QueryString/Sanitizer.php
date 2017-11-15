@@ -52,7 +52,8 @@ namespace Unicity\Log\QueryString {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : string {
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = static::input($input);
 			$buffer = array();
 			parse_str(ltrim($input->getBytes(), '?'), $buffer);
 			$store = new JsonPath\JsonStore($buffer);

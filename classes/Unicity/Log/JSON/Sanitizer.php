@@ -49,7 +49,8 @@ namespace Unicity\Log\JSON {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : string {
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = static::input($input);
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
 			foreach ($this->filters as $filter) {
 				$rule = $filter->rule;

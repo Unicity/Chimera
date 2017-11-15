@@ -32,7 +32,8 @@ namespace Unicity\Log\SQL {
 	 */
 	class Sanitizer extends Log\Sanitizer {
 
-		public function sanitize(IO\File $input, array $metadata = array()) : string {
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = static::input($input);
 			return $input->getBytes();
 		}
 

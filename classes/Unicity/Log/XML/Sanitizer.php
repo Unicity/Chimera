@@ -60,7 +60,8 @@ namespace Unicity\Log\XML {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : string {
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = static::input($input);
 			$document = new \DOMDocument();
 			$document->loadXML($input->getBytes());
 			foreach ($this->filters as $filter) {

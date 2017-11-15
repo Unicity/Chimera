@@ -34,17 +34,29 @@ namespace Unicity\Log {
 	 */
 	abstract class Sanitizer extends Core\Object {
 
-		public abstract function sanitize(IO\File $input, array $metadata = array()) : string;
+		public abstract function sanitize($input, array $metadata = array()) : string;
 
-		protected static function filters($filter) : Common\IList {
-			if ($filter instanceof IO\File) {
-				return Common\Collection::useCollections(Config\JSON\Reader::load($filter)->read());
+		protected static function filters($filters) : Common\IList {
+			if ($filters instanceof IO\File) {
+				return Common\Collection::useCollections(Config\JSON\Reader::load($filters)->read());
 			}
-			else if (is_string($filter)) {
-				return Common\Collection::useCollections(json_decode($filter));
+			else if (is_string($filters)) {
+				return Common\Collection::useCollections(json_decode($filters));
 			}
 			else {
-				return Common\Collection::useCollections($filter);
+				return Common\Collection::useCollections($filters);
+			}
+		}
+
+		protected static function input($input) {
+			if ($input instanceof IO\File) {
+				return $input;
+			}
+			if (Common\StringRef::isTypeOf($input)) {
+				return new IO\StringRef($input);
+			}
+			else {
+				return new IO\StringRef((new Config\JSON\Writer($input))->render());
 			}
 		}
 
