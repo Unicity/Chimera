@@ -27,51 +27,26 @@ namespace Unicity\HTTP {
 	abstract class ResponseMessageHandler extends Core\Object {
 
 		/**
-		 * This variable stores a reference to the dispatcher.
-		 *
-		 * @access protected
-		 * @var EVT\IServer
-		 */
-		protected $server;
-
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 */
-		public function __construct() {
-			$this->server = new EVT\Server();
-		}
-
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->server);
-		}
-
-		/**
-		 * This method processes the message and context publishing to the correct channel.
+		 * This method processes the message and context.
 		 *
 		 * @access public
 		 * @final
-		 * @param ResponseMessage $message                          the message to be processed
+		 * @param HTTP\ResponseMessage $message                     the message to be processed
 		 * @param EVT\Context $context                              the context to be processed
 		 */
-		public final function execute(HTTP\ResponseMessage $message, EVT\Context $context) {
+		public final function __invoke(HTTP\ResponseMessage $message, EVT\Context $context) {
 			$exchange = new EVT\Exchange([
 				'context' => $context,
 				'message' => $message,
 			]);
 
-			if ($this->isSuccessful($exchange)) {
-				$this->server->publish('onSuccess', $exchange);
+			$handler = new static();
+
+			if ($handler->isSuccessful($exchange)) {
+				$handler->onSuccess($exchange);
 			}
 			else {
-				$this->server->publish('onFailure', $exchange);
+				$handler->onFailure($exchange);
 			}
 		}
 
@@ -87,29 +62,23 @@ namespace Unicity\HTTP {
 		}
 
 		/**
-		 * This method adds a failure handler.
+		 * This method processes a failure message.
 		 *
 		 * @access public
-		 * @final
-		 * @param callable $handler                                 the failure handler to be added
-		 * @return HTTP\ResponseMessageHandler                      a reference to this class
+		 * @param EVT\Exchange $exchange                            the exchange to be processed
 		 */
-		public final function onFailure(callable $handler) : HTTP\ResponseMessageHandler {
-			$this->server->subscribe('onFailure', $handler);
-			return $this;
+		public function onFailure(EVT\Exchange $exchange) : void {
+			// do nothing
 		}
 
 		/**
-		 * This method adds a success handler.
+		 * This method processes a success message.
 		 *
 		 * @access public
-		 * @final
-		 * @param callable $handler                                 the success handler to be added
-		 * @return HTTP\ResponseMessageHandler                      a reference to this class
+		 * @param EVT\Exchange $exchange                            the exchange to be processed
 		 */
-		public final function onSuccess(callable $handler) : HTTP\ResponseMessageHandler {
-			$this->server->subscribe('onSuccess', $handler);
-			return $this;
+		public function onSuccess(EVT\Exchange $exchange) : void {
+			// do nothing
 		}
 
 	}
