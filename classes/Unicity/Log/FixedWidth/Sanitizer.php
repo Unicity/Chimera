@@ -53,7 +53,7 @@ namespace Unicity\Log\FixedWidth {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
+		public function sanitize(IO\File $input, array $metadata = array()) : string {
 			$buffer = new Common\Mutable\StringRef();
 			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
 				if (isset($this->filters[$index])) {
@@ -71,7 +71,7 @@ namespace Unicity\Log\FixedWidth {
 				}
 				$buffer->append($line);
 			});
-			return new IO\StringRef($buffer);
+			return $buffer->__toString();
 		}
 
 	}

@@ -34,7 +34,7 @@ namespace Unicity\Log {
 	 */
 	abstract class Sanitizer extends Core\Object {
 
-		public abstract function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef;
+		public abstract function sanitize(IO\File $input, array $metadata = array()) : string;
 
 		public static function loadConfig($config) : Common\IMap {
 			if ($config instanceof IO\File) {

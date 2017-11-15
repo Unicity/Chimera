@@ -52,7 +52,7 @@ namespace Unicity\Log\QueryString {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
+		public function sanitize(IO\File $input, array $metadata = array()) : string {
 			$buffer = array();
 			parse_str(ltrim($input->getBytes(), '?'), $buffer);
 			$store = new JsonPath\JsonStore($buffer);
@@ -75,7 +75,7 @@ namespace Unicity\Log\QueryString {
 			if (!empty($query)) {
 				$query = '?' . $query;
 			}
-			return new IO\StringRef($query);
+			return $query;
 		}
 
 	}

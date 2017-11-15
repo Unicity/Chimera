@@ -60,7 +60,7 @@ namespace Unicity\Log\XML {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
+		public function sanitize(IO\File $input, array $metadata = array()) : string {
 			$document = new \DOMDocument();
 			$document->loadXML($input->getBytes());
 			foreach ($this->filters as $filter) {
@@ -90,7 +90,7 @@ namespace Unicity\Log\XML {
 				}
 			}
 			$document->formatOutput = true;
-			return new IO\StringRef($document->saveXML());
+			return $document->saveXML();
 		}
 
 	}

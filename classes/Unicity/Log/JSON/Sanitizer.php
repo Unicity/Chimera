@@ -49,9 +49,8 @@ namespace Unicity\Log\JSON {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
+		public function sanitize(IO\File $input, array $metadata = array()) : string {
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
-			var_dump($store); exit();
 			foreach ($this->filters as $filter) {
 				$delegate = $filter->delegate;
 				if (is_callable($delegate)) {
@@ -66,7 +65,7 @@ namespace Unicity\Log\JSON {
 					$store->remove($filter->query);
 				}
 			}
-			return new IO\StringRef($store->toString());
+			return $store->toString();
 		}
 
 	}

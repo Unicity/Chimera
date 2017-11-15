@@ -51,7 +51,7 @@ namespace Unicity\Log\CSV {
 			}
 		}
 
-		public function sanitize(IO\File $input, array $metadata = array()) : IO\StringRef {
+		public function sanitize(IO\File $input, array $metadata = array()) : string {
 			$records = Common\Collection::useCollections(Config\CSV\Reader::load($input, $metadata)->read());
 			foreach ($records as $record) {
 				foreach ($this->filters as $filter) {
@@ -64,7 +64,7 @@ namespace Unicity\Log\CSV {
 			}
 			$writer = new Config\CSV\Writer($records);
 			$writer->config($metadata);
-			return new IO\StringRef($writer->render());
+			return $writer->render();
 		}
 
 	}
