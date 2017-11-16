@@ -46,12 +46,14 @@ namespace Unicity\Log\XML {
 					if ($key->hasKey('attribute')) {
 						$this->filters[] = (object) [
 							'attribute' => Core\Convert::toString($key->attribute),
+							'namespace' => $key->namespace,
 							'path' => Core\Convert::toString($key->path),
 							'rule' => $rule,
 						];
 					}
 					else {
 						$this->filters[] = (object) [
+							'namespace' => $key->namespace,
 							'path' => Core\Convert::toString($key->path),
 							'rule' => $rule,
 						];
@@ -66,6 +68,9 @@ namespace Unicity\Log\XML {
 			$document->loadXML($input->getBytes());
 			foreach ($this->filters as $filter) {
 				$xpath = new \DOMXpath($document);
+				if (isset($filter->namespace['prefix']) && isset($filter->namespace['uri'])) {
+					$xpath->registerNamespace($filter->namespace['prefix'], $filter->namespace['uri']);
+				}
 				$elements = $xpath->query($filter->path);
 				if (!empty($elements)) {
 					$rule = $filter->rule;
