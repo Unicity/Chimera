@@ -42,6 +42,9 @@ namespace Unicity\Log\CSV {
 			$this->filters = array();
 			foreach ($filters as $filter) {
 				$rule = $filter->hasKey('rule') ? $filter->rule : null;
+				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
+					$rule = static::$rules[$rule];
+				}
 				foreach ($filter->keys as $key) {
 					$this->filters[] = (object) [
 						'name' => $key->name,

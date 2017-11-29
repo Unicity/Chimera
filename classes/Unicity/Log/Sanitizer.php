@@ -34,6 +34,12 @@ namespace Unicity\Log {
 	 */
 	abstract class Sanitizer extends Core\Object {
 
+		protected static $rules = array(
+			'mask' => '\\Unicity\\Log\\Masks::all',
+			'mask_cc' => '\\Unicity\\Log\\Masks::creditCard',
+			'remove' => null,
+		);
+
 		public abstract function sanitize($input, array $metadata = array()) : string;
 
 		protected static function filters($filters) : Common\IList {
