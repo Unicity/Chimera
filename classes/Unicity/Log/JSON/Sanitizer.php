@@ -57,7 +57,23 @@ namespace Unicity\Log\JSON {
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
 			foreach ($this->filters as $filter) {
 				$rule = $filter->rule;
-				if (is_callable($rule)) {
+				$matches = array();
+				if (is_string($rule) && preg_match('/^include\((.+)\)$/', $rule, $matches)) {
+					$fields = array_map('trim', explode(',', $matches[1]));
+					$results = $store->get($filter->path);
+					if ($elements =& $results) {
+						$removables = array();
+						foreach ($elements as $element) {
+							foreach ($element as $key => $val) {
+								if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
+									$store->remove($filter->path . ".['{$key}']");
+									$removables[$key] = null;
+								}
+							}
+						}
+					}
+				}
+				else if (is_callable($rule)) {
 					$results = $store->get($filter->path);
 					if ($elements =& $results) {
 						foreach ($elements as &$element) {
