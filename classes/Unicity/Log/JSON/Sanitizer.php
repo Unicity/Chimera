@@ -58,7 +58,7 @@ namespace Unicity\Log\JSON {
 			foreach ($this->filters as $filter) {
 				$rule = $filter->rule;
 				$matches = array();
-				if (is_string($rule) && preg_match('/^include\((.+)\)$/', $rule, $matches)) {
+				if (is_string($rule) && preg_match('/^whitelist\((.+)\)$/', $rule, $matches)) { // removes all other fields not in the whitelist
 					$fields = array_map('trim', explode(',', $matches[1]));
 					$results = $store->get($filter->path);
 					if ($elements =& $results) {
@@ -66,6 +66,21 @@ namespace Unicity\Log\JSON {
 						foreach ($elements as $element) {
 							foreach ($element as $key => $val) {
 								if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
+									$store->remove($filter->path . ".['{$key}']");
+									$removables[$key] = null;
+								}
+							}
+						}
+					}
+				}
+				if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
+					$fields = array_map('trim', explode(',', $matches[1]));
+					$results = $store->get($filter->path);
+					if ($elements =& $results) {
+						$removables = array();
+						foreach ($elements as $element) {
+							foreach ($element as $key => $val) {
+								if (in_array($key, $fields) && !array_key_exists($key, $removables)) {
 									$store->remove($filter->path . ".['{$key}']");
 									$removables[$key] = null;
 								}
