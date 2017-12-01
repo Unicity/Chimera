@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\Log\JSON {
 
 	use \Peekmo\JsonPath;
-	use \Unicity\IO;
 	use \Unicity\Log;
 
 	/**
@@ -73,7 +72,7 @@ namespace Unicity\Log\JSON {
 						}
 					}
 				}
-				if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
+				else if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
 					$fields = array_map('trim', explode(',', $matches[1]));
 					$results = $store->get($filter->path);
 					if ($elements =& $results) {

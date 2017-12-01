@@ -22,8 +22,6 @@ namespace Unicity\Log\CSV {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
 	use \Unicity\Log;
 
 	/**

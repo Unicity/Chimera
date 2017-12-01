@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace Unicity\Log\FixedWidth {
 
 	use \Unicity\Common;
-	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
 	use \Unicity\Log;
