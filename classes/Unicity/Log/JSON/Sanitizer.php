@@ -87,6 +87,14 @@ namespace Unicity\Log\JSON {
 						}
 					}
 				}
+				else if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
+					$results = $store->get($filter->path);
+					if ($elements =& $results) {
+						foreach ($elements as &$element) {
+							$element = Log\Masks::last($element, 'x', $matches[1]);
+						}
+					}
+				}
 				else if (is_callable($rule)) {
 					$results = $store->get($filter->path);
 					if ($elements =& $results) {

@@ -62,6 +62,19 @@ namespace Unicity\Log {
 			return $value;
 		}
 
+		public static function last($value, string $symbol = 'x', int $count = 4) {
+			$count = abs($count);
+			if (($value !== null) && ($count > 0)) {
+				$value = Core\Convert::toString($value);
+				$length = strlen($value);
+				if ($length <= $count) {
+					return str_repeat($symbol, $length);
+				}
+				return substr($value, 0, $count * -1) . str_repeat($symbol, $count);
+			}
+			return $value;
+		}
+
 	}
 
 }
