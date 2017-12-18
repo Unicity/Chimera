@@ -20,14 +20,18 @@ declare(strict_types = 1);
 
 namespace Unicity\HTTP {
 
+	use Unicity\Common;
 	use \Unicity\Core;
 
 	class QueryString extends Core\Object {
 
-		public static function build(array $parameters) {
-			$query_string = http_build_query($parameters);
-			if (!empty($query_string)) {
-				$query_string = '?' . $query_string;
+		public static function build($parameters, bool $prefix = true) : string {
+			$parameters = Common\Collection::useArrays($parameters);
+			if (is_array($parameters)) {
+				$query_string = http_build_query($parameters);
+				if (!empty($query_string) && $prefix) {
+					$query_string = '?' . $query_string;
+				}
 			}
 			return $query_string;
 		}
