@@ -37,6 +37,7 @@ namespace Unicity\Log {
 		protected static $rules = array(
 			'mask' => '\\Unicity\\Log\\Masks::all',
 			'mask_cc' => '\\Unicity\\Log\\Masks::creditCard',
+			'mask_ip' => '\\Unicity\\\Log\\Masks::ipAddress',
 			'remove' => null,
 		);
 
