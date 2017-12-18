@@ -69,9 +69,14 @@ namespace Unicity\Config\QueryString {
 					if (($index == 0) && $self->bom) {
 						$line = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $line);
 					}
-					$query_string = parse_url($line, PHP_URL_QUERY);
 					$properties = array();
-					parse_str($query_string, $properties);
+					$query_string = parse_url($line, PHP_URL_QUERY);
+					if ($query_string !== null) {
+						parse_str($query_string, $properties);
+					}
+					else {
+						parse_str($line, $properties);
+					}
 					if (!empty($properties)) {
 						$source_encoding = ($self->encoder !== null) ? call_user_func($self->encoder . "::getEncoding", $properties) : $self->encoding[0];
 						$target_encoding = $self->encoding[1];
