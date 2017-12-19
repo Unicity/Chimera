@@ -55,8 +55,9 @@ namespace Unicity\Log {
 		public static function ipAddress($value, string $symbol = 'x') {
 			if ($value !== null) {
 				$segments = explode('.', Core\Convert::toString($value));
-				$size = count($segments);
-				$segments[$size - 1] = str_repeat($symbol, strlen($segments[$size - 1]));
+				$segments = array_map(function($segment) use($symbol) {
+					return str_repeat($symbol, strlen($segment));
+				}, $segments);
 				return implode('.', $segments);
 			}
 			return $value;
