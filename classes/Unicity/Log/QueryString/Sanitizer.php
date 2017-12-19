@@ -54,7 +54,15 @@ namespace Unicity\Log\QueryString {
 		public function sanitize($input, array $metadata = array()) : string {
 			$input = static::input($input);
 			$buffer = array();
-			parse_str(ltrim($input->getBytes(), '?'), $buffer);
+			$data = $input->getBytes();
+			$query_string = parse_url($data, PHP_URL_QUERY);
+			if ($query_string !== null) {
+				parse_str($query_string, $buffer);
+			}
+			else {
+				parse_str(ltrim($data, '?'), $buffer);
+			}
+			unset($data);
 			$store = new JsonPath\JsonStore($buffer);
 			unset($buffer);
 			foreach ($this->filters as $filter) {
