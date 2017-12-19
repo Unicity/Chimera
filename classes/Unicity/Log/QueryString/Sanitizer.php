@@ -57,7 +57,7 @@ namespace Unicity\Log\QueryString {
 			$data = $input->getBytes();
 			$query_string = parse_url($data, PHP_URL_QUERY);
 			if ($query_string !== null) {
-				$url = $first = strtok($data, '?');
+				$url = substr($data, 0, strpos($data, '?'));
 				parse_str($query_string, $buffer);
 			}
 			else {
