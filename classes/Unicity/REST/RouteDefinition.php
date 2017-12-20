@@ -80,7 +80,7 @@ namespace Unicity\REST {
 		 * @return REST\RouteDefinition                             a reference to this class
 		 */
 		public function with(array $internals) : REST\RouteDefinition {
-			$this->route->internals = array_merge($this->route->internals, $internals);
+			$this->route->internals = REST\Internals::put($this->route->internals, $internals);
 			return $this;
 		}
 

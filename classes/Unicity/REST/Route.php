@@ -29,7 +29,7 @@ namespace Unicity\REST {
 		 * This variable stores any internal arguments.
 		 *
 		 * @access public
-		 * @var array
+		 * @var REST\Internals
 		 */
 		public $internals;
 
@@ -87,7 +87,7 @@ namespace Unicity\REST {
 			$this->path = $path;
 			$this->pipeline = null;
 			$this->patterns = $patterns;
-			$this->internals = [];
+			$this->internals = REST\Internals::factory();
 			$this->when = [];
 		}
 
