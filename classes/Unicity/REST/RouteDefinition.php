@@ -73,6 +73,18 @@ namespace Unicity\REST {
 		}
 
 		/**
+		 * This method sets any internal arguments.
+		 *
+		 * @access public
+		 * @param array $internals                                  the internal arguments to be set
+		 * @return REST\RouteDefinition                             a reference to this class
+		 */
+		public function with(array $internals) : REST\RouteDefinition {
+			$this->route->internals = array_merge($this->route->internals, $internals);
+			return $this;
+		}
+
+		/**
 		 * This method sets the route's pipeline.
 		 *
 		 * @access public

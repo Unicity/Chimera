@@ -121,15 +121,18 @@ namespace Unicity\REST {
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onRouteConfiguration(IO\File $file) : REST\Router {
-			$records = Config\Inc\Reader::load($file)->read();
-			foreach ($records as $record) {
-				$route = REST\Route::request($record['method'], $record['path'], $record['patterns'] ?? []);
-				if (isset($record['when']) && is_array($record['when'])) {
-					foreach ($record['when'] as $when) {
+			$entries = Config\Inc\Reader::load($file)->read();
+			foreach ($entries as $entry) {
+				$route = REST\Route::request($entry['method'], $entry['path'], $entry['patterns'] ?? []);
+				if (isset($entry['when']) && is_array($entry['when'])) {
+					foreach ($entry['when'] as $when) {
 						$route->when($when);
 					}
 				}
-				$this->onRoute($route->to($record['to']));
+				if (isset($entry['with']) && is_array($entry['with'])) {
+					$route->with($entry['with']);
+				}
+				$this->onRoute($route->to($entry['to']));
 			}
 			return $this;
 		}
@@ -223,8 +226,9 @@ namespace Unicity\REST {
 				});
 
 				if (!empty($routes)) {
-					$pipeline = end($routes)->pipeline;
-					$pipeline($message);
+					$route = end($routes);
+					$pipeline = $route->pipeline;
+					$pipeline($message, $route->internals);
 					$this->dispatcher->publish('routeSucceeded', $message);
 				}
 				else {

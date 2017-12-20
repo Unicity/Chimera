@@ -26,6 +26,14 @@ namespace Unicity\REST {
 	class Route extends Core\Object {
 
 		/**
+		 * This variable stores any internal arguments.
+		 *
+		 * @access public
+		 * @var array
+		 */
+		public $internals;
+
+		/**
 		 * This variable stores the HTTP methods.
 		 *
 		 * @access public
@@ -79,6 +87,7 @@ namespace Unicity\REST {
 			$this->path = $path;
 			$this->pipeline = null;
 			$this->patterns = $patterns;
+			$this->internals = [];
 			$this->when = [];
 		}
 
@@ -93,6 +102,7 @@ namespace Unicity\REST {
 			unset($this->path);
 			unset($this->pipeline);
 			unset($this->patterns);
+			unset($this->internals);
 			unset($this->when);
 		}
 
