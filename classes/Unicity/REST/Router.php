@@ -225,15 +225,14 @@ namespace Unicity\REST {
 					return true;
 				});
 
-				if (!empty($routes)) {
-					$route = end($routes);
-					$pipeline = $route->pipeline;
-					$pipeline($message, $route->internals);
-					$this->dispatcher->publish('routeSucceeded', $message);
-				}
-				else {
+				if (empty($routes)) {
 					throw new Throwable\RouteNotFound\Exception('Unable to route message.');
 				}
+
+				$route = end($routes);
+				$pipeline = $route->pipeline;
+				$pipeline($message, $route->internals);
+				$this->dispatcher->publish('routeSucceeded', $message);
 			}
 			catch (\Throwable $throwable) {
 				$this->dispatcher->publish('routeErrored', $throwable);

@@ -83,11 +83,11 @@ namespace Unicity\REST {
 		 *                                                          segments
 		 */
 		public function __construct(array $methods, array $path, array $patterns) {
+			$this->internals = REST\Internals::factory();
 			$this->methods = $methods;
 			$this->path = $path;
-			$this->pipeline = null;
 			$this->patterns = $patterns;
-			$this->internals = REST\Internals::factory();
+			$this->pipeline = null;
 			$this->when = [];
 		}
 
@@ -98,11 +98,11 @@ namespace Unicity\REST {
 		 */
 		public function __destruct() {
 			parent::__destruct();
+			unset($this->internals);
 			unset($this->methods);
 			unset($this->path);
-			unset($this->pipeline);
 			unset($this->patterns);
-			unset($this->internals);
+			unset($this->pipeline);
 			unset($this->when);
 		}
 
