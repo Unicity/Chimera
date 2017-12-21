@@ -62,6 +62,9 @@ namespace Unicity\Config\JSON {
 		}
 
 		public static function encode($collection) : string {
+			if ($collection instanceof \JsonSerializable) {
+				return json_encode($collection);
+			}
 			if ($collection instanceof IO\FIle) {
 				return $collection->getBytes();
 			}
