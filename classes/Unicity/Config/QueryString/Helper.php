@@ -51,6 +51,9 @@ namespace Unicity\Config\QueryString {
 		}
 
 		public static function decode($data) {
+			if ($data instanceof \JsonSerializable) {
+				$data = new IO\StringRef(json_encode($data));
+			}
 			if ($data instanceof Common\Collection) {
 				return $data;
 			}
@@ -63,6 +66,9 @@ namespace Unicity\Config\QueryString {
 		}
 
 		public static function encode($collection) : string {
+			if ($collection instanceof \JsonSerializable) {
+				return (new Config\QueryString\Writer(json_decode(json_encode($collection))))->render();
+			}
 			if ($collection instanceof IO\FIle) {
 				return $collection->getBytes();
 			}

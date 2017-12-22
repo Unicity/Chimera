@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Config\JSON {
+namespace Unicity\Config\Properties {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
@@ -27,27 +27,6 @@ namespace Unicity\Config\JSON {
 	use \Unicity\MappingService;
 
 	class Helper extends Core\Object {
-
-		public static function combine(... $args) : string {
-			$args = array_filter($args, function($arg) {
-				return is_string($arg) || is_array($arg);
-			});
-
-			$args = array_map(function($arg) {
-				if (is_array($arg)) {
-					return $arg;
-				}
-				return json_decode($arg, true);
-			}, $args);
-
-			if (empty($args)) {
-				return json_encode((object) array());
-			}
-
-			return json_encode(
-				call_user_func_array('array_merge', $args)
-			);
-		}
 
 		public static function decode($data) {
 			if ($data instanceof \JsonSerializable) {
@@ -60,13 +39,13 @@ namespace Unicity\Config\JSON {
 				$data = new IO\StringRef(Core\Convert::toString($data));
 			}
 			return MappingService\Data\Model\Marshaller::unmarshal(
-				Config\JSON\Reader::load($data)
+				Config\Properties\Reader::load($data)
 			);
 		}
 
 		public static function encode($collection) : string {
 			if ($collection instanceof \JsonSerializable) {
-				return json_encode($collection);
+				return (new Config\Properties\Writer(json_decode(json_encode($collection))))->render();
 			}
 			if ($collection instanceof IO\FIle) {
 				return $collection->getBytes();
@@ -74,7 +53,7 @@ namespace Unicity\Config\JSON {
 			if (Common\StringRef::isTypeOf($collection)) {
 				return Core\Convert::toString($collection);
 			}
-			return (new Config\JSON\Writer($collection))->render();
+			return (new Config\Properties\Writer($collection))->render();
 		}
 
 	}
