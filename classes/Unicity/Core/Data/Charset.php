@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\Core\Data {
 
+	use \Unicity\Common;
 	use \Unicity\Core;
 	use \Unicity\Throwable;
 
@@ -185,6 +186,60 @@ namespace Unicity\Core\Data {
 				}
 			}
 			return $string;
+		}
+
+		/**
+		 * This method encodes the data into the specified encoding from another encoding system.
+		 *
+		 * @access public
+		 * @param mixed $data                                       the data to be encoded
+		 * @param string $source_encoding                           the source encoding
+		 * @param string $target_encoding                           the target encoding
+		 * @return mixed                                            the encoded data
+		 */
+		public static function encodeData($data, string $source_encoding, string $target_encoding) {
+			if (is_object($data)) {
+				if ($data instanceof Common\IList) {
+					$ilist = ($data instanceof Common\Mutable\IList) ? get_class($data) :  '\\Unicity\\Common\\Mutable\\ArrayList';
+					$buffer = new $ilist();
+					foreach ($data as $value) {
+						$buffer->addValue(static::encodeData($value, $source_encoding, $target_encoding));
+					}
+					return $buffer;
+				}
+				else if ($data instanceof Common\ISet) {
+					$iset = ($data instanceof Common\Mutable\ISet) ? get_class($data) :  '\\Unicity\\Common\\Mutable\\HashSet';
+					$buffer = new $iset();
+					foreach ($data as $value) {
+						$buffer->putValue(static::encodeData($value, $source_encoding, $target_encoding));
+					}
+					return $buffer;
+				}
+				else if ($data instanceof Common\IMap) {
+					$imap = ($data instanceof Common\Mutable\IMap) ? get_class($data) : '\\Unicity\\Common\\Mutable\\HashMap';
+					$buffer = new $imap();
+					foreach ($data as $key => $value) {
+						$buffer->putEntry($key, static::encodeData($value, $source_encoding, $target_encoding));
+					}
+					return $buffer;
+				}
+				else if ($data instanceof \stdClass) {
+					$data = get_object_vars($data);
+					$buffer = array();
+					foreach ($data as $key => $value) {
+						$buffer[$key] = static::encodeData($value, $source_encoding, $target_encoding);
+					}
+					return (object) $buffer;
+				}
+			}
+			if (is_array($data)) {
+				$buffer = array();
+				foreach ($data as $key => $value) {
+					$buffer[$key] = static::encodeData($value, $source_encoding, $target_encoding);
+				}
+				return $buffer;
+			}
+			return static::encode($data, $source_encoding, $target_encoding);
 		}
 
 	}

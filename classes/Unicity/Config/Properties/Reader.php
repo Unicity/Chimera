@@ -46,6 +46,7 @@ namespace Unicity\Config\Properties {
 			$this->file = $file;
 			$this->metadata = array_merge(array(
 				'bom' => false, // whether to remove BOM from the first line
+				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
 				'schema' => array(),
 			), $metadata);
 		}
@@ -74,6 +75,7 @@ namespace Unicity\Config\Properties {
 						$position = strpos($line, '=');
 						$key = trim(substr($line, 0, $position));
 						$value = trim(substr($line, $position + 1));
+						$value = Core\Data\Charset::encode($value, $this->metadata[0], $this->metadata[1]);
 						$type = (isset($self->schema[$key])) ? $self->schema[$key] : 'string';
 						$value = Core\Convert::changeType($value, $type);
 
