@@ -29,7 +29,7 @@ namespace Unicity\Config\XML {
 	class Helper extends Core\Object {
 
 		public static function decode($data) {
-			if ($data instanceof Common\Collection) {
+			if ($data instanceof Common\ICollection) {
 				return $data;
 			}
 			if (Common\StringRef::isTypeOf($data)) {

@@ -53,7 +53,7 @@ namespace Unicity\Config\CSV {
 			if ($data instanceof \JsonSerializable) {
 				$data = new IO\StringRef(json_encode($data));
 			}
-			if ($data instanceof Common\Collection) {
+			if ($data instanceof Common\ICollection) {
 				return $data;
 			}
 			if (Common\StringRef::isTypeOf($data)) {
