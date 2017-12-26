@@ -18,19 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\SQL {
+namespace Unicity\Config\SQL {
 
 	use \Unicity\IO;
-	use \Unicity\Log;
+	use \Unicity\Config;
 
 	/**
 	 * This class defines the contract for sanitizing messages.
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
-	class Sanitizer extends Log\Sanitizer {
+	class Sanitizer extends Config\Sanitizer {
 
 		public function sanitize($input, array $metadata = array()) : string {
 			$input = static::input($input);

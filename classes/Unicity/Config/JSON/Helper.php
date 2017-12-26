@@ -28,6 +28,19 @@ namespace Unicity\Config\JSON {
 
 	class Helper extends Core\Object {
 
+		public static function buffer($collection) : IO\File {
+			if ($collection instanceof \JsonSerializable) {
+				return new IO\StringRef(json_encode($collection));
+			}
+			if ($collection instanceof IO\FIle) {
+				return $collection;
+			}
+			if (Common\StringRef::isTypeOf($collection)) {
+				return new IO\StringRef(Core\Convert::toString($collection));
+			}
+			return new IO\StringRef((new Config\JSON\Writer($collection))->render());
+		}
+
 		public static function combine(... $args) : string {
 			$args = array_filter($args, function($arg) {
 				return is_string($arg) || is_array($arg);

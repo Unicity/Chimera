@@ -18,19 +18,20 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\QueryString {
+namespace Unicity\Config\QueryString {
 
 	use \Peekmo\JsonPath;
-	use \Unicity\Log;
+	use \Unicity\Config;
+	use \Unicity\Core;
 
 	/**
 	 * This class defines the contract for sanitizing messages.
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
-	class Sanitizer extends Log\Sanitizer {
+	class Sanitizer extends Config\Sanitizer {
 
 		protected $filters;
 
@@ -104,7 +105,7 @@ namespace Unicity\Log\QueryString {
 					$results = $store->get($filter->path);
 					if ($elements =& $results) {
 						foreach ($elements as &$element) {
-							$element = Log\Masks::last($element, 'x', $matches[1]);
+							$element = Core\Masks::last($element, 'x', $matches[1]);
 						}
 					}
 				}

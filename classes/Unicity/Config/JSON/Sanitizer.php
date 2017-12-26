@@ -18,19 +18,24 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\JSON {
+namespace Unicity\Config\JSON {
 
 	use \Peekmo\JsonPath;
-	use \Unicity\Log;
+	use \Unicity\Config;
+<<<<<<< Local Changes
+	use \Unicity\Config;
+=======
+	use \Unicity\Core;
+>>>>>>> External Changes
 
 	/**
 	 * This class defines the contract for sanitizing messages.
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
-	class Sanitizer extends Log\Sanitizer {
+	class Sanitizer extends Config\Sanitizer {
 
 		protected $filters;
 
@@ -52,7 +57,7 @@ namespace Unicity\Log\JSON {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
+			$input = Config\JSON\Helper::buffer($input);
 			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
 			foreach ($this->filters as $filter) {
 				$rule = $filter->rule;
@@ -91,7 +96,7 @@ namespace Unicity\Log\JSON {
 					$results = $store->get($filter->path);
 					if ($elements =& $results) {
 						foreach ($elements as &$element) {
-							$element = Log\Masks::last($element, 'x', $matches[1]);
+							$element = Core\Masks::last($element, 'x', $matches[1]);
 						}
 					}
 				}

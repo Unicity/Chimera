@@ -18,12 +18,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\TXT {
+namespace Unicity\Config\TXT {
 
 	use \Unicity\Common;
+	use \Unicity\Config;
 	use \Unicity\Core;
 	use \Unicity\IO;
-	use \Unicity\Log;
 	use \Unicity\Throwable;
 
 	/**
@@ -31,9 +31,9 @@ namespace Unicity\Log\TXT {
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
-	class Sanitizer extends Log\Sanitizer {
+	class Sanitizer extends Config\Sanitizer {
 
 		protected $filters;
 

@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log {
+namespace Unicity\Config {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
@@ -30,14 +30,14 @@ namespace Unicity\Log {
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
 	abstract class Sanitizer extends Core\Object {
 
 		protected static $rules = array(
-			'mask' => '\\Unicity\\Log\\Masks::all',
-			'mask_cc' => '\\Unicity\\Log\\Masks::creditCard',
-			'mask_ip' => '\\Unicity\\Log\\Masks::ipAddress',
+			'mask' => '\\Unicity\\Core\\Masks::all',
+			'mask_cc' => '\\Unicity\\Core\\Masks::creditCard',
+			'mask_ip' => '\\Unicity\\Core\\Masks::ipAddress',
 			'remove' => null,
 		);
 
@@ -47,23 +47,11 @@ namespace Unicity\Log {
 			if ($filters instanceof IO\File) {
 				return Common\Collection::useCollections(Config\JSON\Reader::load($filters)->read());
 			}
-			else if (is_string($filters)) {
-				return Common\Collection::useCollections(json_decode($filters));
+			else if (Common\StringRef::isTypeOf($filters)) {
+				return Common\Collection::useCollections(json_decode(Core\Convert::toString($filters)));
 			}
 			else {
 				return Common\Collection::useCollections($filters);
-			}
-		}
-
-		protected static function input($input) {
-			if ($input instanceof IO\File) {
-				return $input;
-			}
-			if (Common\StringRef::isTypeOf($input)) {
-				return new IO\StringRef($input);
-			}
-			else {
-				return new IO\StringRef((new Config\JSON\Writer($input))->render());
 			}
 		}
 

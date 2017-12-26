@@ -249,7 +249,7 @@ namespace Unicity\Config {
 		 *                                                          writer available
 		 */
 		public static function factory($format, $data, $restrict = true) {
-			$name = str_replace('_', '', $format);
+			$name = preg_replace('/[-_]/', '', $format);
 
 			if ($restrict && in_array(strtolower($name), array('inc', 'php'))) {
 				throw new Throwable\Instantiation\Exception('Unable to initialize class. Unknown writer format, got ":format".', array(':format' => $format));
@@ -261,7 +261,7 @@ namespace Unicity\Config {
 
 				$directories = scandir($directory);
 				foreach ($directories as $file) {
-					if (!in_array($file, array('.', '..')) && (!is_dir($directory . DIRECTORY_SEPARATOR . $file) && (strtolower($file) == $name))) {
+					if (!in_array($file, array('.', '..')) && (!is_dir($directory . DIRECTORY_SEPARATOR . $file) && (strtolower($file) == strtolower($name)))) {
 						$writer = "\\Unicity\\Config\\{$file}\\Writer";
 						if (!class_exists($writer)) {
 							break;

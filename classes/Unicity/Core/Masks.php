@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log {
+namespace Unicity\Core {
 
 	use \Unicity\Core;
 

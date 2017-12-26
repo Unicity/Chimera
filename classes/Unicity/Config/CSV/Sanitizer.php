@@ -18,21 +18,19 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\FixedWidth {
+namespace Unicity\Config\CSV {
 
 	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Log;
+	use \Unicity\Config;
 
 	/**
 	 * This class defines the contract for sanitizing messages.
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
-	class Sanitizer extends Log\Sanitizer {
+	class Sanitizer extends Config\Sanitizer {
 
 		protected $filters;
 
@@ -45,10 +43,8 @@ namespace Unicity\Log\FixedWidth {
 					$rule = static::$rules[$rule];
 				}
 				foreach ($filter->keys as $key) {
-					$index = Core\Convert::toInteger($key->index);
-					$this->filters[$index][] = (object) [
-						'length' => Core\Convert::toInteger($key->length),
-						'offset' => Core\Convert::toInteger($key->offset),
+					$this->filters[] = (object) [
+						'name' => $key->name,
 						'rule' => $rule,
 					];
 				}
@@ -56,25 +52,20 @@ namespace Unicity\Log\FixedWidth {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
-			$buffer = new Common\Mutable\StringRef();
-			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
-				if (isset($this->filters[$index])) {
-					foreach ($this->filters[$index] as $filter) {
-						$rule = $filter->rule;
-						$offset = $filter->offset;
-						$length = $filter->length;
-						if (is_callable($rule)) {
-							$line = substr_replace($line, str_pad($rule(substr($line, $offset, $length)), $length, ' '), $offset, $length);
-						}
-						else {
-							$line = substr_replace($line, str_repeat(' ', $length), $offset, $length);
-						}
+			$input = Config\CSV\Helper::buffer($input);
+			$records = Common\Collection::useCollections(Config\CSV\Reader::load($input, $metadata)->read());
+			foreach ($records as $record) {
+				foreach ($this->filters as $filter) {
+					$rule = $filter->rule;
+					$name = $filter->name;
+					if ($record->hasKey($name)) {
+						$record->$name = is_callable($rule) ? $rule($record->$name) : '';
 					}
 				}
-				$buffer->append($line);
-			});
-			return $buffer->__toString();
+			}
+			$writer = new Config\CSV\Writer($records);
+			$writer->config($metadata);
+			return $writer->render();
 		}
 
 	}

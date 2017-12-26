@@ -28,6 +28,19 @@ namespace Unicity\Config\Properties {
 
 	class Helper extends Core\Object {
 
+		public static function buffer($collection) : IO\File {
+			if ($collection instanceof \JsonSerializable) {
+				return new IO\StringRef((new Config\Properties\Writer(json_decode(json_encode($collection))))->render());
+			}
+			if ($collection instanceof IO\FIle) {
+				return $collection;
+			}
+			if (Common\StringRef::isTypeOf($collection)) {
+				return new IO\StringRef(Core\Convert::toString($collection));
+			}
+			return new IO\StringRef((new Config\Properties\Writer($collection))->render());
+		}
+
 		public static function decode($data) {
 			if ($data instanceof \JsonSerializable) {
 				$data = new IO\StringRef(json_encode($data));

@@ -18,24 +18,24 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Log\XML {
+namespace Unicity\Config\XML {
 
 	use \Unicity\Core;
-	use \Unicity\Log;
+	use \Unicity\Config;
 
 	/**
 	 * This class defines the contract for sanitizing messages.
 	 *
 	 * @access public
 	 * @class
-	 * @package Log
+	 * @package Config
 	 */
-	class Sanitizer extends Log\Sanitizer {
+	class Sanitizer extends Config\Sanitizer {
 
 		protected $filters;
 
 		public function __construct($filters) {
-			$filters = Log\Sanitizer::filters($filters);
+			$filters = Config\Sanitizer::filters($filters);
 			$this->filters = array();
 			foreach ($filters as $filter) {
 				$rule = $filter->hasKey('rule') ? $filter->rule : null;

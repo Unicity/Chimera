@@ -18,12 +18,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Config\QueryString {
+namespace Unicity\Config\CSV {
 
 	use \Unicity\Common;
 	use \Unicity\Config;
 	use \Unicity\Core;
-	use \Unicity\HTTP;
 	use \Unicity\IO;
 	use \Unicity\MappingService;
 
@@ -31,7 +30,7 @@ namespace Unicity\Config\QueryString {
 
 		public static function buffer($collection) : IO\File {
 			if ($collection instanceof \JsonSerializable) {
-				return new IO\StringRef((new Config\QueryString\Writer(json_decode(json_encode($collection))))->render());
+				return new IO\StringRef((new Config\CSV\Writer(json_decode(json_encode($collection))))->render());
 			}
 			if ($collection instanceof IO\FIle) {
 				return $collection;
@@ -39,28 +38,7 @@ namespace Unicity\Config\QueryString {
 			if (Common\StringRef::isTypeOf($collection)) {
 				return new IO\StringRef(Core\Convert::toString($collection));
 			}
-			return new IO\StringRef((new Config\QueryString\Writer($collection))->render());
-		}
-
-		public static function combine(... $args) : string {
-			$args = array_filter($args, function($arg) {
-				return is_string($arg) || is_array($arg);
-			});
-
-			$args = array_map(function($arg) {
-				if (is_array($arg)) {
-					return $arg;
-				}
-				return json_decode($arg, true);
-			}, $args);
-
-			if (empty($args)) {
-				return '';
-			}
-
-			return HTTP\QueryString::build(
-				call_user_func_array('array_merge', $args)
-			);
+			return new IO\StringRef((new Config\CSV\Writer($collection))->render());
 		}
 
 		public static function decode($data) {
@@ -74,13 +52,13 @@ namespace Unicity\Config\QueryString {
 				$data = new IO\StringRef(Core\Convert::toString($data));
 			}
 			return MappingService\Data\Model\Marshaller::unmarshal(
-				Config\QueryString\Reader::load($data)
+				Config\CSV\Reader::load($data)
 			);
 		}
 
 		public static function encode($collection) : string {
 			if ($collection instanceof \JsonSerializable) {
-				return (new Config\QueryString\Writer(json_decode(json_encode($collection))))->render();
+				return (new Config\CSV\Writer(json_decode(json_encode($collection))))->render();
 			}
 			if ($collection instanceof IO\FIle) {
 				return $collection->getBytes();
@@ -88,7 +66,7 @@ namespace Unicity\Config\QueryString {
 			if (Common\StringRef::isTypeOf($collection)) {
 				return Core\Convert::toString($collection);
 			}
-			return (new Config\QueryString\Writer($collection))->render();
+			return (new Config\CSV\Writer($collection))->render();
 		}
 
 	}
