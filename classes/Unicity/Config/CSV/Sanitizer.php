@@ -52,8 +52,7 @@ namespace Unicity\Config\CSV {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = Config\CSV\Helper::buffer($input);
-			$records = Common\Collection::useCollections(Config\CSV\Reader::load($input, $metadata)->read());
+			$records = Config\CSV\Helper::unmarshal($input, $metadata);
 			foreach ($records as $record) {
 				foreach ($this->filters as $filter) {
 					$rule = $filter->rule;
@@ -63,9 +62,7 @@ namespace Unicity\Config\CSV {
 					}
 				}
 			}
-			$writer = new Config\CSV\Writer($records);
-			$writer->config($metadata);
-			return $writer->render();
+			return Config\CSV\Helper::encode($records);
 		}
 
 	}

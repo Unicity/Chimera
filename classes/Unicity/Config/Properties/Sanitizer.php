@@ -52,65 +52,49 @@ namespace Unicity\Config\Properties {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
-			$buffer = array();
-			$data = $input->getBytes();
-
+			$record = Config\Properties\Helper::unmarshal($input, $metadata);
 			foreach ($this->filters as $filter) {
 				$rule = $filter->rule;
-				$matches = array();
+				$path = $filter->path;
 				if (is_string($rule) && preg_match('/^whitelist\((.+)\)$/', $rule, $matches)) { // removes all other fields not in the whitelist
 					$fields = array_map('trim', explode(',', $matches[1]));
-
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						$removables = array();
-						foreach ($elements as $element) {
-							foreach ($element as $key => $val) {
-								if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
-									$store->remove($filter->path . ".['{$key}']");
-									$removables[$key] = null;
-								}
+					foreach ($record as $key => $val) {
+						$prefix = "{$path}.";
+						$strlen = strlen($prefix);
+						if (!strncmp($key, $prefix, $strlen)) {
+							$suffix = substr($key, $strlen);
+							if (!in_array($suffix, $fields)) {
+								$record->$path = Core\Data\Undefined::instance();
 							}
 						}
 					}
 				}
 				else if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
 					$fields = array_map('trim', explode(',', $matches[1]));
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						$removables = array();
-						foreach ($elements as $element) {
-							foreach ($element as $key => $val) {
-								if (in_array($key, $fields) && !array_key_exists($key, $removables)) {
-									$store->remove($filter->path . ".['{$key}']");
-									$removables[$key] = null;
-								}
+					foreach ($record as $key => $val) {
+						$prefix = "{$path}.";
+						$strlen = strlen($prefix);
+						if (!strncmp($key, $prefix, $strlen)) {
+							$suffix = substr($key, $strlen);
+							if (in_array($suffix, $fields)) {
+								$record->$path = Core\Data\Undefined::instance();
 							}
 						}
 					}
 				}
-				else if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						foreach ($elements as &$element) {
-							$element = Core\Masks::last($element, 'x', $matches[1]);
-						}
+				else if ($record->hasKey($path)) {
+					if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
+						$record->$path = Core\Masks::last($record->$path, 'x', $matches[1]);
 					}
-				}
-				else if (is_callable($rule)) {
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						foreach ($elements as &$element) {
-							$element = $rule($element);
-						}
+					else if (is_callable($rule)) {
+						$record->$path = $rule($record->$path);
 					}
-				}
-				else {
-					$store->remove($filter->path);
+					else {
+						$record->$path = Core\Data\Undefined::instance();
+					}
 				}
 			}
-			return $query;
+			return Config\Properties\Helper::encode($record);
 		}
 
 	}

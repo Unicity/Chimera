@@ -22,11 +22,7 @@ namespace Unicity\Config\JSON {
 
 	use \Peekmo\JsonPath;
 	use \Unicity\Config;
-<<<<<<< Local Changes
-	use \Unicity\Config;
-=======
 	use \Unicity\Core;
->>>>>>> External Changes
 
 	/**
 	 * This class defines the contract for sanitizing messages.
@@ -57,8 +53,7 @@ namespace Unicity\Config\JSON {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = Config\JSON\Helper::buffer($input);
-			$store = new JsonPath\JsonStore(json_decode($input->getBytes()));
+			$store = new JsonPath\JsonStore(Config\JSON\Helper::decode($input, $metadata));
 			foreach ($this->filters as $filter) {
 				$rule = $filter->rule;
 				$matches = array();

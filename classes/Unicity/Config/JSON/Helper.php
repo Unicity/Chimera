@@ -28,19 +28,6 @@ namespace Unicity\Config\JSON {
 
 	class Helper extends Core\Object {
 
-		public static function buffer($collection) : IO\File {
-			if ($collection instanceof \JsonSerializable) {
-				return new IO\StringRef(json_encode($collection));
-			}
-			if ($collection instanceof IO\FIle) {
-				return $collection;
-			}
-			if (Common\StringRef::isTypeOf($collection)) {
-				return new IO\StringRef(Core\Convert::toString($collection));
-			}
-			return new IO\StringRef((new Config\JSON\Writer($collection))->render());
-		}
-
 		public static function combine(... $args) : string {
 			$args = array_filter($args, function($arg) {
 				return is_string($arg) || is_array($arg);
@@ -62,7 +49,28 @@ namespace Unicity\Config\JSON {
 			);
 		}
 
-		public static function decode($data) {
+		public static function decode($data, array $metadata = array()) /* array|object */{
+			return Common\Collection::useObjects(static::unmarshal($data, $metadata));
+		}
+
+		public static function encode($collection, array $metadata = array()) : string {
+			if ($collection instanceof \JsonSerializable) {
+				return json_encode($collection);
+			}
+			if ($collection instanceof IO\FIle) {
+				return $collection->getBytes();
+			}
+			if (Common\StringRef::isTypeOf($collection)) {
+				return Core\Convert::toString($collection);
+			}
+			return (new Config\JSON\Writer($collection))->config($metadata)->render();
+		}
+
+		public static function marshal($collection, array $metadata = array()) : IO\File {
+			return new IO\StringRef(static::encode($collection, $metadata));
+		}
+
+		public static function unmarshal($data, array $metadata = array()) /* list|map */{
 			if ($data instanceof \JsonSerializable) {
 				$data = new IO\StringRef(json_encode($data));
 			}
@@ -73,21 +81,8 @@ namespace Unicity\Config\JSON {
 				$data = new IO\StringRef(Core\Convert::toString($data));
 			}
 			return MappingService\Data\Model\Marshaller::unmarshal(
-				Config\JSON\Reader::load($data)
+				Config\JSON\Reader::load($data, $metadata)
 			);
-		}
-
-		public static function encode($collection) : string {
-			if ($collection instanceof \JsonSerializable) {
-				return json_encode($collection);
-			}
-			if ($collection instanceof IO\FIle) {
-				return $collection->getBytes();
-			}
-			if (Common\StringRef::isTypeOf($collection)) {
-				return Core\Convert::toString($collection);
-			}
-			return (new Config\JSON\Writer($collection))->render();
 		}
 
 	}

@@ -53,9 +53,8 @@ namespace Unicity\Config\QueryString {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
 			$buffer = array();
-			$data = $input->getBytes();
+			$data = Config\QueryString\Helper::encode($input);
 			$query_string = parse_url($data, PHP_URL_QUERY);
 			if ($query_string !== null) {
 				$url = substr($data, 0, strpos($data, '?'));
