@@ -75,7 +75,7 @@ namespace Unicity\Config\Properties {
 						$position = strpos($line, '=');
 						$key = trim(substr($line, 0, $position));
 						$value = trim(substr($line, $position + 1));
-						$value = Core\Data\Charset::encode($value, $this->metadata[0], $this->metadata[1]);
+						$value = Core\Data\Charset::encode($value, $self->encoding[0], $self->encoding[1]);
 						$type = (isset($self->schema[$key])) ? $self->schema[$key] : 'string';
 						$value = Core\Convert::changeType($value, $type);
 
