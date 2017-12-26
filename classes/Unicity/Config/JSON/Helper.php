@@ -75,6 +75,9 @@ namespace Unicity\Config\JSON {
 				$data = new IO\StringRef(json_encode($data));
 			}
 			if ($data instanceof Common\ICollection) {
+				if (isset($metadata['encoding'])) {
+					$data = \Unicity\Core\Data\Charset::encodeData($data, $metadata['encoding'][0], $metadata['encoding'][0]);
+				}
 				return $data;
 			}
 			if (Common\StringRef::isTypeOf($data)) {
