@@ -208,7 +208,7 @@ namespace Unicity\REST {
 					return true;
 				});
 
-				$message = HTTP\RequestMessage::factory([
+				$message = HTTP\Request::factory([
 					'body' => new IO\InputBuffer(),
 					'method' => $method,
 					'path' => $path,

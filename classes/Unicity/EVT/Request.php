@@ -18,19 +18,14 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\TCP {
+namespace Unicity\EVT {
 
 	use \Unicity\EVT;
 
-	class RequestMessage extends EVT\Message {
+	class Request extends EVT\Message {
 
 		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
-				'body' => '',
-				'headers' => [],
-				'host' => '',
-				'port' => 80,
-			]));
+			parent::__construct($map);
 		}
 
 	}

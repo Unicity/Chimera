@@ -22,7 +22,7 @@ namespace Unicity\HTTP {
 
 	use \Unicity\EVT;
 
-	class ResponseMessage extends EVT\Message {
+	class Response extends EVT\Response {
 
 		/**
 		 * This variable stores the HTTP status codes and descriptions.

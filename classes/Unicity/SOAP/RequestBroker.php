@@ -57,10 +57,10 @@ namespace Unicity\SOAP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param SOAP\RequestMessage $request                      the request to be sent
+		 * @param SOAP\Request $request                             the request to be sent
 		 * @return int                                              the response status
 		 */
-		public function execute(SOAP\RequestMessage $request) : int {
+		public function execute(SOAP\Request $request) : int {
 			return $this->executeAll([$request]);
 		}
 
@@ -157,13 +157,13 @@ namespace Unicity\SOAP {
 					$error = curl_error($resource);
 					@curl_close($resource);
 					$status = 503;
-					$response = SOAP\ResponseMessage::factory([
+					$response = SOAP\Response::factory([
 						'body' => $error,
 						'headers' => [
 							'http_code' => $status,
 						],
 						'status' => $status,
-						'statusText' => SOAP\ResponseMessage::getStatusText($status),
+						'statusText' => SOAP\Response::getStatusText($status),
 						'url' => $request->url,
 					]);
 					$this->server->publish('requestFailed', $response);
@@ -174,11 +174,11 @@ namespace Unicity\SOAP {
 					$headers = curl_getinfo($resource);
 					@curl_close($resource);
 					$status = $headers['http_code'];
-					$response = SOAP\ResponseMessage::factory([
+					$response = SOAP\Response::factory([
 						'body' => $body,
 						'headers' => $headers,
 						'status' => $status,
-						'statusText' => SOAP\ResponseMessage::getStatusText($status),
+						'statusText' => SOAP\Response::getStatusText($status),
 						'url' => $request->url,
 					]);
 					if (($status >= 200) && ($status < 300)) {

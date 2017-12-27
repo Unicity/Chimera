@@ -57,10 +57,10 @@ namespace Unicity\TCP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param TCP\RequestMessage $request                       the request to be sent
+		 * @param TCP\Request $request                       the request to be sent
 		 * @return bool                                             whether the request was successful
 		 */
-		public function execute(TCP\RequestMessage $request) : bool {
+		public function execute(TCP\Request $request) : bool {
 			$this->server->publish('requestInitiated', $request);
 
 			$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
@@ -78,7 +78,7 @@ namespace Unicity\TCP {
 					$body .= fgets($resource, 4096);
 				}
 				@fclose($resource);
-				$response = new TCP\ResponseMessage([
+				$response = new TCP\Response([
 					'body' => $body,
 					'host' => $request->host,
 					'port' => $request->port,
@@ -88,7 +88,7 @@ namespace Unicity\TCP {
 				return true;
 			}
 			else {
-				$response = new TCP\ResponseMessage([
+				$response = new TCP\Response([
 					'body' => $errstr,
 					'headers' => [
 						'error_code' => $errno,

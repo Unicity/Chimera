@@ -22,7 +22,7 @@ namespace Unicity\HTTP {
 
 	use \Unicity\EVT;
 
-	class RequestMessage extends EVT\Message {
+	class Request extends EVT\Request {
 
 		public function __construct(array $map = []) {
 			parent::__construct(array_merge([

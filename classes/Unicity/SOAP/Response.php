@@ -22,6 +22,6 @@ namespace Unicity\SOAP {
 
 	use \Unicity\HTTP;
 
-	class ResponseMessage extends HTTP\ResponseMessage { }
+	class Response extends HTTP\Response { }
 
 }

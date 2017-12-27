@@ -18,23 +18,22 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\TCP {
+namespace Unicity\EVT {
 
 	use \Unicity\Core;
 	use \Unicity\EVT;
-	use \Unicity\TCP;
 
-	abstract class ResponseMessageHandler extends Core\Object {
+	abstract class ResponseHandler extends Core\Object {
 
 		/**
 		 * This method processes the message and context.
 		 *
 		 * @access public
 		 * @final
-		 * @param TCP\ResponseMessage $message                      the message to be processed
+		 * @param EVT\Response $message                             the message to be processed
 		 * @param EVT\Context $context                              the context to be processed
 		 */
-		public final function __invoke(TCP\ResponseMessage $message, EVT\Context $context) {
+		public final function __invoke(EVT\Response $message, EVT\Context $context) {
 			$exchange = new EVT\Exchange([
 				'context' => $context,
 				'message' => $message,

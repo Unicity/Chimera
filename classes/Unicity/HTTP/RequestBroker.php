@@ -57,10 +57,10 @@ namespace Unicity\HTTP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param HTTP\RequestMessage $request                      the request to be sent
+		 * @param HTTP\Request $request                      the request to be sent
 		 * @return int                                              the response status
 		 */
-		public function execute(HTTP\RequestMessage $request) : int {
+		public function execute(HTTP\Request $request) : int {
 			return $this->executeAll([$request]);
 		}
 
@@ -164,13 +164,13 @@ namespace Unicity\HTTP {
 					$error = curl_error($resource);
 					@curl_close($resource);
 					$status = 503;
-					$response = HTTP\ResponseMessage::factory([
+					$response = HTTP\Response::factory([
 						'body' => $error,
 						'headers' => [
 							'http_code' => $status,
 						],
 						'status' => $status,
-						'statusText' => HTTP\ResponseMessage::getStatusText($status),
+						'statusText' => HTTP\Response::getStatusText($status),
 						'url' => $request->url,
 					]);
 					$this->server->publish('requestFailed', $response);
@@ -181,11 +181,11 @@ namespace Unicity\HTTP {
 					$headers = curl_getinfo($resource);
 					@curl_close($resource);
 					$status = $headers['http_code'];
-					$response = HTTP\ResponseMessage::factory([
+					$response = HTTP\Response::factory([
 						'body' => $body,
 						'headers' => $headers,
 						'status' => $status,
-						'statusText' => HTTP\ResponseMessage::getStatusText($status),
+						'statusText' => HTTP\Response::getStatusText($status),
 						'url' => $request->url,
 					]);
 					if (($status >= 200) && ($status < 300)) {
