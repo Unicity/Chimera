@@ -22,6 +22,7 @@ namespace Unicity\TCP {
 
 	use \Unicity\Core;
 	use \Unicity\EVT;
+	use \Unicity\HTTP;
 	use \Unicity\TCP;
 
 	class RequestBroker extends Core\Object {
@@ -57,49 +58,97 @@ namespace Unicity\TCP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param TCP\Request $request                       the request to be sent
-		 * @return bool                                             whether the request was successful
+		 * @param TCP\Request $request                              the request to be sent
+		 * @return int                                              the response status
 		 */
-		public function execute(TCP\Request $request) : bool {
-			$this->server->publish('requestInitiated', $request);
+		public function execute(TCP\Request $request) : int {
+			return $this->executeAll([$request]);
+		}
 
-			$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
-			if (is_resource($resource)) {
-				if (isset($request->headers) && !empty($request->headers)) {
-					foreach ($request->headers as $name => $value) {
-						fwrite($resource, $name . ': ' . trim($value) . "\r\n");
+		/**
+		 * This method executes the given requests.
+		 *
+		 * @access public
+		 * @param array $requests                                   the requests to be sent
+		 * @return int                                              the response status
+		 */
+		public function executeAll(array $requests) : int {
+			$this->server->publish('requestOpened');
+
+			$http_code = 200;
+
+			$count = count($requests);
+
+			for ($i = 0; $i < $count; $i++) {
+				$request = $requests[$i];
+
+				$this->server->publish('requestInitiated', $request);
+
+				$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
+				if (is_resource($resource)) {
+					if (isset($request->headers) && !empty($request->headers)) {
+						foreach ($request->headers as $name => $value) {
+							fwrite($resource, $name . ': ' . trim($value) . "\r\n");
+						}
+						fwrite($resource, "\r\n");
 					}
+					fwrite($resource, $request->body);
 					fwrite($resource, "\r\n");
+					$body = '';
+					while (!feof($resource)) {
+						$body .= fgets($resource, 4096);
+					}
+					@fclose($resource);
+					$status = 200;
+					$response = new TCP\Response([
+						'body' => $body,
+						'headers' => [
+							'http_code' => $status,
+						],
+						'host' => $request->host,
+						'port' => $request->port,
+						'status' => $status,
+						'statusText' => HTTP\Response::getStatusText($status),
+					]);
+					$this->server->publish('requestSucceeded', $response);
+					$this->server->publish('requestCompleted', $response);
+					$http_code = max($http_code, $status);
 				}
-				fwrite($resource, $request->body);
-				fwrite($resource, "\r\n");
-				$body = '';
-				while (!feof($resource)) {
-					$body .= fgets($resource, 4096);
+				else {
+					$status = 503;
+					$response = new TCP\Response([
+						'body' => $errstr,
+						'headers' => [
+							'error_code' => $errno,
+							'http_code' => $status,
+						],
+						'host' => $request->host,
+						'port' => $request->port,
+						'status' => $status,
+						'statusText' => HTTP\Response::getStatusText($status),
+					]);
+					$this->server->publish('requestFailed', $response);
+					$this->server->publish('requestCompleted', $response);
+					$this->server->publish('responseReceived', $http_code);
+					$http_code = max($http_code, $status);
 				}
-				@fclose($resource);
-				$response = new TCP\Response([
-					'body' => $body,
-					'host' => $request->host,
-					'port' => $request->port,
-				]);
-				$this->server->publish('requestSucceeded', $response);
-				$this->server->publish('requestCompleted', $response);
-				return true;
 			}
-			else {
-				$response = new TCP\Response([
-					'body' => $errstr,
-					'headers' => [
-						'error_code' => $errno,
-					],
-					'host' => $request->host,
-					'port' => $request->port,
-				]);
-				$this->server->publish('requestFailed', $response);
-				$this->server->publish('requestCompleted', $response);
-				return false;
-			}
+
+			$this->server->publish('responseReceived', $http_code);
+
+			return $http_code;
+		}
+
+		/**
+		 * This method adds a closing handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the closing handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onClosing(callable $handler) : TCP\RequestBroker {
+			$this->server->subscribe('responseReceived', $handler);
+			return $this;
 		}
 
 		/**
@@ -135,6 +184,18 @@ namespace Unicity\TCP {
 		 */
 		public function onFailure(callable $handler) : TCP\RequestBroker {
 			$this->server->subscribe('requestFailed', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds an opening handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the opening handler to be added
+		 * @return TCP\RequestBroker                                a reference to this class
+		 */
+		public function onOpening(callable $handler) : TCP\RequestBroker {
+			$this->server->subscribe('requestOpened', $handler);
 			return $this;
 		}
 

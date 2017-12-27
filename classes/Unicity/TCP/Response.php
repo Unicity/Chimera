@@ -30,6 +30,8 @@ namespace Unicity\TCP {
 				'headers' => [],
 				'host' => '',
 				'port' => 80,
+				'status' => 200,
+				'statusText' => 'OK',
 			]));
 		}
 

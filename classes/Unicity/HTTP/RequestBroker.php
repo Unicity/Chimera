@@ -57,7 +57,7 @@ namespace Unicity\HTTP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param HTTP\Request $request                      the request to be sent
+		 * @param HTTP\Request $request                             the request to be sent
 		 * @return int                                              the response status
 		 */
 		public function execute(HTTP\Request $request) : int {
