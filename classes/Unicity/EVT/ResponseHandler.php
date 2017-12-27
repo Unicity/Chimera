@@ -39,13 +39,12 @@ namespace Unicity\EVT {
 				'message' => $message,
 			]);
 
-			$handler = new static();
 
-			if ($handler->isSuccessful($exchange)) {
-				$handler->onSuccess($exchange);
+			if ($this->isSuccessful($exchange)) {
+				$this->onSuccess($exchange);
 			}
 			else {
-				$handler->onFailure($exchange);
+				$this->onFailure($exchange);
 			}
 		}
 
