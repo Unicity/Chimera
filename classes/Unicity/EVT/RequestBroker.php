@@ -60,17 +60,20 @@ namespace Unicity\EVT {
 		 * @return int                                              the response status
 		 */
 		public function execute(EVT\Request $request) : int {
-			$type = get_class($request) . 'Broker';
-			if (class_exists($type)) {
-				$broker = new $type();
-				foreach ($this->subscribers as $subscriber) {
-					foreach ($subscriber as $channel => $delegate) {
-						if (method_exists($broker, $channel)) {
-							call_user_func([$broker, $channel], $delegate);
+			$type = get_class($request);
+			if ($type !== get_class($this)) {
+				$type = "{$type}Broker";
+				if (class_exists($type)) {
+					$broker = new $type();
+					foreach ($this->subscribers as $channel => $subscribers) {
+						foreach ($subscribers as $delegate) {
+							if (method_exists($broker, $channel)) {
+								call_user_func([$broker, $channel], $delegate);
+							}
 						}
 					}
+					return $broker->execute($request);
 				}
-				return $broker->executeAll($request);
 			}
 			return 503;
 		}
@@ -80,7 +83,7 @@ namespace Unicity\EVT {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the closing handler to be added
-		 * @return EVT\RequestBroker                               a reference to this class
+		 * @return EVT\RequestBroker                                a reference to this class
 		 */
 		public function onClosing(callable $handler) : EVT\RequestBroker {
 			$this->subscribers['onClosing'][] = $handler;
@@ -143,7 +146,7 @@ namespace Unicity\EVT {
 		 * @return EVT\RequestBroker                                a reference to this class
 		 */
 		public function onSuccess(callable $handler) : EVT\RequestBroker {
-			$this->subscribers['onOpening'][] = $handler;
+			$this->subscribers['onSuccess'][] = $handler;
 			return $this;
 		}
 
