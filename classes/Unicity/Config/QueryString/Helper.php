@@ -29,6 +29,17 @@ namespace Unicity\Config\QueryString {
 
 	class Helper extends Core\Object {
 
+		public static function build($parameters, bool $prefix = true) : string {
+			$parameters = Common\Collection::useArrays($parameters);
+			if (is_array($parameters)) {
+				$query_string = http_build_query($parameters);
+				if (!empty($query_string) && $prefix) {
+					$query_string = '?' . $query_string;
+				}
+			}
+			return $query_string;
+		}
+
 		public static function combine(... $args) : string {
 			$args = array_filter($args, function($arg) {
 				return is_string($arg) || is_array($arg);
@@ -45,7 +56,7 @@ namespace Unicity\Config\QueryString {
 				return '';
 			}
 
-			return HTTP\QueryString::build(
+			return static::build(
 				call_user_func_array('array_merge', $args)
 			);
 		}
