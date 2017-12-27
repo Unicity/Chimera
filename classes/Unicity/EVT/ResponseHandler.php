@@ -51,11 +51,11 @@ namespace Unicity\EVT {
 		/**
 		 * This method tests whether the exchange was successful.
 		 *
-		 * @access protected
+		 * @access public
 		 * @param EVT\Exchange $exchange                            the exchange to be evaluated
 		 * @return bool                                             whether the exchange was successful
 		 */
-		protected function isSuccessful(EVT\Exchange $exchange) : bool {
+		public function isSuccessful(EVT\Exchange $exchange) : bool {
 			return true;
 		}
 
