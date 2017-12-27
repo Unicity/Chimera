@@ -97,7 +97,7 @@ namespace Unicity\EVT {
 				do {
 					$exchange = $this->queue->peek();
 					if (isset($this->subscribers[$exchange->context->channel])) {
-						$subscribers = $this->subscribers[$exchange->context->channel]; // copy over subscriber list in case a new subscriber is added
+						$subscribers = $this->subscribers[$exchange->context->channel]; // copy over subscribers in case a new subscriber is added
 						foreach ($subscribers as $subscriber) {
 							$subscriber($exchange->message, $exchange->context);
 						}

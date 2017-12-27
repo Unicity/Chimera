@@ -39,7 +39,6 @@ namespace Unicity\EVT {
 				'message' => $message,
 			]);
 
-
 			if ($this->isSuccessful($exchange)) {
 				$this->onSuccess($exchange);
 			}
