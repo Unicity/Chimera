@@ -37,7 +37,7 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!in_array($v1, $v2)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_ENUM, [$path], ['{{enum}}' => implode(':', $v2)]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_ENUM, [$path], ['{{ enum }}' => implode(':', $v2)]);
 				}
 			}
 

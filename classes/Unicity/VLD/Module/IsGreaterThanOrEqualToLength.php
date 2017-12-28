@@ -34,10 +34,10 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (is_string($v1) && (strlen($v1) < $v2)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_LENGTH, [$path], ['{{length}}' => $v2]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_LENGTH, [$path], ['{{ length }}' => $v2]);
 				}
 				else if (($v1 instanceof Common\IList) && ($v1->count() < $v2)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_SIZE, [$path], ['{{size}}' => $v2]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_SIZE, [$path], ['{{ size }}' => $v2]);
 				}
 			}
 

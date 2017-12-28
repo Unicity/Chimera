@@ -33,7 +33,7 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if ($v1 === $v2) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_VALUE, [$path], ['{{value}}' => $v2]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_VALUE, [$path], ['{{ value }}' => $v2]);
 				}
 			}
 

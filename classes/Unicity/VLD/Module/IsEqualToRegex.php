@@ -33,7 +33,7 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!preg_match($v2, $v1)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_REGEX, [$path], ['{{regex}}' => $v2]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_REGEX, [$path], ['{{ regex }}' => $v2]);
 				}
 			}
 
