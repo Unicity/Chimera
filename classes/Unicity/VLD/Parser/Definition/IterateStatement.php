@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\VLD\Parser\Definition {
 
+	use \Unicity\ORM;
 	use \Unicity\VLD;
 
 	class IterateStatement extends VLD\Parser\Definition\Statement {
@@ -38,7 +39,7 @@ namespace Unicity\VLD\Parser\Definition {
 			$path = $this->context->getCurrentPath();
 			$block = $this->args['block']->get();
 			$direction = $policy['direction'] ?? 'forward';
-			$step = intval($policy['step']) ?? 1;
+			$step = intval($policy['step'] ?? 1);
 
 			$components = $this->context->getEntity()->getComponentAtPath($path);
 			$length = count($components);
@@ -47,7 +48,7 @@ namespace Unicity\VLD\Parser\Definition {
 			if ($direction === 'reverse') {
 				for ($i = $length - 1; $i >= 0; $i -= $step) {
 					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-						'path' => $components[$i],
+						'path' => ORM\Query::appendIndex($path, $i),
 						'block' => $block,
 					]);
 				}
@@ -55,7 +56,7 @@ namespace Unicity\VLD\Parser\Definition {
 			else {
 				for ($i = 0; $i < $length; $i += $step) {
 					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-						'path' => $components[$i],
+						'path' => ORM\Query::appendIndex($path, $i),
 						'block' => $block,
 					]);
 				}
