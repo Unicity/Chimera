@@ -106,7 +106,7 @@ A map (aka hash or object) is defined using curly brackets. It represents a coll
 ```
 {
 	"name1": "value1",
-	"name2": "value2",
+	"name2": "value2"
 }
 ```
 
@@ -164,8 +164,8 @@ It may contain any number of other statements and may be stored in the block var
 
 ### External Blocks
 
-An external block is defined using a string.  The string's text is file path to another
-`.vld` file, which in turn be treated as the body of the block.
+An external block is defined using a string.  The string contains the file path to another
+`.vld` file, which is in turn treated as the body of the block.
 
 ```
 "classpath:file.vld"
@@ -203,7 +203,7 @@ Number variables are prefixed using a hash/number symbol.
 #variable
 ```
 
-To declare a boolean variable, use the set statement.
+To declare a number variable, use the set statement.
 
 ```
 set(#variable, 123).
@@ -219,7 +219,7 @@ used in Perl and PHP).
 $variable
 ```
 
-To declare a boolean variable, use the set statement.
+To declare a string variable, use the set statement.
 
 ```
 set($variable, "some text").
@@ -347,7 +347,7 @@ written as strings encapsulated in an array.
 
 ### Dot Syntax
 
-At the momement, scripts uses dot syntax to represent a component's path.
+At the momement, scripts use dot syntax to represent a component's path.
 
 ```
 order.customer.id
@@ -396,7 +396,7 @@ onto multiple lines).
 
 #### Halt Statement
 
-A `halt` statement is used to terminate the program.
+A `halt` statement is used to terminate the program.  This acts like the `exit()` statement in PHP.
 
 ```
 halt().
@@ -423,7 +423,7 @@ set(^variable, { set(*variable, null). }).
 
 #### Dump Statement
 
-A `dump` statement is used to print out component details.
+A `dump` statement is used to print out component details.  This acts like the `var_dump()` statement in PHP.
 
 ```
 dump().
@@ -433,7 +433,7 @@ dump() <- ["path1", "path2"].
 
 #### Install Statements
 
-An `install` statement adds the module mappings into the current context.
+An `install` statement adds the module mappings into the current context.  This acts like the `include()` statement in PHP.
 
 ```
 install("classpath:Unicity/VLD/Modules.json").
@@ -521,7 +521,7 @@ Each of the three `run` statement control types may be expressed using a shortcu
 
 #### Select Statements
 
-A `select` statement perform a context switch.  A `select` statement applys its block to each specified path.  The
+A `select` statement performs a context switch.  A `select` statement applys its block to each specified path.  The
 designated control is done on the block level, not on the statement level (like the `run` statement).  By default,
 statements in its block are executed according to the `seq` control flow.
 
