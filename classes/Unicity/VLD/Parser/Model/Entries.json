@@ -2,6 +2,9 @@
 	"items": [
 		{
 			"properties": {
+				"code": {
+					"type": "integer"
+				},
 				"fields": {
 					"items": [
 						{
