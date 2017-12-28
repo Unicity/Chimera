@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace Unicity\Throwable\RequestFailed {
 
+	use \Unicity\EVT;
 	use \Unicity\Throwable;
 
 	/**
