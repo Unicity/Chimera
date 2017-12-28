@@ -22,9 +22,8 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
-	class IsEqualTo extends VLD\Module {
+	class IsNotEqualToValue extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
@@ -33,8 +32,8 @@ namespace Unicity\VLD\Module {
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 !== $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.eq', ['{{value}}' => $v2]);
+				if ($v1 === $v2) {
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_VALUE, [$path], ['{{value}}' => $v2]);
 				}
 			}
 

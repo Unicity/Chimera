@@ -23,7 +23,6 @@ namespace Unicity\VLD\Module {
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
 	class IsUnset extends VLD\Module {
 
@@ -32,7 +31,7 @@ namespace Unicity\VLD\Module {
 
 			foreach ($paths as $path) {
 				if (!Core\Data\ToolKit::isUnset($entity->getComponentAtPath($path))) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.unset');
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_UNSET, [$path]);
 				}
 			}
 

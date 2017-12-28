@@ -22,19 +22,19 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
-	class IsLesserThan extends VLD\Module {
+	class IsEqualToField extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
 
-			$v2 = $this->policy;
+			$field = $this->policy;
+			$v2 = $entity->getComponentAtPath($field);
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v1 >= $v2) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.lt', ['{{value}}' => $v2]);
+				if ($v2 !== $v1) {
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_FIELD, [$path], ['{{field}}' => VLD\Parser\Feedback::formatKey($field)]);
 				}
 			}
 

@@ -22,16 +22,15 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
-	class IsIBAN extends VLD\Module {
+	class IsEqualToIBAN extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
 
 			foreach ($paths as $path) {
 				if (!$this->isIBAN($entity->getComponentAtPath($path))) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.pattern');
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_PATTERN, [$path]);
 				}
 			}
 

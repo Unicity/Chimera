@@ -25,9 +25,8 @@ namespace Unicity\VLD\Module {
 	use \Unicity\Core;
 	use \Unicity\ORM;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
-	class MatchesSchema extends VLD\Module {
+	class IsEqualToSchema extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths) : VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
@@ -38,14 +37,14 @@ namespace Unicity\VLD\Module {
 				$value = $entity->getComponentAtPath($path);
 
 				if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($value)) {
-					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+					$feedback->addViolation(VLD\RuleType::missing(), VLD\Code::VALUE_IS_REQUIRED, [$path]);
 				}
 				else {
 					$expectedType = $this->expectedType($schema);
 					$actualType = $this->actualType($feedback, $path, $schema, $value);
 
 					if ($expectedType !== $actualType) {
-						$feedback->addViolation(RuleType::malformed(), [$path], 'value.compare.type', ['{{type}}' => $expectedType]);
+						$feedback->addViolation(VLD\RuleType::malformed(), VLD\Code::VALUE_IS_EQ_TYPE, [$path], ['{{type}}' => $expectedType]);
 					}
 					else {
 						switch ($expectedType) {
@@ -109,22 +108,22 @@ namespace Unicity\VLD\Module {
 			}
 
 			if (($actualType == 'integer') && ($expectedType == 'number')) {
-				$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
+				$feedback->addRecommendation(VLD\RuleType::set(), VLD\Code::VALUE_IS_RETYPABLE, [$path => Core\Convert::changeType($value, $expectedType)], ['{{type}}' => $expectedType]);
 				return $expectedType;
 			}
 
 			if ((($actualType == 'integer') || ($actualType == 'number')) && ($expectedType == 'string')) {
-				$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
+				$feedback->addRecommendation(VLD\RuleType::set(), VLD\Code::VALUE_IS_RETYPABLE, [$path => Core\Convert::changeType($value, $expectedType)], ['{{type}}' => $expectedType]);
 				return $expectedType;
 			}
 
 			if (($actualType == 'string')) {
 				if (($expectedType == 'integer') && preg_match('/^([-]?([0-9]+)$/', $value)) {
-					$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
+					$feedback->addRecommendation(VLD\RuleType::set(), VLD\Code::VALUE_IS_RETYPABLE, [$path => Core\Convert::changeType($value, $expectedType)], ['{{type}}' => $expectedType]);
 					return $expectedType;
 				}
 				if (($expectedType == 'number') && preg_match('/^([-]?([0-9]+)(\\.[0-9]+)?)?$/', $value)) {
-					$feedback->addRecommendation(RuleType::set(), [$path => Core\Convert::changeType($value, $expectedType)], 'value.retype', ['{{type}}' => $expectedType]);
+					$feedback->addRecommendation(VLD\RuleType::set(), VLD\Code::VALUE_IS_RETYPABLE, [$path => Core\Convert::changeType($value, $expectedType)], ['{{type}}' => $expectedType]);
 					return $expectedType;
 				}
 			}
@@ -165,7 +164,7 @@ namespace Unicity\VLD\Module {
 				$size = $value->count();
 				if ($size < $schema['minItems']) {
 					$minItems = $schema['minItems'];
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ge.size', ['{{size}}' => $minItems]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_SIZE, [$path], ['{{size}}' => $minItems]);
 					return false;
 				}
 			}
@@ -174,7 +173,7 @@ namespace Unicity\VLD\Module {
 				$size = $value->count();
 				if ($size > $schema['maxItems']) {
 					$maxItems = $schema['maxItems'];
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.le.size', ['{{size}}' => $maxItems]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_LE_SIZE, [$path], ['{{size}}' => $maxItems]);
 					return false;
 				}
 			}
@@ -191,14 +190,14 @@ namespace Unicity\VLD\Module {
 				$ipath = ORM\Query::appendIndex($path, $i);
 
 				if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($v)) {
-					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+					$feedback->addViolation(VLD\RuleType::missing(), VLD\Code::VALUE_IS_REQUIRED, [$path]);
 				}
 				else {
 					$expectedType = $this->expectedType($schema);
 					$actualType = $this->actualType($feedback, $ipath, $schema, $v);
 
 					if ($expectedType !== $actualType) {
-						$feedback->addViolation(RuleType::malformed(), [$ipath], 'value.compare.type', ['{{type}}' => $expectedType]);
+						$feedback->addViolation(VLD\RuleType::malformed(), VLD\Code::VALUE_IS_EQ_TYPE, [$ipath], ['{{type}}' => $expectedType]);
 					}
 					else {
 						switch ($expectedType) {
@@ -249,14 +248,14 @@ namespace Unicity\VLD\Module {
 					$kpath = ORM\Query::appendKey($path, $k);
 
 					if (isset($schema['required']) && boolval($schema['required']) && Core\Data\ToolKit::isUndefined($v)) {
-						$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+						$feedback->addViolation(VLD\RuleType::missing(), VLD\Code::VALUE_IS_REQUIRED, [$path]);
 					}
 					else {
 						$expectedType = $this->expectedType($schema);
 						$actualType = $this->actualType($feedback, $kpath, $schema, $v);
 
 						if ($expectedType !== $actualType) {
-							$feedback->addViolation(RuleType::malformed(), [$kpath], 'value.compare.type', ['{{type}}' => $expectedType]);
+							$feedback->addViolation(VLD\RuleType::malformed(), VLD\Code::VALUE_IS_EQ_TYPE, [$kpath], ['{{type}}' => $expectedType]);
 						}
 						else {
 							switch ($expectedType) {
@@ -293,7 +292,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				$enum = $schema['enum'];
 				if (!in_array($value, $enum)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.enum', ['{{enum}}' => implode(':', $enum)]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_ENUM, [$path], ['{{enum}}' => implode(':', $enum)]);
 					return false;
 				}
 			}
@@ -301,7 +300,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['exclusiveMinimum']) && $schema['exclusiveMinimum']) {
 				$minimum = $schema['minimum'] ?? 0;
 				if ($value <= $minimum) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.gt', ['{{value}}' => $minimum]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GT_VALUE, [$path], ['{{value}}' => $minimum]);
 					return false;
 				}
 			}
@@ -309,7 +308,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['minimum'])) {
 				$minimum = $schema['minimum'];
 				if ($value < $minimum) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ge', ['{{value}}' => $minimum]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_VALUE, [$path], ['{{value}}' => $minimum]);
 					return false;
 				}
 			}
@@ -317,7 +316,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['exclusiveMaximum']) && $schema['exclusiveMaximum']) {
 				$maximum = $schema['maximum'] ?? PHP_INT_MAX;
 				if ($value >= $maximum) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.lt', ['{{value}}' => $maximum]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_LT_VALUE, [$path], ['{{value}}' => $maximum]);
 					return false;
 				}
 			}
@@ -325,7 +324,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['maximum'])) {
 				$maximum = $schema['maximum'];
 				if ($value > $maximum) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.le', ['{{value}}' => $maximum]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_LE_VALUE, [$path], ['{{value}}' => $maximum]);
 					return false;
 				}
 			}
@@ -333,7 +332,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['divisibleBy'])) {
 				$divisibleBy = $schema['divisibleBy'];
 				if (fmod($value, $divisibleBy) == 0.0) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.divisibility', ['{{value}}' => $divisibleBy]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_DIVISIBLE_BY_VALUE, [$path], ['{{value}}' => $divisibleBy]);
 					return false;
 				}
 			}
@@ -355,7 +354,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				$enum = $schema['enum'];
 				if (!in_array($value, $enum)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.enum', ['{{enum}}' => implode(':', $enum)]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_ENUM, [$path], ['{{enum}}' => implode(':', $enum)]);
 					return false;
 				}
 			}
@@ -363,7 +362,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['pattern'])) {
 				$pattern = $schema['pattern'];
 				if (!preg_match($pattern, $value)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.regex', ['{{regex}}' => $pattern]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_REGEX, [$path], ['{{regex}}' => $pattern]);
 					return false;
 				}
 			}
@@ -371,7 +370,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['minLength'])) {
 				$minLength = $schema['minLength'];
 				if (strlen($value) < $minLength) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ge.length', ['{{length}}' => $minLength]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GE_LENGTH, [$path], ['{{length}}' => $minLength]);
 					return false;
 				}
 			}
@@ -379,7 +378,7 @@ namespace Unicity\VLD\Module {
 			if (isset($schema['maxLength'])) {
 				$maxLength = $schema['maxLength'];
 				if (strlen($value) > $maxLength) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.le.length', ['{{length}}' => $maxLength]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_LE_LENGTH, [$path], ['{{length}}' => $maxLength]);
 					return false;
 				}
 			}

@@ -23,7 +23,6 @@ namespace Unicity\VLD\Module {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
 	class IsNotEqualToLength extends VLD\Module {
 
@@ -35,10 +34,10 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (is_string($v1) && (strlen($v1) === $v2)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ne.length', ['{{length}}' => $v2]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_LENGTH, [$path], ['{{length}}' => $v2]);
 				}
 				else if (($v1 instanceof Common\IList) && ($v1->count() === $v2)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.ne.size', ['{{size}}' => $v2]);
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_SIZE, [$path], ['{{size}}' => $v2]);
 				}
 			}
 

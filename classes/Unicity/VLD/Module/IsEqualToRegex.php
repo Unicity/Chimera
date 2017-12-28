@@ -22,20 +22,18 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
-	class MatchesField extends VLD\Module {
+	class IsEqualToRegex extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
 
-			$field = $this->policy;
-			$v2 = $entity->getComponentAtPath($field);
+			$v2 = $this->policy;
 
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if ($v2 !== $v1) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'field.compare.eq', ['{{field}}' => VLD\Parser\Feedback::formatKey($field)]);
+				if (!preg_match($v2, $v1)) {
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_REGEX, [$path], ['{{regex}}' => $v2]);
 				}
 			}
 

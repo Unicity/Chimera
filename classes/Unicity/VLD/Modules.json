@@ -1,52 +1,52 @@
 {
 	"bic": {
-		"class": "\\Unicity\\VLD\\Module\\MatchesRegex",
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToRegex",
 		"policy": "/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/"
 	},
 	"eq": {
-		"class": "\\Unicity\\VLD\\Module\\IsEqualTo"
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToValue"
 	},
 	"eq_field": {
-		"class": "\\Unicity\\VLD\\Module\\MatchesField"
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToField"
 	},
 	"eq_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsEqualToLength"
 	},
 	"ge": {
-		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanOrEqualTo"
+		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanOrEqualToValue"
 	},
 	"ge_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanOrEqualToLength"
 	},
 	"gt": {
-		"class": "\\Unicity\\VLD\\Module\\IsGreaterThan"
+		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanValue"
 	},
 	"gt_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsGreaterThanLength"
 	},
 	"iban": {
-		"class": "\\Unicity\\VLD\\Module\\IsIBAN"
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToIBAN"
 	},
 	"in": {
-		"class": "\\Unicity\\VLD\\Module\\IsEnum"
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToEnum"
 	},
 	"le": {
-		"class": "\\Unicity\\VLD\\Module\\IsLesserThanOrEqualTo"
+		"class": "\\Unicity\\VLD\\Module\\IsLesserThanOrEqualToValue"
 	},
 	"le_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsLesserThanOrEqualToLength"
 	},
 	"lt": {
-		"class": "\\Unicity\\VLD\\Module\\IsLesserThan"
+		"class": "\\Unicity\\VLD\\Module\\IsLesserThanValue"
 	},
 	"lt_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsLesserThanLength"
 	},
 	"ne": {
-		"class": "\\Unicity\\VLD\\Module\\IsNotEqualTo"
+		"class": "\\Unicity\\VLD\\Module\\IsNotEqualToValue"
 	},
 	"ne_field": {
-		"class": "\\Unicity\\VLD\\Module\\NotMatchesField"
+		"class": "\\Unicity\\VLD\\Module\\IsNotEqualToField"
 	},
 	"ne_length": {
 		"class": "\\Unicity\\VLD\\Module\\IsNotEqualToLength"
@@ -55,13 +55,13 @@
 		"class": "\\Unicity\\VLD\\Module\\IsNull"
 	},
 	"regex": {
-		"class": "\\Unicity\\VLD\\Module\\MatchesRegex"
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToRegex"
 	},
 	"required": {
 		"class": "\\Unicity\\VLD\\Module\\IsRequired"
 	},
 	"schema": {
-		"class": "\\Unicity\\VLD\\Module\\MatchesSchema"
+		"class": "\\Unicity\\VLD\\Module\\IsEqualToSchema"
 	},
 	"undefined": {
 		"class": "\\Unicity\\VLD\\Module\\IsUndefined"

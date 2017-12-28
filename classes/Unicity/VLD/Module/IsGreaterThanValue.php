@@ -22,23 +22,18 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
-	class IsEnum extends VLD\Module {
+	class IsGreaterThanValue extends VLD\Module {
 
 		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
 			$feedback = new VLD\Parser\Feedback();
 
 			$v2 = $this->policy;
 
-			if (is_string($v2)) {
-				$v2 = explode(':', $v2);
-			}
-
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
-				if (!in_array($v1, $v2)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.enum', ['{{enum}}' => implode(':', $v2)]);
+				if ($v1 <= $v2) {
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_GT_VALUE, [$path], ['{{value}}' => $v2]);
 				}
 			}
 

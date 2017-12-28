@@ -23,7 +23,6 @@ namespace Unicity\VLD\Module {
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
 	class IsUndefined extends VLD\Module {
 
@@ -33,7 +32,7 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!Core\Data\ToolKit::isUndefined($v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.undefined');
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_UNDEFINED, [$path]);
 				}
 			}
 

@@ -45,12 +45,13 @@ namespace Unicity\VLD\Parser {
 			$this->violations = new Common\Mutable\HashSet();
 		}
 
-		public function addRecommendation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void {
+		public function addRecommendation(VLD\RuleType $type, int $code, array $fields, array $values = []) : void {
 			ksort($values);
 			ksort($fields);
 			$this->recommendations->putValue([
+				'code' => $code,
 				'fields' => static::mapRecommendations($fields),
-				'message' => strtr(static::localize($message), $values),
+				'message' => strtr(static::localize($code), $values),
 				'type' => (string) $type,
 			]);
 		}
@@ -59,12 +60,13 @@ namespace Unicity\VLD\Parser {
 			$this->recommendations->putValues($feedback->recommendations);
 		}
 
-		public function addViolation(VLD\Parser\RuleType $type, array $fields, string $message, array $values = []) : void {
+		public function addViolation(VLD\RuleType $type, int $code, array $fields, array $values = []) : void {
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
+				'code' => $code,
 				'fields' => static::mapViolations($fields),
-				'message' => strtr(static::localize($message), $values),
+				'message' => strtr(static::localize($code), $values),
 				'type' => (string) $type,
 			]);
 		}
@@ -90,14 +92,15 @@ namespace Unicity\VLD\Parser {
 
 		protected static $localization = null;
 
-		protected static function localize(string $message) {
+		protected static function localize(int $code) {
 			if (static::$localization === null) {
 				static::$localization = static::localize_();
 			}
-			if (static::$localization->hasKey($message)) {
-				return static::$localization->getValue($message);
+			$key = strval($code);
+			if (static::$localization->hasKey($key)) {
+				return static::$localization->getValue($key);
 			}
-			return $message;
+			return '';
 		}
 
 		protected static function localize_() {
@@ -114,7 +117,7 @@ namespace Unicity\VLD\Parser {
 			return Config\Properties\Reader::load(new IO\File($uri))->read();
 		}
 
-		protected static function mapRecommendations(array $fields) {
+		protected static function mapRecommendations(array $fields) : array {
 			$buffer = array();
 			$i = 0;
 			foreach ($fields as $k => $v) {
@@ -125,7 +128,7 @@ namespace Unicity\VLD\Parser {
 			return $buffer;
 		}
 
-		protected static function mapViolations(array $fields) {
+		protected static function mapViolations(array $fields) : array {
 			$buffer = array();
 			foreach ($fields as $i => $v) {
 				$buffer[$i]['field'] = static::formatKey((string) $v);
@@ -141,7 +144,7 @@ namespace Unicity\VLD\Parser {
 		 * @param string $path                                      the current path
 		 * @return string                                           the new path
 		 */
-		public static function formatKey(string $path) {
+		public static function formatKey(string $path) : string {
 			$buffer = array('$');
 			$pattern = (!is_null($path)) ? explode('.', $path) : array();
 			foreach ($pattern as $segment) {

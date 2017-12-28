@@ -22,7 +22,6 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
 	class IsRequired extends VLD\Module {
 
@@ -31,7 +30,7 @@ namespace Unicity\VLD\Module {
 
 			foreach ($paths as $path) {
 				if (!$entity->hasComponentAtPath($path)) {
-					$feedback->addViolation(RuleType::missing(), [$path], 'value.required');
+					$feedback->addViolation(VLD\RuleType::missing(), VLD\Code::VALUE_IS_REQUIRED, [$path]);
 				}
 			}
 

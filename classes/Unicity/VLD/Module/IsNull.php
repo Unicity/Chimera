@@ -22,7 +22,6 @@ namespace Unicity\VLD\Module {
 
 	use \Unicity\BT;
 	use \Unicity\VLD;
-	use \Unicity\VLD\Parser\RuleType;
 
 	class IsNull extends VLD\Module {
 
@@ -32,7 +31,7 @@ namespace Unicity\VLD\Module {
 			foreach ($paths as $path) {
 				$v1 = $entity->getComponentAtPath($path);
 				if (!is_null($v1)) {
-					$feedback->addViolation(RuleType::mismatch(), [$path], 'value.compare.type.null');
+					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NULL, [$path]);
 				}
 			}
 
