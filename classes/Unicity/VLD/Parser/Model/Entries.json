@@ -3,7 +3,7 @@
 		{
 			"properties": {
 				"code": {
-					"type": "integer"
+					"type": "string"
 				},
 				"fields": {
 					"items": [

@@ -45,7 +45,7 @@ namespace Unicity\VLD\Parser {
 			$this->violations = new Common\Mutable\HashSet();
 		}
 
-		public function addRecommendation(VLD\RuleType $type, int $code, array $fields, array $values = []) : void {
+		public function addRecommendation(VLD\RuleType $type, string $code, array $fields, array $values = []) : void {
 			ksort($values);
 			ksort($fields);
 			$this->recommendations->putValue([
@@ -60,7 +60,7 @@ namespace Unicity\VLD\Parser {
 			$this->recommendations->putValues($feedback->recommendations);
 		}
 
-		public function addViolation(VLD\RuleType $type, int $code, array $fields, array $values = []) : void {
+		public function addViolation(VLD\RuleType $type, string $code, array $fields, array $values = []) : void {
 			ksort($values);
 			sort($fields);
 			$this->violations->putValue([
@@ -92,13 +92,12 @@ namespace Unicity\VLD\Parser {
 
 		protected static $localization = null;
 
-		protected static function localize(int $code) {
+		protected static function localize(string $code) {
 			if (static::$localization === null) {
 				static::$localization = static::localize_();
 			}
-			$key = strval($code);
-			if (static::$localization->hasKey($key)) {
-				return static::$localization->getValue($key);
+			if (static::$localization->hasKey($code)) {
+				return static::$localization->getValue($code);
 			}
 			return '';
 		}
