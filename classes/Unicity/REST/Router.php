@@ -58,10 +58,18 @@ namespace Unicity\REST {
 		 * This constructor initializes the class.
 		 *
 		 * @access public
+		 *
+		 * @see http://php.net/manual/en/function.set-error-handler.php
 		 */
 		public function __construct() {
-			$this->dispatcher = new EVT\Server();
+			$dispatcher = new EVT\Server();
+
+			$this->dispatcher = $dispatcher;
 			$this->routes = [];
+
+			set_error_handler(function(int $code, string $message, string $file, int $line) use ($dispatcher) {
+				$dispatcher->publish('routeFailed', new \ErrorException($message, $code, 1, $file, $line));
+			});
 		}
 
 		/**
@@ -76,16 +84,14 @@ namespace Unicity\REST {
 		}
 
 		/**
-		 * This method adds an error handler.
+		 * This method adds a broadcast handler.
 		 *
 		 * @access public
-		 * @param callable $handler                                 the error handler to be added
+		 * @param callable $handler                                 the broadcast handler to be added
 		 * @return REST\Router                                      a reference to this class
-		 *
-		 * @see http://php.net/manual/en/function.set-error-handler.php
 		 */
-		public function onError(callable $handler) : REST\Router {
-			set_error_handler($handler);
+		public function onBroadcast(callable $handler) : REST\Router {
+			$this->dispatcher->subscribe('routeEstablished', $handler);
 			return $this;
 		}
 
@@ -98,6 +104,18 @@ namespace Unicity\REST {
 		 */
 		public function onException(callable $handler) : REST\Router {
 			$this->dispatcher->subscribe('routeErrored', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a failure handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the failure handler to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onFailure(callable $handler) : REST\Router {
+			$this->dispatcher->subscribe('routeFailed', $handler);
 			return $this;
 		}
 
@@ -120,7 +138,7 @@ namespace Unicity\REST {
 		 * @param IO\File $file                                     the route config file
 		 * @return REST\Router                                      a reference to this class
 		 */
-		public function onRouteConfiguration(IO\File $file) : REST\Router {
+		public function onSetup(IO\File $file) : REST\Router {
 			$entries = Config\Inc\Reader::load($file)->read();
 			foreach ($entries as $entry) {
 				$route = REST\Route::request($entry['method'], $entry['path'], $entry['patterns'] ?? []);
@@ -152,34 +170,20 @@ namespace Unicity\REST {
 		}
 
 		/**
-		 * This method adds a success handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the success handler to be added
-		 * @return REST\Router                                      a reference to this class
-		 */
-		public function onSuccess(callable $handler) : REST\Router {
-			$this->dispatcher->subscribe('routeSucceeded', $handler);
-			return $this;
-		}
-
-		/**
 		 * This method executes the router by trying to match a route.
 		 *
 		 * @access public
-		 * @param array $request                                    the request message (i.e. $_SERVER)
-		 * @throws Throwable\RouteNotFound\Exception                indicates that no route could be
-		 *                                                          matched
+		 * @param array $inquiry                                    the inquiry message (i.e. $_SERVER)
 		 */
-		public function execute(array $request = null) : void {
-			if ($request === null) {
-				$request = $_SERVER;
+		public function execute(array $inquiry = null) : void {
+			if ($inquiry === null) {
+				$inquiry = $_SERVER;
 			}
 			try {
-				$method = (isset($request['REQUEST_METHOD'])) ? strtoupper($request['REQUEST_METHOD']) : 'GET';
+				$method = (isset($inquiry['REQUEST_METHOD'])) ? strtoupper($inquiry['REQUEST_METHOD']) : 'GET';
 
-				$uri = $request['REQUEST_URI'] ?? '';
-				$query_string = $request['QUERY_STRING'] ?? '';
+				$uri = $inquiry['REQUEST_URI'] ?? '';
+				$query_string = $inquiry['QUERY_STRING'] ?? '';
 				$path = trim($this->substr_replace_last($query_string, '', $uri), '/? ');
 				$segments = explode('/', $path);
 				$segmentCt = count($segments);
@@ -208,7 +212,7 @@ namespace Unicity\REST {
 					return true;
 				});
 
-				$message = HTTP\Request::factory([
+				$request = HTTP\Request::factory([
 					'body' => new IO\InputBuffer(),
 					'method' => $method,
 					'path' => $path,
@@ -216,9 +220,9 @@ namespace Unicity\REST {
 					'uri' => $uri,
 				]);
 
-				$routes = array_filter($routes, function(REST\Route $route) use ($message) : bool {
+				$routes = array_filter($routes, function(REST\Route $route) use ($request) : bool {
 					foreach ($route->when as $when) {
-						if (!$when($message)) {
+						if (!$when($request)) {
 							return false;
 						}
 					}
@@ -231,11 +235,16 @@ namespace Unicity\REST {
 
 				$route = end($routes);
 				$pipeline = $route->pipeline;
-				$pipeline($message, $route->internals);
-				$this->dispatcher->publish('routeSucceeded', $message);
+				$pipeline($request, $route->internals);
+				try {
+					$this->dispatcher->publish('routeEstablished', $request);
+				}
+				catch (\Throwable $error) {
+					$this->dispatcher->publish('routeErrored', $error);
+				}
 			}
-			catch (\Throwable $throwable) {
-				$this->dispatcher->publish('routeErrored', $throwable);
+			catch (\Throwable $failure) {
+				$this->dispatcher->publish('routeFailed', $failure);
 			}
 		}
 

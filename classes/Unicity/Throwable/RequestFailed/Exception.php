@@ -34,7 +34,7 @@ namespace Unicity\Throwable\RequestFailed {
 
 		protected $response;
 
-		public function __construct(EVT\Message $response, int $code = 0) {
+		public function __construct(EVT\Response $response, int $code = 0) {
 			parent::__construct(
 				(isset($response->body)) ? $response->body : '',
 				null,
@@ -43,7 +43,7 @@ namespace Unicity\Throwable\RequestFailed {
 			$this->response = $response;
 		}
 
-		public function getResponse() : \stdClass {
+		public function getResponse() : EVT\Response {
 			return $this->response;
 		}
 
