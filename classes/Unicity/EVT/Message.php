@@ -220,6 +220,16 @@ namespace Unicity\EVT {
 		}
 
 		/**
+		 * This method returns the collection as a dictionary.
+		 *
+		 * @access public
+		 * @return array                                            a dictionary of the elements
+		 */
+		public function toDictionary() {
+			return $this->map;
+		}
+
+		/**
 		 * This method allows for the specified key to be unset.
 		 *
 		 * @access public
