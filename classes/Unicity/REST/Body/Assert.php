@@ -29,30 +29,30 @@ namespace Unicity\REST\Body {
 		#region Assertions
 
 		/**
-		 * This method returns whether the message body contains JSON.
+		 * This method returns whether the request body contains JSON.
 		 *
 		 * @access public
 		 * @static
-		 * @param EVT\Message $message                              the message to be evaluated
-		 * @return bool                                             whether the message body contains
+		 * @param EVT\Request $request                              the request to be evaluated
+		 * @return bool                                             whether the request body contains
 		 *                                                          JSON
 		 */
-		public static function hasJSON(EVT\Message $message) : bool {
-			json_decode(static::getBody($message));
+		public static function hasJSON(EVT\Request $request) : bool {
+			json_decode(static::getBody($request));
 			return (json_last_error() == JSON_ERROR_NONE);
 		}
 
 		/**
-		 * This method returns whether the message body contains an SQL statement.
+		 * This method returns whether the request body contains an SQL statement.
 		 *
 		 * @access public
 		 * @static
-		 * @param EVT\Message $message                              the message to be evaluated
-		 * @return bool                                             whether the message body contains
+		 * @param EVT\Request $request                              the request to be evaluated
+		 * @return bool                                             whether the request body contains
 		 *                                                          an SQL statement
 		 */
-		public static function hasSQL(EVT\Message $message) : bool {
-			$body = urlencode(static::getBody($message));
+		public static function hasSQL(EVT\Request $request) : bool {
+			$body = urlencode(static::getBody($request));
 			if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
 				return true;
 			}
@@ -69,42 +69,42 @@ namespace Unicity\REST\Body {
 		}
 
 		/**
-		 * This method returns whether the message body contains a URL.
+		 * This method returns whether the request body contains a URL.
 		 *
 		 * @access public
 		 * @static
-		 * @param EVT\Message $message                              the message to be evaluated
-		 * @return bool                                             whether the message body contains
+		 * @param EVT\Request $request                              the request to be evaluated
+		 * @return bool                                             whether the request body contains
 		 *                                                          a URL
 		 */
-		public static function hasURL(EVT\Message $message) : bool {
-			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL);
+		public static function hasURL(EVT\Request $request) : bool {
+			return (bool) filter_var(static::getBody($request), FILTER_VALIDATE_URL);
 		}
 
 		/**
-		 * This method returns whether the message body contains a URL with a a query string.
+		 * This method returns whether the request body contains a URL with a a query string.
 		 *
 		 * @access public
 		 * @static
-		 * @param EVT\Message $message                              the message to be evaluated
-		 * @return bool                                             whether the message body contains
+		 * @param EVT\Request $request                              the request to be evaluated
+		 * @return bool                                             whether the request body contains
 		 *                                                          a URL with a query string
 		 */
-		public static function hasURLWithQueryString(EVT\Message $message) : bool {
-			return (bool) filter_var(static::getBody($message), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
+		public static function hasURLWithQueryString(EVT\Request $request) : bool {
+			return (bool) filter_var(static::getBody($request), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
 		}
 
 		/**
-		 * This method returns whether the message body contains XML.
+		 * This method returns whether the request body contains XML.
 		 *
 		 * @access public
 		 * @static
-		 * @param EVT\Message $message                              the message to be evaluated
-		 * @return bool                                             whether the message body contains
+		 * @param EVT\Request $request                              the request to be evaluated
+		 * @return bool                                             whether the request body contains
 		 *                                                          XML
 		 */
-		public static function hasXML(EVT\Message $message) : bool {
-			return (@simplexml_load_string(static::getBody($message)) !== false);
+		public static function hasXML(EVT\Request $request) : bool {
+			return (@simplexml_load_string(static::getBody($request)) !== false);
 		}
 
 		#endregion
@@ -112,17 +112,17 @@ namespace Unicity\REST\Body {
 		#region Helpers
 
 		/**
-		 * This method returns the message body as a string.
+		 * This method returns the request body as a string.
 		 *
 		 * @access protected
-		 * @param EVT\Message $message                              the message to be evaluated
-		 * @return string                                           the message body as a string
+		 * @param EVT\Request $request                              the request to be evaluated
+		 * @return string                                           the request body as a string
 		 */
-		protected static function getBody(EVT\Message $message) : string {
-			if (is_object($message->body) && ($message->body instanceof IO\File)) {
-				return $message->body->getBytes();
+		protected static function getBody(EVT\Request $request) : string {
+			if (is_object($request->body) && ($request->body instanceof IO\File)) {
+				return $request->body->getBytes();
 			}
-			return Core\Convert::toString($message->body);
+			return Core\Convert::toString($request->body);
 		}
 
 		#endregion
