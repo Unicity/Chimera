@@ -68,7 +68,7 @@ namespace Unicity\REST {
 			$this->routes = [];
 
 			set_error_handler(function(int $code, string $message, string $file, int $line) use ($dispatcher) {
-				$dispatcher->publish('routeFailed', new \ErrorException($message, $code, 1, $file, $line));
+				$dispatcher->publish('routeErrored', new \ErrorException($message, $code, 1, $file, $line));
 			});
 		}
 
@@ -84,61 +84,13 @@ namespace Unicity\REST {
 		}
 
 		/**
-		 * This method adds a broadcast handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the broadcast handler to be added
-		 * @return REST\Router                                      a reference to this class
-		 */
-		public function onBroadcast(callable $handler) : REST\Router {
-			$this->dispatcher->subscribe('routeEstablished', $handler);
-			return $this;
-		}
-
-		/**
-		 * This method adds an exception handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the exception handler to be added
-		 * @return REST\Router                                      a reference to this class
-		 */
-		public function onException(callable $handler) : REST\Router {
-			$this->dispatcher->subscribe('routeErrored', $handler);
-			return $this;
-		}
-
-		/**
-		 * This method adds a failure handler.
-		 *
-		 * @access public
-		 * @param callable $handler                                 the failure handler to be added
-		 * @return REST\Router                                      a reference to this class
-		 */
-		public function onFailure(callable $handler) : REST\Router {
-			$this->dispatcher->subscribe('routeFailed', $handler);
-			return $this;
-		}
-
-		/**
-		 * This method adds a route.
-		 *
-		 * @access public
-		 * @param REST\Route $route                                 the route to be added
-		 * @return REST\Router                                      a reference to this class
-		 */
-		public function onRoute(REST\Route $route) : REST\Router {
-			$this->routes[] = $route;
-			return $this;
-		}
-
-		/**
 		 * This method adds routes from a config file.
 		 *
 		 * @access public
 		 * @param IO\File $file                                     the route config file
 		 * @return REST\Router                                      a reference to this class
 		 */
-		public function onSetup(IO\File $file) : REST\Router {
+		public function onConfiguration(IO\File $file) : REST\Router {
 			$entries = Config\Inc\Reader::load($file)->read();
 			foreach ($entries as $entry) {
 				$route = REST\Route::request($entry['method'], $entry['path'], $entry['patterns'] ?? []);
@@ -152,6 +104,54 @@ namespace Unicity\REST {
 				}
 				$this->onRoute($route->to($entry['to']));
 			}
+			return $this;
+		}
+
+		/**
+		 * This method adds an exception handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the exception handler to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onException(callable $handler) : REST\Router {
+			$this->dispatcher->subscribe('routeException', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds an error handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the error handler to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onError(callable $handler) : REST\Router {
+			$this->dispatcher->subscribe('routeErrored', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a operating handler.
+		 *
+		 * @access public
+		 * @param callable $handler                                 the operating handler to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onOperation(callable $handler) : REST\Router {
+			$this->dispatcher->subscribe('routeOperating', $handler);
+			return $this;
+		}
+
+		/**
+		 * This method adds a route.
+		 *
+		 * @access public
+		 * @param REST\Route $route                                 the route to be added
+		 * @return REST\Router                                      a reference to this class
+		 */
+		public function onRoute(REST\Route $route) : REST\Router {
+			$this->routes[] = $route;
 			return $this;
 		}
 
@@ -212,6 +212,13 @@ namespace Unicity\REST {
 					return true;
 				});
 
+				$args = [];
+				foreach ($params as $key => $val) {
+					$args[trim($key, ' {}')] = $val;
+				}
+				$params = $args;
+				unset($args);
+
 				$request = HTTP\Request::factory([
 					'body' => new IO\InputBuffer(),
 					'method' => $method,
@@ -237,14 +244,14 @@ namespace Unicity\REST {
 				$pipeline = $route->pipeline;
 				$pipeline($request, $route->internals);
 				try {
-					$this->dispatcher->publish('routeEstablished', $request);
+					$this->dispatcher->publish('routeOperating', $request);
 				}
 				catch (\Throwable $error) {
-					$this->dispatcher->publish('routeErrored', $error);
+					$this->dispatcher->publish('routeException', $error);
 				}
 			}
 			catch (\Throwable $failure) {
-				$this->dispatcher->publish('routeFailed', $failure);
+				$this->dispatcher->publish('routeErrored', $failure);
 			}
 		}
 
