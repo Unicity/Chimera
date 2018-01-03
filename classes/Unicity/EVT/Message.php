@@ -93,7 +93,9 @@ namespace Unicity\EVT {
 		public final function __get($key) {
 			if (isset($this->map[$key])) {
 				if (is_object($this->map[$key]) && !($this->map[$key] instanceof Core\Data\Undefined)) {
-					return clone $this->map[$key];
+					if ((new \ReflectionObject($this->map[$key]))->isCloneable()) {
+						return clone $this->map[$key];
+					}
 				}
 				return $this->map[$key];
 			}
@@ -167,7 +169,9 @@ namespace Unicity\EVT {
 		public final function offsetGet($offset) {
 			if (isset($this->map[$offset])) {
 				if (is_object($this->map[$offset]) && !($this->map[$offset] instanceof Core\Data\Undefined)) {
-					return clone $this->map[$offset];
+					if ((new \ReflectionObject($this->map[$offset]))->isCloneable()) {
+						return clone $this->map[$offset];
+					}
 				}
 				return $this->map[$offset];
 			}
