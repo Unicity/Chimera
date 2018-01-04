@@ -197,7 +197,7 @@ namespace Unicity\REST {
 					for ($i = 0; $i < $segmentCt; $i++) {
 						$segment = $route->path[$i];
 						if (preg_match('/^\{.*\}$/', $segment)) {
-							$regex = $route->replacements[$segment] ?? '/^.+$/';
+							$regex = $route->patterns[$segment] ?? '/^.+$/';
 							if (!preg_match($regex, $segments[$i])) {
 								return false;
 							}
