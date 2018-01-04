@@ -86,7 +86,7 @@ namespace Unicity\SQL {
 				$this->server->publish('requestInitiated', $request);
 
 				try {
-					$connection = DB\Connection\Pool::instance()->get_connection($request->source);
+					$connection = DB\Connection\Pool::instance()->get_connection(new DB\DataSource($request->source));
 
 					$method = strtoupper($request->method);
 					switch ($method) {
@@ -101,11 +101,12 @@ namespace Unicity\SQL {
 							$body = $records->as_csv(['default_headers' => true])->render();
 							break;
 					}
-					$response = new SQL\Response([
+					$response = SQL\Response::factory([
 						'body' => $body,
 						'headers' => [
 							'http_code' => $status,
 						],
+						'source' => $request->source,
 						'status' => $status,
 						'statusText' => HTTP\Response::getStatusText($status),
 					]);
@@ -121,6 +122,7 @@ namespace Unicity\SQL {
 							'error_code' => $ex->getCode(),
 							'http_code' => $status,
 						],
+						'source' => $request->source,
 						'status' => $status,
 						'statusText' => HTTP\Response::getStatusText($status),
 					]);

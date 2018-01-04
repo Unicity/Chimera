@@ -27,7 +27,7 @@ namespace Unicity\SQL {
 		public function __construct(array $map = []) {
 			parent::__construct(array_merge([
 				'method' => 'QUERY',
-				'source' => 'default',
+				'source' => [],
 				'text' => '',
 			], $map));
 		}

@@ -100,7 +100,7 @@ namespace Unicity\TCP {
 					}
 					@fclose($resource);
 					$status = 200;
-					$response = new TCP\Response([
+					$response = TCP\Response::factory([
 						'body' => $body,
 						'headers' => [
 							'http_code' => $status,
@@ -116,7 +116,7 @@ namespace Unicity\TCP {
 				}
 				else {
 					$status = 503;
-					$response = new TCP\Response([
+					$response = TCP\Response::factory([
 						'body' => $errstr,
 						'headers' => [
 							'error_code' => $errno,
