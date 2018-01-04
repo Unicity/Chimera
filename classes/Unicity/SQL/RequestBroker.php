@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\HTTP {
+namespace Unicity\SQL {
 
 	use \Leap\Core\DB;
 	use \Unicity\Core;
@@ -141,9 +141,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the closing handler to be added
-		 * @return HTTP\RequestBroker                               a reference to this class
+		 * @return SQL\RequestBroker                                a reference to this class
 		 */
-		public function onClosing(callable $handler) : HTTP\RequestBroker {
+		public function onClosing(callable $handler) : SQL\RequestBroker {
 			$this->server->subscribe('responseReceived', $handler);
 			return $this;
 		}
@@ -153,9 +153,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the completion handler to be added
-		 * @return HTTP\RequestBroker                               a reference to this class
+		 * @return SQL\RequestBroker                                a reference to this class
 		 */
-		public function onCompletion(callable $handler) : HTTP\RequestBroker {
+		public function onCompletion(callable $handler) : SQL\RequestBroker {
 			$this->server->subscribe('requestCompleted', $handler);
 			return $this;
 		}
@@ -165,9 +165,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the failure handler to be added
-		 * @return HTTP\RequestBroker                               a reference to this class
+		 * @return SQL\RequestBroker                                a reference to this class
 		 */
-		public function onFailure(callable $handler) : HTTP\RequestBroker {
+		public function onFailure(callable $handler) : SQL\RequestBroker {
 			$this->server->subscribe('requestFailed', $handler);
 			return $this;
 		}
@@ -177,9 +177,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the initialization handler to be added
-		 * @return HTTP\RequestBroker                               a reference to this class
+		 * @return SQL\RequestBroker                                a reference to this class
 		 */
-		public function onInitiation(callable $handler) : HTTP\RequestBroker {
+		public function onInitiation(callable $handler) : SQL\RequestBroker {
 			$this->server->subscribe('requestInitiated', $handler);
 			return $this;
 		}
@@ -189,9 +189,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the opening handler to be added
-		 * @return HTTP\RequestBroker                               a reference to this class
+		 * @return SQL\RequestBroker                                a reference to this class
 		 */
-		public function onOpening(callable $handler) : HTTP\RequestBroker {
+		public function onOpening(callable $handler) : SQL\RequestBroker {
 			$this->server->subscribe('requestOpened', $handler);
 			return $this;
 		}
@@ -201,9 +201,9 @@ namespace Unicity\HTTP {
 		 *
 		 * @access public
 		 * @param callable $handler                                 the success handler to be added
-		 * @return HTTP\RequestBroker                               a reference to this class
+		 * @return SQL\RequestBroker                                a reference to this class
 		 */
-		public function onSuccess(callable $handler) : HTTP\RequestBroker {
+		public function onSuccess(callable $handler) : SQL\RequestBroker {
 			$this->server->subscribe('requestSucceeded', $handler);
 			return $this;
 		}
