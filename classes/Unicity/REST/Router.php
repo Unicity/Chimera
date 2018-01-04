@@ -242,7 +242,7 @@ namespace Unicity\REST {
 
 				$route = end($routes);
 				$pipeline = $route->pipeline;
-				$pipeline($request, $route->internals);
+				$pipeline($request, $route->arguments);
 				try {
 					$this->dispatcher->publish('routeOperating', $request);
 				}
