@@ -76,11 +76,11 @@ namespace Unicity\REST {
 		 * This method sets any internal arguments.
 		 *
 		 * @access public
-		 * @param array $internals                                  the internal arguments to be set
+		 * @param array $arguments                                  the internal arguments to be set
 		 * @return REST\RouteDefinition                             a reference to this class
 		 */
-		public function with(array $internals) : REST\RouteDefinition {
-			$this->route->internals = REST\Internals::put($this->route->internals, $internals);
+		public function with(array $arguments) : REST\RouteDefinition {
+			$this->route->arguments = REST\Arguments::put($this->route->arguments, $arguments);
 			return $this;
 		}
 

@@ -31,7 +31,7 @@ namespace Unicity\REST {
 	 * @class
 	 * @package Common
 	 */
-	class Internals extends \stdClass implements \ArrayAccess, \Countable, \Iterator, \JsonSerializable {
+	class Arguments extends \stdClass implements \ArrayAccess, \Countable, \Iterator, \JsonSerializable {
 
 		/**
 		 * This variable stores the map for the key/value pairs.
@@ -251,7 +251,7 @@ namespace Unicity\REST {
 		 * @access public
 		 * @static
 		 * @param array $map                                        the map containing the data
-		 * @return REST\Internals                                   a new collection
+		 * @return REST\Arguments                                   a new collection
 		 */
 		public static function factory(array $map = []) {
 			return new static($map);
@@ -262,11 +262,11 @@ namespace Unicity\REST {
 		 *
 		 * @access public
 		 * @static
-		 * @param REST\Internals $collection0                      the first collection
-		 * @param REST\Internals $collection1                      the second collection
-		 * @return REST\Internals                                  a new collection
+		 * @param REST\Arguments $collection0                      the first collection
+		 * @param REST\Arguments $collection1                      the second collection
+		 * @return REST\Arguments                                  a new collection
 		 */
-		public static function merge(?REST\Internals $collection0, ?REST\Internals $collection1) {
+		public static function merge(?REST\Arguments $collection0, ?REST\Arguments $collection1) {
 			if (($collection0 !== null) && ($collection1 !== null)) {
 				return new static(array_merge($collection0->map, $collection1->map));
 			}
@@ -284,11 +284,11 @@ namespace Unicity\REST {
 		 *
 		 * @access public
 		 * @static
-		 * @param REST\Internals $collection                        the base collection
+		 * @param REST\Arguments $collection                        the base collection
 		 * @param array $map                                        the map containing the data
-		 * @return REST\Internals                                   a new collection
+		 * @return REST\Arguments                                   a new collection
 		 */
-		public static function put(?REST\Internals $collection, array $map = []) {
+		public static function put(?REST\Arguments $collection, array $map = []) {
 			if ($collection !== null) {
 				return new static(array_merge($collection->map, $map));
 			}

@@ -29,9 +29,9 @@ namespace Unicity\REST {
 		 * This variable stores any internal arguments.
 		 *
 		 * @access public
-		 * @var REST\Internals
+		 * @var REST\Arguments
 		 */
-		public $internals;
+		public $arguments;
 
 		/**
 		 * This variable stores the HTTP methods.
@@ -83,7 +83,7 @@ namespace Unicity\REST {
 		 *                                                          segments
 		 */
 		public function __construct(array $methods, array $path, array $patterns) {
-			$this->internals = REST\Internals::factory();
+			$this->arguments = REST\Arguments::factory();
 			$this->methods = $methods;
 			$this->path = $path;
 			$this->patterns = $patterns;
@@ -98,7 +98,7 @@ namespace Unicity\REST {
 		 */
 		public function __destruct() {
 			parent::__destruct();
-			unset($this->internals);
+			unset($this->arguments);
 			unset($this->methods);
 			unset($this->path);
 			unset($this->patterns);
