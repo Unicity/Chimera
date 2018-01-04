@@ -109,6 +109,7 @@ namespace Unicity\SQL {
 						'source' => $request->source,
 						'status' => $status,
 						'statusText' => HTTP\Response::getStatusText($status),
+						'text' => $request->text,
 					]);
 					$this->server->publish('requestSucceeded', $response);
 					$this->server->publish('requestCompleted', $response);
@@ -125,6 +126,7 @@ namespace Unicity\SQL {
 						'source' => $request->source,
 						'status' => $status,
 						'statusText' => HTTP\Response::getStatusText($status),
+						'text' => $request->text,
 					]);
 					$this->server->publish('requestFailed', $response);
 					$this->server->publish('requestCompleted', $response);

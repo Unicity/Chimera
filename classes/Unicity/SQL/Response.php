@@ -31,6 +31,7 @@ namespace Unicity\SQL {
 				'source' => 'default',
 				'status' => 200,
 				'statusText' => 'OK',
+				'text' => '',
 			]));
 		}
 
