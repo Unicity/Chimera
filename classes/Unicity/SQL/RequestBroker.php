@@ -98,7 +98,7 @@ namespace Unicity\SQL {
 						default:
 							$status = 200;
 							$records = $connection->query(new DB\SQL\Command($request->text));
-							$body = $records->as_csv(['default_headers' => true])->render();
+							$body = $records->as_csv(['default_headers' => true, 'escape' => '"'])->render();
 							break;
 					}
 					$response = SQL\Response::factory([
@@ -116,6 +116,7 @@ namespace Unicity\SQL {
 					$http_code = max($http_code, $status);
 				}
 				catch (\Exception $ex) {
+					//var_dump($ex->getMessage()); exit();
 					$status = 503;
 					$response = SQL\Response::factory([
 						'body' => $ex->getMessage(),
@@ -128,6 +129,7 @@ namespace Unicity\SQL {
 						'statusText' => HTTP\Response::getStatusText($status),
 						'text' => $request->text,
 					]);
+					var_dump('ex', $response); exit();
 					$this->server->publish('requestFailed', $response);
 					$this->server->publish('requestCompleted', $response);
 					$http_code = max($http_code, $status);

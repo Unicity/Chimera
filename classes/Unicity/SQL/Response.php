@@ -25,14 +25,14 @@ namespace Unicity\SQL {
 	class Response extends EVT\Response {
 
 		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
+			parent::__construct(array_merge([
 				'body' => '',
 				'headers' => [],
-				'source' => 'default',
+				'source' => [],
 				'status' => 200,
 				'statusText' => 'OK',
 				'text' => '',
-			]));
+			], $map));
 		}
 
 	}

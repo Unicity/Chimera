@@ -25,14 +25,14 @@ namespace Unicity\TCP {
 	class Response extends EVT\Response {
 
 		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
+			parent::__construct(array_merge([
 				'body' => '',
 				'headers' => [],
 				'host' => '',
 				'port' => 80,
 				'status' => 200,
 				'statusText' => 'OK',
-			]));
+			], $map));
 		}
 
 	}
