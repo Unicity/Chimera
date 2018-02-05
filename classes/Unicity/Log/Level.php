@@ -56,14 +56,14 @@ namespace Unicity\Log {
 		public static function __enum(int $ordinal) : Log\Level {
 			if (!is_array(static::$__enums)) {
 				static::$__enums = array();
-				static::$__enums[LOG_EMERG] = new Log\Level('Emergency', 'Emergency: system is unusable');
-				static::$__enums[LOG_ALERT] = new Log\Level('Alert', 'Alert: action must be taken immediately');
-				static::$__enums[LOG_CRIT] = new Log\Level('Critical', 'Critical: critical conditions');
-				static::$__enums[LOG_ERR] = new Log\Level('Error', 'Error: error conditions');
-				static::$__enums[LOG_WARNING] = new Log\Level('Warning', 'Warning: warning conditions');
-				static::$__enums[LOG_NOTICE] = new Log\Level('Notice', 'Notice: normal but significant condition');
-				static::$__enums[LOG_INFO] = new Log\Level('Info', 'Informational: informational messages');
-				static::$__enums[LOG_DEBUG] = new Log\Level('Debug', 'Debug: debug-level messages');
+				static::$__enums[LOG_EMERG] = new Log\Level('Emergency', 'Emergency: system is unusable', LOG_EMERG);
+				static::$__enums[LOG_ALERT] = new Log\Level('Alert', 'Alert: action must be taken immediately', LOG_ALERT);
+				static::$__enums[LOG_CRIT] = new Log\Level('Critical', 'Critical: critical conditions', LOG_CRIT);
+				static::$__enums[LOG_ERR] = new Log\Level('Error', 'Error: error conditions', LOG_ERR);
+				static::$__enums[LOG_WARNING] = new Log\Level('Warning', 'Warning: warning conditions', LOG_WARNING);
+				static::$__enums[LOG_NOTICE] = new Log\Level('Notice', 'Notice: normal but significant condition', LOG_NOTICE);
+				static::$__enums[LOG_INFO] = new Log\Level('Info', 'Informational: informational messages', LOG_INFO);
+				static::$__enums[LOG_DEBUG] = new Log\Level('Debug', 'Debug: debug-level messages', LOG_DEBUG);
 			}
 			return static::$__enums[$ordinal];
 		}
@@ -74,11 +74,12 @@ namespace Unicity\Log {
 		 * @access protected
 		 * @param string $name                                      the name of the enumeration
 		 * @param mixed $value                                      the value to be assigned to the enumeration
+		 * @param integer $ordinal                                  the oridinal value of the enumeration
 		 */
-		protected function __construct(string $name, $value) {
+		protected function __construct(string $name, $value, $ordinal = null) {
 			$this->__name = $name;
 			$this->__value = $value;
-			$this->__ordinal = count(static::$__enums);
+			$this->__ordinal = is_integer($ordinal) ? $ordinal : count(static::$__enums);
 		}
 
 		/**
