@@ -49,8 +49,12 @@ namespace Unicity\Config\JSON {
 			);
 		}
 
-		public static function decode($data, array $metadata = array()) /* array|object */{
-			return Common\Collection::useObjects(static::unmarshal($data, $metadata));
+		public static function decode($data, array $metadata = array(), bool $assoc = false) /* array|object */{
+			$buffer = static::unmarshal($data, $metadata);
+			if ($assoc) {
+				return Common\Collection::useArrays($buffer);
+			}
+			return Common\Collection::useObjects($buffer);
 		}
 
 		public static function encode($collection, array $metadata = array()) : string {
