@@ -75,8 +75,8 @@ namespace Unicity\Config\JSON {
 		}
 
 		public static function unmarshal($data, array $metadata = array()) /* list|map */{
-			if ($data instanceof \JsonSerializable) {
-				$data = new IO\StringRef(json_encode($data));
+			if (is_array($data) || ($data instanceof \JsonSerializable)) {
+				$data = new IO\StringRef(static::encode($data));
 			}
 			if ($data instanceof Common\ICollection) {
 				if (isset($metadata['encoding'])) {
