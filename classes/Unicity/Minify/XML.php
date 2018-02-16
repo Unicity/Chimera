@@ -107,7 +107,7 @@ namespace Unicity\Minify {
 				$xml = preg_replace('/ +(\\R)+/', "\n", $xml);
 			}
 
-			$document->loadXML($xml);
+			$document->loadXML($xml, LIBXML_NOWARNING);
 
 			$xpath = new \DOMXPath($document);
 
