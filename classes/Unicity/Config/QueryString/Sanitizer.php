@@ -116,7 +116,7 @@ namespace Unicity\Config\QueryString {
 						}
 					}
 				}
-				else {
+				else { // remove
 					$store->remove($filter->path);
 				}
 			}

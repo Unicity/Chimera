@@ -103,7 +103,7 @@ namespace Unicity\Config\JSON {
 						}
 					}
 				}
-				else {
+				else { // remove
 					$store->remove($filter->path);
 				}
 			}

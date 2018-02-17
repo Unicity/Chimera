@@ -89,7 +89,7 @@ namespace Unicity\Config\Properties {
 					else if (is_callable($rule)) {
 						$record->$path = $rule($record->$path);
 					}
-					else {
+					else { // remove
 						$record->$path = Core\Data\Undefined::instance();
 					}
 				}

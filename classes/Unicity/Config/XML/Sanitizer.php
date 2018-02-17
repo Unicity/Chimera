@@ -35,7 +35,7 @@ namespace Unicity\Config\XML {
 		protected $filters;
 
 		public function __construct($filters) {
-			$filters = Config\Sanitizer::filters($filters);
+			$filters = static::filters($filters);
 			$this->filters = array();
 			foreach ($filters as $filter) {
 				$rule = $filter->hasKey('rule') ? $filter->rule : null;
@@ -46,14 +46,14 @@ namespace Unicity\Config\XML {
 					if ($key->hasKey('attribute')) {
 						$this->filters[] = (object) [
 							'attribute' => Core\Convert::toString($key->attribute),
-							'namespace' => $key->namespace,
+							'namespace' => $key->namespace, // ['prefix' => '', 'uri' => '']
 							'path' => Core\Convert::toString($key->path),
 							'rule' => $rule,
 						];
 					}
 					else {
 						$this->filters[] = (object) [
-							'namespace' => $key->namespace,
+							'namespace' => $key->namespace, // ['prefix' => '', 'uri' => '']
 							'path' => Core\Convert::toString($key->path),
 							'rule' => $rule,
 						];
@@ -63,9 +63,8 @@ namespace Unicity\Config\XML {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
 			$document = new \DOMDocument();
-			$document->loadXML($input->getBytes());
+			$document->loadXML(Config\XML\Helper::encode($input), LIBXML_NOWARNING);
 			foreach ($this->filters as $filter) {
 				$xpath = new \DOMXpath($document);
 				if (isset($filter->namespace['prefix']) && isset($filter->namespace['uri'])) {
@@ -74,7 +73,12 @@ namespace Unicity\Config\XML {
 				$elements = $xpath->query($filter->path);
 				if (!empty($elements)) {
 					$rule = $filter->rule;
-					if (is_callable($rule)) {
+					if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
+						foreach ($elements as $element) {
+							$element->nodeValue = Core\Masks::last($element->nodeValue, 'x', $matches[1]);
+						}
+					}
+					else if (is_callable($rule)) {
 						if (isset($filter->attribute)) {
 							foreach ($elements as $element) {
 								$attributes = $element->attributes;
@@ -90,8 +94,21 @@ namespace Unicity\Config\XML {
 							}
 						}
 					}
-					else {
-						// TODO remove value if filter is null
+					else { // remove
+						if (isset($filter->attribute)) {
+							foreach ($elements as $element) {
+								$element->removeAttribute($filter->attribute);
+							}
+						}
+						else {
+							$removables = array();
+							foreach ($elements as $element) {
+								$removables[] = $element;
+							}
+							foreach ($removables as $element) {
+								$element->parentNode->removeChild($element);
+							}
+						}
 					}
 				}
 			}
