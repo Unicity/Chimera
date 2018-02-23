@@ -335,6 +335,9 @@ namespace Unicity\Core {
 					if (empty($value)) {
 						return 0.0;
 					}
+					if (isset($value[0]) && ($value[0] == '.')) {
+						$value = '0' . $value;
+					}
 					if (preg_match('/^[+-]?([0-9]+)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))?$/', $value)) {
 						return doubleval($value);
 					}
