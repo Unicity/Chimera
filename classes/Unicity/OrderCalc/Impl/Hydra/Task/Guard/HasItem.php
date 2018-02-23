@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
+namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\BT;
 

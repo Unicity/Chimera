@@ -22,24 +22,27 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\BT;
 
-	class IsOrderOfType extends BT\Task\Guard {
+	class HasItemWithQuantity extends BT\Task\Guard {
 
 		/**
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Engine $engine                                 the engine running
-		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine the engine running
+		 * @param string $entityId the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) : int {
+		public function process(BT\Engine $engine, string $entityId): int {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$types = $this->policy->getValue('types');
+			$items = $this->policy->getValue('items');
+			$quantity = $this->policy->getValue('quantity');
 
-			if ($types->hasValue($order->type)) {
-				return BT\Status::SUCCESS;
+			foreach ($order->lines->items as $index => $line) {
+				if ($items->hasValue($line->item->id->unicity) && ($line->quantity > $quantity)) {
+					return BT\Status::SUCCESS;
+				}
 			}
 
 			return BT\Status::FAILED;
