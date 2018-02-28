@@ -23,6 +23,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\FP;
+	use \Unicity\MappingService;
 	use \Unicity\ORM;
 
 	class AddItem extends BT\Task\Action {
@@ -42,7 +43,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order->lines->items->addValue(FP\IMap::fold($this->policy, function($carry, Common\Tuple $tuple) {
 				ORM\Query::setValue($carry, $tuple->first(), $tuple->second());
 				return $carry;
-			}, new Common\Mutable\HashMap()));
+			}, new MappingService\Data\Model\JSON\HashMap('\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\LineItem', true)));
 
 			return BT\Status::SUCCESS;
 		}
