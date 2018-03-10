@@ -21,12 +21,9 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Common;
-	use \Unicity\FP;
-	use \Unicity\MappingService;
-	use \Unicity\ORM;
+	use \Unicity\Trade;
 
-	class AddItem extends BT\Task\Action {
+	class CalculateExtendedPrice extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -40,10 +37,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$order->lines->items->addValue(FP\IMap::fold($this->policy, function($carry, Common\Tuple $tuple) {
-				ORM\Query::setValue($carry, $tuple->first(), $tuple->second());
-				return $carry;
-			}, new MappingService\Data\Model\JSON\HashMap('\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\LineItem', true)));
+			foreach ($order->lines->items as $line) {
+				$line->terms->price = Trade\Money::make($line->terms->priceEach * $line->quantity, $order->currency)
+					->getConvertedAmount();
+			}
 
 			return BT\Status::SUCCESS;
 		}

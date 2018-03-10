@@ -69,12 +69,13 @@ namespace Unicity\Config\Properties {
 						$line = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $line);
 					}
 					if (!preg_match('/^\s*#.*$/', $line)) {
-						if (!preg_match('/^[^=]+=.+$/', $line)) {
+						if (!preg_match('/^[^=]+=.*$/', $line)) {
 							throw new Throwable\Parse\Exception('Unable to parse file. File ":uri" contains an invalid pattern on line :line.', array(':uri' => $self->file, ':line' => $index));
 						}
 						$position = strpos($line, '=');
 						$key = trim(substr($line, 0, $position));
-						$value = trim(substr($line, $position + 1));
+						$value = ($position + 1 < strlen($line)) ? substr($line, $position + 1) : '';
+						$value = trim($value);
 						$value = Core\Data\Charset::encode($value, $self->encoding[0], $self->encoding[1]);
 						$type = (isset($self->schema[$key])) ? $self->schema[$key] : 'string';
 						$value = Core\Convert::changeType($value, $type);
