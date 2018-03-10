@@ -30,7 +30,7 @@ namespace Unicity\Spring\Object {
 	 * @abstract
 	 * @class
 	 */
-	abstract class Factory extends Core\Object {
+	abstract class Factory extends Core\AbstractObject {
 
 		/**
 		 * This method returns an object matching the description specified by the element.

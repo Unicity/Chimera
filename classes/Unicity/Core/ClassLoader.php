@@ -29,7 +29,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	class ClassLoader extends Core\Object {
+	class ClassLoader extends Core\AbstractObject {
 
 		/**
 		 * This constant represents the namespace delimiter.

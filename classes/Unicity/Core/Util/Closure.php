@@ -22,7 +22,7 @@ namespace Unicity\Core\Util {
 
 	use \Unicity\Core;
 
-	class Closure extends Core\Object {
+	class Closure extends Core\AbstractObject {
 
 		/**
 		 * This method returns the result of the specified closure after using memoization

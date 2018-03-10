@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class ArrayList extends Core\Object implements Common\IList {
+	class ArrayList extends Core\AbstractObject implements Common\IList {
 
 		/**
 		 * This variable stores the elements in the collection.

@@ -35,7 +35,7 @@ namespace Unicity\VLD\Scanner\TokenRule {
 	 * @class
 	 * @package VLD
 	 */
-	class MixedVariable extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class MixedVariable extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.

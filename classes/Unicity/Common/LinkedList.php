@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class LinkedList extends Core\Object implements Common\IList {
+	class LinkedList extends Core\AbstractObject implements Common\IList {
 
 		protected $count;
 

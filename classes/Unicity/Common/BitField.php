@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class BitField extends Core\Object implements \Countable {
+	class BitField extends Core\AbstractObject implements \Countable {
 
 		/**
 		 * This variable stores the maximum size/boundary of the bit-field.

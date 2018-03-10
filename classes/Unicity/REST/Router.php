@@ -28,7 +28,7 @@ namespace Unicity\REST {
 	use \Unicity\REST;
 	use \Unicity\Throwable;
 
-	class Router extends Core\Object {
+	class Router extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a singleton instance of this class.

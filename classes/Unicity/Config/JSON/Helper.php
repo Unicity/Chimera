@@ -26,7 +26,7 @@ namespace Unicity\Config\JSON {
 	use \Unicity\IO;
 	use \Unicity\MappingService;
 
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		public static function combine(... $args) : string {
 			$args = array_filter($args, function($arg) {

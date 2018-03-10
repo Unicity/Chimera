@@ -30,7 +30,7 @@ namespace Unicity\Common\Mutable {
 	 * @class
 	 * @package Common
 	 */
-	class Queue extends Core\Object implements \Countable {
+	class Queue extends Core\AbstractObject implements \Countable {
 
 		/**
 		 * This variable stores the list that the queue is using.

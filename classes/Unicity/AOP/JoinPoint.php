@@ -32,7 +32,7 @@ namespace Unicity\AOP {
 	 * @class
 	 * @package AOP
 	 */
-	class JoinPoint extends Core\Object {
+	class JoinPoint extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the current advice type.

@@ -31,7 +31,7 @@ namespace Unicity\Config {
 	 * @class
 	 * @package Config
 	 */
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the collection being processed.

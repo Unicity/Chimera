@@ -39,7 +39,7 @@ namespace Unicity\Spring {
 	 * @see http://msdn.microsoft.com/en-us/magazine/cc163739.aspx
 	 * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/xml/BeanDefinitionParserDelegate.html
 	 */
-	class XMLObjectFactory extends Core\Object implements Spring\IObjectFactory {
+	class XMLObjectFactory extends Core\AbstractObject implements Spring\IObjectFactory {
 
 		/**
 		 * This variable stores the XML resources.

@@ -33,7 +33,7 @@ namespace Unicity\AOP {
 	 * @class
 	 * @package AOP
 	 */
-	class Advice extends Core\Object {
+	class Advice extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the join point.

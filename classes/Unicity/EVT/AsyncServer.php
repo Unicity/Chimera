@@ -31,7 +31,7 @@ namespace Unicity\EVT {
 	 * @class
 	 * @package EVT
 	 */
-	class AsyncServer extends Core\Object implements EVT\IServer {
+	class AsyncServer extends Core\AbstractObject implements EVT\IServer {
 
 		/**
 		 * This variable stores the name for this dispatcher.

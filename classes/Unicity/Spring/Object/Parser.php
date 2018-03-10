@@ -24,7 +24,7 @@ namespace Unicity\Spring\Object {
 	use \Unicity\Spring;
 	use \Unicity\Throwable;
 
-	class Parser extends Core\Object {
+	class Parser extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a list of valid primitive types.

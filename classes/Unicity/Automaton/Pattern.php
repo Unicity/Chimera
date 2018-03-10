@@ -31,7 +31,7 @@ namespace Unicity\Automaton {
 	 * @class
 	 * @package Automaton
 	 */
-	abstract class Pattern extends Core\Object {
+	abstract class Pattern extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the automaton.

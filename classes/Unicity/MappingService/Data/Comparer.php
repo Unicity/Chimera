@@ -33,7 +33,7 @@ namespace Unicity\MappingService\Data {
 	 * @class
 	 * @package MappingService
 	 */
-	class Comparer extends Core\Object {
+	class Comparer extends Core\AbstractObject {
 
 		/**
 		 * This variable stores any metadata associated with the comparer.

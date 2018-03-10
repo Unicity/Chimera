@@ -23,7 +23,7 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	class RequestBroker extends Core\Object {
+	class RequestBroker extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the dispatcher.

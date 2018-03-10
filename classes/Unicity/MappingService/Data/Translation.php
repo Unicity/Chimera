@@ -32,7 +32,7 @@ namespace Unicity\MappingService\Data {
 	 * @class
 	 * @package MappingService
 	 */
-	abstract class Translation extends Core\Object {
+	abstract class Translation extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the data that will be transformed.

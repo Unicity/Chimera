@@ -34,7 +34,7 @@ namespace Unicity\Lexer {
 	 * @class
 	 * @package Lexer
 	 */
-	class Scanner extends Core\Object implements Core\IEnumerator {
+	class Scanner extends Core\AbstractObject implements Core\IEnumerator {
 
 		/**
 		 * This variable stores the current tuple.

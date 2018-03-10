@@ -30,7 +30,7 @@ namespace Unicity\EVT\Server {
 	 * @class
 	 * @package EVT
 	 */
-	final class Manager extends Core\Object {
+	final class Manager extends Core\AbstractObject {
 
 		/**
 		 * This variable stores an singleton instance of this class.

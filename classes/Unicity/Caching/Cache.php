@@ -34,7 +34,7 @@ namespace Unicity\Caching {
 	 *
 	 * @see http://en.wikipedia.org/wiki/Cache_algorithms
 	 */
-	abstract class Cache extends Core\Object implements \Countable {
+	abstract class Cache extends Core\AbstractObject implements \Countable {
 
 		/**
 		 * This variable stores the caching policy.

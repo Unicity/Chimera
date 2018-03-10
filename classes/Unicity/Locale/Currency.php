@@ -33,7 +33,7 @@ namespace Unicity\Locale {
 	 *
 	 * @see http://en.wikipedia.org/wiki/ISO_4217
 	 */
-	class Currency extends Core\Object {
+	class Currency extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the currency's data.

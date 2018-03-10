@@ -29,7 +29,7 @@ namespace Unicity\BT {
 	 * @abstract
 	 * @class
 	 */
-	abstract class Schema extends Core\Object {
+	abstract class Schema extends Core\AbstractObject {
 
 		/**
 		 * This constant represents the default namespace used by Spring XML for behavior

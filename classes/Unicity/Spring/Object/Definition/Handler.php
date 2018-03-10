@@ -35,7 +35,7 @@ namespace Unicity\Spring\Object\Definition {
 	 * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/xml/NamespaceHandlerSupport.html
 	 * @see http://sloanseaman.com/wordpress/2012/03/26/spring-custom-tags-extensible-xml-part-1/
 	 */
-	class Handler extends Core\Object {
+	class Handler extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a lookup table for object definition parsers.

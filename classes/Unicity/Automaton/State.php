@@ -32,7 +32,7 @@ namespace Unicity\Automaton {
 	 * @class
 	 * @package Automaton
 	 */
-	class State extends Core\Object implements IState {
+	class State extends Core\AbstractObject implements IState {
 
 		/**
 		 * This variable stores any constraint placed on the state.

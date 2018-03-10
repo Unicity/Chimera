@@ -11,7 +11,7 @@ namespace Unicity\MappingService\Data {
 	use \Unicity\Throwable;
 	use \Unicity\VLD;
 
-	class Validator extends Core\Object {
+	class Validator extends Core\AbstractObject {
 
 		/**
 		 * This method executes the lookup.

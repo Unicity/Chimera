@@ -29,7 +29,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	class Operator extends Core\Object {
+	class Operator extends Core\AbstractObject {
 
 		/**
 		 * This method returns whether the given expression is valid.

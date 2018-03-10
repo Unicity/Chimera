@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class HashMap extends Core\Object implements Common\IMap {
+	class HashMap extends Core\AbstractObject implements Common\IMap {
 
 		/**
 		 * This variable stores the elements in the collection.

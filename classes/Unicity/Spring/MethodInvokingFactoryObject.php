@@ -35,7 +35,7 @@ namespace Unicity\Spring {
 	 * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/MethodInvokingFactoryBean.html
 	 * @see https://gist.github.com/bulain/1139874
 	 */
-	class MethodInvokingFactoryObject extends Core\Object implements Spring\InitializingObject, Spring\FactoryObject {
+	class MethodInvokingFactoryObject extends Core\AbstractObject implements Spring\InitializingObject, Spring\FactoryObject {
 
 		/**
 		 * This variable stores any arguments associated with the call.

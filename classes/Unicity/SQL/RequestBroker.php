@@ -26,7 +26,7 @@ namespace Unicity\SQL {
 	use \Unicity\HTTP;
 	use \Unicity\SQL;
 
-	class RequestBroker extends Core\Object {
+	class RequestBroker extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the dispatcher.

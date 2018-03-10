@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class EOLComment extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class EOLComment extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores the end-of-line characters.

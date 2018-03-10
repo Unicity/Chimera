@@ -36,7 +36,7 @@ namespace Unicity\ORM\JSON\Model {
 	 * @package ORM
 	 *
 	 */
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		/**
 		 * This method attempts to resolve the value as an array in accordance with the schema

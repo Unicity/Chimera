@@ -32,7 +32,7 @@ namespace Unicity\Common\Mutable {
 	 * @class
 	 * @package Common
 	 */
-	class StoredList extends Core\Object implements Common\Mutable\IList {
+	class StoredList extends Core\AbstractObject implements Common\Mutable\IList {
 
 		/**
 		 * This variable stores the file reference where the data is stored.

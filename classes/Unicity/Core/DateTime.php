@@ -34,7 +34,7 @@ namespace Unicity\Core {
 	 * @see http://msdn.microsoft.com/en-us/library/az4se3k1%28v=vs.110%29.aspx
 	 * @see http://www.w3.org/TR/NOTE-datetime
 	 */
-	class DateTime extends Core\Object {
+	class DateTime extends Core\AbstractObject {
 
 		/**
 		 * This constant represents the maximum value for a timestamp.

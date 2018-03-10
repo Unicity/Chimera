@@ -30,7 +30,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	class DataType extends Core\Object {
+	class DataType extends Core\AbstractObject {
 
 		/**
 		 * This method throws a runtime exception if the variable's data type is not one of the listed types.

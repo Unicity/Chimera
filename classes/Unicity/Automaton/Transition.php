@@ -32,7 +32,7 @@ namespace Unicity\Automaton {
 	 * @class
 	 * @package Automaton
 	 */
-	class Transition extends Core\Object implements Automaton\ITransition {
+	class Transition extends Core\AbstractObject implements Automaton\ITransition {
 
 		/**
 		 * This variable stores the actions that will be executed when the transition is

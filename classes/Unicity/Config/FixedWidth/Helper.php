@@ -26,7 +26,7 @@ namespace Unicity\Config\FixedWidth {
 	use \Unicity\IO;
 	use \Unicity\MappingService;
 
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		public static function buffer($collection) : IO\File {
 			if ($collection instanceof \JsonSerializable) {

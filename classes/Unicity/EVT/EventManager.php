@@ -30,7 +30,7 @@ namespace Unicity\EVT {
 	 * @class
 	 * @package EVT
 	 */
-	class EventManager extends Core\Object {
+	class EventManager extends Core\AbstractObject {
 
 		/**
 		 * This variable stores an singleton instance of this class.

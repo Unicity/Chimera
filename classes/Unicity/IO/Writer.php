@@ -31,7 +31,7 @@ namespace Unicity\IO {
 	 * @class
 	 * @package IO
 	 */
-	abstract class Writer extends Core\Object implements Core\IDisposable {
+	abstract class Writer extends Core\AbstractObject implements Core\IDisposable {
 
 		/**
 		 * This method closes the resource.

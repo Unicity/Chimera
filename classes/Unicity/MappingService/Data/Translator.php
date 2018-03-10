@@ -33,7 +33,7 @@ namespace Unicity\MappingService\Data {
 	 * @class
 	 * @package MappingService
 	 */
-	abstract class Translator extends Core\Object {
+	abstract class Translator extends Core\AbstractObject {
 
 		/**
 		 * This constant is used to represent a source translator.

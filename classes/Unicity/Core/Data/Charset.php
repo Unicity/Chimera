@@ -37,7 +37,7 @@ namespace Unicity\Core\Data {
 	 * @see http://intranet/index.php/Code_Page
 	 * @see http://svn.python.org/projects/python/tags/r32rc1/Lib/encodings/aliases.py
 	 */
-	class Charset extends Core\Object {
+	class Charset extends Core\AbstractObject {
 
 		/**
 		 * This constant defines the encoding for BIG5.

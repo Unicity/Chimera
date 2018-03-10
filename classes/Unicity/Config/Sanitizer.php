@@ -32,7 +32,7 @@ namespace Unicity\Config {
 	 * @class
 	 * @package Config
 	 */
-	abstract class Sanitizer extends Core\Object {
+	abstract class Sanitizer extends Core\AbstractObject {
 
 		protected static $rules = array(
 			'mask' => '\\Unicity\\Core\\Masks::all',

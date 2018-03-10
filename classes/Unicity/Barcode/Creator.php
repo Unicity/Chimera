@@ -31,7 +31,7 @@ namespace Unicity\Barcode {
 	 * @class
 	 * @package Barcode
 	 */
-	abstract class Creator extends Core\Object {
+	abstract class Creator extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the barcode data.

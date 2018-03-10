@@ -23,7 +23,7 @@ namespace Unicity\Common {
 	use \Unicity\Core;
 	use \Unicity\Throwable;
 
-	final class Tuple extends Core\Object /*implements Common\IList*/ {
+	final class Tuple extends Core\AbstractObject /*implements Common\IList*/ {
 
 		#region Properties
 

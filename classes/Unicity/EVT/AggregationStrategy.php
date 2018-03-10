@@ -7,7 +7,7 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	abstract class AggregationStrategy extends Core\Object {
+	abstract class AggregationStrategy extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the old exchange.

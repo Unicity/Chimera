@@ -36,7 +36,7 @@ namespace Unicity\Spring {
 	 * @see http://www.springframework.net/doc-latest/reference/html/objects.html
 	 * @see http://msdn.microsoft.com/en-us/magazine/cc163739.aspx
 	 */
-	class XMLObjectExporter extends Core\Object {
+	class XMLObjectExporter extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the encoding for the character set.

@@ -33,7 +33,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 	 * @package MappingService
 	 *
 	 */
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		/**
 		 * This method attempts to resolve the value as an array in accordance with the schema

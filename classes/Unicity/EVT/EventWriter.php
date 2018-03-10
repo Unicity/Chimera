@@ -28,7 +28,7 @@ namespace Unicity\EVT {
 	 * @access public
 	 * @package EVT
 	 */
-	abstract class EventWriter extends Core\Object {
+	abstract class EventWriter extends Core\AbstractObject {
 
 		/**
 		 * This variable stores any metadata associated with the writer.

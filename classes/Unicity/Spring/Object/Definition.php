@@ -30,7 +30,7 @@ namespace Unicity\Spring\Object {
 	 *
 	 * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanDefinition.html
 	 */
-	class Definition extends Core\Object {
+	class Definition extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the object's definition (i.e. attributes).

@@ -30,7 +30,7 @@ namespace Unicity\BT\Task {
 	 * @access public
 	 * @class
 	 */
-	class Handler extends Core\Object {
+	class Handler extends Core\AbstractObject {
 
 		/**
 		 * This method processes an entity.

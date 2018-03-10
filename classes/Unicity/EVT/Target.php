@@ -23,7 +23,7 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	class Target extends Core\Object {
+	class Target extends Core\AbstractObject {
 
 		protected $actor;
 

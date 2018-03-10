@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class Word extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class Word extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores a set of blacklisted characters.

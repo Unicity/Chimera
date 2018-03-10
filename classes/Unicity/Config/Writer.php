@@ -34,7 +34,7 @@ namespace Unicity\Config {
 	 * @class
 	 * @package Config
 	 */
-	abstract class Writer extends Core\Object {
+	abstract class Writer extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the data being written.

@@ -23,7 +23,7 @@ namespace Unicity\Core\Data {
 	use \Unicity\Core;
 	use \Unicity\Throwable;
 
-	final class Undefined extends Core\Object implements \ArrayAccess, \Countable, \Iterator {
+	final class Undefined extends Core\AbstractObject implements \ArrayAccess, \Countable, \Iterator {
 
 		/**
 		 * This variable stores a singleton instance of this class.

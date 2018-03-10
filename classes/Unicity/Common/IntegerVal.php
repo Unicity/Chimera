@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class IntegerVal extends Core\Object implements Common\IPrimitiveVal {
+	class IntegerVal extends Core\AbstractObject implements Common\IPrimitiveVal {
 
 		/**
 		 * This variable stores the primitive value.

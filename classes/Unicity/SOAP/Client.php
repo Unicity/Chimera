@@ -31,7 +31,7 @@ namespace Unicity\SOAP {
 	 * @class
 	 * @package SOAP
 	 */
-	class Client extends Core\Object {
+	class Client extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the options associated with the request.

@@ -24,7 +24,7 @@ namespace Unicity\VLD {
 	use \Unicity\Core;
 	use \Unicity\VLD;
 
-	abstract class Module extends Core\Object {
+	abstract class Module extends Core\AbstractObject {
 
 		protected $policy;
 

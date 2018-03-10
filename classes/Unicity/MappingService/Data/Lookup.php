@@ -31,7 +31,7 @@ namespace Unicity\MappingService\Data {
 	 * @class
 	 * @package MappingService
 	 */
-	abstract class Lookup extends Core\Object {
+	abstract class Lookup extends Core\AbstractObject {
 
 		/**
 		 * This constructor initializes the class.

@@ -23,7 +23,7 @@ namespace Unicity\REST {
 	use \Unicity\Core;
 	use \Unicity\REST;
 
-	class Route extends Core\Object {
+	class Route extends Core\AbstractObject {
 
 		/**
 		 * This variable stores any internal arguments.

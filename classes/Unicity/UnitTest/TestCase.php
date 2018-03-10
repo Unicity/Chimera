@@ -27,7 +27,7 @@ namespace Unicity\UnitTest {
 	 * @class
 	 * @package UnitTest
 	 */
-	class TestCase extends \PHPUnit_Framework_TestCase {
+	class TestCase extends \PHPUnit\Framework\TestCase {
 
 		/**
 		 * This method asserts that a variable is one of the given types.

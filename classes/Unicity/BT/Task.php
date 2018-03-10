@@ -35,7 +35,7 @@ namespace Unicity\BT {
 	 * @see http://aigamedev.com/open/article/tasks/
 	 * @see https://en.wikipedia.org/wiki/Behavior-driven_development
 	 */
-	abstract class Task extends Core\Object implements AOP\IAspect {
+	abstract class Task extends Core\AbstractObject implements AOP\IAspect {
 
 		/**
 		 * This variable stores any data used for AOP.

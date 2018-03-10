@@ -30,7 +30,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	abstract class Object implements Core\IObject {
+	abstract class AbstractObject implements Core\IObject {
 
 		/**
 		 * This variable stores an array of extension methods.

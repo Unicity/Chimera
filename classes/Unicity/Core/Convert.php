@@ -31,7 +31,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	class Convert extends Core\Object {
+	class Convert extends Core\AbstractObject {
 
 		/**
 		 * This method converts the specified value to the specified type.

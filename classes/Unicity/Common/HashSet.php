@@ -30,7 +30,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class HashSet extends Core\Object implements Common\ISet {
+	class HashSet extends Core\AbstractObject implements Common\ISet {
 
 		/**
 		 * This variable stores the number of elements in the collection.

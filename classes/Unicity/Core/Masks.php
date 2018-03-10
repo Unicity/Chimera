@@ -29,7 +29,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Log
 	 */
-	class Masks extends Core\Object {
+	class Masks extends Core\AbstractObject {
 
 		public static function all($value, string $symbol = 'x') {
 			if ($value !== null) {

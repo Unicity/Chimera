@@ -30,7 +30,7 @@ namespace Unicity\Core\Data\XML {
 	 * @class
 	 * @package Core
 	 */
-	abstract class Filter extends Core\Object {
+	abstract class Filter extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the XML document.

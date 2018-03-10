@@ -27,7 +27,7 @@ namespace Unicity\Config\QueryString {
 	use \Unicity\IO;
 	use \Unicity\MappingService;
 
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		public static function build($parameters, bool $prefix = true) : string {
 			$parameters = Common\Collection::useArrays($parameters);

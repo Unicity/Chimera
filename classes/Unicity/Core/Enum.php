@@ -31,7 +31,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	abstract class Enum extends Core\Object {
+	abstract class Enum extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the name assigned to the enumeration.

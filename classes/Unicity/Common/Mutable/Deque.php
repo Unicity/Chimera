@@ -34,7 +34,7 @@ namespace Unicity\Common\Mutable {
 	 * @see http://www.cplusplus.com/reference/deque/deque/
 	 * @see https://www.numetriclabz.com/deque-in-php/
 	 */
-	class Deque extends Core\Object implements \Countable {
+	class Deque extends Core\AbstractObject implements \Countable {
 
 		/**
 		 * This variable stores the mutable list used for the deque.

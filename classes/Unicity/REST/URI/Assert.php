@@ -23,7 +23,7 @@ namespace Unicity\REST\URI {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	class Assert extends Core\Object {
+	class Assert extends Core\AbstractObject {
 
 		#region Assertions
 

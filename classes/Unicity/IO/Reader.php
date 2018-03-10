@@ -30,7 +30,7 @@ namespace Unicity\IO {
 	 * @class
 	 * @package IO
 	 */
-	abstract class Reader extends Core\Object implements Core\IDisposable {
+	abstract class Reader extends Core\AbstractObject implements Core\IDisposable {
 
 		/**
 		 * This variable stores the position where the head will reset.

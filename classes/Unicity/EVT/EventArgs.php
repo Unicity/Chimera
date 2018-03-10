@@ -23,7 +23,7 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	abstract class EventArgs extends Core\Object { // subclass using "present" tense
+	abstract class EventArgs extends Core\AbstractObject { // subclass using "present" tense
 
 		protected $target;
 

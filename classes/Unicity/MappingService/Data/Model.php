@@ -32,7 +32,7 @@ namespace Unicity\MappingService\Data {
 	 * @class
 	 * @package MappingService
 	 */
-	abstract class Model extends Core\Object implements MappingService\Data\IModel, Config\QueryString\IBuilder {
+	abstract class Model extends Core\AbstractObject implements MappingService\Data\IModel, Config\QueryString\IBuilder {
 
 		/**
 		 * This constructor initializes the property to an undefined value.

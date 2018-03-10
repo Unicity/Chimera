@@ -30,7 +30,7 @@ namespace Unicity\Core\Data {
 	 * @class
 	 * @package Core
 	 */
-	class ToolKit extends Core\Object {
+	class ToolKit extends Core\AbstractObject {
 
 		/**
 		 * This method returns the value with a fixed length.

@@ -26,7 +26,7 @@ namespace Unicity\Config\CSV {
 	use \Unicity\IO;
 	use \Unicity\MappingService;
 
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		public static function decode($data, array $metadata = array()) /* array|object */{
 			return Common\Collection::useObjects(static::unmarshal($data, $metadata));

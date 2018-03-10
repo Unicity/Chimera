@@ -35,7 +35,7 @@ namespace Unicity\Locale {
 	 * @see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 	 * @see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 	 */
-	class Country extends Core\Object {
+	class Country extends Core\AbstractObject {
 
 		/**
 		 * This variable stores any countries that are cached.

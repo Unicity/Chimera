@@ -33,7 +33,7 @@ namespace Unicity\Config {
 	 * @class
 	 * @package Config
 	 */
-	abstract class Reader extends Core\Object {
+	abstract class Reader extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the URI associated with the file resource.

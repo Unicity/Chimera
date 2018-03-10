@@ -30,7 +30,7 @@ namespace Unicity\Spring\Data\XML {
 	 * @class
 	 * @package Spring
 	 */
-	class Syntax extends Core\Object {
+	class Syntax extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a list of valid primitive types.

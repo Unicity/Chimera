@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class Whitespace extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class Whitespace extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores the traditional whitespace characters.

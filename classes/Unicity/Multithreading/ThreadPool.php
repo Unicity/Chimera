@@ -22,7 +22,7 @@ namespace Unicity\Multithreading {
 
 	use \Unicity\Core;
 
-	class ThreadPool extends Core\Object {
+	class ThreadPool extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the workers in the pool.

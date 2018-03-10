@@ -25,7 +25,7 @@ namespace Unicity\BT {
 	use \Unicity\IO;
 	use \Unicity\Spring;
 
-	class Driver extends Core\Object {
+	class Driver extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the file.

@@ -24,7 +24,7 @@ namespace Unicity\REST\Body {
 	use \Unicity\EVT;
 	use \Unicity\IO;
 
-	class Assert extends Core\Object {
+	class Assert extends Core\AbstractObject {
 
 		#region Assertions
 

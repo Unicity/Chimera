@@ -29,7 +29,7 @@ namespace Unicity\Common {
 	 * @class
 	 * @package Common
 	 */
-	class Collection extends Core\Object {
+	class Collection extends Core\AbstractObject {
 
 		/**
 		 * This method returns a flattened version of the data.

@@ -22,7 +22,7 @@ namespace Unicity\VLD {
 
 	use \Unicity\Core;
 
-	abstract class Code extends Core\Object {
+	abstract class Code extends Core\AbstractObject {
 
 		// testing "presents"
 		const UNKNOWN = '0';

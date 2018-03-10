@@ -32,7 +32,7 @@ namespace Unicity\MappingService\Data\Field {
 	 * @class
 	 * @package MappingService
 	 */
-	class Item extends Core\Object {
+	class Item extends Core\AbstractObject {
 
 		/**
 		 * This variable stores any information about the value.

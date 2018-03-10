@@ -32,7 +32,7 @@ namespace Unicity\Automaton {
 	 * @class
 	 * @package Automaton
 	 */
-	abstract class Machine extends Core\Object implements Automaton\IMachine {
+	abstract class Machine extends Core\AbstractObject implements Automaton\IMachine {
 
 		/**
 		 * This variable stores the delegate for the machine.

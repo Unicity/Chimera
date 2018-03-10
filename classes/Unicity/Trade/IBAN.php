@@ -31,7 +31,7 @@ namespace Unicity\Trade {
 	 * @package Trade
 	 *
 	 */
-	class IBAN extends Core\Object {
+	class IBAN extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the value of the IBAN as defined in ISO 13616.

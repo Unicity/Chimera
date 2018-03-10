@@ -31,7 +31,7 @@ namespace Unicity\ORM {
 	 * @class
 	 * @package Config
 	 */
-	class Query extends Core\Object {
+	class Query extends Core\AbstractObject {
 
 		/**
 		 * This method returns the JSONPath for the given index.

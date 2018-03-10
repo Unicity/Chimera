@@ -31,7 +31,7 @@ namespace Unicity\Common {
 	 *
 	 * @see https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSData_Class/Reference/Reference.html
 	 */
-	class ByteString extends Core\Object implements \Countable {
+	class ByteString extends Core\AbstractObject implements \Countable {
 
 		/**
 		 * This constant represents binary data.

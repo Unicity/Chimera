@@ -31,7 +31,7 @@ namespace Unicity\Trade {
 	 * @package Trade
 	 *
 	 */
-	class BIC extends Core\Object {
+	class BIC extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the value of the BIC as defined in ISO 9362.

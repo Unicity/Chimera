@@ -32,7 +32,7 @@ namespace Unicity\BT {
 	 * @class
 	 * @see http://docs.unity3d.com/ScriptReference/GameObject.html
 	 */
-	class Entity extends Core\Object {
+	class Entity extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the components associated with this entity.

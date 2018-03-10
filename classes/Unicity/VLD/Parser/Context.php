@@ -26,7 +26,7 @@ namespace Unicity\VLD\Parser {
 	use \Unicity\ORM;
 	use \Unicity\Throwable;
 
-	class Context extends Core\Object {
+	class Context extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the entity.

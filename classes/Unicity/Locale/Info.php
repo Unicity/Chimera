@@ -22,7 +22,7 @@ namespace Unicity\Locale {
 
 	use \Unicity\Core;
 
-	class Info extends Core\Object {
+	class Info extends Core\AbstractObject {
 
 		/**
 		 * This variable caches which languages have been set in the request.

@@ -24,7 +24,7 @@ namespace Unicity\Minify {
 	 * This class will minify an XML file by removing unnecessary content according
 	 * to selected options.
 	 */
-	class XML extends Core\Object {
+	class XML extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the XML data being processed.

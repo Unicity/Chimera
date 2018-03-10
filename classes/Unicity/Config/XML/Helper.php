@@ -26,7 +26,7 @@ namespace Unicity\Config\XML {
 	use \Unicity\IO;
 	use \Unicity\MappingService;
 
-	class Helper extends Core\Object {
+	class Helper extends Core\AbstractObject {
 
 		public static function decode($data, array $metadata = array(), bool $assoc = false) /* array|object */{
 			$buffer = static::unmarshal($data, $metadata);

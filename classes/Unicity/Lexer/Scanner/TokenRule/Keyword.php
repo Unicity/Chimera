@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class Keyword extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class Keyword extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores a list of reserved keywords.

@@ -23,7 +23,7 @@ namespace Unicity\REST {
 	use \Unicity\Core;
 	use \Unicity\REST;
 
-	class RouteDefinition extends Core\Object {
+	class RouteDefinition extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the route's definition.

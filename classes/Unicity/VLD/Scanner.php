@@ -26,7 +26,7 @@ namespace Unicity\VLD {
 	use \Unicity\Throwable;
 	use \Unicity\VLD;
 
-	class Scanner extends Core\Object {
+	class Scanner extends Core\AbstractObject {
 
 		public static function factory(IO\Reader $reader) : Lexer\Scanner {
 			$scanner = new Lexer\Scanner($reader);

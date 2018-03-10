@@ -33,7 +33,7 @@ namespace Unicity\Lexer\Scanner {
 	 * @class
 	 * @package Lexer
 	 */
-	class Tuple extends Core\Object {
+	class Tuple extends Core\AbstractObject {
 
         /**
          * This variable stores the start index of the token.

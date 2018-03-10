@@ -30,7 +30,7 @@ namespace Unicity\Common\Mutable\LinkedList {
 	 * @class
 	 * @package Common
 	 */
-	class Node extends Core\Object {
+	class Node extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the next node in the list.

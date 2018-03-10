@@ -33,7 +33,7 @@ namespace Unicity\BT {
 	 * @see http://www.gamedev.net/page/resources/_/technical/game-programming/understanding-component-entity-systems-r3013
 	 * @see http://www.gamedev.net/page/resources/_/technical/game-programming/implementing-component-entity-systems-r3382
 	 */
-	class Engine extends Core\Object {
+	class Engine extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a map of blackboards.

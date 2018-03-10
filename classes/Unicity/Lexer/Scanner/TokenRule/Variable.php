@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class Variable extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class Variable extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This method return a tuple representing the token discovered.

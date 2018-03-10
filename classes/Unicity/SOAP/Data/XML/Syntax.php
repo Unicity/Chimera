@@ -29,7 +29,7 @@ namespace Unicity\SOAP\Data\XML {
 	 * @class
 	 * @package SOAP
 	 */
-	class Syntax extends Core\Object {
+	class Syntax extends Core\AbstractObject {
 
 		/**
 		 * This method evaluates whether the specified string matches the syntax for a boolean

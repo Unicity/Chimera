@@ -32,7 +32,7 @@ namespace Unicity\Core {
 	 * @class
 	 * @package Core
 	 */
-	class Message extends Core\Object implements Core\IMessage {
+	class Message extends Core\AbstractObject implements Core\IMessage {
 
 		/**
 		 * This variable stores a reference to the singleton instance.

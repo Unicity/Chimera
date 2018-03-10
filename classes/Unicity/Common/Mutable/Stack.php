@@ -30,7 +30,7 @@ namespace Unicity\Common\Mutable {
 	 * @class
 	 * @package Common
 	 */
-	class Stack extends Core\Object implements \Countable {
+	class Stack extends Core\AbstractObject implements \Countable {
 
 		/**
 		 * This variable stores the mutable list used for the stack.

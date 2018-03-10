@@ -33,7 +33,7 @@ namespace Unicity\Common {
 	 *
 	 * @see http://docs.oracle.com/javase/6/docs/api/java/lang/String.html
 	 */
-	class StringRef extends Core\Object implements \ArrayAccess, \Countable, Common\IPrimitiveVal, \Iterator, \SeekableIterator {
+	class StringRef extends Core\AbstractObject implements \ArrayAccess, \Countable, Common\IPrimitiveVal, \Iterator, \SeekableIterator {
 
 		#region Instance Variables
 

@@ -31,7 +31,7 @@ namespace Unicity\Spring\Object {
 	 * @access public
 	 * @class
 	 */
-	class Registry extends Core\Object {
+	class Registry extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the register.

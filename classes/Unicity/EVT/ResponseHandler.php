@@ -23,7 +23,7 @@ namespace Unicity\EVT {
 	use \Unicity\Core;
 	use \Unicity\EVT;
 
-	abstract class ResponseHandler extends Core\Object {
+	abstract class ResponseHandler extends Core\AbstractObject {
 
 		/**
 		 * This method processes the message and context.

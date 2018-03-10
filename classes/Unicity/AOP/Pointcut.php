@@ -30,7 +30,7 @@ namespace Unicity\AOP {
 	 * @class
 	 * @package AOP
 	 */
-	class Pointcut extends Core\Object {
+	class Pointcut extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the expression.

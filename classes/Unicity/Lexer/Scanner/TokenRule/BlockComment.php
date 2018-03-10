@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class BlockComment extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class BlockComment extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores the opening 2-character sequence.

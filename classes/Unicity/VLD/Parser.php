@@ -28,7 +28,7 @@ namespace Unicity\VLD {
 	use \Unicity\Throwable;
 	use \Unicity\VLD;
 
-	class Parser extends Core\Object {
+	class Parser extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the interpreter's config file.

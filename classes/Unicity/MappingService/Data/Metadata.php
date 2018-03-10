@@ -32,7 +32,7 @@ namespace Unicity\MappingService\Data {
 	 * @class
 	 * @package MappingService
 	 */
-	class Metadata extends Core\Object implements \ArrayAccess, \Countable, \Iterator {
+	class Metadata extends Core\AbstractObject implements \ArrayAccess, \Countable, \Iterator {
 
 		/**
 		 * This variable stores the elements in the collection.

@@ -28,7 +28,7 @@ namespace Unicity\VLD\Parser {
 	use \Unicity\ORM;
 	use \Unicity\VLD;
 
-	class Feedback extends Core\Object {
+	class Feedback extends Core\AbstractObject {
 
 		/**
 		 * @var Common\Mutable\HashSet

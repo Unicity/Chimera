@@ -33,7 +33,7 @@ namespace Unicity\Caching {
 	 *
 	 * @see http://en.wikipedia.org/wiki/Cache_algorithms
 	 */
-	abstract class Policy extends Core\Object {
+	abstract class Policy extends Core\AbstractObject {
 
 		/**
 		 * This variable stores the policy's data.

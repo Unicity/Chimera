@@ -34,7 +34,7 @@ namespace Unicity\Lexer\Scanner\TokenRule {
 	 * @class
 	 * @package Lexer
 	 */
-	class Literal extends Core\Object implements Lexer\Scanner\ITokenRule {
+	class Literal extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
 
 		/**
 		 * This variable stores the quotation mark that signals the beginning and end of the token.

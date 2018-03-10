@@ -30,7 +30,7 @@ namespace Unicity\IO {
 	 * @class
 	 * @package IO
 	 */
-	class Resource extends Core\Object {
+	class Resource extends Core\AbstractObject {
 
 	}
 

@@ -24,7 +24,7 @@ namespace Unicity\HTTP {
 	use \Unicity\EVT;
 	use \Unicity\HTTP;
 
-	class RequestBroker extends Core\Object {
+	class RequestBroker extends Core\AbstractObject {
 
 		/**
 		 * This variable stores a reference to the dispatcher.
