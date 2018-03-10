@@ -35,7 +35,7 @@ COMPOSER_URL = http://getcomposer.org/installer
 
 PHPUNIT_DIR = ./
 PHPUNIT_EXE = phpunit
-PHPUNIT_PHAR = phpunit-5.1.4.phar
+PHPUNIT_PHAR = phpunit-7.0.2.phar
 PHPUNIT_URL = https://phar.phpunit.de/$(PHPUNIT_PHAR)
 
 UNIT_TESTS = ./tests
