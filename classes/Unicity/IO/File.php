@@ -133,7 +133,7 @@ namespace Unicity\IO {
 						break;
 					}
 				}
-				$uri = preg_replace('/^classpath:/i', Bootstrap::rootPath(), $uri, 1);
+				$uri = preg_replace('/^classpath:/i', rtrim(Bootstrap::rootPath(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR, $uri, 1);
 			}
 
 			$this->uri = $uri;
