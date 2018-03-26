@@ -214,6 +214,16 @@ namespace Unicity\Core {
 		}
 
 		/**
+		 * This method returns a dictionary of headers.
+		 *
+		 * @access public
+		 * @return array                                            the headers
+		 */
+		public function getHeaders() : array {
+			return $this->headers->toDictionary();
+		}
+
+		/**
 		 * This method returns the message's id.
 		 *
 		 * @access public

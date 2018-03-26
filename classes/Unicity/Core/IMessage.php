@@ -90,6 +90,14 @@ namespace Unicity\Core {
 		public function setHeader(string $name, ?string $value) : void;
 
 		/**
+		 * This method returns a dictionary of headers.
+		 *
+		 * @access public
+		 * @return array                                            the headers
+		 */
+		public function getHeaders() : array;
+
+		/**
 		 * This method sets the headers with the specified name/value pairs.
 		 *
 		 * @access public
