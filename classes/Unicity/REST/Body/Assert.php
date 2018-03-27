@@ -104,7 +104,7 @@ namespace Unicity\REST\Body {
 		 *                                                          XML
 		 */
 		public static function hasXML(EVT\Request $request) : bool {
-			return (@simplexml_load_string(static::getBody($request)) !== false);
+			return (bool) preg_match('/^<\?xml\s+.+\?>/', static::getBody($request));
 		}
 
 		#endregion
