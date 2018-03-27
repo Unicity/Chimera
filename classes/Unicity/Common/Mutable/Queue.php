@@ -89,16 +89,6 @@ namespace Unicity\Common\Mutable {
 		}
 
 		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->list);
-		}
-
-		/**
 		 * This method enqueues an element onto the queue.
 		 *
 		 * @access public

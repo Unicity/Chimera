@@ -70,17 +70,6 @@ namespace Unicity\EVT {
 		}
 
 		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->subscribers);
-			unset($this->queue);
-		}
-
-		/**
 		 * This method publishes a message to the specified channel.
 		 *
 		 * @access public

@@ -90,17 +90,6 @@ namespace Unicity\Common {
 		}
 
 		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->elements);
-			unset($this->pointer);
-		}
-
-		/**
 		 * This method evaluates whether the specified objects is equal to the current object.
 		 *
 		 * @access public
@@ -161,13 +150,11 @@ namespace Unicity\Common {
 		 * @throws Throwable\OutOfBounds\Exception                  indicates that the index is out of bounds
 		 */
 		public function getValue($index) {
-			if (is_integer($index)) {
-				if (array_key_exists($index, $this->elements)) {
-					return $this->elements[$index];
-				}
+			$index = Core\Convert::toInteger($index);
+			if (!array_key_exists($index, $this->elements)) {
 				throw new Throwable\OutOfBounds\Exception('Unable to get element. Undefined index at ":index" specified', array(':index' => $index));
 			}
-			throw new Throwable\InvalidArgument\Exception('Unable to get element. :type is of the wrong data type.', array(':type' => Core\DataType::info($index)->type));
+			return $this->elements[$index];
 		}
 
 		/**
@@ -179,10 +166,7 @@ namespace Unicity\Common {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that an index must be an integer
 		 */
 		public function hasIndex($index) {
-			if (!is_integer($index)) {
-				throw new Throwable\InvalidArgument\Exception('Unable to get element. :type is of the wrong data type.', array(':type' => Core\DataType::info($index)->type));
-			}
-			return array_key_exists($index, $this->elements);
+			return array_key_exists(Core\Convert::toInteger($index), $this->elements);
 		}
 
 		/**

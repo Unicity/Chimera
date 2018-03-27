@@ -150,15 +150,13 @@ namespace Unicity\Common\Mutable {
 		 *                                                          specified index
 		 */
 		public function removeIndex($index) {
-			if (is_integer($index)) {
-				if (array_key_exists($index, $this->elements)) {
-					unset($this->elements[$index]);
-					$this->elements = array_values($this->elements);
-					return true;
-				}
+			$index = Core\Convert::toInteger($index);
+			if (!array_key_exists($index, $this->elements)) {
 				throw new Throwable\OutOfBounds\Exception('Unable to remove element. Invalid index specified', array(':index' => $index));
 			}
-			throw new Throwable\InvalidArgument\Exception('Unable to remove element. :type is of the wrong data type.', array(':type' => gettype($index)));
+			unset($this->elements[$index]);
+			$this->elements = array_values($this->elements);
+			return true;
 		}
 
 		/**
@@ -408,18 +406,16 @@ namespace Unicity\Common\Mutable {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that index must be an integer
 		 */
 		public function setValue($index, $value) {
-			if (is_integer($index)) {
-				if (array_key_exists($index, $this->elements)) {
-					$this->elements[$index] = $value;
-					return true;
-				}
-				else if ($index == $this->count()) {
-					$this->elements[] = $value;
-					return true;
-				}
-				return false;
+			$index = Core\Convert::toInteger($index);
+			if (array_key_exists($index, $this->elements)) {
+				$this->elements[$index] = $value;
+				return true;
 			}
-			throw new Throwable\InvalidArgument\Exception('Unable to set element. :type is of the wrong data type.', array(':type' => gettype($index)));
+			else if ($index == $this->count()) {
+				$this->elements[] = $value;
+				return true;
+			}
+			return false;
 		}
 
 	}
