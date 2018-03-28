@@ -219,13 +219,29 @@ namespace Unicity\REST {
 				$params = $args;
 				unset($args);
 
-				$request = HTTP\Request::factory([
-					'body' => new IO\InputBuffer(),
-					'method' => $method,
-					'path' => $path,
-					'params' => $params,
-					'uri' => $uri,
-				]);
+				if (!empty($_FILES)) {
+					$buffer = [];
+					foreach ($_FILES as $key => $meta) {
+						$buffer[$key] = (new IO\FileInputBuffer($key))->getBytes();
+					}
+					$request = HTTP\Request::factory([
+						'body' => new IO\StringBuffer(json_encode($buffer)),
+						'method' => $method,
+						'path' => $path,
+						'params' => $params,
+						'uri' => $uri,
+					]);
+					unset($buffer);
+				}
+				else {
+					$request = HTTP\Request::factory([
+						'body' => new IO\InputBuffer(),
+						'method' => $method,
+						'path' => $path,
+						'params' => $params,
+						'uri' => $uri,
+					]);
+				}
 
 				$routes = array_filter($routes, function(REST\Route $route) use ($request) : bool {
 					foreach ($route->when as $when) {
