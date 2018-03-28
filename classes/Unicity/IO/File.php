@@ -150,8 +150,8 @@ namespace Unicity\IO {
 			unset($this->ext);
 			unset($this->name);
 			unset($this->path);
-			if ($this->temporary) {
-				@unlink($this->uri);
+			if ($this->temporary && file_exists($this->uri)) {
+				unlink($this->uri);
 			}
 			unset($this->temporary);
 			unset($this->uri);

@@ -225,7 +225,7 @@ namespace Unicity\REST {
 						$buffer[$key] = (new IO\FileInputBuffer($key))->getBytes();
 					}
 					$request = HTTP\Request::factory([
-						'body' => new IO\StringBuffer(json_encode($buffer)),
+						'body' => new IO\StringRef(json_encode($buffer)),
 						'method' => $method,
 						'path' => $path,
 						'params' => $params,
