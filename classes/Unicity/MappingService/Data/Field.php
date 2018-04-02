@@ -33,6 +33,16 @@ namespace Unicity\MappingService\Data {
 	class Field extends MappingService\Data\Metadata {
 
 		/**
+		 * This variable stores an array of serialized class objects, which is
+		 * used when type casting a result set.
+		 *
+		 * @access protected
+		 * @static
+		 * @var array
+		 */
+		protected static $objects = array();
+
+		/**
 		 * This variable stores the format type of the data.
 		 *
 		 * @access protected
@@ -95,6 +105,41 @@ namespace Unicity\MappingService\Data {
 		public function setFormatType(MappingService\Data\FormatType $format) {
 			$this->format = $format;
 		}
+
+		/**
+		 * This method return an instance of a canonical field.
+		 *
+		 * @access public
+		 * @return MappingService\Data\Field                        a new instance of the field
+		 */
+		public static function ofCanonicalType() {
+			if ( ! isset(static::$objects['canonical'])) {
+				$object = new MappingService\Data\Field(MappingService\Data\FormatType::canonical());
+				static::$objects['canonical'] = serialize($object);
+			}
+			else {
+				$object = unserialize( (string) static::$objects['canonical']);
+			}
+			return $object;
+		}
+
+		/**
+		 * This method return an instance of a model field.
+		 *
+		 * @access public
+		 * @return MappingService\Data\Field                        a new instance of the field
+		 */
+		public static function ofModelType() {
+			if ( ! isset(static::$objects['model'])) {
+				$object = new MappingService\Data\Field(MappingService\Data\FormatType::model());
+				static::$objects['model'] = serialize($object);
+			}
+			else {
+				$object = unserialize( (string) static::$objects['model']);
+			}
+			return $object;
+		}
+
 
 	}
 
