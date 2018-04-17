@@ -377,6 +377,44 @@ namespace Unicity\Core {
 		}
 
 		/**
+		 * This method serializes a message.
+		 *
+		 * @access public
+		 * @static
+		 * @param Core\Message $message                             the message to be serialized
+		 * @return string                                           the serialized message
+		 */
+		public static function serialize(Core\Message $message) : string {
+			$body = $message->getBody();
+			return json_encode([
+				'body'=> ($message->body !== null) ? $body->getBytes() : $body,
+				'headers' => Core\Convert::toDictionary($message->headers),
+				'id' => $message->id,
+				'protocol' => $message->protocol,
+				'status' => $message->status,
+			]);
+		}
+
+		/**
+		 * This method unserializes a message.
+		 *
+		 * @access public
+		 * @static
+		 * @param string $data                                      the serialized message
+		 * @return Core\Message                                     the unserialized message
+		 */
+		public static function unserialize(string $data) : Core\Message {
+			$properties = json_decode($data);
+			$object = new static();
+			$object->setBody($properties->body);
+			$object->headers = Core\Convert::toMap($properties->headers);
+			$object->setMessageId($properties->id);
+			$object->setProtocol($properties->protocol);
+			$object->setStatus($properties->status);
+			return $object;
+		}
+
+		/**
 		 * This method returns a singleton instance of the class.
 		 *
 		 * @access public

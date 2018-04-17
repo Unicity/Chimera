@@ -121,12 +121,13 @@ namespace Unicity\Caching {
 		 * This method puts the key/value mapping to the collection.
 		 *
 		 * @access public
-		 * @abstract
 		 * @param mixed $key                                        the key to be mapped
 		 * @param mixed $value                                      the value to be mapped
+		 * @param integer $expires                                  the number of seconds before the key
+		 *                                                          expires
 		 * @return boolean                                          whether the key/value pair was set
 		 */
-		public abstract function putEntry($key, $value);
+		public abstract function putEntry($key, $value, $expires = 0);
 
 		/**
 		 * This method removes the key/value mapping with the specified key from the collection.
