@@ -136,80 +136,82 @@ namespace Unicity\Locale {
 					return $records->current();
 				}
 
-				$state_1 = strtolower($state);
-				$state_2 = strtr($state_1, array('saint' => 'st'));
+				if (!preg_match('/^[A-Z]{2,3}$/i', $code)) {
+					$state_1 = strtolower($state);
+					$state_2 = strtr($state_1, array('saint' => 'st'));
 
-				$records = DB\SQL::select('locale')
-					//->before(function(DB\Connection\Driver $driver) {
-					//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
-					//		return Common\StringRef::transliterate($string)->__toString();
-					//	}, 1);
-					//})
-					->from('States')
-					->where_block('(')
-					->where(DB\SQL::expr('LOWER([StateAlias])'), '=', $state_1)
-					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateAlias]))'), '=', Common\StringRef::transliterate($state)->toLowerCase()->__toString(), 'OR')
-					->where(DB\SQL::expr('LOWER([StateAlias])'), '=', $state_2, 'OR')
-					->where_block(')')
-					->where('CountryNumeric3', '=', $country)
-					->limit(1)
-					->query();
+					$records = DB\SQL::select('locale')
+						//->before(function(DB\Connection\Driver $driver) {
+						//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
+						//		return Common\StringRef::transliterate($string)->__toString();
+						//	}, 1);
+						//})
+						->from('States')
+						->where_block('(')
+						->where(DB\SQL::expr('LOWER([StateAlias])'), '=', $state_1)
+						//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateAlias]))'), '=', Common\StringRef::transliterate($state)->toLowerCase()->__toString(), 'OR')
+						->where(DB\SQL::expr('LOWER([StateAlias])'), '=', $state_2, 'OR')
+						->where_block(')')
+						->where('CountryNumeric3', '=', $country)
+						->limit(1)
+						->query();
 
-				if ($records->is_loaded()) {
-					return $records->current();
+					if ($records->is_loaded()) {
+						return $records->current();
+					}
+
+					$records = DB\SQL::select('locale')
+						->before(function(DB\Connection\Driver $driver) {
+							$driver->get_resource()->createFunction('PREG_REPLACE', 'preg_replace', 3);
+						})
+						->from('States')
+						->where_block('(')
+						->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_1)))
+						->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_2)), 'OR')
+						->where_block(')')
+						->where('CountryNumeric3', '=', $country)
+						->limit(1)
+						->query();
+
+					if ($records->is_loaded()) {
+						return $records->current();
+					}
+
+					$records = DB\SQL::select('locale')
+						//->before(function(DB\Connection\Driver $driver) {
+						//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
+						//		return Common\StringRef::transliterate($string)->__toString();
+						//	}, 1);
+						//})
+						->from('States')
+						->where_block('(')
+						->where(DB\SQL::expr('LOWER([StateAlias])'), 'LIKE', '%' . $state_1 . '%')
+						->where(DB\SQL::expr('LOWER([StateAlias])'), 'LIKE', '%' . $state_2 . '%', 'OR')
+						//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateAlias]))'), 'LIKE', '%' . Common\StringRef::transliterate($state)->toLowerCase() . '%', 'OR')
+						->where_block(')')
+						->where('CountryNumeric3', '=', $country)
+						->limit(1)
+						->query();
+
+					if ($records->is_loaded()) {
+						return $records->current();
+					}
+					/*
+					$records = DB\SQL::select('locale')
+						->before(function(DB\Connection\Driver $driver) {
+							$driver->get_resource()->createFunction('SOUNDEX', 'soundex', 1);
+						})
+						->from('States')
+						->where(DB\SQL::expr('SOUNDEX([StateAlias])'), '=', DB\SQL::expr("SOUNDEX('{$state}')"))
+						->where('CountryNumeric3', '=', $country)
+						->limit(1)
+						->query();
+
+					if ($records->is_loaded()) {
+						return $records->current();
+					}
+					*/
 				}
-
-				$records = DB\SQL::select('locale')
-					->before(function(DB\Connection\Driver $driver) {
-						$driver->get_resource()->createFunction('PREG_REPLACE', 'preg_replace', 3);
-					})
-					->from('States')
-					->where_block('(')
-					->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_1)))
-					->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_2)), 'OR')
-					->where_block(')')
-					->where('CountryNumeric3', '=', $country)
-					->limit(1)
-					->query();
-
-				if ($records->is_loaded()) {
-					return $records->current();
-				}
-
-				$records = DB\SQL::select('locale')
-					//->before(function(DB\Connection\Driver $driver) {
-					//	$driver->get_resource()->createFunction('TRANSLITERATE', function($string) {
-					//		return Common\StringRef::transliterate($string)->__toString();
-					//	}, 1);
-					//})
-					->from('States')
-					->where_block('(')
-					->where(DB\SQL::expr('LOWER([StateAlias])'), 'LIKE', '%' . $state_1 . '%')
-					->where(DB\SQL::expr('LOWER([StateAlias])'), 'LIKE', '%' . $state_2 . '%', 'OR')
-					//->where(DB\SQL::expr('LOWER(TRANSLITERATE([StateAlias]))'), 'LIKE', '%' . Common\StringRef::transliterate($state)->toLowerCase() . '%', 'OR')
-					->where_block(')')
-					->where('CountryNumeric3', '=', $country)
-					->limit(1)
-					->query();
-
-				if ($records->is_loaded()) {
-					return $records->current();
-				}
-				/*
-				$records = DB\SQL::select('locale')
-					->before(function(DB\Connection\Driver $driver) {
-						$driver->get_resource()->createFunction('SOUNDEX', 'soundex', 1);
-					})
-					->from('States')
-					->where(DB\SQL::expr('SOUNDEX([StateAlias])'), '=', DB\SQL::expr("SOUNDEX('{$state}')"))
-					->where('CountryNumeric3', '=', $country)
-					->limit(1)
-					->query();
-
-				if ($records->is_loaded()) {
-					return $records->current();
-				}
-				*/
 			}
 			return array(
 				'StateID' => 0,
