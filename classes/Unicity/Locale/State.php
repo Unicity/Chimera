@@ -64,7 +64,7 @@ namespace Unicity\Locale {
 			}
 			$this->country = static::$countries[$info->hash];
 			$state = Core\Convert::toString($state);
-			$info = Core\DataType::info($state);
+			$info = Core\DataType::info([$state, $country]);
 			if (!array_key_exists($info->hash, static::$states)) {
 				static::$states[$info->hash] = $this->getStateData($state, $this->country['CountryNumeric3']);
 			}
