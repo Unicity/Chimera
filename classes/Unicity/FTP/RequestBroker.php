@@ -98,28 +98,28 @@ namespace Unicity\FTP {
 						$body = '';
 						//ftp_pasv($resource, true);
 						if ($request->method === 'GET') {
-							if (isset($request->local_file)) {
-								$result = ftp_get($resource, $request->remote_file, $request->local_file, $request->mode);
+							if (isset($request->local_uri)) {
+								$result = ftp_get($resource, $request->remote_uri, $request->local_uri, $request->mode);
 							}
 							else {
 								ob_start();
 								$buffer = fopen('php://output', 'w');
-								$result = ftp_fget($resource, $buffer, $request->remote_file, $request->mode);
+								$result = ftp_fget($resource, $buffer, $request->remote_uri, $request->mode);
 								fclose($buffer);
 								$body = ob_get_contents();
 								ob_end_clean();
 							}
 						}
 						else { // if ($request->method === 'PUT') {
-							if (isset($request->local_file)) {
-								$result = ftp_put($resource, $request->remote_file, $request->local_file, $request->mode);
+							if (isset($request->local_uri)) {
+								$result = ftp_put($resource, $request->remote_uri, $request->local_uri, $request->mode);
 							}
 							else {
-								$local_file = tmpfile();
-								fwrite($local_file, $request->body);
-								rewind($local_file);
-								$result = ftp_fput($resource, $request->remote_file, $local_file, $request->mode, 0);
-								fclose($local_file);
+								$local_uri = tmpfile();
+								fwrite($local_uri, $request->body);
+								rewind($local_uri);
+								$result = ftp_fput($resource, $request->remote_uri, $local_uri, $request->mode, 0);
+								fclose($local_uri);
 							}
 						}
 						@ftp_close($resource);
