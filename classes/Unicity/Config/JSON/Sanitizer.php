@@ -43,11 +43,13 @@ namespace Unicity\Config\JSON {
 				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
 					$rule = static::$rules[$rule];
 				}
-				foreach ($filter->keys as $key) {
-					$this->filters[] = (object) [
-						'path' => $key->path,
-						'rule' => $rule,
-					];
+				if ($filter->hasKey('keys')) {
+					foreach ($filter->keys as $key) {
+						$this->filters[] = (object)[
+							'path' => $key->path,
+							'rule' => $rule,
+						];
+					}
 				}
 			}
 		}

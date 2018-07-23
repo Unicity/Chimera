@@ -45,47 +45,47 @@ namespace Unicity\Config\TXT {
 				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
 					$rule = static::$rules[$rule];
 				}
-				foreach ($filter->keys as $key) {
-					$this->filters[] = (object) [
-						'pattern' => Core\Convert::toString($key->pattern),
-						'rule' => $rule,
-						'type' => $key->hasKey('type') ? strtolower(Core\Convert::toString($key->type)) : 'simple',
-					];
+				if ($filter->hasKey('keys')) {
+					foreach ($filter->keys as $key) {
+						$this->filters[] = (object)[
+							'pattern' => Core\Convert::toString($key->pattern),
+							'rule' => $rule,
+						];
+					}
 				}
 			}
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
 			$buffer = new Common\Mutable\StringRef();
-			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
+			IO\FileReader::read(new IO\StringRef($input), function(IO\FileReader $reader, $line, $index) use ($buffer) {
 				foreach ($this->filters as $filter) {
+					$pattern = $filter->pattern;
 					$rule = $filter->rule;
-					if (is_callable($rule)) {
-						switch ($filter->type) {
-							case 'complex':
-								$pattern = $filter->pattern;
-								if (preg_match($pattern, $line)) {
-									$replacement = preg_replace_callback($pattern, function($matches) use ($rule) {
-										return '${1}' . Core\Convert::toString($rule($matches[1])) . '${2}';
-									}, $line);
-									$line = preg_replace($pattern, $replacement, $line);
+					if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $args)) {
+						$line = preg_replace_callback($pattern, function($matches) use ($rule, $args) {
+							if (isset($matches[1])) {
+								return str_replace($matches[1], Core\Masks::last($matches[1], 'x', $args[1]), $matches[0]);
+							}
+							return $matches[0];
+						}, $line);
+					}
+					else if (is_callable($rule)) {
+						if (preg_match($pattern, $line)) {
+							$line = preg_replace_callback($pattern, function($matches) use ($rule) {
+								if (isset($matches[1])) {
+									return str_replace($matches[1], Core\Convert::toString($rule($matches[1])), $matches[0]);
 								}
-								break;
-							case 'simple':
-								$separator = '(?:%[A-Za-z0-9]{1,2}|\W|\s)';
-								$pattern = '#(' . $separator . '+' . $filter->pattern . $separator . '+' . ')[a-zA-Z0-9\-]+(?!>)(?=' . $separator . ')#i';
-								if (preg_match($pattern, $line)) {
-									$replacement = preg_replace_callback($pattern, function($matches) use ($rule) {
-										return '${1}' . Core\Convert::toString($rule($matches[0]));
-									}, $line);
-									$line = preg_replace($pattern, $replacement, $line);
-								}
-								break;
+								return $matches[0];
+							}, $line);
 						}
 					}
-					else {
-						// TODO remove value if filter is null
+					else { // remove
+						if (preg_match($pattern, $line)) {
+							$line = preg_replace_callback($pattern, function($matches) use ($rule) {
+								return '';
+							}, $line);
+						}
 					}
 				}
 				$buffer->append($line);
