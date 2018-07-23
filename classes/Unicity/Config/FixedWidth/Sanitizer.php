@@ -44,13 +44,15 @@ namespace Unicity\Config\FixedWidth {
 				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
 					$rule = static::$rules[$rule];
 				}
-				foreach ($filter->keys as $key) {
-					$index = Core\Convert::toInteger($key->index);
-					$this->filters[$index][] = (object) [
-						'length' => Core\Convert::toInteger($key->length),
-						'offset' => Core\Convert::toInteger($key->offset),
-						'rule' => $rule,
-					];
+				if ($filter->hasKey('keys')) {
+					foreach ($filter->keys as $key) {
+						$index = Core\Convert::toInteger($key->index);
+						$this->filters[$index][] = (object)[
+							'length' => Core\Convert::toInteger($key->length),
+							'offset' => Core\Convert::toInteger($key->offset),
+							'rule' => $rule,
+						];
+					}
 				}
 			}
 		}
