@@ -63,7 +63,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					$d2 = Core\DataType::info($v2);
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
-						var_dump($ipath);
 						if ($v1 instanceof Common\IList) {
 							return $carry && $this->matchArray($order, $v1, $ipath);
 						}
@@ -82,16 +81,16 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function matchMap($order, $pattern, $path) : bool {
 			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path) {
 				$k1 = $tuple[1];
+				$v1 = $tuple[0];
+
 				$kpath = ORM\Query::appendKey($path, $k1);
 				if (ORM\Query::hasPath($order, $kpath)) {
-					$v1 = $tuple[0];
 					$v2 = ORM\Query::getValue($order, $kpath);
 
 					$d1 = Core\DataType::info($v1);
 					$d2 = Core\DataType::info($v2);
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
-						var_dump($kpath);
 						if ($v1 instanceof Common\IList) {
 							return $carry && $this->matchArray($order, $v1, $kpath);
 						}
@@ -100,6 +99,25 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						}
 						if ($d1->hash === $d2->hash) {
 							return $carry;
+						}
+					}
+				}
+				else {
+					if ($kpath === 'dateStarts') {
+						$tpath = ORM\Query::appendKey($path, 'dateCreated');
+						if (ORM\Query::hasPath($order, $tpath)) {
+							$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
+							if (strcmp($v2, $v1) >= 0) {
+								return $carry;
+							}
+						}
+					}
+					if ($kpath === 'dateEnds') {
+						$tpath = ORM\Query::appendKey($path, 'dateCreated');
+						if (ORM\Query::hasPath($order, $tpath)) {
+							if (strcmp($v2, $v1) <= 0) {
+								return $carry;
+							}
 						}
 					}
 				}
