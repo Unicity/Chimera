@@ -28,12 +28,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	class ApplyPromotions extends BT\Task\Action {
 
-		protected function equalTo($v1, $v2) {
-			$d1 = Core\DataType::info($v1);
-			$d2 = Core\DataType::info($v2);
-			return (($d1->class === $d2->class) && ($d1->type === $d2->type) && ($d1->hash === $d2->hash));
-		}
-
 		/**
 		 * This method processes an entity.
 		 *
@@ -64,14 +58,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				foreach ($a2 as $i2 => $v2) {
 					$ipath = ORM\Query::appendIndex($path, $i2);
 					$v2 = ORM\Query::getValue($order, $ipath);
-					if ($this->equalTo($v1, $v2)) {
+
+					$d1 = Core\DataType::info($v1);
+					$d2 = Core\DataType::info($v2);
+
+					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
+						var_dump($ipath);
 						if ($v1 instanceof Common\IList) {
-							return $this->matchArray($order, $v1, $ipath);
+							return $carry && $this->matchArray($order, $v1, $ipath);
 						}
-						if ($v2 instanceof Common\IMap) {
-							return $this->matchMap($order, $v1, $ipath);
+						if ($v1 instanceof Common\IMap) {
+							return $carry && $this->matchMap($order, $v1, $ipath);
 						}
-						return $carry;
+						if ($d1->hash === $d2->hash) {
+							return $carry;
+						}
 					}
 				}
 				return false;
@@ -85,14 +86,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				if (ORM\Query::hasPath($order, $kpath)) {
 					$v1 = $tuple[0];
 					$v2 = ORM\Query::getValue($order, $kpath);
-					if ($this->equalTo($v1, $v2)) {
+
+					$d1 = Core\DataType::info($v1);
+					$d2 = Core\DataType::info($v2);
+
+					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
+						var_dump($kpath);
 						if ($v1 instanceof Common\IList) {
-							return $this->matchArray($order, $v1, $kpath);
+							return $carry && $this->matchArray($order, $v1, $kpath);
 						}
-						if ($v2 instanceof Common\IMap) {
-							return $this->matchMap($order, $v1, ORM\Query::appendKey($path, $kpath));
+						if ($v1 instanceof Common\IMap) {
+							return $carry && $this->matchMap($order, $v1, $kpath);
 						}
-						return $carry;
+						if ($d1->hash === $d2->hash) {
+							return $carry;
+						}
 					}
 				}
 				return false;
@@ -119,7 +127,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					$order->terms->discount->percentage = $patch->terms->discount->percentage / 100;
 				}
 			}
-			else if (ORM\Query::hasPath($patch, 'terms.discount.amount')) {
+			else if (ORM\Query::hasPath($patch, 'terms.discount.amount')) { // TODO handle discounts greater than subtotal
 				if ($patch->terms->discount->amount > $order->terms->discount->amount) {
 					$order->terms->discount->amount = Trade\Money::make($patch->terms->discount->amount, $order->currency)
 						->getConvertedAmount();
