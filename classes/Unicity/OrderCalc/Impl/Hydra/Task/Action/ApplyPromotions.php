@@ -115,6 +115,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					if ($kpath === 'dateEnds') {
 						$tpath = ORM\Query::appendKey($path, 'dateCreated');
 						if (ORM\Query::hasPath($order, $tpath)) {
+							$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
 							if (strcmp($v2, $v1) <= 0) {
 								return $carry;
 							}
