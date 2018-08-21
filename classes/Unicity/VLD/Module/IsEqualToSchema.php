@@ -351,6 +351,8 @@ namespace Unicity\VLD\Module {
 		 * @return boolean                                          whether the value complies
 		 */
 		protected function matchString(VLD\Parser\Feedback $feedback, string $path, array $schema, $value) : bool {
+			$value = Core\Convert::toString($value);
+
 			if (isset($schema['enum']) && (count($schema['enum']) > 0)) {
 				$enum = $schema['enum'];
 				if (!in_array($value, $enum)) {
