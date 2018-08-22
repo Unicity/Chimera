@@ -23,6 +23,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\Common;
+	use \Unicity\FP;
 	use \Unicity\ORM;
 	use \Unicity\Trade;
 
@@ -42,11 +43,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order = $entity->getComponent('Order');
 			$promotions = $entity->getComponent('Promotions');
 
-			foreach ($promotions->items as $promotion) {
+			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use($order) {
 				if ($this->matchMap($order, $promotion->pattern->eventDetails, '')) {
 					$this->patch($order, $promotion->patch);
+					return true;
 				}
-			}
+				return false;
+			});
 
 			return BT\Status::SUCCESS;
 		}
