@@ -23,6 +23,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\Common;
+	use \Unicity\FP;
 	use \Unicity\ORM;
 	use \Unicity\Trade;
 
@@ -42,17 +43,27 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order = $entity->getComponent('Order');
 			$promotions = $entity->getComponent('Promotions');
 
-			foreach ($promotions->items as $promotion) {
-				if ($this->matchMap($order, $promotion->pattern->eventDetails, '')) {
+			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use($order) {
+				if ($this->matchMap($order, $promotion->pattern->eventDetails, '', $promotion->counter, $promotion->customer->counter)) {
 					$this->patch($order, $promotion->patch);
+					return true;
 				}
-			}
+				return false;
+			});
 
 			return BT\Status::SUCCESS;
 		}
 
-		protected function matchArray($order, $pattern, $path) : bool {
-			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path) {
+		protected function isAny($expr, $value) {
+			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/^(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')$/i', $value));
+		}
+
+		protected function isLikeAny($expr, $value) {
+			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')/i', $value));
+		}
+
+		protected function matchArray($order, $pattern, $path, $ord_ctr, $cust_ctr) : bool {
+			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path, $ord_ctr, $cust_ctr) {
 				$v1 = $tuple[0];
 				$a2 = ORM\Query::getValue($order, $path);
 				foreach ($a2 as $i2 => $v2) {
@@ -64,10 +75,16 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry && $this->matchArray($order, $v1, $ipath);
+							return $carry && $this->matchArray($order, $v1, $ipath, $ord_ctr, $cust_ctr);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry && $this->matchMap($order, $v1, $ipath);
+							return $carry && $this->matchMap($order, $v1, $ipath, $ord_ctr, $cust_ctr);
+						}
+						if (in_array($d1->type, ['integer', 'double'])) {
+							return $carry && ($v2 >= $v1);
+						}
+						if (in_array($d1->type, ['string'])) {
+							return $carry && $this->isAny($v1, $v2);
 						}
 						if ($d1->hash === $d2->hash) {
 							return $carry;
@@ -78,12 +95,37 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			}, true);
 		}
 
-		public function matchMap($order, $pattern, $path) : bool {
-			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path) {
+		public function matchMap($order, $pattern, $path, $ord_ctr, $cust_ctr) : bool {
+			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path, $ord_ctr, $cust_ctr) {
 				$k1 = $tuple[1];
 				$v1 = $tuple[0];
-
 				$kpath = ORM\Query::appendKey($path, $k1);
+				if ($kpath === 'dateStarts') {
+					$tpath = ORM\Query::appendKey($path, 'dateCreated');
+					if (ORM\Query::hasPath($order, $tpath)) {
+						$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
+						if (strcmp($v2, $v1) >= 0) {
+							return $carry;
+						}
+					}
+					return false;
+				}
+				if ($kpath === 'dateEnds') {
+					$tpath = ORM\Query::appendKey($path, 'dateCreated');
+					if (ORM\Query::hasPath($order, $tpath)) {
+						$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
+						if (strcmp($v2, $v1) <= 0) {
+							return $carry;
+						}
+					}
+					return false;
+				}
+				if ($kpath === 'limit') {
+					return $carry && ($ord_ctr < $v1);
+				}
+				if ($kpath === 'customer.limit') {
+					return $carry && ($cust_ctr < $v1);
+				}
 				if (ORM\Query::hasPath($order, $kpath)) {
 					$v2 = ORM\Query::getValue($order, $kpath);
 
@@ -92,32 +134,22 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry && $this->matchArray($order, $v1, $kpath);
+							return $carry && $this->matchArray($order, $v1, $kpath, $ord_ctr, $cust_ctr);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry && $this->matchMap($order, $v1, $kpath);
+							return $carry && $this->matchMap($order, $v1, $kpath, $ord_ctr, $cust_ctr);
+						}
+						if (in_array($d1->type, ['integer', 'double'])) {
+							return $carry && ($v2 >= $v1);
+						}
+						if (in_array($d1->type, ['string'])) {
+							if (preg_match('/^lines\.items\.(0|[1-9][0-9]*)\.(kitChildren\.(0|[1-9][0-9]*)\.)?catalogSlide\.content\.description$/', $kpath)) {
+								return $carry && $this->isLikeAny($v1, $v2);
+							}
+							return $carry && $this->isAny($v1, $v2);
 						}
 						if ($d1->hash === $d2->hash) {
 							return $carry;
-						}
-					}
-				}
-				else {
-					if ($kpath === 'dateStarts') {
-						$tpath = ORM\Query::appendKey($path, 'dateCreated');
-						if (ORM\Query::hasPath($order, $tpath)) {
-							$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
-							if (strcmp($v2, $v1) >= 0) {
-								return $carry;
-							}
-						}
-					}
-					if ($kpath === 'dateEnds') {
-						$tpath = ORM\Query::appendKey($path, 'dateCreated');
-						if (ORM\Query::hasPath($order, $tpath)) {
-							if (strcmp($v2, $v1) <= 0) {
-								return $carry;
-							}
 						}
 					}
 				}

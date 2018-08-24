@@ -131,6 +131,7 @@ namespace Unicity\Core {
 					$info->hash = $type . ':' . md5(serialize($value));
 					break;
 			}
+			$info->value = $value;
 			return $info;
 		}
 
