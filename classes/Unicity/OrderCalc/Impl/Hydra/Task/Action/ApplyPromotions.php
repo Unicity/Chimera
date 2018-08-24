@@ -55,11 +55,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		}
 
 		protected function isAny($expr, $value) {
-			return preg_match('/^' . implode('|', array_map('preg_quote', explode('|', $expr))). '$/i', $value);
+			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/^(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')$/i', $value));
 		}
 
 		protected function isLikeAny($expr, $value) {
-			return preg_match('/' . implode('|', array_map('preg_quote', explode('|', $expr))). '/i', $value);
+			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')/i', $value));
 		}
 
 		protected function matchArray($order, $pattern, $path, $ord_ctr, $cust_ctr) : bool {
