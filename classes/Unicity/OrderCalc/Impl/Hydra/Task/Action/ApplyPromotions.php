@@ -54,6 +54,14 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			return BT\Status::SUCCESS;
 		}
 
+		protected function isAny($expr, $value) {
+			return preg_match('/^' . implode('|', array_map('preg_quote', explode('|', $expr))). '$/i', $value);
+		}
+
+		protected function isLikeAny($expr, $value) {
+			return preg_match('/' . implode('|', array_map('preg_quote', explode('|', $expr))). '/i', $value);
+		}
+
 		protected function matchArray($order, $pattern, $path, $ord_ctr, $cust_ctr) : bool {
 			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path, $ord_ctr, $cust_ctr) {
 				$v1 = $tuple[0];
@@ -71,6 +79,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						}
 						if ($v1 instanceof Common\IMap) {
 							return $carry && $this->matchMap($order, $v1, $ipath, $ord_ctr, $cust_ctr);
+						}
+						if (in_array($d1->type, ['integer', 'double'])) {
+							return $carry && ($v2 >= $v1);
+						}
+						if (in_array($d1->type, ['string'])) {
+							return $carry && $this->isAny($v1, $v2);
 						}
 						if ($d1->hash === $d2->hash) {
 							return $carry;
@@ -100,6 +114,15 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						if ($v1 instanceof Common\IMap) {
 							return $carry && $this->matchMap($order, $v1, $kpath, $ord_ctr, $cust_ctr);
 						}
+						if (in_array($d1->type, ['integer', 'double'])) {
+							return $carry && ($v2 >= $v1);
+						}
+						if (in_array($d1->type, ['string'])) {
+							if (preg_match('/^lines\.items\.(0|[1-9][0-9]*)\.(kitChildren\.(0|[1-9][0-9]*)\.)?catalogSlide\.content\.description$/', $kpath)) {
+								return $carry && $this->isLikeAny($v1, $v2);
+							}
+							return $carry && $this->isAny($v1, $v2);
+						}
 						if ($d1->hash === $d2->hash) {
 							return $carry;
 						}
@@ -125,11 +148,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						}
 					}
 
-					if (($kpath === 'limit') && ($ord_ctr >= $v1)) {
+					if (($kpath === 'limit') && ($ord_ctr < $v1)) {
 						return $carry;
 					}
 
-					if (($kpath === 'customer.limit') && ($cust_ctr >= $v1)) {
+					if (($kpath === 'customer.limit') && ($cust_ctr < $v1)) {
 						return $carry;
 					}
 				}
