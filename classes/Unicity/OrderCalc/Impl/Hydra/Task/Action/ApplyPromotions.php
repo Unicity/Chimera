@@ -99,8 +99,33 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path, $ord_ctr, $cust_ctr) {
 				$k1 = $tuple[1];
 				$v1 = $tuple[0];
-
 				$kpath = ORM\Query::appendKey($path, $k1);
+				if ($kpath === 'dateStarts') {
+					$tpath = ORM\Query::appendKey($path, 'dateCreated');
+					if (ORM\Query::hasPath($order, $tpath)) {
+						$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
+						if (strcmp($v2, $v1) >= 0) {
+							return $carry;
+						}
+					}
+					return false;
+				}
+				if ($kpath === 'dateEnds') {
+					$tpath = ORM\Query::appendKey($path, 'dateCreated');
+					if (ORM\Query::hasPath($order, $tpath)) {
+						$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
+						if (strcmp($v2, $v1) <= 0) {
+							return $carry;
+						}
+					}
+					return false;
+				}
+				if ($kpath === 'limit') {
+					return $carry && ($ord_ctr < $v1);
+				}
+				if ($kpath === 'customer.limit') {
+					return $carry && ($cust_ctr < $v1);
+				}
 				if (ORM\Query::hasPath($order, $kpath)) {
 					$v2 = ORM\Query::getValue($order, $kpath);
 
@@ -126,34 +151,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						if ($d1->hash === $d2->hash) {
 							return $carry;
 						}
-					}
-				}
-				else {
-					if ($kpath === 'dateStarts') {
-						$tpath = ORM\Query::appendKey($path, 'dateCreated');
-						if (ORM\Query::hasPath($order, $tpath)) {
-							$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
-							if (strcmp($v2, $v1) >= 0) {
-								return $carry;
-							}
-						}
-					}
-					if ($kpath === 'dateEnds') {
-						$tpath = ORM\Query::appendKey($path, 'dateCreated');
-						if (ORM\Query::hasPath($order, $tpath)) {
-							$v2 = date('Y-m-d', strtotime(ORM\Query::getValue($order, $tpath)));
-							if (strcmp($v2, $v1) <= 0) {
-								return $carry;
-							}
-						}
-					}
-
-					if (($kpath === 'limit') && ($ord_ctr < $v1)) {
-						return $carry;
-					}
-
-					if (($kpath === 'customer.limit') && ($cust_ctr < $v1)) {
-						return $carry;
 					}
 				}
 				return false;
