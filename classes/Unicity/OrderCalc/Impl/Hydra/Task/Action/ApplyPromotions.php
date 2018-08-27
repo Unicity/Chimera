@@ -45,13 +45,53 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use($order) {
 				if ($this->matchMap($promotion->stats, $promotion->pattern->eventDetails, $order, '')) {
-					$this->patch($order, $promotion->patch);
+					$this->apply($promotion->patch, $order);
 					return true;
 				}
 				return false;
 			});
 
 			return BT\Status::SUCCESS;
+		}
+
+		public function apply($patch, $order) : void {
+			if (ORM\Query::hasPath($patch, 'added_lines.items')) {
+				foreach ($patch->added_lines->items as $item) {
+					$order->added_lines->items->addValue($item);
+				}
+			}
+
+			if (ORM\Query::hasPath($patch, 'terms.freight.amount')) {
+				$order->terms->freight->amount = Trade\Money::make($patch->terms->freight->amount, $order->currency)
+					->getConvertedAmount();
+			}
+
+			if (ORM\Query::hasPath($patch, 'terms.discount.percentage')) {
+				if ($patch->terms->discount->percentage > $order->terms->discount->percentage) {
+					$order->terms->discount->amount = Trade\Money::make($order->terms->subtotal, $order->currency)
+						->multiply($patch->terms->discount->percentage / 100)
+						->getConvertedAmount();
+					$order->terms->discount->percentage = $patch->terms->discount->percentage / 100;
+				}
+			}
+			else if (ORM\Query::hasPath($patch, 'terms.discount.amount')) { // TODO handle discounts greater than subtotal
+				if ($patch->terms->discount->amount > $order->terms->discount->amount) {
+					$order->terms->discount->amount = Trade\Money::make($patch->terms->discount->amount, $order->currency)
+						->getConvertedAmount();
+				}
+			}
+
+			$paths = [
+				'customer.enroller.id.unicity',
+				'customer.sponsor.id.unicity',
+				'customer.type',
+			];
+
+			foreach ($paths as $path) {
+				if (ORM\Query::hasPath($patch, $path)) {
+					ORM\Query::setValue($order, $path, ORM\Query::getValue($patch, $path));
+				}
+			}
 		}
 
 		protected function isAny($expr, $value) {
@@ -155,46 +195,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				}
 				return false;
 			}, true);
-		}
-
-		public function patch($order, $patch) : void {
-			if (ORM\Query::hasPath($patch, 'added_lines.items')) {
-				foreach ($patch->added_lines->items as $item) {
-					$order->added_lines->items->addValue($item);
-				}
-			}
-
-			if (ORM\Query::hasPath($patch, 'terms.freight.amount')) {
-				$order->terms->freight->amount = Trade\Money::make($patch->terms->freight->amount, $order->currency)
-					->getConvertedAmount();
-			}
-
-			if (ORM\Query::hasPath($patch, 'terms.discount.percentage')) {
-				if ($patch->terms->discount->percentage > $order->terms->discount->percentage) {
-					$order->terms->discount->amount = Trade\Money::make($order->terms->subtotal, $order->currency)
-						->multiply($patch->terms->discount->percentage / 100)
-						->getConvertedAmount();
-					$order->terms->discount->percentage = $patch->terms->discount->percentage / 100;
-				}
-			}
-			else if (ORM\Query::hasPath($patch, 'terms.discount.amount')) { // TODO handle discounts greater than subtotal
-				if ($patch->terms->discount->amount > $order->terms->discount->amount) {
-					$order->terms->discount->amount = Trade\Money::make($patch->terms->discount->amount, $order->currency)
-						->getConvertedAmount();
-				}
-			}
-
-			$paths = [
-				'customer.enroller.id.unicity',
-				'customer.sponsor.id.unicity',
-				'customer.type',
-			];
-
-			foreach ($paths as $path) {
-				if (ORM\Query::hasPath($patch, $path)) {
-					ORM\Query::setValue($order, $path, ORM\Query::getValue($patch, $path));
-				}
-			}
 		}
 
 		protected function reduce($collection, $callback, $initial) {
