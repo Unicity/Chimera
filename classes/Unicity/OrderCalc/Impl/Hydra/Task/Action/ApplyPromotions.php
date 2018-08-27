@@ -44,7 +44,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$promotions = $entity->getComponent('Promotions');
 
 			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use($order) {
-				if ($this->matchMap($order, $promotion->pattern->eventDetails, '', $promotion->counter, $promotion->customer->counter)) {
+				if ($this->matchMap($promotion->stats, $promotion->pattern->eventDetails, $order, '')) {
 					$this->patch($order, $promotion->patch);
 					return true;
 				}
@@ -62,8 +62,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')/i', $value));
 		}
 
-		protected function matchArray($order, $pattern, $path, $ord_ctr, $cust_ctr) : bool {
-			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path, $ord_ctr, $cust_ctr) {
+		protected function matchArray($stats, $pattern, $order, $path) : bool {
+			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($stats, $order, $path) {
 				$v1 = $tuple[0];
 				$a2 = ORM\Query::getValue($order, $path);
 				foreach ($a2 as $i2 => $v2) {
@@ -75,10 +75,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry && $this->matchArray($order, $v1, $ipath, $ord_ctr, $cust_ctr);
+							return $carry && $this->matchArray($stats, $v1, $order, $ipath);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry && $this->matchMap($order, $v1, $ipath, $ord_ctr, $cust_ctr);
+							return $carry && $this->matchMap($stats, $v1, $order, $ipath);
 						}
 						if (in_array($d1->type, ['integer', 'double'])) {
 							return $carry && ($v2 >= $v1);
@@ -95,8 +95,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			}, true);
 		}
 
-		public function matchMap($order, $pattern, $path, $ord_ctr, $cust_ctr) : bool {
-			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($order, $path, $ord_ctr, $cust_ctr) {
+		public function matchMap($stats, $pattern, $order, $path) : bool {
+			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($stats, $order, $path) {
 				$k1 = $tuple[1];
 				$v1 = $tuple[0];
 				$kpath = ORM\Query::appendKey($path, $k1);
@@ -121,10 +121,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					return false;
 				}
 				if ($kpath === 'limit') {
-					return $carry && ($ord_ctr < $v1);
+					return $carry && ($stats->counter < $v1);
 				}
 				if ($kpath === 'customer.limit') {
-					return $carry && ($cust_ctr < $v1);
+					return $carry && ($stats->customer->counter < $v1);
 				}
 				if (ORM\Query::hasPath($order, $kpath)) {
 					$v2 = ORM\Query::getValue($order, $kpath);
@@ -134,10 +134,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry && $this->matchArray($order, $v1, $kpath, $ord_ctr, $cust_ctr);
+							return $carry && $this->matchArray($stats, $v1, $order, $kpath);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry && $this->matchMap($order, $v1, $kpath, $ord_ctr, $cust_ctr);
+							return $carry && $this->matchMap($stats, $v1, $order, $kpath);
 						}
 						if (in_array($d1->type, ['integer', 'double'])) {
 							return $carry && ($v2 >= $v1);
