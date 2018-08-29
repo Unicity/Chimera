@@ -44,8 +44,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$promotions = $entity->getComponent('Promotions');
 
 			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use($order) {
-				if ($this->matchMap($promotion->stats, $promotion->pattern->eventDetails, $order, '')) {
-					$this->apply($promotion->patch, $order);
+				if ($this->matchMap($promotion->stats->eventDetails, $promotion->pattern->eventDetails, $order, '')) {
+					$this->apply($promotion->patch->eventDetails, $order);
 					return true;
 				}
 				return false;
