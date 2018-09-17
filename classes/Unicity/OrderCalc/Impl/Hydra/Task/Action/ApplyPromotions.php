@@ -75,9 +75,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				}
 			}
 			else if (ORM\Query::hasPath($patch, 'terms.discount.amount')) { // TODO handle discounts greater than subtotal
-				if ($patch->terms->discount->amount > $order->terms->discount->amount) {
-					$order->terms->discount->amount = Trade\Money::make($patch->terms->discount->amount, $order->currency)
-						->getConvertedAmount();
+				$order->terms->discount->amount = Trade\Money::make($order->terms->discount->amount, $order->currency)
+					->add($patch->terms->discount->amount)
+					->getConvertedAmount();
+				if ($order->terms->discount->amount > $order->terms->subtotal) {
+					$order->terms->discount->amount = $order->terms->subtotal;
 				}
 			}
 
