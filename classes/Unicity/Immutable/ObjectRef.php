@@ -172,7 +172,7 @@ namespace Unicity\Immutable {
 		}
 
 		public final static function make(string $idref, $value) : IObjectRef {
-			$fields = ObjectRef::getSchema($idref);
+			$fields = ObjectRef::getSchema(ObjectRef::buildIdref($idref));
 			if (is_array($fields)) {
 				$buffer = new \stdClass();
 				$value = json_decode(json_encode($value));
@@ -210,7 +210,7 @@ namespace Unicity\Immutable {
 
 		private final static function buildIdref(string $idref) : string {
 			$idref = trim($idref, ". \t\n\r\0\x0B");
-			if ($idref === '') {	return '$'; }
+			if ($idref === '') { return '$'; }
 			if (preg_match('/^' . preg_quote('$.') . '/', $idref)) { return $idref; }
 			return implode('.', ['$', $idref]);
 		}
