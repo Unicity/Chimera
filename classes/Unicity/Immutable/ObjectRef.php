@@ -14,7 +14,7 @@ namespace Unicity\Immutable {
 		#region Instance Methods
 
 		private final function __construct(string $idref, $value) {
-			$this->idref = ObjectRef::buildIdref($idref);
+			$this->idref = $idref;
 			$this->value = $value;
 		}
 
@@ -168,7 +168,7 @@ namespace Unicity\Immutable {
 		#region Initialization Methods
 
 		public final static function box(string $idref, $value) : IObjectRef {
-			return new ObjectRef($idref, $value);
+			return new ObjectRef(ObjectRef::buildIdref($idref), $value);
 		}
 
 		public final static function make(string $idref, $value) : IObjectRef {
