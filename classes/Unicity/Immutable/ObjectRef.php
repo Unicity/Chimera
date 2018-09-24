@@ -60,7 +60,14 @@ namespace Unicity\Immutable {
 		}
 
 		public function isArray() : bool {
-			return is_array($this->value);
+			if (is_array($this->value)) {
+				if (empty($this->value)) {
+					return true;
+				}
+				$keys = array_keys($this->value);
+				return (array_keys($keys) === $keys);
+			}
+			return false;
 		}
 
 		public function isBoolean() : bool {
@@ -80,7 +87,14 @@ namespace Unicity\Immutable {
 		}
 
 		public function isObject() : bool {
-			return is_object($this->value);
+			if (is_object($this->value)) {
+				return true;
+			}
+			if (is_array($this->value) && !empty($this->value)) {
+				$keys = array_keys($this->value);
+				return (array_keys($keys) !== $keys);
+			}
+			return false;
 		}
 
 		public final function __isset($key) : bool {
