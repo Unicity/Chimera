@@ -22,15 +22,15 @@ namespace Unicity\TCP {
 
 	use \Unicity\EVT;
 
-	class Request extends EVT\Response {
+	class Request extends EVT\Request {
 
 		public function __construct(array $map = []) {
-			parent::__construct(array_merge($map, [
+			parent::__construct(array_merge([
 				'body' => '',
 				'headers' => [],
 				'host' => '',
 				'port' => 80,
-			]));
+			], $map));
 		}
 
 	}
