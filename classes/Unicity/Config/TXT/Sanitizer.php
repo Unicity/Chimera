@@ -58,7 +58,9 @@ namespace Unicity\Config\TXT {
 
 		public function sanitize($input, array $metadata = array()) : string {
 			$buffer = new Common\Mutable\StringRef();
-			IO\FileReader::read(new IO\StringRef($input), function(IO\FileReader $reader, $line, $index) use ($buffer) {
+			$encoding = $metadata['encoding'] ?? \Unicity\Core\Data\Charset::UTF_8_ENCODING;
+			IO\FileReader::read(new IO\StringRef($input), function(IO\FileReader $reader, $line, $index) use ($buffer, $encoding) {
+				$line = \Unicity\Core\Data\Charset::encode($line, $encoding, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
 				foreach ($this->filters as $filter) {
 					$pattern = $filter->pattern;
 					$rule = $filter->rule;
