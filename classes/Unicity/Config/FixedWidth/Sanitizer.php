@@ -46,8 +46,8 @@ namespace Unicity\Config\FixedWidth {
 				}
 				if ($filter->hasKey('keys')) {
 					foreach ($filter->keys as $key) {
-						$index = Core\Convert::toInteger($key->index);
-						$this->filters[$index][] = (object)[
+						$line_no = Core\Convert::toInteger($key->line);
+						$this->filters[$line_no][] = (object)[
 							'length' => Core\Convert::toInteger($key->length),
 							'offset' => Core\Convert::toInteger($key->offset),
 							'rule' => $rule,
@@ -60,23 +60,48 @@ namespace Unicity\Config\FixedWidth {
 		public function sanitize($input, array $metadata = array()) : string {
 			$input = Config\FixedWidth\Helper::buffer($input);
 			$buffer = new Common\Mutable\StringRef();
-			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $index) use ($buffer) {
-				if (isset($this->filters[$index])) {
-					foreach ($this->filters[$index] as $filter) {
+			$encoding = $metadata['encoding'] ?? \Unicity\Core\Data\Charset::UTF_8_ENCODING;
+			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $line_no) use ($buffer, $encoding) {
+				$line = \Unicity\Core\Data\Charset::encode($line, $encoding, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
+				if (isset($this->filters[$line_no])) {
+					foreach ($this->filters[$line_no] as $filter) {
 						$rule = $filter->rule;
 						$offset = $filter->offset;
 						$length = $filter->length;
 						if (is_callable($rule)) {
-							$line = substr_replace($line, str_pad($rule(substr($line, $offset, $length)), $length, ' '), $offset, $length);
+							$line = static::mb_substr_replace($line, static::mb_str_pad($rule(mb_substr($line, $offset, $length, \Unicity\Core\Data\Charset::UTF_8_ENCODING)), $length, ' ', STR_PAD_RIGHT, \Unicity\Core\Data\Charset::UTF_8_ENCODING), $offset, $length, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
 						}
 						else {
-							$line = substr_replace($line, str_repeat(' ', $length), $offset, $length);
+							$line = static::mb_substr_replace($line, str_repeat(' ', $length), $offset, $length);
 						}
 					}
 				}
 				$buffer->append($line);
 			});
 			return $buffer->__toString();
+		}
+
+		private static function mb_str_pad($input, $pad_length, $pad_string = ' ', $pad_type = STR_PAD_RIGHT, $encoding = null) {
+			if (!$encoding) {
+				$encoding = mb_internal_encoding();
+			}
+			$diff = $pad_length - mb_strlen($input, $encoding);
+			if ($diff > 0) {
+				switch ($pad_type) {
+					case STR_PAD_LEFT:
+						return str_repeat($pad_string, $diff) . $input;
+					default:
+						return $input . str_repeat($pad_string, $diff);
+				}
+			}
+			return $input;
+		}
+
+		private static function mb_substr_replace($input, $replacement, $offset, $length, $encoding = null) {
+			if (!$encoding) {
+				$encoding = mb_internal_encoding();
+			}
+			return mb_substr($input, 0, $offset, $encoding) . $replacement . mb_substr($input, $offset + $length, mb_strlen($input, $encoding), $encoding);
 		}
 
 	}
