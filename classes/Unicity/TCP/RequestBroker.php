@@ -84,7 +84,7 @@ namespace Unicity\TCP {
 
 				$this->server->publish('requestInitiated', $request);
 
-				$resource = @fsockopen($request->host, $request->port, $errno, $errstr);
+				$resource = fsockopen($request->host, intval($request->port), $errno, $errstr);
 				if (is_resource($resource)) {
 					if (isset($request->headers) && !empty($request->headers)) {
 						foreach ($request->headers as $name => $value) {
