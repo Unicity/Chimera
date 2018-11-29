@@ -98,8 +98,14 @@ namespace Unicity\ORM\JSON\Model {
 						case 'integer':
 							$value = ORM\JSON\Model\Helper::resolveIntegerValue($value, $definition);
 							break;
+						case 'mixed':
+							$value = ORM\JSON\Model\Helper::resolveMixedValue($value, $definition);
+							break;
 						case 'number':
 							$value = ORM\JSON\Model\Helper::resolveNumberValue($value, $definition);
+							break;
+						case 'number|string':
+							$value = ORM\JSON\Model\Helper::resolveNumberOrStringValue($value, $definition);
 							break;
 						case 'null':
 							$value = ORM\JSON\Model\Helper::resolveNullValue($value, $definition);
@@ -246,8 +252,14 @@ namespace Unicity\ORM\JSON\Model {
 								case 'integer':
 									$value = ORM\JSON\Model\Helper::resolveIntegerValue($value, $definition);
 									break;
+								case 'mixed':
+									$value = ORM\JSON\Model\Helper::resolveMixedValue($value, $definition);
+									break;
 								case 'number':
 									$value = ORM\JSON\Model\Helper::resolveNumberValue($value, $definition);
+									break;
+								case 'number|string':
+									$value = ORM\JSON\Model\Helper::resolveNumberOrStringValue($value, $definition);
 									break;
 								case 'null':
 									$value = ORM\JSON\Model\Helper::resolveNullValue($value, $definition);

@@ -193,50 +193,71 @@ namespace Unicity\ORM\JSON\Model {
 				return $value;
 			}
 
-			$value = Core\Convert::toInteger($value);
-
-			if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
-				if ($value <= $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
+			try {
+				$value = Core\Convert::toInteger($value);
 			}
-			else if (isset($definition['minimum'])) {
-				if ($value < $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
+			catch (\Exception $ex) {
+				$value = 0;
 			}
 
-			if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
-				if ($value >= $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+			if (is_integer($value)) {
+				if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
+					if ($value <= $definition['minimum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
+					}
 				}
-			}
-			else if (isset($definition['maximum'])) {
-				if ($value > $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+				else if (isset($definition['minimum'])) {
+					if ($value < $definition['minimum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
+					if ($value >= $definition['maximum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+					}
+				}
+				else if (isset($definition['maximum'])) {
+					if ($value > $definition['maximum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['divisibleBy'])) {
+					if (($value % $definition['divisibleBy']) == 0) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['pad']['length'])) {
+					$value = Core\Convert::toString($value);
+					if (strlen($value) < $definition['pad']['length']) {
+						$char = isset($definition['pad']['char']) ? $definition['pad']['char'] : '0';
+						$value = str_pad($value, $definition['pad']['length'], $char, STR_PAD_LEFT);
+					}
+				}
+
+				if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
+					if (!in_array($value, $definition['enum'])) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
+					}
 				}
 			}
 
-			if (isset($definition['divisibleBy'])) {
-				if (($value % $definition['divisibleBy']) == 0) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
-				}
-			}
+			return $value;
+		}
 
-			if (isset($definition['pad']['length'])) {
-				$value = Core\Convert::toString($value);
-				if (strlen($value) < $definition['pad']['length']) {
-					$char = isset($definition['pad']['char']) ? $definition['pad']['char'] : '0';
-					$value = str_pad($value, $definition['pad']['length'], $char, STR_PAD_LEFT);
-				}
-			}
-
-			if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
-				if (!in_array($value, $definition['enum'])) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
-				}
-			}
-
+		/**
+		 * This method attempts to resolve the value as a mixed value in accordance with the schema
+		 * definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be resolved
+		 * @param array $definition                                 the schema definition
+		 * @return mixed                                            the resolved value
+		 */
+		public static function resolveMixedValue($value, $definition) {
 			return $value;
 		}
 
@@ -257,33 +278,77 @@ namespace Unicity\ORM\JSON\Model {
 				return $value;
 			}
 
-			$value = Core\Convert::toDouble($value);
-
-			if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
-				if ($value <= $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
+			try {
+				$value = Core\Convert::toDouble($value);
 			}
-			else if (isset($definition['minimum'])) {
-				if ($value < $definition['minimum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
-				}
+			catch (\Exception $ex) {
+				$value = 0.0;
 			}
 
-			if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
-				if ($value >= $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+			if (is_double($value)) {
+				if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
+					if ($value <= $definition['minimum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
+					}
 				}
-			}
-			else if (isset($definition['maximum'])) {
-				if ($value > $definition['maximum']) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+				else if (isset($definition['minimum'])) {
+					if ($value < $definition['minimum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
+					if ($value >= $definition['maximum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+					}
+				}
+				else if (isset($definition['maximum'])) {
+					if ($value > $definition['maximum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['divisibleBy'])) {
+					if (fmod($value, $definition['divisibleBy']) == 0.0) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
+					if (!in_array($value, $definition['enum'])) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
+					}
 				}
 			}
 
-			if (isset($definition['divisibleBy'])) {
-				if (fmod($value, $definition['divisibleBy']) == 0.0) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
+			return $value;
+		}
+
+
+		/**
+		 * This method attempts to resolve the value as a number/string in accordance with the schema
+		 * definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be resolved
+		 * @param array $definition                                 the schema definition
+		 * @return mixed                                            the resolved value
+		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
+		 *                                                          to meet a requirement
+		 */
+		public static function resolveNumberOrStringValue($value, $definition) {
+			if (Core\Data\ToolKit::isUnset($value)) {
+				return $value;
+			}
+
+			if (is_numeric($value)) {
+				$value = Core\Convert::toDouble($value);
+			}
+
+			if (isset($definition['pattern'])) {
+				if (!preg_match($definition['pattern'], (string) $value)) {
+					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value matching pattern ":pattern", but got :value.', array(':pattern' => $definition['pattern'], ':value' => $value));
 				}
 			}
 
