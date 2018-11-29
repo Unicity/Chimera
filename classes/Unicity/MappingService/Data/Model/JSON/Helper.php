@@ -130,6 +130,20 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		}
 
 		/**
+		 * This method attempts to resolve the value as a mixed value in accordance with the schema
+		 * definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be resolved
+		 * @param array $definition                                 the schema definition
+		 * @return mixed                                            the resolved value
+		 */
+		public static function resolveMixedValue($value, $definition) {
+			return ORM\JSON\Model\Helper::resolveMixedValue($value, $definition);
+		}
+
+		/**
 		 * This method attempts to resolve the value as a number in accordance with the schema
 		 * definition.
 		 *
@@ -143,6 +157,22 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 */
 		public static function resolveNumberValue($value, $definition) {
 			return ORM\JSON\Model\Helper::resolveNumberValue($value, $definition);
+		}
+
+		/**
+		 * This method attempts to resolve the value as a number/string in accordance with the schema
+		 * definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be resolved
+		 * @param array $definition                                 the schema definition
+		 * @return mixed                                            the resolved value
+		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
+		 *                                                          to meet a requirement
+		 */
+		public static function resolveNumberOrStringValue($value, $definition) {
+			return ORM\JSON\Model\Helper::resolveNumberOrStringValue($value, $definition);
 		}
 
 		/**

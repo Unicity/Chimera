@@ -99,8 +99,14 @@ namespace Unicity\MappingService\Data\Model\JSON {
 						case 'integer':
 							$value = MappingService\Data\Model\JSON\Helper::resolveIntegerValue($value, $definition);
 							break;
+						case 'mixed':
+							$value = MappingService\Data\Model\JSON\Helper::resolveMixedValue($value, $definition);
+							break;
 						case 'number':
 							$value = MappingService\Data\Model\JSON\Helper::resolveNumberValue($value, $definition);
+							break;
+						case 'number|string':
+							$value = MappingService\Data\Model\JSON\Helper::resolveNumberOrStringValue($value, $definition);
 							break;
 						case 'null':
 							$value = MappingService\Data\Model\JSON\Helper::resolveNullValue($value, $definition);
@@ -247,8 +253,14 @@ namespace Unicity\MappingService\Data\Model\JSON {
 								case 'integer':
 									$value = MappingService\Data\Model\JSON\Helper::resolveIntegerValue($value, $definition);
 									break;
+								case 'mixed':
+									$value = MappingService\Data\Model\JSON\Helper::resolveMixedValue($value, $definition);
+									break;
 								case 'number':
 									$value = MappingService\Data\Model\JSON\Helper::resolveNumberValue($value, $definition);
+									break;
+								case 'number|string':
+									$value = MappingService\Data\Model\JSON\Helper::resolveNumberOrStringValue($value, $definition);
 									break;
 								case 'null':
 									$value = MappingService\Data\Model\JSON\Helper::resolveNullValue($value, $definition);
