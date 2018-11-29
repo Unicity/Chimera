@@ -342,8 +342,11 @@ namespace Unicity\ORM\JSON\Model {
 				return $value;
 			}
 
-			if (is_numeric($value)) {
+			try {
 				$value = Core\Convert::toDouble($value);
+			}
+			catch (\Exception $ex) {
+				$value = Core\Convert::toString($value);
 			}
 
 			if (isset($definition['pattern'])) {
