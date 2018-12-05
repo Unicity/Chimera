@@ -24,6 +24,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\Core;
 	use \Unicity\Common;
 	use \Unicity\FP;
+	use \Unicity\Hateoas;
 	use \Unicity\ORM;
 	use \Unicity\Trade;
 
@@ -83,9 +84,20 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				}
 			}
 
-			$paths = [
+			$paths = [ // paths for only customer ids
 				'customer.enroller.id.unicity',
 				'customer.sponsor.id.unicity',
+			];
+
+			foreach ($paths as $path) {
+				if (ORM\Query::hasPath($patch, $path)) {
+					$value = ORM\Query::getValue($patch, $path);
+					ORM\Query::setValue($order, preg_replace('/id\.unicity$/', 'href', $path), Hateoas\Link::href('customers', Hateoas\Link::encrypt("?unicity={$value}")));
+					ORM\Query::setValue($order, $path, $value);
+				}
+			}
+
+			$paths = [
 				'customer.type',
 			];
 
