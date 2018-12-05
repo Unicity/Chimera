@@ -324,7 +324,6 @@ namespace Unicity\ORM\JSON\Model {
 			return $value;
 		}
 
-
 		/**
 		 * This method attempts to resolve the value as a number/string in accordance with the schema
 		 * definition.
@@ -435,38 +434,44 @@ namespace Unicity\ORM\JSON\Model {
 
 			$value = Core\Convert::toString($value);
 
-			if (isset($definition['filters'])) {
-				foreach ($definition['filters'] as $filter) {
-					$value = Core\Convert::toString(call_user_func($filter, $value));
+			$delimiter = $definition['delimiter'] ?? '';
+
+			$options = ($delimiter !== '') ? array_map('trim', explode($delimiter, $value)) : [$value];
+
+			foreach ($options as &$option) {
+				if (isset($definition['filters'])) {
+					foreach ($definition['filters'] as $filter) {
+						$option = Core\Convert::toString(call_user_func($filter, $option));
+					}
+				}
+
+				if (isset($definition['pattern'])) {
+					if (!preg_match($definition['pattern'], $option)) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value matching pattern ":pattern", but got :value.', array(':pattern' => $definition['pattern'], ':value' => $option));
+					}
+				}
+
+				if (isset($definition['minLength'])) {
+					if (strlen($option) < $definition['minLength']) {
+						$option = str_pad($option, $definition['minLength'], ' ', STR_PAD_RIGHT);
+					}
+				}
+
+				if (isset($definition['maxLength'])) {
+					if (strlen($option) > $definition['maxLength']) {
+						$option = substr($option, 0, $definition['maxLength']);
+						// TODO log string was truncated
+					}
+				}
+
+				if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
+					if (!in_array($option, $definition['enum'])) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $option));
+					}
 				}
 			}
 
-			if (isset($definition['pattern'])) {
-				if (!preg_match($definition['pattern'], $value)) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value matching pattern ":pattern", but got :value.', array(':pattern' => $definition['pattern'], ':value' => $value));
-				}
-			}
-
-			if (isset($definition['minLength'])) {
-				if (strlen($value) < $definition['minLength']) {
-					$value = str_pad($value, $definition['minLength'], ' ', STR_PAD_RIGHT);
-				}
-			}
-
-			if (isset($definition['maxLength'])) {
-				if (strlen($value) > $definition['maxLength']) {
-					$value = substr($value, 0, $definition['maxLength']);
-					// TODO log string was truncated
-				}
-			}
-
-			if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
-				if (!in_array($value, $definition['enum'])) {
-					throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
-				}
-			}
-
-			return $value;
+			return implode($delimiter, $options);
 		}
 
 	}
