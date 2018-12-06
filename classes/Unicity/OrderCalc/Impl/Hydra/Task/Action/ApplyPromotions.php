@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
@@ -34,17 +34,17 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * This method processes an entity.
 		 *
 		 * @access public
-		 * @param BT\Engine $engine                                 the engine running
-		 * @param string $entityId                                  the entity id being processed
+		 * @param BT\Engine $engine the engine running
+		 * @param string $entityId the entity id being processed
 		 * @return integer                                          the status
 		 */
-		public function process(BT\Engine $engine, string $entityId) : int {
+		public function process(BT\Engine $engine, string $entityId): int {
 			$entity = $engine->getEntity($entityId);
 
 			$order = $entity->getComponent('Order');
 			$promotions = $entity->getComponent('Promotions');
 
-			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use($order) {
+			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use ($order) {
 				if ($this->matchMap($promotion->stats->eventDetails, $promotion->pattern->eventDetails, $order, '')) {
 					$this->apply($promotion->patch->eventDetails, $order);
 					return true;
@@ -55,7 +55,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			return BT\Status::SUCCESS;
 		}
 
-		public function apply($patch, $order) : void {
+		public function apply($patch, $order): void {
 			if (ORM\Query::hasPath($patch, 'added_lines.items')) {
 				foreach ($patch->added_lines->items as $item) {
 					$order->added_lines->items->addValue($item);
@@ -109,19 +109,19 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		}
 
 		protected function isAny($expr, $value) {
-			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/^(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')$/i', $value));
+			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/^(' . implode('|', array_map('preg_quote', explode('|', $expr))) . ')$/i', $value));
 		}
 
 		protected function isLikeAny($expr, $value) {
-			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/(' . implode('|', array_map('preg_quote', explode('|', $expr))). ')/i', $value));
+			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/(' . implode('|', array_map('preg_quote', explode('|', $expr))) . ')/i', $value));
 		}
 
-		protected function matchArray($stats, $pattern, $order, $path) : bool {
-			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($stats, $order, $path) {
+		protected function matchArray($stats, $pattern, $order, $path): bool {
+			return $this->reduce($pattern, function(bool $carry, array $tuple) use ($stats, $order, $path) {
 				$v1 = $tuple[0];
 				$a2 = ORM\Query::getValue($order, $path);
-				foreach ($a2 as $i2 => $v2) {
-					$ipath = ORM\Query::appendIndex($path, $i2);
+				return $this->reduce($a2, function(bool $carry, array $tuple) use ($stats, $order, $path, $v1) {
+					$ipath = ORM\Query::appendIndex($path, $tuple[1]);
 					$v2 = ORM\Query::getValue($order, $ipath);
 
 					$d1 = Core\DataType::info($v1);
@@ -129,28 +129,28 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry && $this->matchArray($stats, $v1, $order, $ipath);
+							return $carry || $this->matchArray($stats, $v1, $order, $ipath);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry && $this->matchMap($stats, $v1, $order, $ipath);
+							return $carry || $this->matchMap($stats, $v1, $order, $ipath);
 						}
 						if (in_array($d1->type, ['integer', 'double'])) {
-							return $carry && ($v2 >= $v1);
+							return $carry || ($v2 >= $v1);
 						}
 						if (in_array($d1->type, ['string'])) {
-							return $carry && $this->isAny($v1, $v2);
+							return $carry || $this->isAny($v1, $v2);
 						}
 						if ($d1->hash === $d2->hash) {
-							return $carry;
+							return true;
 						}
 					}
-				}
-				return false;
+					return $carry;
+				}, false);
 			}, true);
 		}
 
-		public function matchMap($stats, $pattern, $order, $path) : bool {
-			return $this->reduce($pattern, function (bool $carry, array $tuple) use ($stats, $order, $path) {
+		public function matchMap($stats, $pattern, $order, $path): bool {
+			return $this->reduce($pattern, function(bool $carry, array $tuple) use ($stats, $order, $path) {
 				$k1 = $tuple[1];
 				$v1 = $tuple[0];
 				$kpath = ORM\Query::appendKey($path, $k1);
