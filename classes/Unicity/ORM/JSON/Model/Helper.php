@@ -342,7 +342,15 @@ namespace Unicity\ORM\JSON\Model {
 			}
 
 			try {
-				$value = Core\Convert::toDouble($value);
+				if ($value instanceof Common\StringRef) {
+					$value = $value->__toString();
+				}
+				if (is_string($value) && (($value === '') || !is_numeric($value))) {
+					$value = Core\Convert::toString($value);
+				}
+				else {
+					$value = Core\Convert::toDouble($value);
+				}
 			}
 			catch (\Exception $ex) {
 				$value = Core\Convert::toString($value);
