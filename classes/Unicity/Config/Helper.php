@@ -139,7 +139,7 @@ namespace Unicity\Config {
 					if (!in_array($path1[$i], [$path2[$i], '*'])) {
 						return null;
 					}
-					$segments[] = $path1[$i];
+					$segments[] = $path2[$i];
 				}
 			}
 			else {
