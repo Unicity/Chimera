@@ -74,7 +74,6 @@ namespace Unicity\ORM {
 		 * path that matches the needle.
 		 *
 		 * @access public
-		 * @param string $needle
 		 * @param mixed $collection                                 the collection to be searched
 		 * @param string $needle                                    the needle
 		 * @return string                                           the path to the needle

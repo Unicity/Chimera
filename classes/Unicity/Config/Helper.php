@@ -62,6 +62,36 @@ namespace Unicity\Config {
 		}
 
 		/**
+		 * This method performs a breath first search (BFS) on the collection to determine
+		 * the path to the specified needle.  Note that this method will return the first
+		 * path that matches the needle.
+		 *
+		 * @access public
+		 * @param string $needle                                    the needle
+		 * @return string                                           the path to the needle
+		 */
+		public function getPath(string $needle) : string {
+			$queue = new Common\Mutable\Queue();
+			if (is_array($this->collection) || ($this->collection instanceof \stdClass) || ($this->collection instanceof Common\ICollection)) {
+				foreach ($this->collection as $k => $v) {
+					$queue->enqueue([$k, $v, $k]);
+				}
+			}
+			while (!$queue->isEmpty()) {
+				$tuple = $queue->dequeue();
+				if (strval($tuple[0]) == $needle) {
+					return $tuple[2];
+				}
+				if (is_array($tuple[1]) || ($tuple[1] instanceof \stdClass) || ($tuple[1] instanceof Common\ICollection)) {
+					foreach ($tuple[1] as $k => $v) {
+						$queue->enqueue([$k, $v, $tuple[2] . '.' . $k]);
+					}
+				}
+			}
+			return '';
+		}
+
+		/**
 		 * This method determines whether the specified path exists in the collection.
 		 *
 		 * @access public
@@ -100,10 +130,24 @@ namespace Unicity\Config {
 		 * @throws Throwable\InvalidArgument\Exception              indicates that path is not a scaler type
 		 */
 		protected function getValue_(string $path) {
-			$segments = array_map('trim', explode('.', $path));
+			if (preg_match('/^(.+)\[\:([_a-z0-9]+)\]$/i', $path, $matches)) {
+				$path1 = explode('.', $matches[1]);
+				$path2 = explode('.', $this->getPath($matches[2]));
+				$segments = array();
+				$length = count($path1);
+				for ($i = 0; $i < $length; $i++) {
+					if (!in_array($path1[$i], [$path2[$i], '*'])) {
+						return null;
+					}
+					$segments[] = $path1[$i];
+				}
+			}
+			else {
+				$segments = array_map('trim', explode('.', $path));
+			}
 			if (count($segments) > 0) {
 				$element = $this->collection;
-				foreach ($segments as $segment) {
+				foreach ($segments as $i => $segment) {
 					if (is_array($element)) {
 						if (array_key_exists($segment, $element)) {
 							$element = $element[$segment];
@@ -130,6 +174,7 @@ namespace Unicity\Config {
 						}
 					}
 					return null;
+
 				}
 				return $element;
 			}
