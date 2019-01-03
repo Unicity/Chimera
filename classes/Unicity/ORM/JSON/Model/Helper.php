@@ -262,6 +262,69 @@ namespace Unicity\ORM\JSON\Model {
 		}
 
 		/**
+		 * This method attempts to resolve the value as money in accordance with the schema
+		 * definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be resolved
+		 * @param array $definition                                 the schema definition
+		 * @return mixed                                            the resolved value
+		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
+		 *                                                          to meet a requirement
+		 */
+		public static function resolveMoneyValue($value, $definition) {
+			if (Core\Data\ToolKit::isUnset($value)) {
+				return $value;
+			}
+
+			try {
+				$value = Core\Convert::toDouble($value);
+			}
+			catch (\Exception $ex) {
+				$value = 0.0;
+			}
+
+			if (is_double($value)) {
+				if (isset($definition['exclusiveMinimum']) && $definition['exclusiveMinimum']) {
+					if ($value <= $definition['minimum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
+					}
+				}
+				else if (isset($definition['minimum'])) {
+					if ($value < $definition['minimum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is greater than or equal to ":minimum", but got :value.', array(':minimum' => $definition['minimum'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['exclusiveMaximum']) && $definition['exclusiveMaximum']) {
+					if ($value >= $definition['maximum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+					}
+				}
+				else if (isset($definition['maximum'])) {
+					if ($value > $definition['maximum']) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is less than or equal to ":maximum", but got :value.', array(':maximum' => $definition['maximum'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['divisibleBy'])) {
+					if (fmod($value, $definition['divisibleBy']) == 0.0) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is divisible by ":divisibleBy", but got :value.', array(':divisibleBy' => $definition['divisibleBy'], ':value' => $value));
+					}
+				}
+
+				if (isset($definition['enum']) && (count($definition['enum']) > 0)) {
+					if (!in_array($value, $definition['enum'])) {
+						throw new Throwable\Runtime\Exception('Invalid value defined. Expected a value that is in enumeration, but got :value.', array(':value' => $value));
+					}
+				}
+			}
+
+			return number_format(floatval($value), 2, '.', '');
+		}
+
+		/**
 		 * This method attempts to resolve the value as a number in accordance with the schema
 		 * definition.
 		 *

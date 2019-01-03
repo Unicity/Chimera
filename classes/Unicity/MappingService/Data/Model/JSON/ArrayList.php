@@ -102,6 +102,9 @@ namespace Unicity\MappingService\Data\Model\JSON {
 						case 'mixed':
 							$value = MappingService\Data\Model\JSON\Helper::resolveMixedValue($value, $definition);
 							break;
+						case 'money':
+							$value = MappingService\Data\Model\JSON\Helper::resolveMoneyValue($value, $definition);
+							break;
 						case 'number':
 							$value = MappingService\Data\Model\JSON\Helper::resolveNumberValue($value, $definition);
 							break;
@@ -255,6 +258,9 @@ namespace Unicity\MappingService\Data\Model\JSON {
 									break;
 								case 'mixed':
 									$value = MappingService\Data\Model\JSON\Helper::resolveMixedValue($value, $definition);
+									break;
+								case 'money':
+									$value = MappingService\Data\Model\JSON\Helper::resolveMoneyValue($value, $definition);
 									break;
 								case 'number':
 									$value = MappingService\Data\Model\JSON\Helper::resolveNumberValue($value, $definition);

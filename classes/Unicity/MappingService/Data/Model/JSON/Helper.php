@@ -144,6 +144,22 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		}
 
 		/**
+		 * This method attempts to resolve the value as money in accordance with the schema
+		 * definition.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $value                                      the value to be resolved
+		 * @param array $definition                                 the schema definition
+		 * @return mixed                                            the resolved value
+		 * @throws Throwable\Runtime\Exception                      indicates that the value failed
+		 *                                                          to meet a requirement
+		 */
+		public static function resolveMoneyValue($value, $definition) {
+			return ORM\JSON\Model\Helper::resolveMoneyValue($value, $definition);
+		}
+
+		/**
 		 * This method attempts to resolve the value as a number in accordance with the schema
 		 * definition.
 		 *
