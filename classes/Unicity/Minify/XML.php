@@ -76,6 +76,7 @@ namespace Unicity\Minify {
 				'preserveEmptyLines' => true,
 				'preserveEmptyNodes' => true,
 				'preserveWhiteSpace' => true,
+				'removeEmptyNodes' => array(),
 			), $options);
 		}
 
@@ -126,7 +127,7 @@ namespace Unicity\Minify {
 			// not(@*) does not have attributes
 			// text()[normalize-space()] nodes that include whitespace text
 			if (!$this->options['preserveEmptyNodes']) {
-				while (($nodes = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $nodes->length) {
+				while (($nodes = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && ($nodes->length > 0)) {
 					foreach ($nodes as $node) {
 						$node->parentNode->removeChild($node);
 					}
@@ -134,6 +135,13 @@ namespace Unicity\Minify {
 			}
 
 			$xml = $document->saveXML();
+
+			$removeEmptyNodes = $this->options['removeEmptyNodes'];
+			if (is_array($removeEmptyNodes) && !empty($removeEmptyNodes)) {
+				foreach ($removeEmptyNodes as $node) {
+					$xml = preg_replace("/((<{$node}>\s+<\/{$node}>)|<{$node}\s*\/>)/", '', $xml);
+				}
+			}
 
 			if (!$this->options['preserveEmptyLines']) {
 				$lines = preg_split('/\\R/', $xml);
