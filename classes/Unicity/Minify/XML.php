@@ -72,6 +72,7 @@ namespace Unicity\Minify {
 			$this->xml = str_replace("\r\n", "\n", trim($xml));
 			$this->options = array_merge(array(
 				'preserveComments' => true,
+				'preserveEmptyAttributes' => true,
 				'preserveEmptyLines' => true,
 				'preserveEmptyNodes' => true,
 				'preserveWhiteSpace' => true,
@@ -141,6 +142,10 @@ namespace Unicity\Minify {
 				});
 				$xml = implode("\n", $lines);
 				unset($lines);
+			}
+
+			if (!$this->options['preserveEmptyAttributes']) {
+				$xml = preg_replace('/\s+([_a-z][_a-z0-9]+:)?[_a-z][_a-z0-9]+=""/i', '', $xml);
 			}
 
 			return $xml;
