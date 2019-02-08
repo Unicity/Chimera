@@ -86,7 +86,9 @@ namespace Unicity\SQL {
 				$this->server->publish('requestInitiated', $request);
 
 				try {
-					$connection = DB\Connection\Pool::instance()->get_connection(new DB\DataSource($request->source));
+					$connection = DB\Connection\Pool::instance()->get_connection(\Leap\Core\DB\DataSource::instance(
+						\Unicity\Common\Collection::useArrays($request->source))
+					);
 
 					$method = strtoupper($request->method);
 					switch ($method) {
@@ -116,7 +118,6 @@ namespace Unicity\SQL {
 					$http_code = max($http_code, $status);
 				}
 				catch (\Exception $ex) {
-					//var_dump($ex->getMessage()); exit();
 					$status = 503;
 					$response = SQL\Response::factory([
 						'body' => $ex->getMessage(),
