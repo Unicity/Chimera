@@ -55,61 +55,65 @@ namespace Unicity\Config\JSON {
 		}
 
 		public function sanitize($input, array $metadata = array()) : string {
-			$store = new JsonPath\JsonStore(Config\JSON\Helper::decode($input, $metadata));
-			foreach ($this->filters as $filter) {
-				$rule = $filter->rule;
-				$matches = array();
-				if (is_string($rule) && preg_match('/^whitelist\((.+)\)$/', $rule, $matches)) { // removes all other fields not in the whitelist
-					$fields = array_map('trim', explode(',', $matches[1]));
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						$removables = array();
-						foreach ($elements as $element) {
-							foreach ($element as $key => $val) {
-								if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
-									$store->remove($filter->path . ".['{$key}']");
-									$removables[$key] = null;
+			$json = Config\JSON\Helper::decode($input, $metadata);
+			if (!empty($json)) {
+				$store = new JsonPath\JsonStore(Config\JSON\Helper::decode($input, $metadata));
+				foreach ($this->filters as $filter) {
+					$rule = $filter->rule;
+					$matches = array();
+					if (is_string($rule) && preg_match('/^whitelist\((.+)\)$/', $rule, $matches)) { // removes all other fields not in the whitelist
+						$fields = array_map('trim', explode(',', $matches[1]));
+						$results = $store->get($filter->path);
+						if ($elements =& $results) {
+							$removables = array();
+							foreach ($elements as $element) {
+								foreach ($element as $key => $val) {
+									if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
+										$store->remove($filter->path . ".['{$key}']");
+										$removables[$key] = null;
+									}
 								}
 							}
 						}
 					}
-				}
-				else if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
-					$fields = array_map('trim', explode(',', $matches[1]));
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						$removables = array();
-						foreach ($elements as $element) {
-							foreach ($element as $key => $val) {
-								if (in_array($key, $fields) && !array_key_exists($key, $removables)) {
-									$store->remove($filter->path . ".['{$key}']");
-									$removables[$key] = null;
+					else if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
+						$fields = array_map('trim', explode(',', $matches[1]));
+						$results = $store->get($filter->path);
+						if ($elements =& $results) {
+							$removables = array();
+							foreach ($elements as $element) {
+								foreach ($element as $key => $val) {
+									if (in_array($key, $fields) && !array_key_exists($key, $removables)) {
+										$store->remove($filter->path . ".['{$key}']");
+										$removables[$key] = null;
+									}
 								}
 							}
 						}
 					}
-				}
-				else if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						foreach ($elements as &$element) {
-							$element = Core\Masks::last($element, 'x', $matches[1]);
+					else if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
+						$results = $store->get($filter->path);
+						if ($elements =& $results) {
+							foreach ($elements as &$element) {
+								$element = Core\Masks::last($element, 'x', $matches[1]);
+							}
 						}
 					}
-				}
-				else if (is_callable($rule)) {
-					$results = $store->get($filter->path);
-					if ($elements =& $results) {
-						foreach ($elements as &$element) {
-							$element = $rule($element);
+					else if (is_callable($rule)) {
+						$results = $store->get($filter->path);
+						if ($elements =& $results) {
+							foreach ($elements as &$element) {
+								$element = $rule($element);
+							}
 						}
 					}
+					else { // remove
+						$store->remove($filter->path);
+					}
 				}
-				else { // remove
-					$store->remove($filter->path);
-				}
+				return $store->toString();
 			}
-			return $store->toString();
+			return '';
 		}
 
 	}
