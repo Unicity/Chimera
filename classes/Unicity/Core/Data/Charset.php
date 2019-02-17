@@ -140,18 +140,10 @@ namespace Unicity\Core\Data {
 			if (is_string($string) && ($string != '')) {
 				if (strcasecmp($source_encoding, $target_encoding) != 0) {
 					if (function_exists('iconv')) {
-						//$buffer = @iconv($target_encoding, $target_encoding . '//IGNORE//TRANSLIT', $string);
-						//if ($buffer !== $string) {
-							$buffer = @iconv($source_encoding, $target_encoding . '//IGNORE//TRANSLIT', $string);
-						//}
-						$string = $buffer;
+						$string = @iconv($source_encoding, $target_encoding . '//IGNORE//TRANSLIT', $string);
 					}
 					else if (function_exists('mb_convert_encoding')) {
-						//$buffer = mb_convert_encoding($string, $target_encoding, $target_encoding);
-						//if ($buffer !== $string) {
-							$buffer = mb_convert_encoding($string, $target_encoding, $source_encoding);
-						//}
-						$string = $buffer;
+						$string = mb_convert_encoding($string, $target_encoding, $source_encoding);
 					}
 				}
 				if (strcasecmp($target_encoding, static::UTF_8_ENCODING) == 0) { // http://stackoverflow.com/questions/1523460/ensuring-valid-utf-8-in-php
