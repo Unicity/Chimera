@@ -70,7 +70,7 @@ namespace Unicity\Config\Properties {
 					}
 					if (!preg_match('/^\s*#.*$/', $line)) {
 						if (!preg_match('/^[^=]+=.*$/', $line)) {
-							throw new Throwable\Parse\Exception('Unable to parse file. File ":uri" contains an invalid pattern on line :line.', array(':uri' => $self->file, ':line' => $index));
+							throw new Throwable\Parse\Exception('Unable to parse file. File ":uri" contains an invalid pattern on line :line.', array(':uri' => $self->file, ':line' => $index + 1));
 						}
 						$position = strpos($line, '=');
 						$key = trim(substr($line, 0, $position));
