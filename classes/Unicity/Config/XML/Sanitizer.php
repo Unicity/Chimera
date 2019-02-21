@@ -47,14 +47,14 @@ namespace Unicity\Config\XML {
 						if ($key->hasKey('attribute')) {
 							$this->filters[] = (object)[
 								'attribute' => Core\Convert::toString($key->attribute),
-								'namespace' => $key->namespace, // ['prefix' => '', 'uri' => '']
+								'namespace' => $key->hasKey('namespace') ? $key->namespace : [], // ['prefix' => '', 'uri' => '']
 								'path' => Core\Convert::toString($key->path),
 								'rule' => $rule,
 							];
 						}
 						else {
 							$this->filters[] = (object)[
-								'namespace' => $key->namespace, // ['prefix' => '', 'uri' => '']
+								'namespace' => $key->hasKey('namespace') ? $key->namespace : [], // ['prefix' => '', 'uri' => '']
 								'path' => Core\Convert::toString($key->path),
 								'rule' => $rule,
 							];
