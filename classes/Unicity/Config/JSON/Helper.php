@@ -75,7 +75,7 @@ namespace Unicity\Config\JSON {
 		}
 
 		public static function unmarshal($data, array $metadata = array()) /* list|map */{
-			if (is_array($data) || ($data instanceof \JsonSerializable)) {
+			if (is_array($data) || ($data instanceof \JsonSerializable) || (is_object($data) && (get_class($data) === 'stdClass'))) {
 				$data = new IO\StringRef(static::encode($data));
 			}
 			if ($data instanceof Common\ICollection) {
@@ -86,9 +86,6 @@ namespace Unicity\Config\JSON {
 			}
 			if (Common\StringRef::isTypeOf($data)) {
 				$data = new IO\StringRef(Core\Convert::toString($data));
-			}
-			if (is_object($data) && (get_class($data) === 'stdClass')) {
-				return $data;
 			}
 			return MappingService\Data\Model\Marshaller::unmarshal(
 				Config\JSON\Reader::load($data, $metadata)
