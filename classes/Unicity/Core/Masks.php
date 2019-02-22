@@ -38,7 +38,7 @@ namespace Unicity\Core {
 			return $value;
 		}
 
-		public static function creditCard($value, string $symbol = 'x', bool $first6 = false) {
+		public static function creditCardNumber($value, string $symbol = 'x', bool $first6 = true) {
 			if ($value !== null) {
 				$value = preg_replace('/[^0-9]/', '', Core\Convert::toString($value));
 				$length = strlen($value);
@@ -72,6 +72,20 @@ namespace Unicity\Core {
 					return str_repeat($symbol, $length);
 				}
 				return substr($value, 0, $count * -1) . str_repeat($symbol, $count);
+			}
+			return $value;
+		}
+
+		public static function token($value, string $symbol = 'x', bool $first6 = true) {
+			if ($value !== null) {
+				$value = preg_replace('/[^A-Z0-9]/i', '', Core\Convert::toString($value));
+				$length = strlen($value);
+				if ($length > 10) {
+					if ($first6) {
+						return substr($value, 0, 6) . str_repeat($symbol, $length - 10) . substr($value, -4, 4);
+					}
+					return str_repeat($symbol, $length - 4) . substr($value, -4, 4);
+				}
 			}
 			return $value;
 		}

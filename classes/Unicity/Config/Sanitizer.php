@@ -38,6 +38,7 @@ namespace Unicity\Config {
 			'mask' => '\\Unicity\\Core\\Masks::all',
 			'mask_cc' => '\\Unicity\\Core\\Masks::creditCard',
 			'mask_ip' => '\\Unicity\\Core\\Masks::ipAddress',
+			'mask_tk' => '\\Unicity\\Core\\Masks::token',
 			'remove' => null,
 		);
 
