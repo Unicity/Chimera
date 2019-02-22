@@ -38,7 +38,7 @@ namespace Unicity\Core {
 			return $value;
 		}
 
-		public static function creditCardNumber($value, string $symbol = 'x', bool $first6 = true) {
+		public static function creditCard($value, string $symbol = 'x', bool $first6 = true) {
 			if ($value !== null) {
 				$value = preg_replace('/[^0-9]/', '', Core\Convert::toString($value));
 				$length = strlen($value);
