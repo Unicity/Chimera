@@ -87,6 +87,9 @@ namespace Unicity\Config\JSON {
 			if (Common\StringRef::isTypeOf($data)) {
 				$data = new IO\StringRef(Core\Convert::toString($data));
 			}
+			if (is_object($data) && (get_class($data) === 'stdClass')) {
+				return $data;
+			}
 			return MappingService\Data\Model\Marshaller::unmarshal(
 				Config\JSON\Reader::load($data, $metadata)
 			);
