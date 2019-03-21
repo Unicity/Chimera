@@ -105,7 +105,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 						'to' => $order->lines->aggregate->weight->unit,
 					),
 					array(
-						'field' => 'Order.lines.aggregate.weight->value',
+						'field' => 'Order.lines.aggregate.weight.value',
 						'from' => $this->aop['lines']['aggregate']['weight']['value'],
 						'to' => $order->lines->aggregate->weight->value,
 					),
