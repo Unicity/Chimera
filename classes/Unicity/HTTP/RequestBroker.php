@@ -98,7 +98,7 @@ namespace Unicity\HTTP {
 
 				curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
 				curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($resource, CURLOPT_TIMEOUT, 30);
 				curl_setopt($resource, CURLOPT_URL, $request->url);
