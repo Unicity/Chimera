@@ -49,7 +49,7 @@ namespace Unicity\Tracing {
 			'HTTP_UBER_TRACE_ID' => 'uber-trace-id',
 		];
 
-		public static function addHeaders(array $headers) { // this function will lowercase all header keys
+		public static function addHeaders(array $headers = []) { // this function will lowercase all header keys
 			$buffer = [];
 			foreach ($headers as $key => $value) {
 				$buffer[strtolower($key)] = $value;
