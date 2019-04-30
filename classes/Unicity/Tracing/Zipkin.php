@@ -31,7 +31,7 @@ namespace Unicity\Tracing {
 
 		private static $trace_headers = [
 			# Unicity headers
-			'HTTP_X-REQUEST_UUID' => 'x-request-uuid', // @deprecated
+			'HTTP_X_REQUEST_UUID' => 'x-request-uuid', // @deprecated
 			'HTTP_X_REQUEST_RELEASE' => 'x-request-release',
 
 			# Envoy headers
