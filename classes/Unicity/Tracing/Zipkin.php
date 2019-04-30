@@ -18,11 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\Core {
-
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\Throwable;
+namespace Unicity\Tracing {
 
 	/**
 	 * This class converts a base data type to another base data type.
