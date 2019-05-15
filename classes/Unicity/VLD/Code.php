@@ -43,6 +43,7 @@ namespace Unicity\VLD {
 		const VALUE_IS_UNDEFINED = '2007';
 		const VALUE_IS_NULL = '2008';
 		const VALUE_IS_UNSET = '2009';
+		const VALUE_NOT_FOUND = '2010';
 
 		// testing "property"
 		const VALUE_IS_EQ_LENGTH = '2100';
