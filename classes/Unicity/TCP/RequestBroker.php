@@ -94,6 +94,7 @@ namespace Unicity\TCP {
 					}
 					fwrite($resource, $request->body);
 					fwrite($resource, "\r\n");
+					socket_set_timeout($resource, 60); // TODO make configurable
 					$body = '';
 					while (!feof($resource)) {
 						$body .= fgets($resource, 4096);
