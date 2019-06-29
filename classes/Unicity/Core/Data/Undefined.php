@@ -87,6 +87,18 @@ namespace Unicity\Core\Data {
 		}
 
 		/**
+		 * This method returns an array of all keys in the collection.
+		 *
+		 * @access public
+		 * @param string $regex                                     a regular expression for which
+		 *                                                          subset of keys to return
+		 * @return array                                            an array of all keys in the collection
+		 */
+		public function getKeys($regex = null) {
+			return [];
+		}
+
+		/**
 		 * This method returns a singleton instance of this class.
 		 *
 		 * @access public
