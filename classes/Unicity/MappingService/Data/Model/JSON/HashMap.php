@@ -188,6 +188,50 @@ namespace Unicity\MappingService\Data\Model\JSON {
 				}
 				else {
 					$key = $this->getKey($key);
+					if (isset($this->schema['patternProperties'])) {
+						$patternProperties = array_filter(array_keys($this->schema['patternProperties']), function($patternProperty) use ($key) {
+							return (bool) preg_match($patternProperty, $key);
+						});
+						if (isset($patternProperties[0])) {
+							$definition = $this->schema['patternProperties'][$patternProperties[0]];
+							if (isset($definition['type'])) {
+								switch ($definition['type']) {
+									case 'array':
+										$value = MappingService\Data\Model\JSON\Helper::resolveArrayValue($value, $definition, $this->case_sensitive);
+										break;
+									case 'boolean':
+										$value = MappingService\Data\Model\JSON\Helper::resolveBooleanValue($value, $definition);
+										break;
+									case 'integer':
+										$value = MappingService\Data\Model\JSON\Helper::resolveIntegerValue($value, $definition);
+										break;
+									case 'mixed':
+										$value = MappingService\Data\Model\JSON\Helper::resolveMixedValue($value, $definition);
+										break;
+									case 'money':
+										$value = MappingService\Data\Model\JSON\Helper::resolveMoneyValue($value, $definition);
+										break;
+									case 'number':
+										$value = MappingService\Data\Model\JSON\Helper::resolveNumberValue($value, $definition);
+										break;
+									case 'number|string':
+										$value = MappingService\Data\Model\JSON\Helper::resolveNumberOrStringValue($value, $definition);
+										break;
+									case 'null':
+										$value = MappingService\Data\Model\JSON\Helper::resolveNullValue($value, $definition);
+										break;
+									case 'object':
+										$value = MappingService\Data\Model\JSON\Helper::resolveObjectValue($value, $definition, $this->case_sensitive);
+										break;
+									case 'string':
+										$value = MappingService\Data\Model\JSON\Helper::resolveStringValue($value, $definition);
+										break;
+								}
+							}
+							$this->elements[$key] = $value;
+							return true;
+						}
+					}
 					if (isset($this->schema['properties'][$key])) {
 						$definition = $this->schema['properties'][$key];
 						if (isset($definition['type'])) {
