@@ -87,7 +87,10 @@ namespace Unicity\MappingService\Data\Model\Dynamic {
 		 */
 		public function getValue($index) {
 			if (!is_integer($index)) {
-				throw new Throwable\InvalidArgument\Exception('Unable to get element. :type is of the wrong data type.', array(':type' => Core\DataType::info($index)->type));
+				if (!empty($this->elements)) { // sometimes PHP encodes empty objects as arrays (so we can only throw an exception when we are certain)
+					throw new Throwable\InvalidArgument\Exception('Unable to get element. :type is of the wrong data type.', array(':type' => Core\DataType::info($index)->type));
+				}
+				return Core\Data\Undefined::instance();
 			}
 			if (array_key_exists($index, $this->elements)) {
 				return $this->elements[$index];
