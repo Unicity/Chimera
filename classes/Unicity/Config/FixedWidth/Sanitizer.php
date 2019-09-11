@@ -60,6 +60,32 @@ namespace Unicity\Config\FixedWidth {
 		public function sanitize($input, array $metadata = array()) : string {
 			$input = Config\FixedWidth\Helper::buffer($input);
 			$buffer = new Common\Mutable\StringRef();
+			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $line_no) use ($buffer) {
+				if (isset($this->filters[$line_no])) {
+					foreach ($this->filters[$line_no] as $filter) {
+						$rule = $filter->rule;
+						$offset = $filter->offset;
+						$length = $filter->length;
+						if (is_callable($rule)) {
+							$line = substr_replace($line, str_pad($rule(substr($line, $offset, $length)), $length, ' ', STR_PAD_RIGHT), $offset, $length);
+						}
+						else {
+							$line = substr_replace($line, str_repeat(' ', $length), $offset, $length);
+						}
+					}
+				}
+				$buffer->append($line);
+			});
+			return \Unicity\Core\Data\Charset::encode(
+				$buffer->__toString(),
+				$metadata['encoding'] ?? \Unicity\Core\Data\Charset::UTF_8_ENCODING,
+				\Unicity\Core\Data\Charset::UTF_8_ENCODING
+			);
+		}
+		/*
+		public function sanitize($input, array $metadata = array()) : string {
+			$input = Config\FixedWidth\Helper::buffer($input);
+			$buffer = new Common\Mutable\StringRef();
 			$encoding = $metadata['encoding'] ?? \Unicity\Core\Data\Charset::UTF_8_ENCODING;
 			IO\FileReader::read($input, function(IO\FileReader $reader, $line, $line_no) use ($buffer, $encoding) {
 				$line = \Unicity\Core\Data\Charset::encode($line, $encoding, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
@@ -103,7 +129,7 @@ namespace Unicity\Config\FixedWidth {
 			}
 			return mb_substr($input, 0, $offset, $encoding) . $replacement . mb_substr($input, $offset + $length, mb_strlen($input, $encoding), $encoding);
 		}
-
+		*/
 	}
 
 }

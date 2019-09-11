@@ -158,6 +158,9 @@ namespace Unicity\Config\FixedWidth {
 			$escape = $this->metadata['escape'];
 			$value = $escape($value);
 
+			$encoding = $this->metadata['encoding'];
+			$value = \Unicity\Core\Data\Charset::encode($value, $encoding[0], $encoding[1]);
+
 			$strlen = strlen($value);
 			if ($strlen > $length) {
 				$value = substr($value, 0, $length);
