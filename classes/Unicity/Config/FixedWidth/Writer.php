@@ -65,7 +65,7 @@ namespace Unicity\Config\FixedWidth {
 				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
 				'eol' => "\r\n", // defaults to CRLF because this is the most common EOL for the file type
 				'escape' => function($value) {
-					return preg_replace('/\R/', '', $value);
+					return preg_replace("/(\r|\n)+/", '', $value);
 				},
 				'ext' => '.txt',
 				'mime' => 'text/plain',
@@ -87,6 +87,8 @@ namespace Unicity\Config\FixedWidth {
 		 */
 		protected function buildField(\SimpleXMLElement $node, $data, string $line) {
 			$attributes = $this->getElementAttributes($node);
+
+			//$index = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['index']));
 
 			$offset = Core\Convert::toInteger(Core\Data\XML::valueOf($attributes['offset']));
 
@@ -144,6 +146,7 @@ namespace Unicity\Config\FixedWidth {
 					*/
 				}
 			}
+
 			$value = Core\Convert::toString($value);
 			if (isset($attributes['space'])) {
 				$space = $this->valueOf($attributes['space']);
