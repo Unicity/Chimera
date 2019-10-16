@@ -40,7 +40,11 @@ namespace Unicity\Core {
 
 		public static function creditCard($value, string $symbol = 'x', bool $first6 = true) {
 			if ($value !== null) {
-				$value = preg_replace('/[^0-9]/', '', Core\Convert::toString($value));
+				$value = strtolower(str_replace('*', 'x', Core\Convert::toString($value)));
+				$value = preg_replace('/[^*x0-9]/', '', $value);
+				if ($symbol !== 'x') {
+					$value = str_replace('x', $symbol, $value);
+				}
 				$length = strlen($value);
 				if ($length > 10) {
 					if ($first6) {
