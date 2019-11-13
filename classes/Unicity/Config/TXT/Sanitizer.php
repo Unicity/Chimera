@@ -59,39 +59,42 @@ namespace Unicity\Config\TXT {
 		public function sanitize($input, array $metadata = array()) : string {
 			$buffer = new Common\Mutable\StringRef();
 			$encoding = $metadata['encoding'] ?? \Unicity\Core\Data\Charset::UTF_8_ENCODING;
-			IO\FileReader::read(new IO\StringRef($input), function(IO\FileReader $reader, $line, $index) use ($buffer, $encoding) {
-				$line = \Unicity\Core\Data\Charset::encode($line, $encoding, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
-				foreach ($this->filters as $filter) {
-					$pattern = $filter->pattern;
-					$rule = $filter->rule;
-					if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $args)) {
-						$line = preg_replace_callback($pattern, function($matches) use ($rule, $args) {
-							if (isset($matches[1])) {
-								return str_replace($matches[1], Core\Masks::last($matches[1], 'x', $args[1]), $matches[0]);
-							}
-							return $matches[0];
-						}, $line);
-					}
-					else if (is_callable($rule)) {
-						if (preg_match($pattern, $line)) {
-							$line = preg_replace_callback($pattern, function($matches) use ($rule) {
+			$input = Core\Convert::toString($input);
+			if (!empty($input)) {
+				IO\FileReader::read(new IO\StringRef($input), function(IO\FileReader $reader, $line, $index) use ($buffer, $encoding) {
+					$line = \Unicity\Core\Data\Charset::encode($line, $encoding, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
+					foreach ($this->filters as $filter) {
+						$pattern = $filter->pattern;
+						$rule = $filter->rule;
+						if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $args)) {
+							$line = preg_replace_callback($pattern, function($matches) use ($rule, $args) {
 								if (isset($matches[1])) {
-									return str_replace($matches[1], Core\Convert::toString($rule($matches[1])), $matches[0]);
+									return str_replace($matches[1], Core\Masks::last($matches[1], 'x', $args[1]), $matches[0]);
 								}
 								return $matches[0];
 							}, $line);
 						}
-					}
-					else { // remove
-						if (preg_match($pattern, $line)) {
-							$line = preg_replace_callback($pattern, function($matches) use ($rule) {
-								return '';
-							}, $line);
+						else if (is_callable($rule)) {
+							if (preg_match($pattern, $line)) {
+								$line = preg_replace_callback($pattern, function($matches) use ($rule) {
+									if (isset($matches[1])) {
+										return str_replace($matches[1], Core\Convert::toString($rule($matches[1])), $matches[0]);
+									}
+									return $matches[0];
+								}, $line);
+							}
+						}
+						else { // remove
+							if (preg_match($pattern, $line)) {
+								$line = preg_replace_callback($pattern, function($matches) use ($rule) {
+									return '';
+								}, $line);
+							}
 						}
 					}
-				}
-				$buffer->append($line);
-			});
+					$buffer->append($line);
+				});
+			}
 			return $buffer->__toString();
 		}
 	}
