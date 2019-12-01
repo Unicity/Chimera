@@ -73,6 +73,83 @@ namespace Unicity\Tracing {
 			return $buffer;
 		}
 
+		public static function now() : int {
+			return (int) (microtime(true) * 1000 * 1000);
+		}
+
+		public static function generateSpanId() : string {
+			return bin2hex(openssl_random_pseudo_bytes(8));
+		}
+
+		public static function traceV1(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = []) {
+			try {
+				$body = [
+					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'],
+					'name' => $serverName, // spanName
+					'id' => static::generateSpanId(),
+					'parentId' => $_SERVER['HTTP_X_B3_SPANID'],
+					'timestamp' => $startTime,
+					'duration' => $finishTime - $startTime,
+					'annotations' => [
+						[
+							'timestamp' => $startTime,
+							'value' => 'sr', // Server Start
+							'endpoint' => [
+								'serviceName' => $serverName,
+							],
+						],
+						[
+							'timestamp' => $finishTime,
+							'value' => 'ss', // Server Finish
+							'endpoint' => [
+								'serviceName' => $serverName,
+							],
+						],
+					],
+					'binaryAnnotations' => [],
+				];
+
+				$tags = array_merge([
+					'component' => 'driver',
+					'downstream_cluster' => '-',
+					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'],
+					'upstream_cluster'=> $clientName,
+				], $tags);
+
+				foreach ($tags as $key => $value) {
+					$body['binaryAnnotations'][] = [
+						'key' => $key,
+						'value' => ($value !== null) ? strval($value) : '',
+					];
+				}
+
+				$data = json_encode([$body]);
+
+				$request = curl_init();
+
+				curl_setopt($request, CURLOPT_POST, 1);
+				curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
+				curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+				curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
+				curl_setopt($request, CURLOPT_TIMEOUT, 30);
+				curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v1/spans');
+				curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
+					'Accept' => 'application/json',
+					'Content-Length' => strlen($data),
+					'Content-Type' => 'application/json',
+				]));
+				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+
+				if (curl_exec($request) !== false) {
+					curl_close($request);
+				}
+			}
+			catch (\Exception $e) {
+				// do nothing
+			}
+		}
+
 	}
 
 }
