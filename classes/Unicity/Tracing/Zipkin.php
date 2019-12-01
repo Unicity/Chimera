@@ -78,11 +78,12 @@ namespace Unicity\Tracing {
 		}
 
 		public static function generateSpanId() : string {
-			return bin2hex(openssl_random_pseudo_bytes(8));
+    		return bin2hex(openssl_random_pseudo_bytes(8));
 		}
 
 		public static function traceV1(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = []) {
 			try {
+				// https://zipkin.io/zipkin-api/zipkin-api.yaml
 				$body = [
 					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'],
 					'name' => $serverName, // spanName
@@ -142,8 +143,8 @@ namespace Unicity\Tracing {
 				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
 
 				if (curl_exec($request) !== false) {
-					curl_close($request);
-				}
+	                curl_close($request);
+	            }
 			}
 			catch (\Exception $e) {
 				// do nothing
