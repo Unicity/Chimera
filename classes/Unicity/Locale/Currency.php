@@ -229,15 +229,9 @@ namespace Unicity\Locale {
 		 * @static
 		 * @param double $number                                    the number to be formatted
 		 * @return string                                           the formatted number
-		 *
-		 * @see http://php.net/money_format
 		 */
 		public static function format($number) : string {
-			$amount = Core\Convert::toDouble($number);
-			//if (function_exists('money_format')) {
-			//	return money_format('%.2n', $amount);
-			//}
-			return sprintf('%0.2f', $amount);
+			return sprintf('%0.2f', Core\Convert::toDouble($number));
 		}
 
 	}
