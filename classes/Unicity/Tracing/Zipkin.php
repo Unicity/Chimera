@@ -137,7 +137,65 @@ namespace Unicity\Tracing {
 				curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v1/spans');
 				curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
 					'Accept' => 'application/json',
-					'Content-Length' => strlen($data),
+					'Content-Type' => 'application/json',
+				]));
+				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+
+				if (curl_exec($request) !== false) {
+	                curl_close($request);
+	            }
+			}
+			catch (\Exception $e) {
+				// do nothing
+			}
+		}
+
+		public static function traceV2(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = []) {
+			try {
+				// https://zipkin.io/zipkin-api/zipkin2-api.yaml
+				$body = [
+					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'],
+					'name' => $serverName, // spanName
+					'id' => static::generateSpanId(),
+					'parentId' => $_SERVER['HTTP_X_B3_SPANID'],
+					'timestamp' => $startTime,
+					'duration' => $finishTime - $startTime,
+					'kind' => 'SERVER',
+					'localEndpoint' => [
+						'serviceName' => $clientName,
+					],
+					'remoteEndpoint' => [
+						'serverName' => $serverName,
+					],
+					'tags' => [],
+				];
+
+				$tags = array_merge([
+					'component' => 'driver',
+					'downstream_cluster' => '-',
+					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'],
+					'upstream_cluster'=> $clientName,
+				], $tags);
+
+				foreach ($tags as $key => $value) {
+					$tags[$key] = ($value !== null) ? strval($value) : '';
+				}
+
+				$body['tags'] = $tags;
+
+				$data = json_encode([$body]);
+
+				$request = curl_init();
+
+				curl_setopt($request, CURLOPT_POST, 1);
+				curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
+				curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+				curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
+				curl_setopt($request, CURLOPT_TIMEOUT, 30);
+				curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v2/spans');
+				curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
+					'Accept' => 'application/json',
 					'Content-Type' => 'application/json',
 				]));
 				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
