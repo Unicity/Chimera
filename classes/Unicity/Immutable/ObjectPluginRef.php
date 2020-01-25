@@ -18,8 +18,8 @@ namespace Unicity\Immutable {
 			$this->objectRef = $objectRef;
 		}
 
-		public final function apply(string $idref, callable $operator) : IObjectRef {
-			return $operator($this->plugin($idref));
+		public final function apply(callable $operator, $params = null): IObjectRef {
+			return $this->objectRef->apply($operator, $params);
 		}
 
 		public final function __call(string $method, array $args) {
@@ -140,6 +140,10 @@ namespace Unicity\Immutable {
 
 		public final function __unset($key) {
 			$this->objectRef->__unset($key);
+		}
+
+		public final function use(string $idref, callable $operator) : IObjectRef {
+			return $operator($this->plugin($idref));
 		}
 
 		public final function valid() : bool {

@@ -18,8 +18,8 @@ namespace Unicity\Immutable {
 			$this->value = $value;
 		}
 
-		public final function apply(string $idref, callable $operator) : IObjectRef {
-			return $operator($this->plugin($idref));
+		public final function apply(callable $operator, $params = null): IObjectRef {
+			return $operator($this, $params);
 		}
 
 		public final function count() : int {
@@ -164,6 +164,10 @@ namespace Unicity\Immutable {
 
 		public final function __unset($key) {
 			// do nothing
+		}
+
+		public final function use(string $idref, callable $operator) : IObjectRef {
+			return $operator($this->plugin($idref));
 		}
 
 		public final function valid() : bool {
