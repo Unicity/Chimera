@@ -97,6 +97,10 @@ namespace Unicity\Immutable {
 			return $this->objectRef->key();
 		}
 
+		public final function merge(array $array) : IObjectRef {
+			return $this->objectRef->merge($array);
+		}
+
 		public final function next() : void {
 			$this->objectRef->next();
 		}
@@ -128,6 +132,10 @@ namespace Unicity\Immutable {
 		public final function preview(bool $exit = true) : IObjectRef {
 			$this->objectRef->preview($exit);
 			return $this;
+		}
+
+		public final function put(object $object) : IObjectRef {
+			return $this->objectRef->put($object);
 		}
 
 		public final function rewind() {

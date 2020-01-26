@@ -118,6 +118,10 @@ namespace Unicity\Immutable {
 			return null;
 		}
 
+		public final function merge(array $array) : IObjectRef {
+			return ObjectRef::box($this->idref(), ObjectRef::mergeArrays($this->value(), $array));
+		}
+
 		public final function next() : void {
 			if (is_object($this->value) || is_array($this->value)) {
 				next($this->value);
@@ -150,6 +154,10 @@ namespace Unicity\Immutable {
 				exit();
 			}
 			return $this;
+		}
+
+		public final function put(object $object) : IObjectRef {
+			return ObjectRef::box($this->idref(), ObjectRef::mergeObjects($this->value(), $object));
 		}
 
 		public final function rewind() {
@@ -231,6 +239,14 @@ namespace Unicity\Immutable {
 			if ($idref === '') { return '$'; }
 			if (preg_match('/^' . preg_quote('$.') . '/', $idref)) { return $idref; }
 			return implode('.', ['$', $idref]);
+		}
+
+		private final static function mergeArrays(array $array0, array $array1) : array {
+			return array_merge($array0, $array1);
+		}
+
+		private final static function mergeObjects(object $object0, object $object1) : object {
+			return (object) array_merge((array) $object0, (array) $object1);
 		}
 
 		#endregion

@@ -14,8 +14,10 @@ namespace Unicity\Immutable {
 		public function isNumber() : bool;
 		public function isObject() : bool;
 		public function isString() : bool;
+		public function merge(array $array) : IObjectRef;
 		public function plugin(string $idref) : IObjectRef;
 		public function preview(bool $exit = true) : IObjectRef;
+		public function put(object $object) : IObjectRef;
 		public function use(string $idref, callable $operator) : IObjectRef;
 		public function value();
 
