@@ -69,6 +69,7 @@ namespace Unicity\BT {
 			$registry->putEntry(array('action', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ActionElement());
 			$registry->putEntry(array('branch', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\BranchElement());
 			$registry->putEntry(array('composite', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\CompositeElement());
+			$registry->putEntry(array('concurrent', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ConcurrentElement());
 			$registry->putEntry(array('condition', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\ConditionElement());
 			$registry->putEntry(array('decorator', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\DecoratorElement());
 			$registry->putEntry(array('entry', BT\Schema::NAMESPACE_URI), new BT\Object\Factory\EntryElement);
