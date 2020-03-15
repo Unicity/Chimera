@@ -21,9 +21,15 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Trade;
+	use \Unicity\MappingService;
 
-	class CalculateExtendedPV extends BT\Task\Action {
+	/**
+	 * This class represents a custom task.
+	 *
+	 * @access public
+	 * @class
+	 */
+	class RemoveAllAddedItems extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -37,12 +43,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$currency = 'USD'; // for purposes of this calculation, always treat as USD
-
-			foreach ($order->lines->items as $line) {
-				$line->terms->pv = Trade\Money::make($line->terms->pvEach * $line->quantity, $currency)
-					->getConvertedAmount();
-			}
+			$order->added_lines = new MappingService\Data\Model\JSON\HashMap('\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\LineItems', true);
 
 			return BT\Status::SUCCESS;
 		}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2020 Unicity International
+ * Copyright 2015-2016 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,12 @@ declare(strict_types = 1);
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\BT;
-	use \Unicity\Trade;
+	use \Unicity\Common;
+	use \Unicity\FP;
+	use \Unicity\MappingService;
+	use \Unicity\ORM;
 
-	class CalculateExtendedPV extends BT\Task\Action {
+	class AddAddedItem extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -37,12 +40,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$currency = 'USD'; // for purposes of this calculation, always treat as USD
-
-			foreach ($order->lines->items as $line) {
-				$line->terms->pv = Trade\Money::make($line->terms->pvEach * $line->quantity, $currency)
-					->getConvertedAmount();
-			}
+			$order->added_lines->items->addValue(FP\IMap::fold($this->policy, function($carry, Common\Tuple $tuple) {
+				ORM\Query::setValue($carry, $tuple->first(), $tuple->second());
+				return $carry;
+			}, new MappingService\Data\Model\JSON\HashMap('\\Unicity\\MappingService\\Impl\\Hydra\\API\\Master\\Model\\LineItem', true)));
 
 			return BT\Status::SUCCESS;
 		}

@@ -18,12 +18,11 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
+namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\BT;
-	use \Unicity\Trade;
 
-	class CalculateExtendedPV extends BT\Task\Action {
+	class HasEventType extends BT\Task\Guard {
 
 		/**
 		 * This method processes an entity.
@@ -35,16 +34,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 */
 		public function process(BT\Engine $engine, string $entityId) : int {
 			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
+			$event = $entity->getComponent('Event');
 
-			$currency = 'USD'; // for purposes of this calculation, always treat as USD
-
-			foreach ($order->lines->items as $line) {
-				$line->terms->pv = Trade\Money::make($line->terms->pvEach * $line->quantity, $currency)
-					->getConvertedAmount();
+			if ($event->eventTypeBare === $this->policy->getValue('type')) {
+				return BT\Status::SUCCESS;
 			}
 
-			return BT\Status::SUCCESS;
+			return BT\Status::FAILED;
 		}
 
 	}

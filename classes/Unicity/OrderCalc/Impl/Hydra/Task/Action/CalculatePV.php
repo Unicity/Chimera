@@ -56,10 +56,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$pv = Trade\Money::make(0.00, $order->currency);
+			$currency = 'USD'; // for purposes of this calculation, always treat as USD
+			$pv = Trade\Money::make(0.00, $currency);
 
 			foreach ($order->lines->items as $line) {
-				$pv = $pv->add(Trade\Money::make($line->terms->pv, $order->currency));
+				$pv = $pv->add(Trade\Money::make($line->terms->pv, $currency));
 			}
 
 			$order->terms->pv = $pv->getConvertedAmount();
