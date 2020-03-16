@@ -26,7 +26,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\Log;
 	use \Unicity\Trade;
 
-	class AddTimbreSurcharge extends BT\Task\Action {
+	class AddDiscountAmount extends BT\Task\Action {
 
 		/**
 		 * This method runs before the concern's execution.
@@ -41,7 +41,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$this->aop['terms']['timbre']['amount'] = $order->terms->timbre->amount;
+			$this->aop['terms']['discount']['amount'] = $order->terms->discount->amount;
 		}
 
 		/**
@@ -56,10 +56,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$surcharge = $this->policy->getValue('surcharge');
-
-			$order->terms->timbre->amount = Trade\Money::make($order->terms->timbre->amount, $order->currency)
-				->add(Trade\Money::make($surcharge, $order->currency))
+			$order->terms->discount->amount = Trade\Money::make($order->terms->discount->amount, $order->currency)
+				->add(Trade\Money::make($this->policy->getValue('amount'), $order->currency))
 				->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
@@ -81,9 +79,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$message = array(
 				'changes' => array(
 					array(
-						'field' => 'Order.terms.timbre.amount',
-						'from' => $this->aop['terms']['timbre']['amount'],
-						'to' => $order->terms->timbre->amount,
+						'field' => 'Order.terms.discount.amount',
+						'from' => $this->aop['terms']['discount']['amount'],
+						'to' => $order->terms->discount->amount,
 					),
 				),
 				'class' => $joinPoint->getProperty('class'),
