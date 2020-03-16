@@ -63,6 +63,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				$pv = $pv->add(Trade\Money::make($line->terms->pv, $currency));
 			}
 
+			foreach ($order->added_lines->items as $line) {
+				$pv = $pv->add(Trade\Money::make($line->terms->pv, $currency));
+			}
+
 			$order->terms->pv = $pv->getConvertedAmount();
 
 			return BT\Status::SUCCESS;

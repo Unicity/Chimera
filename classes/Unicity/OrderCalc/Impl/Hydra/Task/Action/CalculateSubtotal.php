@@ -62,6 +62,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				$subtotal = $subtotal->add(Trade\Money::make($line->terms->price, $order->currency));
 			}
 
+			foreach ($order->added_lines->items as $line) {
+				$subtotal = $subtotal->add(Trade\Money::make($line->terms->price, $order->currency));
+			}
+
 			$order->terms->subtotal = $subtotal->getConvertedAmount();
 
 			return BT\Status::SUCCESS;

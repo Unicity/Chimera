@@ -58,8 +58,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 			$surcharge0 = $this->policy->getValue('surcharge');
 
-			$surcharge1 = Trade\Money::make($order->terms->subtotal, $order->currency)
-				->multiply($this->policy->getValue('rate'))
+			$subtotal = Trade\Money::make(0.00, $order->currency);
+
+			foreach ($order->lines->items as $line) {
+				if (($line->item->taxedAs !== 'service') && ($line->quantity > 0)) {
+					$subtotal = $subtotal->add(Trade\Money::make($line->terms->price, $order->currency));
+				}
+			}
+
+			foreach ($order->added_lines->items as $line) {
+				if (($line->item->taxedAs !== 'service') && ($line->quantity > 0)) {
+					$subtotal = $subtotal->add(Trade\Money::make($line->terms->price, $order->currency));
+				}
+			}
+
+			$surcharge1 = $subtotal->multiply($this->policy->getValue('rate'))
 				->getConvertedAmount();
 
 			$order->terms->freight->amount = ($surcharge0 >= $surcharge1) ? $surcharge0 : $surcharge1;

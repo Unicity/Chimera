@@ -44,6 +44,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					->getConvertedAmount();
 			}
 
+			foreach ($order->added_lines->items as $line) {
+				$line->terms->pv = Trade\Money::make($line->terms->pvEach * $line->quantity, $currency)
+					->getConvertedAmount();
+			}
+
 			return BT\Status::SUCCESS;
 		}
 

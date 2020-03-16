@@ -37,7 +37,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$order = $entity->getComponent('Order');
 
 			foreach ($order->lines->items as $line) {
-				if (($line->item->taxedAs === 'goods') && ($line->quantity > 0)) {
+				if (($line->item->taxedAs !== 'service') && ($line->quantity > 0)) {
+					return BT\Status::SUCCESS;
+				}
+			}
+
+			foreach ($order->added_lines->items as $line) {
+				if (($line->item->taxedAs !== 'service') && ($line->quantity > 0)) {
 					return BT\Status::SUCCESS;
 				}
 			}
