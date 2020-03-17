@@ -22,7 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\BT;
 
-	class HasItem extends BT\Task\Guard {
+	class HasItemWithBoundedLimit extends BT\Task\Guard {
 
 		/**
 		 * This method processes an entity.
@@ -37,11 +37,18 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$order = $entity->getComponent('Order');
 
 			$items = $this->policy->getValue('items');
+			$limit = $this->policy->getValue('limit');
+
+			$quantity = 0;
 
 			foreach ($order->lines->items as $index => $line) {
-				if ($items->hasValue($line->item->id->unicity)) {
-					return BT\Status::SUCCESS;
+				if ($items->hasValue($line->item->id->unicity) && ($line->quantity > 0)) {
+					$quantity += $line->quantity;
 				}
+			}
+
+			if ($quantity <= $limit) {
+				return BT\Status::SUCCESS;
 			}
 
 			return BT\Status::FAILED;

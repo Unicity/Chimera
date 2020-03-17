@@ -18,11 +18,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
+namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\BT;
+	use \Unicity\Trade;
 
-	class HasItem extends BT\Task\Guard {
+	class DiscountItemAmount extends BT\Task\Action {
 
 		/**
 		 * This method processes an entity.
@@ -36,15 +37,22 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$items = $this->policy->getValue('items');
+			$item = $this->policy->getValue('item');
+
+			$priceEach = 0.0;
 
 			foreach ($order->lines->items as $index => $line) {
-				if ($items->hasValue($line->item->id->unicity)) {
-					return BT\Status::SUCCESS;
+				if ($line->item->id->unicity == $item) {
+					$priceEach = $line->item->priceEach;
+					break;
 				}
 			}
 
-			return BT\Status::FAILED;
+			$order->terms->discount->amount = Trade\Money::make($order->terms->discount->amount, $order->currency)
+				->add(Trade\Money::make($priceEach, $order->currency))
+				->getConvertedAmount();
+
+			return BT\Status::SUCCESS;
 		}
 
 	}
