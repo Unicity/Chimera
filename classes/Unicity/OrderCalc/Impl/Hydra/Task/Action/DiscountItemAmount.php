@@ -37,13 +37,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$item = $this->policy->getValue('item');
+			$items = $this->policy->getValue('items');
 
 			$priceEach = 0.0;
 
 			foreach ($order->lines->items as $index => $line) {
-				if ($line->item->id->unicity == $item) {
-					$priceEach = $line->item->priceEach;
+				if ($items->hasValue($line->item->id->unicity) && ($line->quantity > 0)) {
+					$priceEach = $line->terms->priceEach;
 					break;
 				}
 			}
