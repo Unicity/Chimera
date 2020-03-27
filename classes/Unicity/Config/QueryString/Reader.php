@@ -112,8 +112,13 @@ namespace Unicity\Config\QueryString {
 				});
 
 				if ($path !== null) {
-					$path = Core\Convert::toString($path);
-					$collection = Config\Helper::factory($collection)->getValue($path);
+					try {
+						$path = Core\Convert::toString($path);
+						$collection = Config\Helper::factory($collection)->getValue($path);
+					}
+					catch (\Exception $ex) {
+						return null;
+					}
 				}
 
 				return $collection;

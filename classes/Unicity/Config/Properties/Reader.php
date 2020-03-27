@@ -106,7 +106,12 @@ namespace Unicity\Config\Properties {
 				});
 
 				if ($path !== null) {
-					$collection = $collection->getValue(Core\Convert::toString($path));
+					try {
+						$collection = $collection->getValue(Core\Convert::toString($path));
+					}
+					catch (\Exception $ex) {
+						return null;
+					}
 				}
 
 				return $collection;

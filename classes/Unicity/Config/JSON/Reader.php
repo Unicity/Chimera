@@ -78,8 +78,13 @@ namespace Unicity\Config\JSON {
 				$collection = json_decode($buffer, $this->metadata['assoc'], $this->metadata['depth']);
 
 				if ($path !== null) {
-					$path = Core\Convert::toString($path);
-					$collection = Config\Helper::factory($collection)->getValue($path);
+					try {
+						$path = Core\Convert::toString($path);
+						$collection = Config\Helper::factory($collection)->getValue($path);
+					}
+					catch (\Exception $ex) {
+						return null;
+					}
 				}
 
 				return $collection;
