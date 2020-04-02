@@ -22,6 +22,7 @@ namespace Unicity\BT {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Config;
 	use \Unicity\Common;
 	use \Unicity\Log;
 
@@ -29,7 +30,7 @@ namespace Unicity\BT {
 
 		public static function before(AOP\JoinPoint $joinPoint, string $title, Common\HashMap $policy, array $inputs = [], array $variants = []) : object {
 			$entity = $joinPoint->getArgument(0)->getEntity($joinPoint->getArgument(1));
-			return (object)[
+			return (object) [
 				'type' => $joinPoint->getProperty('class'),
 				'title' => $title,
 				'policy' => $policy,
@@ -55,27 +56,27 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 * @param \stdClass $message                                the message to be enriched and logged
+		 * @param \stdClass $context                                the context to be enriched and logged
 		 */
-		public function afterThrowing(AOP\JoinPoint $joinPoint, \stdClass $message) : void {
-			$message = json_decode(json_encode($message));
+		public function afterThrowing(AOP\JoinPoint $joinPoint, \stdClass $context) : void {
+			$context = json_decode(Config\JSON\Helper::encode($context));
 
 			$engine = $joinPoint->getArgument(0);
 
-			$message->changes = [];
+			$context->changes = [];
 
 			$exception = $joinPoint->getException();
 			if ($exception instanceof \Exception) {
-				$message->exception = (object)[
+				$context->exception = (object)[
 					'code' => $exception->getCode(),
 					'message' => $exception->getMessage(),
 					'trace' => $exception->getTraceAsString(),
 				];
 			}
 
-			$message->status = $joinPoint->getReturnedValue();
+			$context->status = $joinPoint->getReturnedValue();
 
-			$engine->getLogger()->add(Log\Level::error(), json_encode(Common\Collection::useArrays($message)));
+			$engine->getLogger()->add(Log\Level::error(), "{$context->type}::process", Common\Collection::useArrays($context));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
 			$joinPoint->setException(null);
 		}
@@ -85,23 +86,23 @@ namespace Unicity\BT {
 		 *
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 * @param \stdClass $message                                the message to be enriched and logged
+		 * @param \stdClass $context                                the context to be enriched and logged
 		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint, \stdClass $message) : void {
-			$message = json_decode(json_encode($message));
+		public function afterReturning(AOP\JoinPoint $joinPoint, \stdClass $context) : void {
+			$context = json_decode(Config\JSON\Helper::encode($context));
 
 			$engine = $joinPoint->getArgument(0);
 
 			$entity = $engine->getEntity($joinPoint->getArgument(1));
 
-			$message->changes = array_map(function($change) use ($entity) {
+			$context->changes = array_map(function($change) use ($entity) {
 				$change->after = $entity->getComponentAtPath($change->path);
 				return $change;
-			}, $message->changes);
+			}, $context->changes);
 
-			$message->status = $joinPoint->getReturnedValue();
+			$context->status = $joinPoint->getReturnedValue();
 
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
+			$engine->getLogger()->add(Log\Level::informational(), "{$context->type}::process", Common\Collection::useArrays($context));
 		}
 
 	}
