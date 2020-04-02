@@ -23,6 +23,7 @@ namespace Unicity\BT {
 	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Config;
+	use \Unicity\Core;
 	use \Unicity\Common;
 	use \Unicity\Log;
 
@@ -37,13 +38,13 @@ namespace Unicity\BT {
 				'inputs' => array_map(function($path) use ($entity) {
 					return (object)[
 						'path' => $path,
-						'value' => $entity->getComponentAtPath($path),
+						'value' => Core\Data\ToolKit::ifUndefined($entity->getComponentAtPath($path), null),
 					];
 				}, $inputs),
 				'changes' => array_map(function($path) use ($entity) {
 					return (object)[
 						'path' => $path,
-						'before' => $entity->getComponentAtPath($path),
+						'before' => Core\Data\ToolKit::ifUndefined($entity->getComponentAtPath($path), null),
 					];
 				}, $variants),
 				'status' => BT\Status::ACTIVE,
@@ -96,7 +97,7 @@ namespace Unicity\BT {
 			$entity = $engine->getEntity($joinPoint->getArgument(1));
 
 			$context->changes = array_map(function($change) use ($entity) {
-				$change->after = $entity->getComponentAtPath($change->path);
+				$change->after = Core\Data\ToolKit::ifUndefined($entity->getComponentAtPath($change->path), null);
 				return $change;
 			}, $context->changes);
 
