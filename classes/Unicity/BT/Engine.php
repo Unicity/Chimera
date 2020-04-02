@@ -127,10 +127,11 @@ namespace Unicity\BT {
 		 * This method returns a reference to the logger.
 		 *
 		 * @access public
+		 * @param string $name                                      the name of the logger
 		 * @return Log\Manager                                      a reference to the logger
 		 */
-		public function getLogger() : Log\Manager {
-			return Log\Manager::instance();
+		public function getLogger(string $name = 'default') : Log\Manager {
+			return Log\Manager::instance($name);
 		}
 
 		/**

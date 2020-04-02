@@ -77,7 +77,7 @@ namespace Unicity\BT {
 
 			$context->status = BT\Status::getName($joinPoint->getReturnedValue());
 
-			$engine->getLogger()->add(Log\Level::error(), "{$context->type}::process", Common\Collection::useArrays($context));
+			$engine->getLogger('\\Unicity\\BT\\EventLog')->add(Log\Level::error(), "{$context->type}::process", Common\Collection::useArrays($context));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
 			$joinPoint->setException(null);
 		}
@@ -103,7 +103,7 @@ namespace Unicity\BT {
 
 			$context->status = BT\Status::getName($joinPoint->getReturnedValue());
 
-			$engine->getLogger()->add(Log\Level::informational(), "{$context->type}::process", Common\Collection::useArrays($context));
+			$engine->getLogger('\\Unicity\\BT\\EventLog')->add(Log\Level::informational(), "{$context->type}::process", Common\Collection::useArrays($context));
 		}
 
 	}
