@@ -22,9 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
-	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\Log;
 	use \Unicity\Trade;
 
 	class CalculateFractionalTax extends BT\Task\Action {
@@ -36,14 +34,15 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$this->aop['terms']['tax']['amount'] = $order->terms->tax->amount;
-			$this->aop['terms']['tax']['percentage'] = $order->terms->tax->percentage;
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.currency',
+				'Order.terms.discount.amount',
+				'Order.terms.freight.amount',
+				'Order.terms.subtotal',
+			], $variants = [
+				'Order.terms.tax.amount',
+				'Order.terms.tax.percentage',
+			]);
 		}
 
 		/**
@@ -72,55 +71,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order->terms->tax->percentage = $tax_rate * 100;
 
 			return BT\Status::SUCCESS;
-		}
-
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$message = array(
-				'changes' => array(
-					array(
-						'field' => 'Order.terms.tax.amount',
-						'from' => $this->aop['terms']['tax']['amount'],
-						'to' => $order->terms->tax->amount,
-					),
-					array(
-						'field' => 'Order.terms.tax.percentage',
-						'from' => $this->aop['terms']['tax']['percentage'],
-						'to' => $order->terms->tax->percentage,
-					),
-				),
-				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

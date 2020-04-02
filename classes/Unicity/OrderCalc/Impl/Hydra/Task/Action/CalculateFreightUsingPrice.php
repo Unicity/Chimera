@@ -20,11 +20,27 @@ declare(strict_types = 1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\Trade;
 
 	class CalculateFreightUsingPrice extends BT\Task\Action {
+
+		/**
+		 * This method runs before the concern's execution.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function before(AOP\JoinPoint $joinPoint) : void {
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.currency',
+				'Order.terms.subtotal',
+			], $variants = [
+				'Order.terms.freight.amount',
+			]);
+		}
 
 		/**
 		 * This method processes an entity.

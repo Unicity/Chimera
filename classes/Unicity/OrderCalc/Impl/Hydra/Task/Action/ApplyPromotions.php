@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Core;
 	use \Unicity\Common;

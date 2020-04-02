@@ -26,7 +26,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\Core;
 	use \Unicity\FP;
 	use \Unicity\IO;
-	use \Unicity\Log;
 
 	class AddWeightToLineItem extends BT\Task\Action {
 
@@ -37,16 +36,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			foreach ($order->lines->items as $index => $line) {
-				$this->aop['lines']['items'][$index]['item']['weightEach']['value'] = $line->item->weightEach->value;
-				$this->aop['lines']['items'][$index]['item']['weightEach']['unit'] = $line->item->weightEach->unit;
-			}
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [], $variants = [
+				'Order.lines.items',
+			]);
 		}
 
 		/**
@@ -106,57 +98,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				return $items;
 			}
 			return  $this->policy->getValue('items');
-		}
-
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$message = array(
-				'changes' => array(),
-				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			foreach ($order->lines->items as $index => $line) {
-				$message['changes'][] = array(
-					'field' => "Order.lines.items[{$index}].item.weightEach.value",
-					'from' => $this->aop['lines']['items'][$index]['item']['weightEach']['value'],
-					'to' => $line->item->weightEach->value,
-				);
-				$message['changes'][] = array(
-					'field' => "Order.lines.items[{$index}].item.weightEach.unit",
-					'from' => $this->aop['lines']['items'][$index]['item']['weightEach']['unit'],
-					'to' => $line->item->weightEach->unit,
-				);
-			}
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

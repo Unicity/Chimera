@@ -24,7 +24,6 @@ namespace Unicity\BT {
 	use \Unicity\BT;
 	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\Log;
 
 	/**
 	 * This class represents the base task for any task.
@@ -68,7 +67,7 @@ namespace Unicity\BT {
 		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
 		public function __construct(Common\Mutable\IMap $policy = null) {
-			$this->aop = array();
+			$this->aop = new \stdClass();
 			$this->policy = ($policy !== null)
 				? $policy
 				: new Common\Mutable\HashMap();
@@ -88,48 +87,33 @@ namespace Unicity\BT {
 		}
 
 		/**
+		 * This method runs before the concern's execution.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function before(AOP\JoinPoint $joinPoint) : void {
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy());
+		}
+
+		/**
+		 * This method runs when the concern's execution is successful (and a result is returned).
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
+			BT\EventLog::afterReturning($joinPoint, $this->aop);
+		}
+
+		/**
 		 * This method runs when the task's throws an exception.
 		 *
 		 * @access public
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function afterThrowing(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-
-			$exception = $joinPoint->getException();
-
-			$message = array(
-				'class' => $joinPoint->getProperty('class'),
-				'exception' => array(
-					'code' => $exception->getCode(),
-					'message' => $exception->getMessage(),
-					'trace' => $exception->getTraceAsString(),
-				),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::error(), json_encode(Common\Collection::useArrays($message)));
-			$joinPoint->setReturnedValue(BT\Status::ERROR);
-			$joinPoint->setException(null);
+			BT\EventLog::afterThrowing($joinPoint, $this->aop);
 		}
 
 		/**

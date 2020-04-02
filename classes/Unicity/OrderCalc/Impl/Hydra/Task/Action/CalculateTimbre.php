@@ -22,9 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
-	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\Log;
 	use \Unicity\Trade;
 
 	class CalculateTimbre extends BT\Task\Action {
@@ -36,14 +34,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$this->aop['terms']['timbre']['amount'] = $order->terms->timbre->amount;
-			$this->aop['terms']['timbre']['percentage'] = $order->terms->timbre->percentage;
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.currency',
+			], $variants = [
+				'Order.terms.timbre.amount',
+				'Order.terms.timbre.percentage',
+			]);
 		}
 
 		/**
@@ -67,55 +63,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order->terms->timbre->percentage = $tax_rate * 100;
 
 			return BT\Status::SUCCESS;
-		}
-
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$message = array(
-				'changes' => array(
-					array(
-						'field' => 'Order.terms.timbre.amount',
-						'from' => $this->aop['terms']['timbre']['amount'],
-						'to' => $order->terms->timbre->amount,
-					),
-					array(
-						'field' => 'Order.terms.timbre.percentage',
-						'from' => $this->aop['terms']['timbre']['percentage'],
-						'to' => $order->terms->timbre->percentage,
-					),
-				),
-				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

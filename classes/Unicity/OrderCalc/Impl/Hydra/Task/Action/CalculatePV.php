@@ -22,8 +22,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
-	use \Unicity\Common;
-	use \Unicity\Log;
 	use \Unicity\Trade;
 
 	class CalculatePV extends BT\Task\Action {
@@ -35,13 +33,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$this->aop['terms']['pv'] = $order->terms->pv;
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [], $variants = [
+				'Order.terms.pv',
+			]);
 		}
 
 		/**
@@ -70,50 +64,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order->terms->pv = $pv->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
-		}
-
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$message = array(
-				'changes' => array(
-					array(
-						'field' => 'Order.terms.pv',
-						'from' => $this->aop['terms']['pv'],
-						'to' => $order->terms->pv,
-					),
-				),
-				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

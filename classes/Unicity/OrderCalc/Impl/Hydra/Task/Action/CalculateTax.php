@@ -36,14 +36,15 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$this->aop['terms']['tax']['amount'] = $order->terms->tax->amount;
-			$this->aop['terms']['tax']['percentage'] = $order->terms->tax->percentage;
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.currency',
+				'Order.terms.discount.amount',
+				'Order.terms.freight.amount',
+				'Order.terms.subtotal',
+			], $variants = [
+				'Order.terms.tax.amount',
+				'Order.terms.tax.percentage',
+			]);
 		}
 
 		/**

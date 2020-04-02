@@ -22,9 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
-	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\Log;
 	use \Unicity\Trade;
 
 	class CalculateDiscount extends BT\Task\Action {
@@ -36,14 +34,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$this->aop['terms']['discount']['amount'] = $order->terms->discount->amount;
-			$this->aop['terms']['discount']['percentage'] = $order->terms->discount->percentage;
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.currency',
+				'Order.terms.subtotal',
+			], $variants = [
+				'Order.terms.discount.amount',
+				'Order.terms.discount.percentage',
+			]);
 		}
 
 		/**
@@ -67,55 +64,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order->terms->discount->percentage = $discount_rate * 100;
 
 			return BT\Status::SUCCESS;
-		}
-
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$message = array(
-				'changes' => array(
-					array(
-						'field' => 'Order.terms.discount.amount',
-						'from' => $this->aop['terms']['discount']['amount'],
-						'to' => $order->terms->discount->amount,
-					),
-					array(
-						'field' => 'Order.terms.discount.percentage',
-						'from' => $this->aop['terms']['discount']['percentage'],
-						'to' => $order->terms->discount->percentage,
-					),
-				),
-				'class' => $joinPoint->getProperty('class'),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}
