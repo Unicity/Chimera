@@ -57,7 +57,7 @@ namespace Unicity\Config\JSON {
 		public function sanitize($input, array $metadata = array()) : string {
 			$json = Config\JSON\Helper::decode($input, $metadata);
 			if (!empty($json)) {
-				$store = new JsonPath\JsonStore(Config\JSON\Helper::decode($input, $metadata));
+				$store = new JsonPath\JsonStore($json);
 				foreach ($this->filters as $filter) {
 					$rule = $filter->rule;
 					$matches = array();
