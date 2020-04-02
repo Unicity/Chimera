@@ -47,7 +47,7 @@ namespace Unicity\BT {
 						'before' => Core\Data\ToolKit::ifUndefined($entity->getComponentAtPath($path), null),
 					];
 				}, $variants),
-				'status' => BT\Status::ACTIVE,
+				'status' => BT\Status::getName(BT\Status::ACTIVE),
 				'exception' => null,
 			];
 		}
@@ -75,7 +75,7 @@ namespace Unicity\BT {
 				];
 			}
 
-			$context->status = $joinPoint->getReturnedValue();
+			$context->status = BT\Status::getName($joinPoint->getReturnedValue());
 
 			$engine->getLogger()->add(Log\Level::error(), "{$context->type}::process", Common\Collection::useArrays($context));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
@@ -101,7 +101,7 @@ namespace Unicity\BT {
 				return $change;
 			}, $context->changes);
 
-			$context->status = $joinPoint->getReturnedValue();
+			$context->status = BT\Status::getName($joinPoint->getReturnedValue());
 
 			$engine->getLogger()->add(Log\Level::informational(), "{$context->type}::process", Common\Collection::useArrays($context));
 		}
