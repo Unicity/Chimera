@@ -34,7 +34,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [], $variants = [
-				'Order.added_lines.items',
 				'Order.lines.items',
 			]);
 		}
