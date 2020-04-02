@@ -22,11 +22,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
-	use \Unicity\Common;
 	use \Unicity\Core;
-	use \Unicity\Log;
 
 	class IsPretotalEquatableToAmount extends BT\Task\Guard {
+
+		/**
+		 * This method runs before the concern's execution.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function before(AOP\JoinPoint $joinPoint) : void {
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.terms.pretotal',
+			]);
+		}
 
 		/**
 		 * This method processes an entity.
@@ -48,49 +58,6 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			}
 
 			return BT\Status::FAILED;
-		}
-
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint) : void {
-			$engine = $joinPoint->getArgument(0);
-			$entityId = $joinPoint->getArgument(1);
-
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
-
-			$message = array(
-				'class' => $joinPoint->getProperty('class'),
-				'input' => array(
-					array(
-						'field' => 'Order.terms.pretotal',
-						'value' => $order->terms->pretotal,
-					),
-				),
-				'policy' => $this->policy,
-				'status' => $joinPoint->getReturnedValue(),
-				'tags' => array(),
-				'title' => $this->getTitle(),
-			);
-
-			$blackboard = $engine->getBlackboard('global');
-			if ($blackboard->hasKey('tags')) {
-				$tags = $blackboard->getValue('tags');
-				foreach ($tags as $path) {
-					if ($entity->hasComponentAtPath($path)) {
-						$message['tags'][] = array(
-							'name' => $path,
-							'value' => $entity->getComponentAtPath($path),
-						);
-					}
-				}
-			}
-
-			$engine->getLogger()->add(Log\Level::informational(), json_encode(Common\Collection::useArrays($message)));
 		}
 
 	}

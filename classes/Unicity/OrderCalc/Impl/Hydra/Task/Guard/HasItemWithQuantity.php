@@ -20,9 +20,22 @@ declare(strict_types = 1);
 
 namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
+	use \Unicity\AOP;
 	use \Unicity\BT;
 
 	class HasItemWithQuantity extends BT\Task\Guard {
+
+		/**
+		 * This method runs before the concern's execution.
+		 *
+		 * @access public
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 */
+		public function before(AOP\JoinPoint $joinPoint) : void {
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.lines.items',
+			]);
+		}
 
 		/**
 		 * This method processes an entity.
