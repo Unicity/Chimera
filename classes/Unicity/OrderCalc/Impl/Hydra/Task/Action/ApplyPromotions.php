@@ -44,9 +44,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 			$order = $entity->getComponent('Order');
 			$promotions = $entity->getComponent('Promotions');
+			$event = $entity->getComponent('Event');
 
-			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use ($order) {
-				if ($this->matchMap($promotion->stats->eventDetails, $promotion->pattern->eventDetails, $order, '')) {
+			$promotions->items = FP\IList::filter($promotions->items, function($promotion) use ($order, $event) {
+				if ($this->matchMap($promotion->stats->eventDetails, $promotion->pattern->eventDetails, $order, $event, '')) {
 					$this->apply($promotion->patch->eventDetails, $order);
 					return true;
 				}
@@ -117,11 +118,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			return (empty($expr) && empty($value)) || (!empty($expr) && preg_match('/(' . implode('|', array_map('preg_quote', explode('|', $expr))) . ')/i', $value));
 		}
 
-		protected function matchArray($stats, $pattern, $order, $path): bool {
-			return $this->reduce($pattern, function(bool $carry, array $tuple) use ($stats, $order, $path) {
+		protected function matchArray($stats, $pattern, $order, $event, $path): bool {
+			return $this->reduce($pattern, function(bool $carry, array $tuple) use ($stats, $order, $event, $path) {
 				$v1 = $tuple[0];
 				$a2 = ORM\Query::getValue($order, $path);
-				return $this->reduce($a2, function(bool $carry, array $tuple) use ($stats, $order, $path, $v1) {
+				return $this->reduce($a2, function(bool $carry, array $tuple) use ($stats, $order, $event, $path, $v1) {
 					$ipath = ORM\Query::appendIndex($path, $tuple[1]);
 					$v2 = ORM\Query::getValue($order, $ipath);
 
@@ -130,10 +131,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry || $this->matchArray($stats, $v1, $order, $ipath);
+							return $carry || $this->matchArray($stats, $v1, $order, $event, $ipath);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry || $this->matchMap($stats, $v1, $order, $ipath);
+							return $carry || $this->matchMap($stats, $v1, $order, $event, $ipath);
 						}
 						if (in_array($d1->type, ['integer', 'double'])) {
 							return $carry || ($v2 >= $v1);
@@ -150,8 +151,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			}, true);
 		}
 
-		public function matchMap($stats, $pattern, $order, $path): bool {
-			return $this->reduce($pattern, function(bool $carry, array $tuple) use ($stats, $order, $path) {
+		public function matchMap($stats, $pattern, $order, $event, $path): bool {
+			return $this->reduce($pattern, function(bool $carry, array $tuple) use ($stats, $order, $event, $path) {
 				$k1 = $tuple[1];
 				$v1 = $tuple[0];
 				$kpath = ORM\Query::appendKey($path, $k1);
@@ -181,6 +182,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				if ($kpath === 'customer.limit') {
 					return $carry && ($stats->customer->counter < $v1);
 				}
+				if ($kpath === 'employee') {
+					return $carry && (isset($event->eventSecurityContext->employee) && isset($event->eventSecurityContext->employee->username));
+				}
 				if (ORM\Query::hasPath($order, $kpath)) {
 					$v2 = ORM\Query::getValue($order, $kpath);
 
@@ -189,10 +193,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 					if (($d1->class === $d2->class) && ($d1->type === $d2->type)) {
 						if ($v1 instanceof Common\IList) {
-							return $carry && $this->matchArray($stats, $v1, $order, $kpath);
+							return $carry && $this->matchArray($stats, $v1, $order, $event, $kpath);
 						}
 						if ($v1 instanceof Common\IMap) {
-							return $carry && $this->matchMap($stats, $v1, $order, $kpath);
+							return $carry && $this->matchMap($stats, $v1, $order, $event, $kpath);
 						}
 						if (in_array($d1->type, ['integer', 'double'])) {
 							return $carry && ($v2 >= $v1);
