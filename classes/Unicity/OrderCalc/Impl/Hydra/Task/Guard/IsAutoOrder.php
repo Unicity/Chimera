@@ -51,8 +51,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$hydraOrder = $entity->getComponent('Order');
 
 			if (false
-				|| (isset($hydraOrder->type) && (strtolower($hydraOrder->type) === 'autoship'))
-				|| isset($hydraOrder->recurrence)
+				|| ($hydraOrder->type === 'Autoship')
+				|| ($hydraOrder->recurrence->status === 'Enabled')
 			) {
 				return BT\Status::SUCCESS;
 			}

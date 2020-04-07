@@ -205,6 +205,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 							if (preg_match('/^lines\.items\.(0|[1-9][0-9]*)\.(kitChildren\.(0|[1-9][0-9]*)\.)?catalogSlide\.content\.description$/', $kpath)) {
 								return $carry && $this->isLikeAny($v1, $v2);
 							}
+							if (preg_match('/^\!\((.*)\)$/', $v1, $matches)) {
+								return $carry && !$this->isAny($matches[1], $v2);
+							}
 							return $carry && $this->isAny($v1, $v2);
 						}
 						if ($d1->hash === $d2->hash) {
