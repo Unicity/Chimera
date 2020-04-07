@@ -24,7 +24,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
  	use \Unicity\BT;
 	use \Unicity\Trade;
 
-	class SetTaxablePriceEach extends BT\Task\Action {
+	class CalculateTaxablePriceEach extends BT\Task\Action {
 
 		/**
 		 * This method runs before the concern's execution.
