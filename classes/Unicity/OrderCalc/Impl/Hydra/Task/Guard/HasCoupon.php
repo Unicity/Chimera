@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2016 Unicity International
+ * Copyright 2015-2020 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,12 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
+namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
-	use \Unicity\Trade;
 
-	class CalculatePretotal extends BT\Task\Action {
+	class HasCoupon extends BT\Task\Guard {
 
 		/**
 		 * This method runs before the concern's execution.
@@ -34,13 +33,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
-				'Order.currency',
-				'Order.terms.discount.amount',
-				'Order.terms.freight.amount',
-				'Order.terms.subtotal',
-				'Order.terms.tax.amount',
-			], $variants = [
-				'Order.terms.pretotal',
+				'Promotions.items',
 			]);
 		}
 
@@ -54,25 +47,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 */
 		public function process(BT\Engine $engine, string $entityId) : int {
 			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
+			$promotions = $entity->getComponent('Promotions');
 
-			$pretotal = Trade\Money::make($order->terms->subtotal, $order->currency);
+			$codes = $this->policy->getValue('codes');
 
-			if ($this->policy->getValue('discount')) {
-				$pretotal = $pretotal->subtract(Trade\Money::make($order->terms->discount->amount, $order->currency));
-			}
-
-			if ($this->policy->getValue('freight')) {
-				$pretotal = $pretotal->add(Trade\Money::make($order->terms->freight->amount, $order->currency));
-			}
-
-			if ($this->policy->getValue('tax')) {
-				$pretotal = $pretotal->add(Trade\Money::make($order->terms->tax->amount, $order->currency));
-			}
-
-			$order->terms->pretotal = max(0, $pretotal->getConvertedAmount());
-
-			return BT\Status::SUCCESS;
+			return \Unicity\FP\IList::foldRight($promotions->items, function ($carry, $promotion) use ($codes) {
+				return $codes->hasValue($promotion->code) || $carry;
+			}, false) ? BT\Status::SUCCESS : BT\Status::FAILED;
 		}
 
 	}

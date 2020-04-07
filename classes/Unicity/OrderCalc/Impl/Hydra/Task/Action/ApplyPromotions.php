@@ -69,6 +69,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					->getConvertedAmount();
 			}
 
+			if (ORM\Query::hasPath($patch, 'terms.freight.discount.amount')) {
+				$freightAmount = Trade\Money::make($order->terms->freight->amount, $order->currency)
+					->subtract(Trade\Money::make($patch->terms->freight->discount->amount, $order->currency))
+					->getConvertedAmount();
+				$order->terms->freight->amount = max(0, $freightAmount);
+			}
+
 			if (ORM\Query::hasPath($patch, 'terms.discount.percentage')) {
 				if ($patch->terms->discount->percentage > $order->terms->discount->percentage) {
 					$order->terms->discount->amount = Trade\Money::make($order->terms->subtotal, $order->currency)

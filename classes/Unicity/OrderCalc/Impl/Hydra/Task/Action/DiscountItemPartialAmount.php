@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2016 Unicity International
+ * Copyright 2015-2020 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\BT;
 	use \Unicity\Trade;
 
-	class CalculatePretotal extends BT\Task\Action {
+	class DiscountItemPartialAmount extends BT\Task\Action {
 
 		/**
 		 * This method runs before the concern's execution.
@@ -35,12 +35,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
 				'Order.currency',
-				'Order.terms.discount.amount',
-				'Order.terms.freight.amount',
-				'Order.terms.subtotal',
-				'Order.terms.tax.amount',
+				'Order.lines.items',
 			], $variants = [
-				'Order.terms.pretotal',
+				'Order.terms.discount.amount',
 			]);
 		}
 
@@ -56,21 +53,20 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$pretotal = Trade\Money::make($order->terms->subtotal, $order->currency);
+			$item = $this->policy->getValue('item');
+			$amount = $this->policy->getValue('amount');
 
-			if ($this->policy->getValue('discount')) {
-				$pretotal = $pretotal->subtract(Trade\Money::make($order->terms->discount->amount, $order->currency));
+			$quantity = 0;
+
+			foreach ($order->lines->items as $index => $line) {
+				if (($item == $line->item->id->unicity) && ($line->quantity > 0)) {
+					$quantity += $line->quantity;
+				}
 			}
 
-			if ($this->policy->getValue('freight')) {
-				$pretotal = $pretotal->add(Trade\Money::make($order->terms->freight->amount, $order->currency));
-			}
-
-			if ($this->policy->getValue('tax')) {
-				$pretotal = $pretotal->add(Trade\Money::make($order->terms->tax->amount, $order->currency));
-			}
-
-			$order->terms->pretotal = max(0, $pretotal->getConvertedAmount());
+			$order->terms->discount->amount = Trade\Money::make($order->terms->discount->amount, $order->currency)
+				->add(Trade\Money::make($quantity * $amount, $order->currency))
+				->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
 		}
