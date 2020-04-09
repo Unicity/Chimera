@@ -48,11 +48,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 */
 		public function process(BT\Engine $engine, string $entityId) : int {
 			$entity = $engine->getEntity($entityId);
-			$hydraOrder = $entity->getComponent('Order');
+			$hydraOrder = \Unicity\Common\Collection::useObjects($entity->getComponent('Order'));
 
 			if (false
-				|| ($hydraOrder->type === 'Autoship')
-				|| ($hydraOrder->recurrence->status === 'Enabled')
+				|| ($hydraOrder->type ?? '') === 'Autoship'
+				|| isset($hydraOrder->recurrence)
 			) {
 				return BT\Status::SUCCESS;
 			}
