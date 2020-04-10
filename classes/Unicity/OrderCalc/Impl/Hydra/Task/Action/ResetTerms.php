@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2016 Unicity International
+ * Copyright 2015-2020 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\AOP;
 	use \Unicity\BT;
 
-	###################################
-	# DEPRECATED use ResetTerms instead
-	###################################
-	class ResetTotals extends BT\Task\Action {
+	class ResetTerms extends BT\Task\Action {
 
 		/**
 		 * This method runs before the concern's execution.
@@ -39,7 +36,10 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				'Order.terms.discount.amount',
 				'Order.terms.freight.amount',
 				'Order.terms.pretotal',
+				'Order.terms.pv',
+				'Order.terms.subtotal',
 				'Order.terms.tax.amount',
+				'Order.terms.taxableTotal',
 				'Order.terms.timbre.amount',
 				'Order.terms.total',
 			]);
@@ -54,17 +54,43 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @return integer                                          the status
 		 */
 		public function process(BT\Engine $engine, string $entityId) : int {
-			$entity = $engine->getEntity($entityId);
-			$order = $entity->getComponent('Order');
+			$order = $engine->getEntity($entityId)->getComponent('Order');
 
-			$order->terms->discount->amount = 0.00;
-			$order->terms->freight->amount = 0.00;
-			$order->terms->tax->amount = 0.00;
-			$order->terms->pretotal = 0.00;
-			if ($order->terms->hasKey('timbre')) {
+			if ($this->policy->getValue('discount.amount')) {
+				$order->terms->discount->amount = 0.00;
+			}
+
+			if ($this->policy->getValue('freight.amount')) {
+				$order->terms->freight->amount = 0.00;
+			}
+
+			if ($this->policy->getValue('pretotal')) {
+				$order->terms->pretotal = 0.00;
+			}
+
+			if ($this->policy->getValue('pv')) {
+				$order->terms->pv = 0.00;
+			}
+
+			if ($this->policy->getValue('subtotal')) {
+				$order->terms->subtotal = 0.00;
+			}
+
+			if ($this->policy->getValue('tax.amount')) {
+				$order->terms->tax->amount = 0.00;
+			}
+
+			if ($this->policy->getValue('taxableTotal')) {
+				$order->terms->taxableTotal = 0.00;
+			}
+
+			if ($this->policy->getValue('timbre.amount')) {
 				$order->terms->timbre->amount = 0.00;
 			}
-			$order->terms->total = 0.00;
+
+			if ($this->policy->getValue('total')) {
+				$order->terms->total = 0.00;
+			}
 
 			return BT\Status::SUCCESS;
 		}
