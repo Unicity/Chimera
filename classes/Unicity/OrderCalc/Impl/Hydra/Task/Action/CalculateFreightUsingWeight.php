@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2016 Unicity International
+ * Copyright 2015-2020 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
 				'Order.currency',
+				'Order.terms.weight',
 			], $variants = [
 				'Order.terms.freight.amount',
 			]);
@@ -53,7 +54,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$weight = $order->lines->aggregate->weight->value;
+			$weight = $order->terms->weight;
 
 			$freight = Trade\Money::make($order->terms->freight->amount, $order->currency);
 			$breakpoint = Core\Convert::toDouble($this->policy->getValue('breakpoint'));

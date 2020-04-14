@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2016 Unicity International
+ * Copyright 2015-2020 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,11 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.added_lines.items',
 				'Order.lines.items',
 			], $variants = [
+				'Order.added_lines.aggregate.weight.unit',
+				'Order.added_lines.aggregate.weight.value',
 				'Order.lines.aggregate.weight.unit',
 				'Order.lines.aggregate.weight.value',
 				'Order.terms.weight',
@@ -61,27 +64,39 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$weight = 0.0;
+			$aggregate_weight_1 = $this->getAggregateWeight($order->lines->items);
+			$order->lines->aggregate->weight->unit = 'kg';
+			$order->lines->aggregate->weight->value = $this->getRoundedWeight($aggregate_weight_1);
 
-			foreach ($order->lines->items as $line) {
+			$aggregate_weight_2 = $this->getAggregateWeight($order->added_lines->items);
+			$order->added_lines->aggregate->weight->unit = 'kg';
+			$order->added_lines->aggregate->weight->value = $this->getRoundedWeight($aggregate_weight_2);
+
+			$order->terms->weight = $this->getRoundedWeight($aggregate_weight_1 + $aggregate_weight_2);
+
+			return BT\Status::SUCCESS;
+		}
+
+		private function getAggregateWeight($lines) : float {
+			$aggregate_weight = 0.0;
+
+			foreach ($lines as $line) {
 				$value = $line->item->weightEach->value;
 				$unit = $line->item->weightEach->unit;
 				if (preg_match('/^lb(s)?$/i', $unit)) {
-					$value = $value / self::LBS_TO_KGS_CONVERSION_RATE;
+					$value = $value / static::LBS_TO_KGS_CONVERSION_RATE;
 				}
 				else if (!preg_match('/^kg(s)?$/i', $unit)) {
 					return BT\Status::ERROR;
 				}
-				$weight += $line->quantity * $value;
+				$aggregate_weight += $line->quantity * $value;
 			}
 
-			$weight = round($weight, 6, PHP_ROUND_HALF_UP);
+			return $aggregate_weight;
+		}
 
-			$order->lines->aggregate->weight->unit = 'kg';
-			$order->lines->aggregate->weight->value = $weight;
-			$order->terms->weight = $weight;
-
-			return BT\Status::SUCCESS;
+		private function getRoundedWeight($weight) : float {
+			return round($weight, 6, PHP_ROUND_HALF_UP);
 		}
 
 	}
