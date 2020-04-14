@@ -53,9 +53,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
+			$order->currency = strtoupper($order->currency);
 			$order->market = strtoupper($order->market);
 			$order->shipToAddress->country = strtoupper($order->shipToAddress->country);
-			$order->currency = strtoupper($order->currency);
 			$order->terms->subtotal = Trade\Money::make($order->terms->subtotal, $order->currency)->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
