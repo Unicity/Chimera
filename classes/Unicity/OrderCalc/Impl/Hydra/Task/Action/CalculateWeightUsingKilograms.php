@@ -40,9 +40,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [], $variants = [
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
+				'Order.lines.items',
+			], $variants = [
 				'Order.lines.aggregate.weight.unit',
 				'Order.lines.aggregate.weight.value',
+				'Order.terms.weight',
 			]);
 		}
 

@@ -44,8 +44,12 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
 				'Order.currency',
+				'Order.lines.items',
 			], $variants = [
+				'Order.lines.aggregate.weight.unit',
+				'Order.lines.aggregate.weight.value',
 				'Order.terms.freight.amount',
+				'Order.terms.weight',
 			]);
 		}
 
@@ -75,11 +79,18 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				$weight += $line->quantity * $value;
 			}
 
+			$weight = round($weight, 6, PHP_ROUND_HALF_UP);
+
+			$order->lines->aggregate->weight->unit = 'kg';
+			$order->lines->aggregate->weight->value = $weight;
+			$order->terms->weight = $weight;
+
 			$freight = Trade\Money::make($order->terms->freight->amount, $order->currency);
 			$breakpoint = Core\Convert::toDouble($this->policy->getValue('breakpoint'));
 			$rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 			$surcharge = Trade\Money::make($this->policy->getValue('surcharge'), $order->currency);
 			$round = Core\Convert::toBoolean($this->policy->getValue('round'));
+
 			$weight = ($round) ? max(0.0, ceil($weight - $breakpoint)) : max(0.0, $weight - $breakpoint);
 
 			$order->terms->freight->amount = Trade\Money::make($weight, $order->currency)
