@@ -34,7 +34,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
-				'Order.lines.aggregate.weight.value',
+				'Order.terms.weight',
 			]);
 		}
 
@@ -53,7 +53,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$operator = Core\Convert::toString($this->policy->getValue('operator'));
 			$amount = Core\Convert::toDouble($this->policy->getValue('amount'));
 
-			if (Core\Operator::isEquatable($order->lines->aggregate->weight->value, $operator, $amount)) {
+			if (Core\Operator::isEquatable($order->terms->weight, $operator, $amount)) {
 				return BT\Status::SUCCESS;
 			}
 
