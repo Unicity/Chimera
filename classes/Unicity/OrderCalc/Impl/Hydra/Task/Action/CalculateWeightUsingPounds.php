@@ -63,33 +63,42 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function process(BT\Engine $engine, string $entityId) : int {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
+			try {
+				$aggregate_weight_1 = $this->getAggregateWeight($order->lines->items);
+				$order->lines->aggregate->weight->unit = 'lbs';
+				$order->lines->aggregate->weight->value = $this->getRoundedWeight($aggregate_weight_1);
 
-			$aggregate_weight_1 = $this->getAggregateWeight($order->lines->items);
-			$order->lines->aggregate->weight->unit = 'lbs';
-			$order->lines->aggregate->weight->value = $this->getRoundedWeight($aggregate_weight_1);
+				$aggregate_weight_2 = $this->getAggregateWeight($order->added_lines->items);
+				$order->added_lines->aggregate->weight->unit = 'lbs';
+				$order->added_lines->aggregate->weight->value = $this->getRoundedWeight($aggregate_weight_2);
 
-			$aggregate_weight_2 = $this->getAggregateWeight($order->added_lines->items);
-			$order->added_lines->aggregate->weight->unit = 'lbs';
-			$order->added_lines->aggregate->weight->value = $this->getRoundedWeight($aggregate_weight_2);
+				$order->terms->weight = $this->getRoundedWeight($aggregate_weight_1 + $aggregate_weight_2);
 
-			$order->terms->weight = $this->getRoundedWeight($aggregate_weight_1 + $aggregate_weight_2);
-
-			return BT\Status::SUCCESS;
+				return BT\Status::SUCCESS;
+			}
+			catch (\Exception $ex) {
+				return BT\Status::ERROR;
+			}
 		}
 
 		private function getAggregateWeight($lines) : float {
 			$aggregate_weight = 0.0;
 
 			foreach ($lines as $line) {
-				$value = $line->item->weightEach->value;
-				$unit = $line->item->weightEach->unit;
-				if (preg_match('/^lb(s)?$/i', $unit)) {
-					$value = $value * static::LBS_TO_KGS_CONVERSION_RATE;
-				}
-				else if (!preg_match('/^kg(s)?$/i', $unit)) {
-					return BT\Status::ERROR;
-				}
-				$aggregate_weight += $line->quantity * $value;
+				//if (!empty($line->kitChildren->items)) {
+				//	$aggregate_weight += $line->quantity * $this->getAggregateWeight($line->kitChildren->items);
+				//}
+				//else {
+					$value = $line->item->weightEach->value;
+					$unit = $line->item->weightEach->unit;
+					if (preg_match('/^lb(s)?$/i', $unit)) {
+						$value = $value * static::LBS_TO_KGS_CONVERSION_RATE;
+					}
+					else if (!preg_match('/^kg(s)?$/i', $unit)) {
+						throw new \Exception();
+					}
+					$aggregate_weight += $line->quantity * $value;
+				//}
 			}
 
 			return $aggregate_weight;
