@@ -53,13 +53,13 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			foreach ($order->lines->items as $line) {
 				// using count here because empty doesn't work because of the type of $order
 				if (count($line->kitChildren ?? []) == 0) {
-					$line->terms->taxablePriceEach = ($line->item->taxedAs ?? 'goods') === 'service' ? 0 : $line->terms->priceEach;
+					$line->terms->taxablePriceEach = ($line->item->taxedAs ?? 'goods') === 'service' ? 0 : $line->terms->taxablePriceEach;
 				}
 				else {
 					$taxablePriceEach = Trade\Money::make(0, $order->currency);
 
 					foreach ($line->kitChildren as $childLine) {
-						$childLine->terms->taxablePriceEach = ($childLine->item->taxedAs ?? 'goods') === 'service' ? 0 : $childLine->terms->priceEach;
+						$childLine->terms->taxablePriceEach = ($childLine->item->taxedAs ?? 'goods') === 'service' ? 0 : $childLine->terms->taxablePriceEach;
 
 						$taxablePriceEach = $taxablePriceEach->add(Trade\Money::make($childLine->terms->taxablePriceEach * $childLine->quantity, $order->currency));
 					}
