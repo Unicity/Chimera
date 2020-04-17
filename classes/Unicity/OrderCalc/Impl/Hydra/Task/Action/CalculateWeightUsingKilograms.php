@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\ORM;
 
 	class CalculateWeightUsingKilograms extends BT\Task\Action {
 
@@ -85,20 +86,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$aggregate_weight = 0.0;
 
 			foreach ($lines as $line) {
-				//if (!empty($line->kitChildren->items)) {
-				//	$aggregate_weight += $line->quantity * $this->getAggregateWeight($line->kitChildren->items);
-				//}
-				//else {
-					$value = $line->item->weightEach->value;
+				if (ORM\Query::hasPath($line, 'kitChildren.0.item.weightEach.unit')) {
+					$aggregate_weight += $line->quantity * $this->getAggregateWeight($line->kitChildren);
+				}
+				else {
 					$unit = $line->item->weightEach->unit;
-					if (preg_match('/^lb(s)?$/i', $unit)) {
-						$value = $value / static::LBS_TO_KGS_CONVERSION_RATE;
+					if (preg_match('/^kg(s)?$/i', $unit)) {
+						$aggregate_weight += $line->quantity * $line->item->weightEach->value;
 					}
-					else if (!preg_match('/^kg(s)?$/i', $unit)) {
+					else if (preg_match('/^lb(s)?$/i', $unit)) {
+						$aggregate_weight += $line->quantity *  ($line->item->weightEach->value / static::LBS_TO_KGS_CONVERSION_RATE);
+					}
+					else {
 						throw new \Exception();
 					}
-					$aggregate_weight += $line->quantity * $value;
-				//}
+				}
 			}
 
 			return $aggregate_weight;
