@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\ORM;
 
 	class IsDSCOrder extends BT\Task\Guard {
 
@@ -51,8 +52,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 			$order = $entity->getComponent('Order');
 
 			if (false
-				|| (isset($order->shippingMethod->href) && preg_match('/\\/warehouses\\/([A-Z0-9]+)\\/shippingMethods\\?/i', $order->shippingMethod->href))
-				|| isset($order->shippingMethod->warehouseUUID)
+				|| (ORM\Query::hasPath($order, 'shippingMethod.href') && is_string($order->shippingMethod->href) && preg_match('/\\/warehouses\\/([A-Z0-9]+)\\/shippingMethods\\?/i', $order->shippingMethod->href))
+				|| (ORM\Query::hasPath($order, 'shippingMethod.warehouseUUID') && is_string($order->shippingMethod->warehouseUUID))
 			) {
 				return BT\Status::SUCCESS;
 			}
