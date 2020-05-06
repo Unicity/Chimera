@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Core;
 	use \Unicity\Trade;
 
 	class ApplyTermsOverride extends BT\Task\Action {
@@ -59,32 +60,32 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order = $entity->getComponent('Order');
 			$termsOverride = $entity->getComponent('TermsOverride');
 			
-			if ($this->policy->getValue('discount.amount') && isset($termsOverride['discount.amount'])) {
-				$order->terms->discount->amount = $termsOverride['discount.amount'];
+			if ($this->policy->getValue('discount.amount') && !Core\Data\Toolkit::isUnset($termsOverride->discount->amount)) {
+				$order->terms->discount->amount = $termsOverride->discount->amount;
 			}
 
-			if ($this->policy->getValue('freight.amount') && isset($termsOverride['freight.amount'])) {
-				$order->terms->freight->amount = $termsOverride['freight.amount'];
+			if ($this->policy->getValue('freight.amount') && !Core\Data\Toolkit::isUnset($termsOverride->freight->amount)) {
+				$order->terms->freight->amount = $termsOverride->freight->amount;
 			}
 
-			if ($this->policy->getValue('pv') && isset($termsOverride['pv'])) {
-				$order->terms->pv = $termsOverride['pv'];
+			if ($this->policy->getValue('pv') && !Core\Data\Toolkit::isUnset($termsOverride->pv)) {
+				$order->terms->pv = $termsOverride->pv;
 			}
 
-			if ($this->policy->getValue('subtotal') && isset($termsOverride['subtotal'])) {
-				$order->terms->subtotal = $termsOverride['subtotal'];
+			if ($this->policy->getValue('subtotal') && !Core\Data\Toolkit::isUnset($termsOverride->subtotal)) {
+				$order->terms->subtotal = $termsOverride->subtotal;
 			}
 
-			if ($this->policy->getValue('taxableTotal') && isset($termsOverride['taxableTotal'])) {
-				$order->terms->taxableTotal = $termsOverride['taxableTotal'];
+			if ($this->policy->getValue('taxableTotal') && !Core\Data\Toolkit::isUnset($termsOverride->taxableTotal)) {
+				$order->terms->taxableTotal = $termsOverride->taxableTotal;
 			}
 
-			if ($this->policy->getValue('timbre.amount') && isset($termsOverride['timbre.amount'])) {
-				$order->terms->timbre->amount = $termsOverride['timbre.amount'];
+			if ($this->policy->getValue('timbre.amount') && !Core\Data\Toolkit::isUnset($termsOverride->timbre->amount)) {
+				$order->terms->timbre->amount = $termsOverride->timbre->amount;
 			}
 
-			if ($this->policy->getValue('total') && isset($termsOverride['total'])) {
-				$order->terms->total = $termsOverride['total'];
+			if ($this->policy->getValue('total') && !Core\Data\Toolkit::isUnset($termsOverride->total)) {
+				$order->terms->total = $termsOverride->total;
 			}
 
 			return BT\Status::SUCCESS;

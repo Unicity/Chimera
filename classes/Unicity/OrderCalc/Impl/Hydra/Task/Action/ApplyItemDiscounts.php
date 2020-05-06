@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015-2020 Unicity International
+ * Copyright 2015-2016 Unicity International
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\AOP;
 	use \Unicity\BT;
 	use \Unicity\Core;
+	use \Unicity\FP;
 
-	class SaveTermsOverride extends BT\Task\Action {
+	class ApplyItemDiscounts extends BT\Task\Action {
 
 		/**
 		 * This method runs before the concern's execution.
@@ -33,16 +34,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 */
 		public function before(AOP\JoinPoint $joinPoint) : void {
-			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
-				'Order.terms.discount.amount',
-				'Order.terms.freight.amount',
-				'Order.terms.pv',
-				'Order.terms.subtotal',
-				'Order.terms.taxableTotal',
-				'Order.terms.timbre.amount',
-				'Order.terms.total',
-			], $variants = [
-				'TermsOverride',
+			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [], $variants = [
+				'Order.lines.items',
 			]);
 		}
 
@@ -58,18 +51,25 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
-			$termsJSON = \Unicity\Config\JSON\Helper::marshal($order->terms);
+			foreach ($order->lines->items as $line) {
+				if (!Core\Data\Toolkit::isUnset($line->terms->subtotal)) {
+					$subtotal = Core\Convert::toDouble($line->terms->subtotal);
 
-			$reader = new \Unicity\Config\JSON\Reader($termsJSON, [
-				'assoc' => true,
-			]);
+					$line->terms->priceEach = $subtotal;
+					$line->terms->taxablePriceEach = $subtotal;
+					$line->terms->pvEach = Core\Convert::toDouble(0);
 
-			$terms = \Unicity\ORM\JSON\Model\Marshaller::unmarshal($reader, [
-				'case_sensitive' => true,
-				'schema' => '\Unicity\MappingService\Impl\Hydra\API\Master\Model\Terms',
-			]);
-
-			$entity->setComponent('TermsOverride', $terms);
+					if (!Core\Data\Toolkit::isUnset($line->kitChildren)) {
+						$first = true;
+						foreach ($line->kitChildren as $childLine) {
+							$childLine->terms->priceEach = $first ? $subtotal : Core\Convert::toDouble(0);
+							$childLine->terms->taxablePriceEach = $first ? $subtotal : Core\Convert::toDouble(0);
+							$childLine->terms->pvEach = Core\Convert::toDouble(0);
+							$first = false;
+						}
+					}
+				}
+			}
 
 			return BT\Status::SUCCESS;
 		}
