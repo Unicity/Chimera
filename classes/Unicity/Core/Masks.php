@@ -38,6 +38,20 @@ namespace Unicity\Core {
 			return $value;
 		}
 
+		public static function accountNumber($value, string $symbol = 'x', int $last = 4) {
+			if ($value !== null) {
+				$value = strtolower(str_replace('*', 'x', Core\Convert::toString($value)));
+				if ($symbol !== 'x') {
+					$value = str_replace('x', $symbol, $value);
+				}
+				$length = strlen($value);
+				if ($length > $last) {
+					return str_repeat($symbol, $length - $last) . substr($value, $last * -1, $last);
+				}
+			}
+			return $value;
+		}
+
 		public static function creditCard($value, string $symbol = 'x', bool $first6 = true) {
 			if ($value !== null) {
 				$value = strtolower(str_replace('*', 'x', Core\Convert::toString($value)));
