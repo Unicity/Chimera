@@ -58,6 +58,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 					$line->terms->priceEach = $subtotal;
 					$line->terms->taxablePriceEach = $subtotal;
 					$line->terms->pvEach = Core\Convert::toDouble(0);
+					$line->terms->cvEach = Core\Convert::toDouble(0);
 
 					if (!Core\Data\Toolkit::isUnset($line->kitChildren)) {
 						$first = true;
@@ -65,6 +66,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 							$childLine->terms->priceEach = $first ? $subtotal : Core\Convert::toDouble(0);
 							$childLine->terms->taxablePriceEach = $first ? $subtotal : Core\Convert::toDouble(0);
 							$childLine->terms->pvEach = Core\Convert::toDouble(0);
+							$childLine->terms->cvEach = Core\Convert::toDouble(0);
 							$first = false;
 						}
 					}
