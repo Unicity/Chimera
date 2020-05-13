@@ -38,6 +38,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			], $variants = [
 				'Order.terms.discount.amount',
 				'Order.terms.discount.percentage',
+				'Order.lines.items',
 			]);
 		}
 
@@ -54,18 +55,24 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$order = $entity->getComponent('Order');
 
 			$items = $this->policy->getValue('items');
+			$noTax = $this->policy->hasKey('no_tax') ? $this->policy->getValue('no_tax') : false;
 
 			$priceEach = 0.0;
+			$quantity = 0;
 
 			foreach ($order->lines->items as $index => $line) {
 				if ($items->hasValue($line->item->id->unicity) && ($line->quantity > 0)) {
 					$priceEach = $line->terms->priceEach;
+					$quantity += $line->quantity;
+					if ($noTax) {
+						$line->terms->taxablePriceEach = 0;
+					}
 					break;
 				}
 			}
 
 			$order->terms->discount->amount = Trade\Money::make($order->terms->discount->amount, $order->currency)
-				->add(Trade\Money::make($priceEach, $order->currency))
+				->add(Trade\Money::make($priceEach * $quantity, $order->currency))
 				->getConvertedAmount();
 
 			return BT\Status::SUCCESS;
