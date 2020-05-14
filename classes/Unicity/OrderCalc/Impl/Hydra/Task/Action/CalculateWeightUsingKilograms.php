@@ -22,6 +22,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Core;
 	use \Unicity\ORM;
 
 	class CalculateWeightUsingKilograms extends BT\Task\Action {
@@ -89,7 +90,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				if (ORM\Query::hasPath($line, 'kitChildren.0.item.weightEach.unit')) {
 					$aggregate_weight += $line->quantity * $this->getAggregateWeight($line->kitChildren);
 				}
-				else {
+				else if (!Core\Data\Toolkit::isUnset($line->item->weightEach)) {
 					$unit = $line->item->weightEach->unit;
 					if (preg_match('/^kg(s)?$/i', $unit)) {
 						$aggregate_weight += $line->quantity * $line->item->weightEach->value;
