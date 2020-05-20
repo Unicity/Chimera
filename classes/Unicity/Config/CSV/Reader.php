@@ -109,7 +109,7 @@ namespace Unicity\Config\CSV {
 						$record = array_combine($headers, $record);
 
 						if ($self->strict_mapping && (count($headers) != count($record))) {
-							throw new Throwable\Runtime\Exception('Failed to process record. Headers could not be mapped properly.');
+							throw new Throwable\Runtime\Exception('Failed to process record. Header count does not match column count.');
 						}
 
 						$source_encoding = ($self->encoder !== null) ? call_user_func($self->encoder . "::getEncoding", $record) : $self->encoding[0];
