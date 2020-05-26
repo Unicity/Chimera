@@ -90,16 +90,17 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				if (ORM\Query::hasPath($line, 'kitChildren.0.item.weightEach.unit')) {
 					$aggregate_weight += $line->quantity * $this->getAggregateWeight($line->kitChildren);
 				}
-				else if (!Core\Data\Toolkit::isUnset($line->item->weightEach)) {
+				else if (true
+					&& !Core\Data\Toolkit::isUnset($line->item->weightEach)
+					&& !Core\Data\Toolkit::isUnset($line->item->weightEach->value)
+					&& !Core\Data\Toolkit::isUnset($line->item->weightEach->unit)
+				) {
 					$unit = $line->item->weightEach->unit;
 					if (preg_match('/^kg(s)?$/i', $unit)) {
 						$aggregate_weight += $line->quantity * ($line->item->weightEach->value * static::LBS_TO_KGS_CONVERSION_RATE);
 					}
 					else if (preg_match('/^lb(s)?$/i', $unit)) {
 						$aggregate_weight += $line->quantity * $line->item->weightEach->value;
-					}
-					else {
-						throw new \Exception();
 					}
 				}
 			}
