@@ -80,7 +80,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 				}
 			}
 
-			$lines = FP\IList::appendAll($order->lines->items, $order->added_lines->items));
+			$lines = FP\IList::appendAll($order->lines->items, $order->added_lines->items);
 			$lines = FP\IList::foldLeft($lines, function ($carry, $line) {
 				$carry = FP\IList::append($carry, $line);
 				if (!Core\Data\ToolKit::isEmpty($line->kitChildren)) {
