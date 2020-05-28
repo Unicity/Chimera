@@ -63,7 +63,7 @@ namespace Unicity\AOP {
 		 * by the concern.
 		 *
 		 * @access protected
-		 * @var \Exception                                          the exception thrown by the concern
+		 * @var \Throwable                                          the exception thrown by the concern
 		 */
 		protected $exception;
 
@@ -215,9 +215,9 @@ namespace Unicity\AOP {
 		 * This method returns the exception thrown by the concern should any arise.
 		 *
 		 * @access public
-		 * @return \Exception                                       the exception thrown by the concern
+		 * @return \Throwable                                       the exception thrown by the concern
 		 */
-		public function getException() : ?\Exception {
+		public function getException() : ?\Throwable {
 			return $this->exception;
 		}
 
@@ -225,9 +225,9 @@ namespace Unicity\AOP {
 		 * This method sets the specified exception as the one thrown by the concern.
 		 *
 		 * @access public
-		 * @param \Exception $exception                             the exception to be set
+		 * @param \Throwable $exception                             the exception to be set
 		 */
-		public function setException(\Exception $exception = null) : void {
+		public function setException(\Throwable $exception = null) : void {
 			$this->exception = $exception;
 		}
 
@@ -237,7 +237,7 @@ namespace Unicity\AOP {
 		 *
 		 * @access public
 		 * @return mixed                                            the returned value by the concern
-		 * @throws \Exception                                       indicates that the concern throws
+		 * @throws \Throwable                                       indicates that the concern throws
 		 *                                                          an exception
 		 */
 		public function proceed() {

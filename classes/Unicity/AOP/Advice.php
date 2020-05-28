@@ -196,7 +196,7 @@ namespace Unicity\AOP {
 						$closure();
 					}
 				}
-				catch (\Exception $exception) {
+				catch (\Throwable $exception) {
 					$this->joinPoint->setException($exception);
 
 					if (isset($this->pointcuts['AfterThrowing'])) {
@@ -217,7 +217,7 @@ namespace Unicity\AOP {
 				}
 
 				$exception = $this->joinPoint->getException();
-				if ($exception instanceof \Exception) {
+				if ($exception instanceof \Throwable) {
 					throw $exception;
 				}
 
