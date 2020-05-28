@@ -22,6 +22,9 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 	use \Unicity\AOP;
 	use \Unicity\BT;
+	use \Unicity\Common;
+	use \Unicity\Core;
+	use \Unicity\FP;
 	use \Unicity\Trade;
 
 	class NormalizeValues extends BT\Task\Action {
@@ -53,10 +56,49 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 			$entity = $engine->getEntity($entityId);
 			$order = $entity->getComponent('Order');
 
+			$getPolicy = function ($key) {
+				return $this->policy->hasKey($key) && $this->policy->getValue($key);
+			};
+
 			$order->currency = strtoupper($order->currency);
 			$order->market = strtoupper($order->market);
 			$order->shipToAddress->country = strtoupper($order->shipToAddress->country);
 			$order->terms->subtotal = Trade\Money::make($order->terms->subtotal, $order->currency)->getConvertedAmount();
+
+			if ($getPolicy('terms.freight.terms.tax.aggregate')) {
+				if (Core\Data\ToolKit::isEmpty($order->terms->freight->terms->tax->aggregate->items)) {
+					$order->terms->freight->terms->tax->aggregate->items = new \Common\Mutable\ArrayList();
+				}
+				if (Core\Data\ToolKit::isEmpty($order->terms->freight->terms->tax->aggregate->amount)) {
+					$order->terms->freight->terms->tax->aggregate->amount = 0.0;
+				}
+			}
+
+			if ($getPolicy('terms.tax.amount')) {
+				if (Core\Data\ToolKit::isEmpty($order->terms->tax->amount)) {
+					$order->terms->tax->amount = 0.0;
+				}
+			}
+
+			$lines = FP\IList::appendAll($order->lines->getValue('items'), $order->added_lines->getValue('items'));
+			$lines = FP\IList::foldLeft($lines, function ($carry, $line) {
+				$carry = FP\IList::append($carry, $line);
+				if (!Core\Data\ToolKit::isEmpty($line->kitChildren)) {
+					$carry = FP\IList::appendAll($carry, $line->kitChildren);
+				}
+				return $carry;
+			}, new Common\Mutable\ArrayList());
+
+			foreach ($lines as $line) {
+				if ($getPolicy('lines.items.terms.tax.aggregate')) {
+					if (Core\Data\ToolKit::isEmpty($line->terms->tax->aggregate->items)) {
+						$line->terms->tax->aggregate->items = new Common\Mutable\ArrayList();
+					}
+					if (Core\Data\ToolKit::isEmpty($line->terms->tax->aggregate->amount)) {
+						$line->terms->tax->aggregate->amount = 0.0;
+					}
+				}
+			}
 
 			return BT\Status::SUCCESS;
 		}
