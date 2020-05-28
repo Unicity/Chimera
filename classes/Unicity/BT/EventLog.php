@@ -67,15 +67,13 @@ namespace Unicity\BT {
 			$context->changes = [];
 
 			$exception = $joinPoint->getException();
-			if ($exception instanceof \Exception) {
+			if ($exception instanceof \Throwable) {
 				$context->exception = (object)[
 					'code' => $exception->getCode(),
 					'message' => $exception->getMessage(),
 					'trace' => $exception->getTraceAsString(),
 				];
 			}
-
-			$context->status = BT\Status::getName($joinPoint->getReturnedValue());
 
 			$engine->getLogger('\\Unicity\\BT\\EventLog')->add(Log\Level::error(), "{$context->type}::process", Common\Collection::useArrays($context));
 			$joinPoint->setReturnedValue(BT\Status::ERROR);
