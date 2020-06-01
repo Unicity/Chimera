@@ -105,12 +105,13 @@ namespace Unicity\Common\Mutable {
 		 */
 		public function putEntries($entries) {
 			$this->assertNotTraversable($entries);
+			$valuesSet = 0;
 			foreach ($entries as $key => $value) {
-				if (!$this->putEntry($key, $value)) {
-					return false;
+				if ($this->putEntry($key, $value)) {
+					$valuesSet++;
 				}
 			}
-			return true;
+			return $valuesSet > 0;
 		}
 
 		/**
