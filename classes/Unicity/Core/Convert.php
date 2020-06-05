@@ -391,6 +391,9 @@ namespace Unicity\Core {
 					if (empty($value)) {
 						return 0;
 					}
+					if (isset($value[0]) && ($value[0] == '.')) {
+						$value = '0' . $value;
+					}
 					if (!preg_match('/^[+-]?([0-9]+)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))?$/', $value)) {
 						throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to an integer.', array(':type' => $type));
 					}
