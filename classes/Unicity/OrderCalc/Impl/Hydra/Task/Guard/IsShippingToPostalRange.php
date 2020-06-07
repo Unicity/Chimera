@@ -52,14 +52,21 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Guard {
 
 			$zip = Core\Convert::toInteger($order->shipToAddress->zip);
 
-			$begin = Core\Convert::toInteger($this->policy->getValue('begin'));
-			$end = Core\Convert::toInteger($this->policy->getValue('end'));
-
-			if (($zip >= $begin) && ($zip <= $end)) {
-				return BT\Status::SUCCESS;
+			if ($this->policy->hasKey('begin')) {
+				$begin = Core\Convert::toInteger($this->policy->getValue('begin'));
+				if ($zip < $begin) { // inclusive
+					return BT\Status::FAILED;
+				}
 			}
 
-			return BT\Status::FAILED;
+			if ($this->policy->hasKey('end')) {
+				$end = Core\Convert::toInteger($this->policy->getValue('end'));
+				if ($zip > $end) { // inclusive
+					return BT\Status::FAILED;
+				}
+			}
+
+			return BT\Status::SUCCESS;
 		}
 
 	}
