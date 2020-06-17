@@ -308,7 +308,7 @@ namespace Unicity\IO {
 				}
 				$reader->close();
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				if ($reader != null) {
 					$reader->close();
 				}

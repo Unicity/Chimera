@@ -117,7 +117,7 @@ namespace Unicity\SQL {
 					$this->server->publish('requestCompleted', $response);
 					$http_code = max($http_code, $status);
 				}
-				catch (\Exception $ex) {
+				catch (\Throwable $ex) {
 					$status = 503;
 					$response = SQL\Response::factory([
 						'body' => $ex->getMessage(),

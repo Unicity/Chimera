@@ -518,7 +518,7 @@ namespace Unicity\MappingService\Data {
 				$this->elements = $elements;
 				return !$this->isEmpty();
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}

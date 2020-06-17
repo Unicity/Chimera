@@ -84,7 +84,7 @@ namespace Unicity\Config\XML {
 					echo $declaration;
 					echo $mustache->render($file->getFileName(), $this->data);
 				}
-				catch (\Exception $ex) {
+				catch (\Throwable $ex) {
 					ob_end_clean();
 					throw $ex;
 				}
@@ -104,7 +104,7 @@ namespace Unicity\Config\XML {
 					echo $declaration;
 					echo $document->saveXML();
 				}
-				catch (\Exception $ex) {
+				catch (\Throwable $ex) {
 					ob_end_clean();
 					throw $ex;
 				}

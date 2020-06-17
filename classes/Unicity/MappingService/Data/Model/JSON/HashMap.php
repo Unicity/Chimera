@@ -274,7 +274,7 @@ namespace Unicity\MappingService\Data\Model\JSON {
 					return false;
 				}
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}

@@ -197,7 +197,7 @@ namespace Unicity\Common {
 			try {
 				return $this->getValue($offset);
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return null;
 			}
 		}

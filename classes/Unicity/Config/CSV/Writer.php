@@ -132,7 +132,7 @@ namespace Unicity\Config\CSV {
 					}
 				}
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				ob_end_clean();
 				throw $ex;
 			}

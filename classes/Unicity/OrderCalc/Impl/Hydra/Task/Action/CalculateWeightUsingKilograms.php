@@ -78,7 +78,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 				return BT\Status::SUCCESS;
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return BT\Status::ERROR;
 			}
 		}

@@ -270,7 +270,7 @@ namespace Unicity\ORM\JSON\Model {
 					return false;
 				}
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}

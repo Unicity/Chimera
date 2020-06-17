@@ -91,7 +91,7 @@ namespace Unicity\Common\Mutable {
 				$this->elements[$key] = $value;
 				return true;
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}
@@ -130,7 +130,7 @@ namespace Unicity\Common\Mutable {
 				}
 				return false;
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}
@@ -224,7 +224,7 @@ namespace Unicity\Common\Mutable {
 				$this->elements = $elements;
 				return !$this->isEmpty();
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}
@@ -248,7 +248,7 @@ namespace Unicity\Common\Mutable {
 				$this->elements = $elements;
 				return !$this->isEmpty();
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}

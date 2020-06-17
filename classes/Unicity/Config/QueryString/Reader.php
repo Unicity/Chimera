@@ -116,7 +116,7 @@ namespace Unicity\Config\QueryString {
 						$path = Core\Convert::toString($path);
 						$collection = Config\Helper::factory($collection)->getValue($path);
 					}
-					catch (\Exception $ex) {
+					catch (\Throwable $ex) {
 						return null;
 					}
 				}

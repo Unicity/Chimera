@@ -196,7 +196,7 @@ namespace Unicity\ORM\JSON\Model {
 			try {
 				$value = Core\Convert::toInteger($value);
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				$value = 0;
 			}
 
@@ -281,7 +281,7 @@ namespace Unicity\ORM\JSON\Model {
 			try {
 				$value = Core\Convert::toDouble($value);
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				$value = 0.0;
 			}
 
@@ -344,7 +344,7 @@ namespace Unicity\ORM\JSON\Model {
 			try {
 				$value = Core\Convert::toDouble($value);
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				$value = 0.0;
 			}
 
@@ -415,7 +415,7 @@ namespace Unicity\ORM\JSON\Model {
 					$value = Core\Convert::toDouble($value);
 				}
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				$value = Core\Convert::toString($value);
 			}
 

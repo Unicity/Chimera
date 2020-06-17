@@ -76,7 +76,7 @@ namespace Unicity\Config\HTML {
 					echo $declaration;
 					echo $mustache->render($file->getFileName(), $this->data);
 				}
-				catch (\Exception $ex) {
+				catch (\Throwable $ex) {
 					ob_end_clean();
 					throw $ex;
 				}

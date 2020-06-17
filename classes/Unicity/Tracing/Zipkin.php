@@ -145,7 +145,7 @@ namespace Unicity\Tracing {
 	                curl_close($request);
 	            }
 			}
-			catch (\Exception $e) {
+			catch (\Throwable $e) {
 				// do nothing
 			}
 		}
@@ -204,7 +204,7 @@ namespace Unicity\Tracing {
 	                curl_close($request);
 	            }
 			}
-			catch (\Exception $e) {
+			catch (\Throwable $e) {
 				// do nothing
 			}
 		}

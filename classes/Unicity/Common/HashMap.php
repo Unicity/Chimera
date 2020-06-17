@@ -209,7 +209,7 @@ namespace Unicity\Common {
 				$key = $this->getKey($key);
 				return array_key_exists($key, $this->elements);
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				return false;
 			}
 		}

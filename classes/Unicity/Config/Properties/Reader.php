@@ -109,7 +109,7 @@ namespace Unicity\Config\Properties {
 					try {
 						$collection = $collection->getValue(Core\Convert::toString($path));
 					}
-					catch (\Exception $ex) {
+					catch (\Throwable $ex) {
 						return null;
 					}
 				}

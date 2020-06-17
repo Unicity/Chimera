@@ -342,7 +342,7 @@ namespace Unicity\Config\FixedWidth {
 						break;
 				}
 			}
-			catch (\Exception $ex) {
+			catch (\Throwable $ex) {
 				ob_end_clean();
 				throw $ex;
 			}
