@@ -39,11 +39,16 @@ namespace Unicity\EVT {
 				'message' => $message,
 			]);
 
-			if ($this->isSuccessful($exchange)) {
-				$this->onSuccess($exchange);
+			try {
+				if ($this->isSuccessful($exchange)) {
+					$this->onSuccess($exchange);
+				}
+				else {
+					$this->onFailure($exchange);
+				}
 			}
-			else {
-				$this->onFailure($exchange);
+			catch (\Throwable $throwable) {
+				$this->onException($exchange, $throwable);
 			}
 		}
 
@@ -56,6 +61,16 @@ namespace Unicity\EVT {
 		 */
 		public function isSuccessful(EVT\Exchange $exchange) : bool {
 			return true;
+		}
+
+		/**
+		 * This method processes an exception message.
+		 *
+		 * @access public
+		 * @param EVT\Exchange $exchange                            the exchange to be processed
+		 */
+		public function onException(EVT\Exchange $exchange, \Throwable $throwable) : void {
+			throw $throwable;
 		}
 
 		/**
