@@ -85,10 +85,10 @@ namespace Unicity\Tracing {
 			try {
 				// https://zipkin.io/zipkin-api/zipkin-api.yaml
 				$body = [
-					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'],
+					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'] ?? '',
 					'name' => $serverName, // spanName
 					'id' => static::generateSpanId(),
-					'parentId' => $_SERVER['HTTP_X_B3_SPANID'],
+					'parentId' => $_SERVER['HTTP_X_B3_SPANID'] ?? '',
 					'timestamp' => $startTime,
 					'duration' => $finishTime - $startTime,
 					'annotations' => [
@@ -113,7 +113,7 @@ namespace Unicity\Tracing {
 				$tags = array_merge([
 					'component' => 'driver',
 					'downstream_cluster' => '-',
-					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'],
+					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? '',
 					'upstream_cluster'=> $clientName,
 				], $tags);
 
@@ -154,10 +154,10 @@ namespace Unicity\Tracing {
 			try {
 				// https://zipkin.io/zipkin-api/zipkin2-api.yaml
 				$body = [
-					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'],
+					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'] ?? '',
 					'name' => $serverName, // spanName
 					'id' => static::generateSpanId(),
-					'parentId' => $_SERVER['HTTP_X_B3_SPANID'],
+					'parentId' => $_SERVER['HTTP_X_B3_SPANID'] ?? '',
 					'timestamp' => $startTime,
 					'duration' => $finishTime - $startTime,
 					'kind' => 'SERVER',
@@ -173,7 +173,7 @@ namespace Unicity\Tracing {
 				$tags = array_merge([
 					'component' => 'driver',
 					'downstream_cluster' => '-',
-					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'],
+					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? '',
 					'upstream_cluster'=> $clientName,
 				], $tags);
 
