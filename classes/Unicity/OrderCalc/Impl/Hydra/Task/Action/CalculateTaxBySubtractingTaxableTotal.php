@@ -25,7 +25,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 	use \Unicity\Core;
 	use \Unicity\Trade;
 
-	class CalculateTaxUsingTaxableTotal extends BT\Task\Action {
+	class CalculateTaxBySubtractingTaxableTotal extends BT\Task\Action {
 
 		/**
 		 * This method runs before the concern's execution.
@@ -36,6 +36,7 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 		public function before(AOP\JoinPoint $joinPoint) : void {
 			$this->aop = BT\EventLog::before($joinPoint, $this->getTitle(), $this->getPolicy(), $inputs = [
 				'Order.currency',
+				'Order.terms.total',
 				'Order.terms.taxableTotal',
 			], $variants = [
 				'Order.terms.tax.amount',
@@ -57,8 +58,8 @@ namespace Unicity\OrderCalc\Impl\Hydra\Task\Action {
 
 			$tax_rate = Core\Convert::toDouble($this->policy->getValue('rate'));
 
-			$order->terms->tax->amount = Trade\Money::make($order->terms->taxableTotal, $order->currency)
-				->multiply($tax_rate)
+			$order->terms->tax->amount = Trade\Money::make($order->terms->total, $order->currency)
+				->subtract(Trade\Money::make($order->terms->taxableTotal, $order->currency))
 				->getConvertedAmount();
 
 			$order->terms->tax->percentage = $tax_rate * 100;
