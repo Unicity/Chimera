@@ -219,14 +219,23 @@ namespace Unicity\ORM {
 					$index = Core\Convert::toInteger($segment);
 					if (is_array($element) || ($element instanceof Common\Mutable\IList)) {
 						if ($i < $lastSegment) {
+							if (!is_array($element[$index]) && !is_object($element[$index])) {
+								$element[$index] = (object) [];
+							}
 							$element = $element[$index];
 						}
 						else {
 							$element[$index] = $value;
+							if (($i < $lastSegment) && !is_array($element) && !is_object($element)) {
+								$element[$index] = (object) [];
+							}
 						}
 					}
 					else if (is_object($element)) {
 						if ($i < $lastSegment) {
+							if (!is_array($element->$segment) && !is_object($element->$segment)) {
+								$element->$segment = (object) [];
+							}
 							$element = $element->$segment;
 						}
 						else {
@@ -239,6 +248,9 @@ namespace Unicity\ORM {
 				}
 				else if (is_object($element)) {
 					if ($i < $lastSegment) {
+						if (!is_array($element->$segment) && !is_object($element->$segment)) {
+							$element->$segment = (object) [];
+						}
 						$element = $element->$segment;
 					}
 					else {
