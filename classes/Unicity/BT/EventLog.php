@@ -13,6 +13,18 @@ namespace Unicity\BT {
 
 	class EventLog {
 
+		/**
+		 * This method runs before the concern's execution.
+		 *
+		 * @access public
+		 * @static
+		 * @param AOP\JoinPoint $joinPoint                          the join point being used
+		 * @param string $title                                     the title given to the task
+		 * @param Common\HashMap $policy                            the task's policy
+		 * @param array $inputs                                     fields that should be logged that don't change
+		 * @param array $variants                                   fields that should be logged that do change
+		 * @return object                                           the log message
+		 */
 		public static function before(AOP\JoinPoint $joinPoint, string $title, Common\HashMap $policy, array $inputs = [], array $variants = []) : object {
 			$entity = $joinPoint->getArgument(0)->getEntity($joinPoint->getArgument(1));
 			return (object) [
@@ -40,10 +52,11 @@ namespace Unicity\BT {
 		 * This method runs when the task's throws an exception.
 		 *
 		 * @access public
+		 * @static
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 * @param \stdClass $context                                the context to be enriched and logged
 		 */
-		public function afterThrowing(AOP\JoinPoint $joinPoint, \stdClass $context) : void {
+		public static function afterThrowing(AOP\JoinPoint $joinPoint, \stdClass $context) : void {
 			$context = json_decode(Config\JSON\Helper::encode($context));
 
 			$engine = $joinPoint->getArgument(0);
@@ -68,10 +81,11 @@ namespace Unicity\BT {
 		 * This method runs when the concern's execution is successful (and a result is returned).
 		 *
 		 * @access public
+		 * @static
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
 		 * @param \stdClass $context                                the context to be enriched and logged
 		 */
-		public function afterReturning(AOP\JoinPoint $joinPoint, \stdClass $context) : void {
+		public static function afterReturning(AOP\JoinPoint $joinPoint, \stdClass $context) : void {
 			$context = json_decode(Config\JSON\Helper::encode($context));
 
 			$engine = $joinPoint->getArgument(0);
