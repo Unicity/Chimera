@@ -182,7 +182,7 @@ namespace Unicity\Core\Data {
 							return $replacement;
 						}
 						return $char;
-					}, $string);
+					}, $string ?? '');
 				}
 			}
 			return $string;
