@@ -173,6 +173,10 @@ namespace Unicity\Core\Data {
 						return $char;
 					}, $string);
 
+					if ($string === null) {
+						$string = '';
+					}
+
 					$blacklist = array('%E2%94%9C', '%E2%94%90'); // known printable/visible characters
 					$replacement = ' ';
 
@@ -182,7 +186,11 @@ namespace Unicity\Core\Data {
 							return $replacement;
 						}
 						return $char;
-					}, $string ?? '');
+					}, $string);
+
+					if ($string === null) {
+						$string = '';
+					}
 				}
 			}
 			return $string;
