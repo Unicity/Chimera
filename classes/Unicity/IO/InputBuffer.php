@@ -44,6 +44,7 @@ namespace Unicity\IO {
 			$input = file_get_contents(static::INPUT);
 			if ($input == '') {
 				$handle = fopen(static::STDIN, 'r');
+				stream_set_blocking($handle, false);
 				$input = stream_get_contents($handle);
 				fclose($handle);
 			}
