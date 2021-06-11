@@ -17,11 +17,11 @@ namespace Unicity\HTTP {
 		}
 
 		private function getBody() : string {
-			$data = $this->request->data ?? "";
-			if (is_object($data) || is_array($data)) {
-				$data = $this->pretty ? json_encode($data, JSON_PRETTY_PRINT) : json_encode($data);
+			$body = $this->request->body ?? "";
+			if (is_object($body) || is_array($body)) {
+				$body = $this->pretty ? json_encode($body, JSON_PRETTY_PRINT) : json_encode($body);
 			}
-			return "--data-raw '${data}'";
+			return "--data-raw '${body}'";
 		}
 
 		private function getDelimiter() : string {
@@ -41,7 +41,7 @@ namespace Unicity\HTTP {
 		}
 
 		private function getUrl() : string {
-			return trim($this->url ?? '');
+			return trim($this->request->url ?? '');
 		}
 
 		public function toCurl() : string {
