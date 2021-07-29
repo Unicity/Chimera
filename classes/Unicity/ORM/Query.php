@@ -115,7 +115,7 @@ namespace Unicity\ORM {
 
 			if (isset($args[3]) && ($args[3] !== 'ifUndefined')) {
 				$default = $args[2] ?? Core\Data\Undefined::instance();
-				$value = call_user_func_array(['\\Unicity\\Core\\Data\\ToolKit', $args[2]], [$value, $default]);
+				$value = call_user_func_array(['\\Unicity\\Core\\Data\\ToolKit', $args[3]], [$value, $default]);
 			}
 
 			return $value;
