@@ -108,15 +108,17 @@ namespace Unicity\ORM {
 		 * @param string $path                                      the path to the value to be returned
 		 * @return mixed                                            the element associated with the specified path
 		 */
-		public function getValue($collection, string $path /*$default = \Unicity\Core\Data\Undefined::instance(), $eval = 'ifUndefined'*/) {
+		public function getValue($collection, string $path /*$default = \Unicity\Core\Data\Undefined::instance(), $method = 'ifUndefined'*/) {
 			$args = func_get_args();
 
 			$value = static::getValue_($collection, $path);
 
-			if (isset($args[3]) && ($args[3] !== 'ifUndefined')) {
-				$default = $args[2] ?? Core\Data\Undefined::instance();
-				$value = call_user_func_array(['\\Unicity\\Core\\Data\\ToolKit', $args[3]], [$value, $default]);
-			}
+			$default = $args[2] ?? Core\Data\Undefined::instance();
+			$method = $args[3] ?? 'ifUndefined';
+			$value = call_user_func_array(
+				['\\Unicity\\Core\\Data\\ToolKit', $method],
+				[$value, $default]
+			);
 
 			return $value;
 		}
