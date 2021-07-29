@@ -108,7 +108,7 @@ namespace Unicity\ORM {
 		 * @param string $path                                      the path to the value to be returned
 		 * @return mixed                                            the element associated with the specified path
 		 */
-		public function getValue($collection, string $path /*$default = \Unicity\Core\Data\Undefined::instance(), $method = 'ifUndefined'*/) {
+		public static function getValue($collection, string $path /*$default = \Unicity\Core\Data\Undefined::instance(), $method = 'ifUndefined'*/) {
 			$args = func_get_args();
 
 			$value = static::getValue_($collection, $path);
@@ -126,7 +126,7 @@ namespace Unicity\ORM {
 		/**
 		 * This method returns the value associated with the specified path.
 		 *
-		 * @access public
+		 * @access protected
 		 * @static
 		 * @param mixed $collection                                 the collection to be searched
 		 * @param string $path                                      the path to the value to be returned
