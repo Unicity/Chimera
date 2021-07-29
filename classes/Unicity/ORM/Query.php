@@ -108,10 +108,32 @@ namespace Unicity\ORM {
 		 * @param string $path                                      the path to the value to be returned
 		 * @return mixed                                            the element associated with the specified path
 		 */
-		public static function getValue($collection, string $path) {
+		public function getValue($collection, string $path /*$default = \Unicity\Core\Data\Undefined::instance(), $eval = 'ifUndefined'*/) {
+			$args = func_get_args();
+
+			$value = static::getValue_($collection, $path);
+
+			if (isset($args[3]) && ($args[3] !== 'ifUndefined')) {
+				$default = $args[2] ?? Core\Data\Undefined::instance();
+				$value = call_user_func_array(['\\Unicity\\Core\\Data\\ToolKit', $args[2]], [$value, $default]);
+			}
+
+			return $value;
+		}
+
+		/**
+		 * This method returns the value associated with the specified path.
+		 *
+		 * @access public
+		 * @static
+		 * @param mixed $collection                                 the collection to be searched
+		 * @param string $path                                      the path to the value to be returned
+		 * @return mixed                                            the element associated with the specified path
+		 */
+		protected static function getValue_($collection, string $path) {
 			$paths = array_map('trim', explode('||', $path));
 			foreach ($paths as $tpath) {
-				$value = static::getValue_($collection, $tpath);
+				$value = static::getValueAtPath($collection, $tpath);
 				if (!Core\Data\ToolKit::isUndefined($value)) {
 					return $value;
 				}
@@ -128,7 +150,7 @@ namespace Unicity\ORM {
 		 * @param string $path                                      the path to the value to be returned
 		 * @return mixed                                            the element associated with the specified path
 		 */
-		protected static function getValue_($collection, string $path) {
+		protected static function getValueAtPath($collection, string $path) {
 			$segments = array_map('trim', explode('.', $path));
 			if (count($segments) > 0) {
 				$element = $collection;
