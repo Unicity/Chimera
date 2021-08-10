@@ -203,7 +203,7 @@ namespace Unicity\MappingService\Data {
 				$value = $this->elements[$key];
 
 				if (($argc > 2) && ($args[2] !== 'ifUndefined')) {
-					$value = call_user_func_array(array('\\Unicity\\MappingService\\Data\\ToolKit', $args[2]), array($value, $default));
+					$value = call_user_func_array(array('\\Unicity\\MappingService\\Data\\ToolKit', $args[2]), [$value, $default]);
 				}
 
 				return $value;
