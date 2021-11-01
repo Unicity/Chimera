@@ -47,6 +47,9 @@ namespace Unicity\Tracing {
 
 			# Jaeger headers
 			'HTTP_UBER_TRACE_ID' => 'uber-trace-id',
+
+			# AMZN Headers
+			'HTTP_X_AMZN_TRACE_ID' => 'x-amzn-trace-id',
 		];
 
 		public static function addHeaders(array $headers = [], $flatten = false) { // this function will lowercase all header keys
