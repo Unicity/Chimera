@@ -62,7 +62,7 @@ namespace Unicity\HTTP {
 			return trim($this->request->url ?? '');
 		}
 
-		public function toCurl($detach = false) : string {
+		public function toCurl(bool $detach = false) : string {
 			$delimiter = $this->getDelimiter();
 			$curl = "curl --location {$this->getMethod()} '{$this->getUrl()}'";
 			$headers = $this->getHeaders();
