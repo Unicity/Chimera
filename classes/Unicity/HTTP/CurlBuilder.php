@@ -28,6 +28,24 @@ namespace Unicity\HTTP {
 			return $this->pretty ? "\n" : " ";
 		}
 
+		private function getFlags() : array {
+			$options = (array) $this->request->options ?? [];
+			$flags = [];
+			if (isset($options[CURLOPT_CONNECTTIMEOUT])) {
+				$flags[] = "--connect-timeout {$options[CURLOPT_CONNECTTIMEOUT]}";
+			}
+			if (isset($options[CURLOPT_HTTP_VERSION])) {
+				$flags[] = "--version {$options[CURLOPT_HTTP_VERSION]}";
+			}
+			if (isset($options[CURLOPT_REFERER])) {
+				$flags[] = "--referer {$options[CURLOPT_REFERER]}";
+			}
+			if (isset($options[CURLOPT_TIMEOUT])) {
+				$flags[] = "--max-time {$options[CURLOPT_TIMEOUT]}";
+			}
+			return $flags;
+		}
+
 		private function getHeaders() : array {
 			$headers = (array) $this->request->headers ?? [];
 			$keys = array_keys($headers);
@@ -44,7 +62,7 @@ namespace Unicity\HTTP {
 			return trim($this->request->url ?? '');
 		}
 
-		public function toCurl() : string {
+		public function toCurl($detach = false) : string {
 			$delimiter = $this->getDelimiter();
 			$curl = "curl --location {$this->getMethod()} '{$this->getUrl()}'";
 			$headers = $this->getHeaders();
@@ -56,12 +74,23 @@ namespace Unicity\HTTP {
 				$curl .= $delimiter;
 				$curl .= $this->getBody();
 			}
+			$flags = $this->getFlags();
+			if (!empty($flags)) {
+				$curl .= $delimiter;
+				$curl .= implode($delimiter, $flags);
+			}
+			if ($detach) {
+				$curl .= '> /dev/null 2>&1 &';
+			}
 			return $curl;
 		}
 
-		public static function stringify(EVT\Request $request, bool $pretty = false) : string {
-			$curl = new CurlBuilder($request, $pretty);
-			return $curl->toCurl();
+		public static function factory(EVT\Request $request, bool $pretty = false) : CurlBuilder {
+			return new CurlBuilder($request, $pretty);
+		}
+
+		public static function stringify(EVT\Request $request, bool $pretty = false, bool $detach = false) : string {
+			return CurlBuilder::factory($request, $pretty)->toCurl($detach);
 		}
 
 	}
