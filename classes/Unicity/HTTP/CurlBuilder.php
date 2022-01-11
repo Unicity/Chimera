@@ -74,13 +74,13 @@ namespace Unicity\HTTP {
 				$curl .= $delimiter;
 				$curl .= $this->getBody();
 			}
-			$flags = $this->getFlags();
-			if (!empty($flags)) {
-				$curl .= $delimiter;
-				$curl .= implode($delimiter, $flags);
-			}
+			//$flags = $this->getFlags();
+			//if (!empty($flags)) {
+			//	$curl .= $delimiter;
+			//	$curl .= implode($delimiter, $flags);
+			//}
 			if ($detach) {
-				$curl .= '> /dev/null 2>&1 &';
+				$curl .= ' > /dev/null 2>&1 &';
 			}
 			return $curl;
 		}
