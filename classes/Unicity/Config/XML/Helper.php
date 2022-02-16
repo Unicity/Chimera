@@ -46,7 +46,9 @@ namespace Unicity\Config\XML {
 			if (Common\StringRef::isTypeOf($collection)) {
 				return Core\Convert::toString($collection);
 			}
-			return (new Config\XML\Writer($collection))->config($metadata)->render();
+			return (new Config\XML\Writer($collection))
+				->config(array_merge(['declaration' => false], $metadata))
+				->render();
 		}
 
 		public static function marshal($collection, array $metadata = array()) : IO\File {
