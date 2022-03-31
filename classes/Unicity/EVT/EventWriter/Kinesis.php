@@ -18,7 +18,7 @@
 
 declare(strict_types = 1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT\EventWriter {
 
 	use \Aws\Kinesis\KinesisClient;
 	use \Unicity\EVT;
