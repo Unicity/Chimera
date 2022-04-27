@@ -63,7 +63,7 @@ namespace Unicity\Core {
 				case 'timestamp':
 					return static::toDateTime($value);
 				case 'date':
-					return static::toDateTime($value, 'Y-m-d:');
+					return static::toDateTime($value, 'Y-m-d');
 				case 'time':
 					return static::toDateTime($value, 'H:i:s');
 				case 'decimal':
