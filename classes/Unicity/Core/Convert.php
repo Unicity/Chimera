@@ -61,9 +61,10 @@ namespace Unicity\Core {
 					return static::toChar($value);
 				case 'date':
 				case 'datetime':
-				case 'time':
 				case 'timestamp':
 					return static::toDateTime($value);
+				case 'time':
+					return static::toDateTime($value, 'H:i:m');
 				case 'decimal':
 				case 'double':
 				case 'float':
@@ -259,6 +260,9 @@ namespace Unicity\Core {
 					$value = trim($value);
 					if (preg_match(Core\DateTime::ISO_8601_PATTERN, $value) || preg_match(Core\DateTime::UNIVERSAL_SORTABLE_PATTERN, $value)) {
 						return date($format, strtotime($value));
+					}
+					if (preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', $value)) {
+						return $value;
 					}
 					throw new Throwable\Parse\Exception('Invalid cast. Could not convert value of type ":type" to a datetime.', array(':type' => $type));
 				default:
