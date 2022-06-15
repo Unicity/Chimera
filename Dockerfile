@@ -16,7 +16,7 @@
 
 FROM centos:centos7
 
-MAINTAINER Unicity International
+LABEL maintainer = "Unicity International"
 
 # https://webtatic.com/packages/php70/
 RUN rpm -Uvhi https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
