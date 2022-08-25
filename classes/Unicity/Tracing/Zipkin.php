@@ -68,7 +68,7 @@ namespace Unicity\Tracing {
 			return $buffer;
 		}
 
-		private static function flatten(array $headers) {
+		public static function flatten(array $headers) : array {
 			$buffer = [];
 			foreach ($headers as $key => $value) {
 				$buffer[] = "{$key}: {$value}";
@@ -76,12 +76,23 @@ namespace Unicity\Tracing {
 			return $buffer;
 		}
 
+		public static function generateSpanId() : string {
+    		return bin2hex(openssl_random_pseudo_bytes(8));
+		}
+
 		public static function now() : int {
 			return (int) (microtime(true) * 1000 * 1000);
 		}
 
-		public static function generateSpanId() : string {
-    		return bin2hex(openssl_random_pseudo_bytes(8));
+		public static function toAWSMessageAttributes(array $headers) : array {
+			$buffer = [];
+			foreach ($headers as $key => $value) {
+				$buffer[str_replace('-', '_', strtoupper($key))] = [
+					'DataType' => 'String',
+					'StringValue' => strval($value),
+				];
+			}
+			return $buffer;
 		}
 
 		public static function traceV1(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = []) {
