@@ -84,8 +84,7 @@ namespace Unicity\Tracing {
 			return (int) (microtime(true) * 1000 * 1000);
 		}
 
-		public static function toAWSMessageAttributes(array $headers) : array {
-			$buffer = [];
+		public static function toAWSMessageAttributes(array $headers, array $buffer = []) : array {
 			foreach ($headers as $key => $value) {
 				$buffer[str_replace('-', '_', strtoupper($key))] = [
 					'DataType' => 'String',
