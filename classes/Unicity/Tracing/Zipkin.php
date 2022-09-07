@@ -76,12 +76,12 @@ namespace Unicity\Tracing {
 			return $buffer;
 		}
 
-		public static function generateSpanId() : string {
-    		return bin2hex(openssl_random_pseudo_bytes(8));
-		}
-
 		public static function now() : int {
 			return (int) (microtime(true) * 1000 * 1000);
+		}
+
+		public static function generateSpanId() : string {
+			return bin2hex(openssl_random_pseudo_bytes(8));
 		}
 
 		public static function toAWSMessageAttributes(array $headers, array $buffer = []) : array {
@@ -155,10 +155,10 @@ namespace Unicity\Tracing {
 				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
 
 				if (curl_exec($request) !== false) {
-	                curl_close($request);
-	            }
+					curl_close($request);
+				}
 			}
-			catch (\Throwable $e) {
+			catch (\Exception $e) {
 				// do nothing
 			}
 		}
@@ -214,10 +214,10 @@ namespace Unicity\Tracing {
 				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
 
 				if (curl_exec($request) !== false) {
-	                curl_close($request);
-	            }
+					curl_close($request);
+				}
 			}
-			catch (\Throwable $e) {
+			catch (\Exception $e) {
 				// do nothing
 			}
 		}
