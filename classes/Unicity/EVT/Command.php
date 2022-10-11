@@ -27,7 +27,7 @@ namespace Unicity\EVT {
 
 		protected $register;
 
-		public function __construct(EVT\Target $target, boolean $register) {
+		public function __construct(EVT\Target $target, bool $register) {
 			parent::__construct($target);
 			$this->register = $register;
 		}
@@ -43,7 +43,7 @@ namespace Unicity\EVT {
 			return $serialized;
 		}
 
-		public function register() : boolean {
+		public function register() : bool {
 			return $this->register;
 		}
 
