@@ -19,13 +19,13 @@ namespace Unicity\BT {
 		 * @access public
 		 * @static
 		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 * @param string $title                                     the title given to the task
-		 * @param Common\HashMap $policy                            the task's policy
+		 * @param string|null $title                                the title given to the task
+		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 * @param array $inputs                                     fields that should be logged that don't change
 		 * @param array $variants                                   fields that should be logged that do change
 		 * @return object                                           the log message
 		 */
-		public static function before(AOP\JoinPoint $joinPoint, string $title, Common\HashMap $policy, array $inputs = [], array $variants = []) : object {
+		public static function before(AOP\JoinPoint $joinPoint, ?string $title, Common\Mutable\IMap $policy, array $inputs = [], array $variants = []) : object {
 			$entity = $joinPoint->getArgument(0)->getEntity($joinPoint->getArgument(1));
 			return (object) [
 				'type' => $joinPoint->getProperty('class'),
