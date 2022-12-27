@@ -24,7 +24,7 @@ namespace Unicity\BT {
 		 * This variable stores any data used for AOP.
 		 *
 		 * @access protected
-		 * @var array
+		 * @var object
 		 */
 		protected $aop;
 
@@ -51,7 +51,7 @@ namespace Unicity\BT {
 		 * @param Common\Mutable\IMap $policy                       the task's policy
 		 */
 		public function __construct(Common\Mutable\IMap $policy = null) {
-			$this->aop = new \stdClass();
+			$this->aop = (object)[];
 			$this->policy = ($policy !== null)
 				? $policy
 				: new Common\Mutable\HashMap();
