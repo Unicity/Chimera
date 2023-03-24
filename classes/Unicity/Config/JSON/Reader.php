@@ -61,7 +61,9 @@ namespace Unicity\Config\JSON {
 		 */
 		public function read($path = null) {
 			if ($this->file->getFileSize() > 0) {
-				$buffer = file_get_contents((string)$this->file);
+				$buffer = method_exists($this->file, 'getBytes')
+					? $this->file->getBytes()
+					: file_get_contents((string)$this->file);
 
 				if ($this->metadata['bom']) {
 					$buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
@@ -89,6 +91,7 @@ namespace Unicity\Config\JSON {
 
 				return $collection;
 			}
+
 			return null;
 		}
 
