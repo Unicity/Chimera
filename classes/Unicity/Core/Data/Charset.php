@@ -56,6 +56,14 @@ namespace Unicity\Core\Data {
 		public const CP437_ENCODING = 'CP437';
 
 		/**
+		 * This constant defines the encoding for CP437.
+		 *
+		 * @access public
+		 * @const string
+		 */
+		public const CP720_ENCODING = 'CP720';
+
+		/**
 		 * This constant defines the encoding for EUC-KR.
 		 *
 		 * @access public
