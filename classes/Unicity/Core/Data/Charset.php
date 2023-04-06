@@ -56,7 +56,7 @@ namespace Unicity\Core\Data {
 		public const CP437_ENCODING = 'CP437';
 
 		/**
-		 * This constant defines the encoding for CP437.
+		 * This constant defines the encoding for CP720.
 		 *
 		 * @access public
 		 * @const string
