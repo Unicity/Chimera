@@ -127,6 +127,43 @@ namespace Unicity\MappingService\Data\Model\JSON {
 		 */
 		public function getValue($key) {
 			$field = $this->getKey($key);
+			if (isset($this->schema['patternProperties'])) {
+				$patternProperties = array_values(array_filter(array_keys($this->schema['patternProperties']), function($patternProperty) use ($key) {
+					return (bool) preg_match($patternProperty, $key);
+				}));
+
+				if (isset($patternProperties[0])) {
+					if (array_key_exists($field, $this->elements)) {
+						return $this->elements[$field];
+					}
+
+					$pattern = $patternProperties[0];
+					$definition = $this->schema['properties'][$pattern];
+
+					if (isset($definition['type'])) {
+						switch ($definition['type']) {
+							case 'array':
+								$value = new MappingService\Data\Model\JSON\ArrayList($definition, $this->case_sensitive);
+								$this->elements[$field] = $value;
+								return $value;
+							case 'object':
+								$value = new MappingService\Data\Model\JSON\HashMap($definition, $this->case_sensitive);
+								$this->elements[$field] = $value;
+								return $value;
+						}
+					}
+
+					if (isset($definition['default'])) {
+						$value = $definition['default'];
+						$this->elements[$field] = $value;
+						return $value;
+					}
+
+					$value = Core\Data\Undefined::instance();
+					$this->elements[$field] = $value;
+					return $value;
+				}
+			}
 			if (isset($this->schema['properties'][$field])) {
 				if (array_key_exists($field, $this->elements)) {
 					return $this->elements[$field];
@@ -189,9 +226,9 @@ namespace Unicity\MappingService\Data\Model\JSON {
 				else {
 					$key = $this->getKey($key);
 					if (isset($this->schema['patternProperties'])) {
-						$patternProperties = array_filter(array_keys($this->schema['patternProperties']), function($patternProperty) use ($key) {
+						$patternProperties = array_values(array_filter(array_keys($this->schema['patternProperties']), function($patternProperty) use ($key) {
 							return (bool) preg_match($patternProperty, $key);
-						});
+						}));
 						if (isset($patternProperties[0])) {
 							$definition = $this->schema['patternProperties'][$patternProperties[0]];
 							if (isset($definition['type'])) {
