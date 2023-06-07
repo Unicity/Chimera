@@ -188,9 +188,9 @@ namespace Unicity\ORM\JSON\Model {
 				else {
 					$key = $this->getKey($key);
 					if (isset($this->schema['patternProperties'])) {
-						$patternProperties = array_filter(array_keys($this->schema['patternProperties']), function($patternProperty) use ($key) {
+						$patternProperties = array_values(array_filter(array_keys($this->schema['patternProperties']), function($patternProperty) use ($key) {
 							return (bool) preg_match($patternProperty, $key);
-						});
+						}));
 						if (isset($patternProperties[0])) {
 							$definition = $this->schema['patternProperties'][$patternProperties[0]];
 							if (isset($definition['type'])) {
