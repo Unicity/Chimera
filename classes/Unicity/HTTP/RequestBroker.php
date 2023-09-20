@@ -305,11 +305,6 @@ namespace Unicity\HTTP {
 			return $this;
 		}
 
-
-		private function parseHeadersFromResponse($response) {
-
-		}
-
 	}
 
 }
