@@ -98,6 +98,26 @@ namespace Unicity\HTTP {
 
 				curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
 				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+				curl_setopt($resource, CURLOPT_HEADER, true); // Include headers in the response
+				$responseHeaders = [];
+				$headersLength = 0;
+				// this function is called by curl for each header received
+				curl_setopt($resource, CURLOPT_HEADERFUNCTION,
+				
+				function($resource, $header) use (&$responseHeaders, &$headersLength)
+				{
+				$len = strlen($header);
+				$headersLength += $len;
+				$header = explode(':', $header, 2);
+				if (count($header) < 2) // ignore invalid headers
+					
+					return $len;
+
+				$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
+				
+				return $len;
+				}
+				);
 				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 5);
 				curl_setopt($resource, CURLOPT_TIMEOUT, 120);
@@ -180,7 +200,11 @@ namespace Unicity\HTTP {
 					$http_code = max($http_code, $status);
 				}
 				else {
+					
+					$body = substr($body, $headersLength);
 					$headers = curl_getinfo($resource);
+					$headers = array_merge($headers, $responseHeaders);
+					
 					@curl_close($resource);
 					$status = $headers['http_code'];
 					$response = HTTP\Response::factory([
@@ -279,6 +303,11 @@ namespace Unicity\HTTP {
 		public function onSuccess(callable $handler) : HTTP\RequestBroker {
 			$this->server->subscribe('requestSucceeded', $handler);
 			return $this;
+		}
+
+
+		private function parseHeadersFromResponse($response) {
+
 		}
 
 	}

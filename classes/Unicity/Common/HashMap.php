@@ -171,6 +171,7 @@ namespace Unicity\Common {
 		public function getValue($key) {
 			$key = $this->getKey($key);
 			if (!array_key_exists($key, $this->elements)) {
+				return null;
 				throw new Throwable\KeyNotFound\Exception('Unable to get element. Key ":key" does not exist.', array(':key' => $key));
 			}
 			return $this->elements[$key];
