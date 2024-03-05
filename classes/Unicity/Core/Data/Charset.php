@@ -136,6 +136,14 @@ namespace Unicity\Core\Data {
 		public const WINDOWS_1254_ENCODING = 'Windows-1254';
 
 		/**
+		 * This constant defines the encoding for Windows-1256.
+		 *
+		 * @access public
+		 * @const string
+		 */
+		public const WINDOWS_1256_ENCODING = 'Windows-1256';
+
+		/**
 		 * This constant defines the encoding for Windows-1252.
 		 *
 		 * @access public
