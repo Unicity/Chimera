@@ -225,7 +225,7 @@ namespace Unicity\HTTP {
 		 * @param array $requests                                   the requests to be sent
 		 * @return int                                              the response status
 		 */
-		public function executeAll(array $requests, $sync = false) {
+		public function executeAll(array $requests) {
 			$this->server->publish('requestOpened');
 
 			$http_code = 200;
@@ -300,10 +300,6 @@ namespace Unicity\HTTP {
 						$this->server->publish('requestFailed', $response);
 						$this->server->publish('requestCompleted', $response);
 						$http_code = max($http_code, $status);
-					}
-
-					if ($sync) {
-						return $response;
 					}
 				}
 			}
