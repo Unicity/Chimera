@@ -261,7 +261,7 @@ namespace Unicity\EVT {
 		 * @access public
 		 * @static
 		 * @param array $map                                        the map containing the data
-		 * @return EVT\Message                                      a new message
+		 * @return static                                           a new message
 		 */
 		public static function factory(array $map = []) {
 			return new static($map);
@@ -274,7 +274,7 @@ namespace Unicity\EVT {
 		 * @static
 		 * @param EVT\Message $message0                             the first message
 		 * @param EVT\Message $message1                             the second message
-		 * @return EVT\Message                                      a new message
+		 * @return static                                           a new message
 		 */
 		public static function merge(?EVT\Message $message0, ?EVT\Message $message1) {
 			if (($message0 !== null) && ($message1 !== null)) {
@@ -296,7 +296,7 @@ namespace Unicity\EVT {
 		 * @static
 		 * @param EVT\Message $message                              the base message
 		 * @param array $map                                        the map containing the data
-		 * @return EVT\Message                                      a new message
+		 * @return static                                           a new message
 		 */
 		public static function put(?EVT\Message $message, array $map = []) {
 			if ($message !== null) {
