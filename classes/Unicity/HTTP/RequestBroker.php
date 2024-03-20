@@ -148,20 +148,18 @@ namespace Unicity\HTTP {
 			$headersLength = 0;
 			// this function is called by curl for each header received
 			curl_setopt($resource, CURLOPT_HEADERFUNCTION,
+				function($resource, $header) use (&$responseHeaders, &$headersLength)
+				{
+					$len = strlen($header);
+					$headersLength += $len;
+					$header = explode(':', $header, 2);
+					if (count($header) < 2) // ignore invalid headers
+						return $len;
 
-			function($resource, $header) use (&$responseHeaders, &$headersLength)
-			{
-			$len = strlen($header);
-			$headersLength += $len;
-			$header = explode(':', $header, 2);
-			if (count($header) < 2) // ignore invalid headers
+					$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
 
-				return $len;
-
-			$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
-
-			return $len;
-			}
+					return $len;
+				}
 			);
 			curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 5);
