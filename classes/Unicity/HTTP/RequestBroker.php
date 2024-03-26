@@ -60,11 +60,11 @@ namespace Unicity\HTTP {
 		 * @param HTTP\Request $request                             the request to be sent
 		 * @return int                                              the response status
 		 */
-		public function execute(HTTP\Request $request) {
+		public function execute($request) {
 			return $this->executeSync($request)->status;
 		}
 
-		public function executeSync(HTTP\Request $request) {
+		public function executeSync($request) {
 			$http_code = 200;
 			$initializedRequest = $this->initializeRequest($request);
 			$resource = $initializedRequest['curl'];
