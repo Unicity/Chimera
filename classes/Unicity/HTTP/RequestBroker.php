@@ -57,11 +57,162 @@ namespace Unicity\HTTP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param HTTP\Request $request                             the request to be sent
 		 * @return int                                              the response status
 		 */
-		public function execute(HTTP\Request $request) : int {
-			return $this->executeAll([$request]);
+		public function execute($request) {
+			return $this->executeSync($request)->status;
+		}
+
+		public function executeSync($request) {
+			$http_code = 200;
+			$initializedRequest = $this->initializeRequest($request);
+			$resource = $initializedRequest['curl'];
+			$headersLength = $initializedRequest['headersLength'];
+			$responseHeaders = $initializedRequest['responseHeaders'];
+
+			$curlResponse = curl_exec($resource);
+
+			// Then, after your curl_exec call:
+			$header_size = curl_getinfo($resource, CURLINFO_HEADER_SIZE);
+			$header = substr($curlResponse, 0, $header_size);
+			$body = substr($curlResponse, $header_size);
+
+			$response = null;
+
+			if (curl_errno($resource)) {
+				$error = curl_error($resource);
+				@curl_close($resource);
+				$status = 503;
+				$response = HTTP\Response::factory([
+					'body' => $error,
+					'headers' => [
+						'http_code' => $status,
+					],
+					'status' => $status,
+					'statusText' => HTTP\Response::getStatusText($status),
+					'url' => $request->url,
+				]);
+				$this->server->publish('requestFailed', $response);
+				$this->server->publish('requestCompleted', $response);
+				$http_code = max($http_code, $status);
+			}
+			else {
+
+				$body = substr($body, $headersLength);
+				$headers = curl_getinfo($resource);
+				$headers = array_merge($headers, $responseHeaders);
+
+				@curl_close($resource);
+				$status = $headers['http_code'];
+				$response = HTTP\Response::factory([
+					'body' => $body,
+					'headers' => $headers,
+					'status' => $status,
+					'statusText' => HTTP\Response::getStatusText($status),
+					'url' => $request->url,
+				]);
+				if (($status >= 200) && ($status < 300)) {
+					$this->server->publish('requestSucceeded', $response);
+					$this->server->publish('requestCompleted', $response);
+					$http_code = max($http_code, $status);
+				}
+				else {
+					$this->server->publish('requestFailed', $response);
+					$this->server->publish('requestCompleted', $response);
+					$http_code = max($http_code, $status);
+				}
+			}
+
+			return $response;
+		}
+
+		private function initializeRequest($request) {
+			$this->server->publish('requestInitiated', $request);
+
+			$resource = curl_init();
+
+			curl_setopt($resource, CURLOPT_HEADER, false);
+			if (isset($request->headers) && !empty($request->headers)) {
+				$headers = array();
+				foreach ($request->headers as $name => $value) {
+					$headers[] = "{$name}: {$value}";
+				}
+				curl_setopt($resource, CURLOPT_HTTPHEADER, $headers);
+			}
+
+			curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+			curl_setopt($resource, CURLOPT_HEADER, true); // Include headers in the response
+			$responseHeaders = [];
+			$headersLength = 0;
+			// this function is called by curl for each header received
+			curl_setopt($resource, CURLOPT_HEADERFUNCTION,
+				function($resource, $header) use (&$responseHeaders, &$headersLength)
+				{
+					$len = strlen($header);
+					$headersLength += $len;
+					$header = explode(':', $header, 2);
+					if (count($header) < 2) // ignore invalid headers
+						return $len;
+
+					$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
+
+					return $len;
+				}
+			);
+			curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 5);
+			curl_setopt($resource, CURLOPT_TIMEOUT, 120);
+			curl_setopt($resource, CURLOPT_URL, $request->url);
+			if (preg_match('/^https/', $request->url)) {
+				curl_setopt($resource, CURLOPT_SSL_VERIFYHOST, 0);
+			}
+
+			$method = strtoupper($request->method);
+			switch ($method) {
+				case 'GET':
+					// do nothing
+					break;
+				case 'POST':
+					curl_setopt($resource, CURLOPT_POST, 1);
+					if (isset($request->body)) {
+						$body = $request->body;
+						if (is_array($body)) {
+							$body = http_build_query($body);
+						}
+						curl_setopt($resource, CURLOPT_POSTFIELDS, $body);
+					}
+					break;
+				default:
+					curl_setopt($resource, CURLOPT_CUSTOMREQUEST, $method);
+					if (isset($request->body)) {
+						$body = $request->body;
+						if (is_array($body)) {
+							$body = http_build_query($body);
+						}
+						curl_setopt($resource, CURLOPT_POSTFIELDS, $body);
+					}
+					break;
+			}
+
+			if (isset($request->options) && !empty($request->options)) {
+				foreach ($request->options as $name => $value) {
+					curl_setopt($resource, $name, $value);
+				}
+			}
+
+			if (isset($request->credentials) && !empty($request->credentials)) {
+				curl_setopt($resource, CURLOPT_HTTPAUTH, $request->credentials['method'] ?? CURLAUTH_ANY);
+				if (isset($request->credentials['username']) && isset($request->credentials['password'])) {
+					curl_setopt($resource, CURLOPT_USERPWD, sprintf('%s:%s', $request->credentials['username'], $request->credentials['password']));
+				}
+			}
+
+			return [
+				'curl' => $resource,
+				'headersLength' => $headersLength,
+				'responseHeaders' => $responseHeaders
+			];
 		}
 
 		/**
@@ -71,7 +222,7 @@ namespace Unicity\HTTP {
 		 * @param array $requests                                   the requests to be sent
 		 * @return int                                              the response status
 		 */
-		public function executeAll(array $requests) : int {
+		public function executeAll(array $requests) {
 			$this->server->publish('requestOpened');
 
 			$http_code = 200;
@@ -79,92 +230,15 @@ namespace Unicity\HTTP {
 			$dispatcher = curl_multi_init();
 			$resources = array();
 			$count = count($requests);
+			$responseHeaders = null;
 
 			for ($i = 0; $i < $count; $i++) {
 				$request = $requests[$i];
 
-				$this->server->publish('requestInitiated', $request);
-
-				$resource = curl_init();
-
-				curl_setopt($resource, CURLOPT_HEADER, false);
-				if (isset($request->headers) && !empty($request->headers)) {
-					$headers = array();
-					foreach ($request->headers as $name => $value) {
-						$headers[] = "{$name}: {$value}";
-					}
-					curl_setopt($resource, CURLOPT_HTTPHEADER, $headers);
-				}
-
-				curl_setopt($resource, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($resource, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-				curl_setopt($resource, CURLOPT_HEADER, true); // Include headers in the response
-				$responseHeaders = [];
-				$headersLength = 0;
-				// this function is called by curl for each header received
-				curl_setopt($resource, CURLOPT_HEADERFUNCTION,
-				
-				function($resource, $header) use (&$responseHeaders, &$headersLength)
-				{
-				$len = strlen($header);
-				$headersLength += $len;
-				$header = explode(':', $header, 2);
-				if (count($header) < 2) // ignore invalid headers
-					
-					return $len;
-
-				$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
-				
-				return $len;
-				}
-				);
-				curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 5);
-				curl_setopt($resource, CURLOPT_TIMEOUT, 120);
-				curl_setopt($resource, CURLOPT_URL, $request->url);
-				if (preg_match('/^https/', $request->url)) {
-					curl_setopt($resource, CURLOPT_SSL_VERIFYHOST, 0);
-				}
-
-				$method = strtoupper($request->method);
-				switch ($method) {
-					case 'GET':
-						// do nothing
-						break;
-					case 'POST':
-						curl_setopt($resource, CURLOPT_POST, 1);
-						if (isset($request->body)) {
-							$body = $request->body;
-							if (is_array($body)) {
-								$body = http_build_query($body);
-							}
-							curl_setopt($resource, CURLOPT_POSTFIELDS, $body);
-						}
-						break;
-					default:
-						curl_setopt($resource, CURLOPT_CUSTOMREQUEST, $method);
-						if (isset($request->body)) {
-							$body = $request->body;
-							if (is_array($body)) {
-								$body = http_build_query($body);
-							}
-							curl_setopt($resource, CURLOPT_POSTFIELDS, $body);
-						}
-						break;
-				}
-
-				if (isset($request->options) && !empty($request->options)) {
-					foreach ($request->options as $name => $value) {
-						curl_setopt($resource, $name, $value);
-					}
-				}
-
-				if (isset($request->credentials) && !empty($request->credentials)) {
-					curl_setopt($resource, CURLOPT_HTTPAUTH, $request->credentials['method'] ?? CURLAUTH_ANY);
-					if (isset($request->credentials['username']) && isset($request->credentials['password'])) {
-						curl_setopt($resource, CURLOPT_USERPWD, sprintf('%s:%s', $request->credentials['username'], $request->credentials['password']));
-					}
-				}
+				$initializedRequest = $this->initializeRequest($request);
+				$resource = $initializedRequest['curl'];
+				$headersLength = $initializedRequest['headersLength'];
+				$responseHeaders = $initializedRequest['responseHeaders'];
 
 				$resources[$i] = curl_copy_handle($resource);
 				curl_multi_add_handle($dispatcher, $resources[$i]);
@@ -200,11 +274,11 @@ namespace Unicity\HTTP {
 					$http_code = max($http_code, $status);
 				}
 				else {
-					
+
 					$body = substr($body, $headersLength);
 					$headers = curl_getinfo($resource);
 					$headers = array_merge($headers, $responseHeaders);
-					
+
 					@curl_close($resource);
 					$status = $headers['http_code'];
 					$response = HTTP\Response::factory([
