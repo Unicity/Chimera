@@ -57,14 +57,13 @@ namespace Unicity\HTTP {
 		 * This method executes the given request.
 		 *
 		 * @access public
-		 * @param HTTP\Request $request                             the request to be sent
 		 * @return int                                              the response status
 		 */
-		public function execute(HTTP\Request $request) {
+		public function execute($request) {
 			return $this->executeSync($request)->status;
 		}
 
-		public function executeSync(HTTP\Request $request) {
+		public function executeSync($request) {
 			$http_code = 200;
 			$initializedRequest = $this->initializeRequest($request);
 			$resource = $initializedRequest['curl'];
@@ -148,20 +147,18 @@ namespace Unicity\HTTP {
 			$headersLength = 0;
 			// this function is called by curl for each header received
 			curl_setopt($resource, CURLOPT_HEADERFUNCTION,
+				function($resource, $header) use (&$responseHeaders, &$headersLength)
+				{
+					$len = strlen($header);
+					$headersLength += $len;
+					$header = explode(':', $header, 2);
+					if (count($header) < 2) // ignore invalid headers
+						return $len;
 
-			function($resource, $header) use (&$responseHeaders, &$headersLength)
-			{
-			$len = strlen($header);
-			$headersLength += $len;
-			$header = explode(':', $header, 2);
-			if (count($header) < 2) // ignore invalid headers
+					$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
 
-				return $len;
-
-			$responseHeaders[strtolower(trim($header[0]))][] = trim($header[1]);
-
-			return $len;
-			}
+					return $len;
+				}
 			);
 			curl_setopt($resource, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 5);
@@ -225,7 +222,7 @@ namespace Unicity\HTTP {
 		 * @param array $requests                                   the requests to be sent
 		 * @return int                                              the response status
 		 */
-		public function executeAll(array $requests, $sync = false) {
+		public function executeAll(array $requests) {
 			$this->server->publish('requestOpened');
 
 			$http_code = 200;
@@ -300,10 +297,6 @@ namespace Unicity\HTTP {
 						$this->server->publish('requestFailed', $response);
 						$this->server->publish('requestCompleted', $response);
 						$http_code = max($http_code, $status);
-					}
-
-					if ($sync) {
-						return $response;
 					}
 				}
 			}
