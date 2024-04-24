@@ -68,7 +68,7 @@ namespace Unicity\HTTP {
 			$initializedRequest = $this->initializeRequest($request);
 			$resource = $initializedRequest['curl'];
 			$headersLength = $initializedRequest['headersLength'];
-			// Signing explicitly by reference
+			// Response headers MUST be set by reference due to CURLOPT_HEADERFUNCTION being called when curl_exec() (below) is called
 			$responseHeaders = &$initializedRequest['responseHeaders'];
 
 			$curlResponse = curl_exec($resource);
@@ -212,6 +212,7 @@ namespace Unicity\HTTP {
 			return [
 				'curl' => $resource,
 				'headersLength' => $headersLength,
+				// Response headers intentionally returned by reference due to CURLOPT_HEADERFUNCTION being called when the curl is executed
 				'responseHeaders' => &$responseHeaders
 			];
 		}
