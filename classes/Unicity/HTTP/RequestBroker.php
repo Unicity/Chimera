@@ -68,7 +68,8 @@ namespace Unicity\HTTP {
 			$initializedRequest = $this->initializeRequest($request);
 			$resource = $initializedRequest['curl'];
 			$headersLength = $initializedRequest['headersLength'];
-			$responseHeaders = $initializedRequest['responseHeaders'];
+			// Signing explicit by reference
+			$responseHeaders = &$initializedRequest['responseHeaders'];
 
 			$curlResponse = curl_exec($resource);
 
@@ -211,7 +212,7 @@ namespace Unicity\HTTP {
 			return [
 				'curl' => $resource,
 				'headersLength' => $headersLength,
-				'responseHeaders' => $responseHeaders
+				'responseHeaders' => &$responseHeaders
 			];
 		}
 
