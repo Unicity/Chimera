@@ -182,6 +182,18 @@ namespace Unicity\HTTP {
 
 				curl_multi_remove_handle($dispatcher, $resource);
 				$body = curl_multi_getcontent($resource);
+
+				echo json_encode([
+					'curlResponse' => strlen($curlResponse),
+					'Chimera::RequestBroker',
+					'body' => strlen($body),
+					'headers' => strlen($header)
+				], JSON_PRETTY_PRINT);
+	
+				xdebug_break();
+				
+				exit();
+				
 				if (curl_errno($resource)) {
 					$error = curl_error($resource);
 					@curl_close($resource);
