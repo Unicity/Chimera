@@ -68,7 +68,7 @@ namespace Unicity\HTTP {
 			$initializedRequest = $this->initializeRequest($request);
 			$resource = $initializedRequest['curl'];
 			$headersLength = $initializedRequest['headersLength'];
-			// Signing explicit by reference
+			// Signing explicitly by reference
 			$responseHeaders = &$initializedRequest['responseHeaders'];
 
 			$curlResponse = curl_exec($resource);
