@@ -77,6 +77,17 @@ namespace Unicity\HTTP {
 			$header = substr($curlResponse, 0, $header_size);
 			$body = substr($curlResponse, $header_size);
 
+			echo json_encode([
+				'curlResponse' => strlen($curlResponse),
+				'Chimera::RequestBroker',
+				'body' => strlen($body),
+				'headers' => strlen($header)
+			], JSON_PRETTY_PRINT);
+
+			xdebug_break();
+			
+			exit();
+
 			$response = null;
 
 			if (curl_errno($resource)) {
