@@ -34,16 +34,16 @@ namespace Unicity\Throwable\RequestFailed {
 
 		protected $response;
 
-		public function __construct(EVT\Response $response, int $code = 0) {
+		public function __construct($response, int $code = 0) {
 			parent::__construct(
-				(isset($response->body)) ? $response->body : '',
+				(is_object($response) && isset($response->body)) ? $response->body : '',
 				null,
 				$code
 			);
 			$this->response = $response;
 		}
 
-		public function getResponse() : EVT\Response {
+		public function getResponse() {
 			return $this->response;
 		}
 
