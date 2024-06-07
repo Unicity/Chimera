@@ -52,7 +52,7 @@ namespace Unicity\Common\Mutable {
 		 * This method will add the elements in the specified array to the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the values to be added
+		 * @param $values                                           the values to be added
 		 * @return boolean                                          whether any values were added
 		 */
 		public function putValues($values);
@@ -71,7 +71,7 @@ namespace Unicity\Common\Mutable {
 		 * specified array.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of values to be removed
+		 * @param $values                                           an array of values to be removed
 		 * @return boolean                                          whether any values were removed
 		 */
 		public function removeValues($values);
@@ -89,7 +89,7 @@ namespace Unicity\Common\Mutable {
 		 * This method will retain only those elements not in the specified array.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of values that are to be retained
+		 * @param $values                                           an array of values that are to be retained
 		 * @return boolean                                          whether any values were retained
 		 */
 		public function retainValues($values);

@@ -46,7 +46,7 @@ namespace Unicity\MappingService\Data\Model\Dynamic {
 		 * This method initializes the class.
 		 *
 		 * @access public
-		 * @param \Traversable $elements                            a traversable array or collection
+		 * @param $elements                                         a traversable array or collection
 		 * @param boolean $case_sensitive                           whether field names are case
 		 *                                                          sensitive
 		 */

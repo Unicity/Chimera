@@ -132,7 +132,7 @@ namespace Unicity\Common {
 		 * within the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the values to be tested
+		 * @param $values                                           the values to be tested
 		 * @return boolean                                          whether all elements are contained within
 		 *                                                          the collection
 		 */

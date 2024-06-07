@@ -54,7 +54,7 @@ namespace Unicity\Common {
 		 * This method returns an array of values in the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the keys of the values to be returned
+		 * @param $keys                                             the keys of the values to be returned
 		 * @return array                                            an array of all values in the collection
 		 */
 		public function getValues($keys = null);
@@ -82,7 +82,7 @@ namespace Unicity\Common {
 		 * within the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the values to be tested
+		 * @param $values                                           the values to be tested
 		 * @return boolean                                          whether all elements are contained within
 		 *                                                          the collection
 		 */

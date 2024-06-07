@@ -46,7 +46,7 @@ namespace Unicity\ORM\Dynamic\Model {
 		 * This method initializes the class with the specified values (if any are provided).
 		 *
 		 * @access public
-		 * @param \Traversable $elements                            a traversable array or collection
+		 * @param $elements                                         a traversable array or collection
 		 * @param boolean $case_sensitive                           whether field names are case
 		 *                                                          sensitive
 		 */

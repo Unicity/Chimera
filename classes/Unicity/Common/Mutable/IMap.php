@@ -53,7 +53,7 @@ namespace Unicity\Common\Mutable {
 		 * This method puts all of the key/value mappings into the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $entries                             the array to be mapped
+		 * @param $entries                                          the array to be mapped
 		 * @return boolean                                          whether any key/value pairs were set
 		 */
 		public function putEntries($entries);
@@ -71,7 +71,7 @@ namespace Unicity\Common\Mutable {
 		 * This method removes all of the key/value mappings that match the specified list of keys.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the array of keys to be removed
+		 * @param $keys                                             the array of keys to be removed
 		 * @return boolean                                          whether any key/value pairs were removed
 		 */
 		public function removeKeys($keys);
@@ -89,7 +89,7 @@ namespace Unicity\Common\Mutable {
 		 * This method will remove all of the key/value mappings that match the specified list of values.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of elements that are to be removed
+		 * @param $values                                           an array of elements that are to be removed
 		 * @return boolean                                          whether any elements were removed
 		 */
 		public function removeValues($values);
@@ -117,7 +117,7 @@ namespace Unicity\Common\Mutable {
 		 * This method retains all of the key/value mappings that match the specified list of keys.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the array of keys to be removed
+		 * @param $keys                                             the array of keys to be removed
 		 * @return boolean                                          whether any key/value pairs were removed
 		 */
 		public function retainKeys($keys);
@@ -135,7 +135,7 @@ namespace Unicity\Common\Mutable {
 		 * This method will retain only those elements not in the specified array.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of elements that are to be retained
+		 * @param $values                                           an array of elements that are to be retained
 		 * @return boolean                                          whether any elements were retained
 		 */
 		public function retainValues($values);

@@ -62,7 +62,7 @@ namespace Unicity\MappingService\Data {
 		 * This method initializes the class.
 		 *
 		 * @access public
-		 * @param \Traversable $elements                            a traversable array or collection
+		 * @param $elements                                         a traversable array or collection
 		 */
 		public function __construct($elements = null) {
 			$this->pointer = 0;
@@ -230,7 +230,7 @@ namespace Unicity\MappingService\Data {
 		 * This method returns an array of values in the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the keys of the values to be returned
+		 * @param $keys                                             the keys of the values to be returned
 		 * @return array                                            an array of all values in the collection
 		 * @throws Throwable\InvalidArgument\Exception              indicates that a key is not a scaler type
 		 * @throws Throwable\KeyNotFound\Exception                  indicates that a key could not be found
@@ -281,7 +281,7 @@ namespace Unicity\MappingService\Data {
 		 * within the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the values to be tested
+		 * @param $values                                           the values to be tested
 		 * @return boolean                                          whether all elements are contained within
 		 *                                                          the collection
 		 */
@@ -394,7 +394,7 @@ namespace Unicity\MappingService\Data {
 		 * This method puts all of the key/value mappings into the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $entries                             the array to be mapped
+		 * @param $entries                                          the array to be mapped
 		 */
 		public function putItems($entries) {
 			$this->assertNotTraversable($entries);
@@ -422,7 +422,7 @@ namespace Unicity\MappingService\Data {
 		 * This method removes all of the key/value mappings that match the specified list of keys.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the array of keys to be removed
+		 * @param $keys                                             the array of keys to be removed
 		 * @return boolean                                          whether any key/value pairs were removed
 		 */
 		public function removeKeys($keys) {
@@ -455,7 +455,7 @@ namespace Unicity\MappingService\Data {
 		 * This method will remove all of the key/value mappings that match the specified list of values.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of elements that are to be removed
+		 * @param $values                                           an array of elements that are to be removed
 		 * @return boolean                                          whether any elements were removed
 		 */
 		public function removeValues($values) {
@@ -504,7 +504,7 @@ namespace Unicity\MappingService\Data {
 		 * This method retains all of the key/value mappings that match the specified list of keys.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the array of keys to be removed
+		 * @param $keys                                             the array of keys to be removed
 		 * @return boolean                                          whether any key/value pairs were removed
 		 */
 		public function retainKeys($keys) {
@@ -546,7 +546,7 @@ namespace Unicity\MappingService\Data {
 		 * This method will retain only those elements not in the specified array.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of elements that are to be retained
+		 * @param $values                                           an array of elements that are to be retained
 		 * @return boolean                                          whether any elements were retained
 		 */
 		public function retainValues($values) {

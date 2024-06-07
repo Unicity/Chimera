@@ -57,7 +57,7 @@ namespace Unicity\MappingService\Data {
 		 * @access public
 		 * @param \Unicity\MappingService\Data\FormatType $format   the format type token associated
 		 *                                                          with the data
-		 * @param \Traversable $items                               a traversable array or collection
+		 * @param $items                                            a traversable array or collection
 		 */
 		public function __construct(MappingService\Data\FormatType $format, $items = null) {
 			parent::__construct($items);

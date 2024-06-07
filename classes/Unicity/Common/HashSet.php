@@ -60,7 +60,7 @@ namespace Unicity\Common {
 		 * This method initializes the class.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              a traversable array or collection
+		 * @param $values                                           a traversable array or collection
 		 * @throws Throwable\InvalidArgument\Exception              indicates that the specified argument
 		 *                                                          is invalid
 		 */
@@ -145,7 +145,7 @@ namespace Unicity\Common {
 		 * within the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the collection to be tested
+		 * @param $values                                           the values to be tested
 		 * @return boolean                                          whether all elements are contained within
 		 *                                                          the collection
 		 */

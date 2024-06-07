@@ -52,7 +52,7 @@ namespace Unicity\Common {
 		 * This method initializes the class.
 		 *
 		 * @access public
-		 * @param \Traversable $elements                            a traversable array or collection
+		 * @param $elements                                         a traversable array or collection
 		 */
 		public function __construct($elements = null) {
 			$this->pointer = 0;
@@ -180,7 +180,7 @@ namespace Unicity\Common {
 		 * This method returns an array of values in the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $keys                                the keys of the values to be returned
+		 * @param $keys                                             the keys of the values to be returned
 		 * @return array                                            an array of all values in the collection
 		 * @throws Throwable\InvalidArgument\Exception              indicates that a key is not a scaler type
 		 * @throws Throwable\KeyNotFound\Exception                  indicates that a key could not be found
@@ -236,7 +236,7 @@ namespace Unicity\Common {
 		 * within the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the values to be tested
+		 * @param $values                                           the values to be tested
 		 * @return boolean                                          whether all elements are contained within
 		 *                                                          the collection
 		 */

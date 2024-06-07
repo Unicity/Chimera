@@ -111,7 +111,7 @@ namespace Unicity\Automaton {
 		 * This method removes a set of transitions from the state.
 		 *
 		 * @access public
-		 * @param \Traversable $transitions                         a list of transitions to be removed
+		 * @param $transitions                                      a list of transitions to be removed
 		 */
 		public function removeTransitions($transitions);
 

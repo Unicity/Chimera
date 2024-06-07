@@ -63,7 +63,7 @@ namespace Unicity\Automaton {
 		 * This method adds a set of target states.
 		 *
 		 * @access public
-		 * @param \Traversable $targets                              a set of target states to be
+		 * @param $targets                                          a set of target states to be
 		 *                                                          added
 		 */
 		public function addTargets($targets);
@@ -126,7 +126,7 @@ namespace Unicity\Automaton {
 		 * This method removes a set of target states.
 		 *
 		 * @access public
-		 * @param \Traversable $actions                             a set of actions to be removed
+		 * @param $actions                                          a set of actions to be removed
 		 */
 		public function removeActions($actions);
 
@@ -142,7 +142,7 @@ namespace Unicity\Automaton {
 		 * This method removes a set of target states from the transition.
 		 *
 		 * @access public
-		 * @param \Traversable $targets                             a set of target states to be
+		 * @param $targets                                          a set of target states to be
 		 *                                                          removed
 		 */
 		public function removeTargets($targets);

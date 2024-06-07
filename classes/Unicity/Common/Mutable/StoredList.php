@@ -92,7 +92,7 @@ namespace Unicity\Common\Mutable {
 		 * This method will add the elements in the specified array to the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of values to be added
+		 * @param $values                                           the values to be added
 		 * @return boolean                                          whether any elements were added
 		 */
 		public function addValues($values) {
@@ -132,7 +132,7 @@ namespace Unicity\Common\Mutable {
 		 * This method initializes the class with the specified values (if any are provided).
 		 *
 		 * @access public
-		 * @param \Traversable $values                              a traversable array or collection
+		 * @param $values                                           a traversable array or collection
 		 * @throws Throwable\InvalidArgument\Exception              indicates that the specified argument
 		 *                                                          is invalid
 		 */
@@ -306,7 +306,7 @@ namespace Unicity\Common\Mutable {
 		 * within the collection.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              the values to be tested
+		 * @param $values                                           the values to be tested
 		 * @return boolean                                          whether all elements are contained within
 		 *                                                          the collection
 		 */
@@ -504,7 +504,7 @@ namespace Unicity\Common\Mutable {
 		 * This method removes the value for the specified index.
 		 *
 		 * @access public
-		 * @param \Traversable $indexes                             the indexes of values to be removed
+		 * @param $indexes                                          the indexes of values to be removed
 		 * @return boolean                                          whether any indexes were removed
 		 * @throws Throwable\InvalidArgument\Exception              indicates that index must be an integer
 		 * @throws Throwable\OutOfBounds\Exception                  indicates that no element exists at the
@@ -589,7 +589,7 @@ namespace Unicity\Common\Mutable {
 		 * specified array.
 		 *
 		 * @access public
-		 * @param \Traversable $values                              an array of values to be removed
+		 * @param $values                                           an array of values to be removed
 		 * @return boolean                                          whether any values were removed
 		 */
 		public function removeValues($values) { // TODO implement
@@ -634,7 +634,7 @@ namespace Unicity\Common\Mutable {
 		 * This method retains only the specified indexes.
 		 *
 		 * @access public
-		 * @param \Traversable $indexes                             the indexes to be retained
+		 * @param $indexes                                          the indexes of values to be retained
 		 * @throws Throwable\OutOfBounds\Exception                  indicates that an index was outside the bounds
 		 *                                                          of the list
 		 * @return boolean                                          whether any indexes were retained
