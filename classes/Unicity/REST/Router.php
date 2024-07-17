@@ -92,7 +92,6 @@ namespace Unicity\REST {
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onConfiguration(IO\File $file) : REST\Router {
-			Log\Manager::instance()->add(\Unicity\Log\Level::informational(), __METHOD__, []);
 			$entries = Config\Inc\Reader::load($file)->read();
 			foreach ($entries as $entry) {
 				$route = REST\Route::request($entry['method'], $entry['path'], $entry['patterns'] ?? []);
@@ -117,7 +116,7 @@ namespace Unicity\REST {
 		 * @return void										                          a reference to this class
 		 */
 		public function onRoutesFound($routes): void {
-			// \Unicity\Log\Manager::instance()->add(\Unicity\Log\Level::informational(), __METHOD__, ['routes' => $routes]);
+			\Unicity\Log\Manager::instance()->add(\Unicity\Log\Level::informational(), __METHOD__, ['routes' => $routes]);
 		}
 
 		/**
@@ -271,6 +270,7 @@ namespace Unicity\REST {
 				}
 
 				// $route = end($routes);
+				$this->onRoutesFound($routes);
 				$route = $this->selectPaymentMethod($request, $routes);
 				
 				$pipeline = $route->pipeline;
@@ -428,7 +428,7 @@ namespace Unicity\REST {
 				}
 			}
 	
-			return $routes[0];
+			return end($routes);
 		}
 
 	}
