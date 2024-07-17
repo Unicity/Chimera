@@ -27,6 +27,7 @@ namespace Unicity\REST {
 	use \Unicity\IO;
 	use \Unicity\REST;
 	use \Unicity\Throwable;
+	use \Unicity\Log;
 
 	class Router extends Core\AbstractObject {
 
@@ -91,6 +92,7 @@ namespace Unicity\REST {
 		 * @return REST\Router                                      a reference to this class
 		 */
 		public function onConfiguration(IO\File $file) : REST\Router {
+			Log\Manager::instance()->add(\Unicity\Log\Level::informational(), __METHOD__, []);
 			$entries = Config\Inc\Reader::load($file)->read();
 			foreach ($entries as $entry) {
 				$route = REST\Route::request($entry['method'], $entry['path'], $entry['patterns'] ?? []);
@@ -105,6 +107,17 @@ namespace Unicity\REST {
 				$this->onRoute($route->to($entry['to']));
 			}
 			return $this;
+		}
+
+		/**
+		 * This method adds a operating handler.
+		 *
+		 * @access public
+		 * @param callable $routes                                  the operating handler to be added
+		 * @return void										                          a reference to this class
+		 */
+		public function onRoutesFound($routes): void {
+			// \Unicity\Log\Manager::instance()->add(\Unicity\Log\Level::informational(), __METHOD__, ['routes' => $routes]);
 		}
 
 		/**
@@ -243,6 +256,7 @@ namespace Unicity\REST {
 					]);
 				}
 
+				// Function that determines which routes meet the conditions of the request
 				$routes = array_filter($routes, function(REST\Route $route) use ($request) : bool {
 					foreach ($route->when as $when) {
 						if (!$when($request)) {
@@ -256,9 +270,11 @@ namespace Unicity\REST {
 					throw new Throwable\RouteNotFound\Exception('Unable to route message.');
 				}
 
-				$route = end($routes);
+				// $route = end($routes);
+				$route = $this->selectPaymentMethod($request, $routes);
+				
 				$pipeline = $route->pipeline;
-				$pipeline($request, $route->arguments);
+				$pipeline($request, $route->arguments); 
 				try {
 					$this->dispatcher->publish('routeOperating', $request);
 				}
@@ -299,6 +315,120 @@ namespace Unicity\REST {
 				static::$singleton = new REST\Router();
 			}
 			return static::$singleton;
+		}
+
+		/**
+		 * This method selects the appropriate route from among a set of routes
+		 *
+		 * @access public
+		 * @param EVT\Request $request															payment providers list
+		 * @param REST\Router[] $routes															array of routes
+		 * @return REST\Router                                    	array of providers
+		 */
+		protected function selectPaymentMethod(EVT\Request $request, array $routes) {
+
+			if (count($routes) === 1) {
+				return end($routes);
+			}
+			
+			try {
+			
+				// ... Proceed to select based on probability ...
+				
+				// Check if routes belong to one or different providers
+				// $paymentProviders = getPaymentProvidersList() // for future, get payment providers list from DB/Static file/ etc
+				$paymentProviders = ['NetworkMerchant', 'Worldpay']; // ... Paypal, etc...
+				$foundProviders = $this->getProvidersFromFoundRoutes($paymentProviders, $routes);
+				
+				// Percent configuration 
+				// $configuration = getConfigurationFromDB(); // for future, get configuration from DB/Static file/etc
+				$configuration = [
+					'US' => [
+						'NetworkMerchant' => ['v1' => 0.9, 'v2' => 0.1], // each key in this array must match the name of the file it refers to: NetworkMerchants.v1.php/NetworkMerchants.v2.php
+						// 'Worldpay' => ['v1' => 0.9, 'v2' => 0.1],
+						'NetworkMerchantWorldpay' => ['NetworkMerchant' => 0.2, 'Worldpay' => 0.8],
+						'NetworkMerchantPaypalWorldpay' => ['NetworkMerchant' => 0.7, 'Paypal' => 0.1, 'Worldpay' => 0.2],
+					]
+				];
+
+				$providerKey = implode('', $foundProviders);
+				// One Provider -> we must apply the probabilistic logic with configuration (processor IDs)
+				// i.e.: 90% v1 / 10% v2 -> current implementation for Nuvei 10/60 rule
+				// More than one provider -> we must apply the probabilistic logic between providers/markets
+				// i.e.: US/PR 80% Worldpay / 20% NetworkMerchant
+				if (isset($configuration[$request->params['market']]) && isset($configuration[$request->params['market']][$providerKey])) {
+					$route = $this->selectRoute($routes, $configuration[$request->params['market']][$providerKey]);
+				} else {
+					// No configuration for the specified routes, return last route
+					$route = end($routes);
+				}
+
+				return $route;
+				
+			} catch (\Throwable $th) {
+				Log\Manager::instance()->add(\Unicity\Log\Level::error(), __METHOD__, ['routes' => $routes, 'error' => $th->getMessage()]);
+			}
+
+			return end($routes);
+
+		}
+
+		/**
+		 * This method returns the list of providers found in an array of Routes.
+		 *
+		 * @access public
+		 * @param array $paymentProviders  payment providers list
+		 * @param REST\Router[] $routes    array of routes
+		 * @return array                   array of providers
+		 */
+		protected function getProvidersFromFoundRoutes(array $paymentProviders, array $routes) {
+			$providerMap = [];
+			$keys = array_keys($routes);
+			foreach ($paymentProviders as $provider) {
+        $providerMap[$provider] = false;
+    	}
+
+			foreach ($paymentProviders as $provider) {
+				foreach ($keys as $key) {
+					$route = $routes[$key];
+					$config = $route->arguments['config'];
+					if (strpos($config, $provider) !== false) {
+						$providerMap[$provider] = true;
+					}
+				}
+			}
+			
+			$providers = array_keys(array_filter($providerMap));
+			sort($providers);
+			return $providers;
+		}
+
+		/**
+		 * This method returns the route found among an array of routes based on probability.
+		 *
+		 * @access public
+		 * @param REST\Router[] $routes															  array of routes
+		 * @param array $probabilities															  array of probabilities
+		 * @return REST\Router                                    		route found
+		 */
+		protected function selectRoute($routes, $probabilities): REST\Router {
+			$random = mt_rand() / mt_getrandmax();
+			$cumulativeProbability = 0.0;
+			$keys = array_keys($routes);
+			foreach ($probabilities as $version => $probability) {
+				$cumulativeProbability += $probability;
+				if ($random <= $cumulativeProbability) {
+					foreach ($keys as $key) {
+						$route = $routes[$key];
+						$config = $route->arguments['config'];
+						if (strpos($config, $version) !== false) {
+							return $route;
+						}
+					}
+				}
+			}
+	
+			return $routes[0];
 		}
 
 	}
