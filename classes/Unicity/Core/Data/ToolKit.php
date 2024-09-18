@@ -16,252 +16,276 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core\Data {
+namespace Unicity\Core\Data;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
+use Unicity\Common;
+use Unicity\Core;
 
-	/**
-	 * This class provides a set of helper methods that can be used to evaluate data.
-	 *
-	 * @access public
-	 * @class
-	 * @package Core
-	 */
-	class ToolKit extends Core\AbstractObject {
+/**
+ * This class provides a set of helper methods that can be used to evaluate data.
+ *
+ * @access public
+ * @class
+ * @package Core
+ */
+class ToolKit extends Core\AbstractObject
+{
+    /**
+     * This method returns the value with a fixed length.
+     *
+     * @access public
+     * @static
+     * @param string $value the value to be processed
+     * @param integer $length the length to truncate at or pad to
+     * @param integer $pad_type the padding type
+     * @return string the processed value
+     *
+     * @see http://php.net/str_pad
+     */
+    public static function fixedLength($value, $length, $pad_type = STR_PAD_RIGHT): string
+    {
+        return (strlen($value) <= $length) ? str_pad($value, $length, ' ', $pad_type) : substr($value, 0, $length);
+    }
 
-		/**
-		 * This method returns the value with a fixed length.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $value                                     the value to be processed
-		 * @param integer $length                                   the length to truncate at or pad to
-		 * @param integer $pad_type                                 the padding type
-		 * @return string                                           the processed value
-		 *
-		 * @see http://php.net/str_pad
-		 */
-		public static function fixedLength($value, $length, $pad_type = STR_PAD_RIGHT) : string {
-			return (strlen($value) <= $length) ? str_pad($value, $length, ' ', $pad_type) : substr($value, 0, $length);
-		}
+    /**
+     * This method returns the specified default if the specified value is empty; otherwise,
+     * returns the specified value.
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @param mixed $default the default value if the evaluation
+     *                       fails
+     * @return mixed the appropriate value
+     */
+    public static function ifEmpty($value, $default)
+    {
+        if (static::isEmpty($value)) {
+            if (is_callable($default)) {
+                return call_user_func($default);
+            }
 
-		/**
-		 * This method returns the specified default if the specified value is empty; otherwise,
-		 * returns the specified value.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @param mixed $default                                    the default value if the evaluation
-		 *                                                          fails
-		 * @return mixed                                            the appropriate value
-		 */
-		public static function ifEmpty($value, $default) {
-			if (static::isEmpty($value)) {
-				if (is_callable($default)) {
-					return call_user_func($default);
-				}
-				return $default;
-			}
-			return $value;
-		}
+            return $default;
+        }
 
-		/**
-		 * This method returns the specified default if the specified value is false; otherwise,
-		 * returns the specified value.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @param mixed $default                                    the default value if the evaluation
-		 *                                                          fails
-		 * @return mixed                                            the appropriate value
-		 */
-		public static function ifFalse($value, $default) {
-			if (static::isFalse($value)) {
-				if (is_callable($default)) {
-					return call_user_func($default, $value);
-				}
-				return $default;
-			}
-			return $value;
-		}
+        return $value;
+    }
 
-		/**
-		 * This method returns the specified default if the specified value is null; otherwise,
-		 * returns the specified value.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @param mixed $default                                    the default value if the evaluation
-		 *                                                          fails
-		 * @return mixed                                            the appropriate value
-		 */
-		public static function ifNull($value, $default) {
-			if (static::isNull($value)) {
-				if (is_callable($default)) {
-					return call_user_func($default, $value);
-				}
-				return $default;
-			}
-			return $value;
-		}
+    /**
+     * This method returns the specified default if the specified value is false; otherwise,
+     * returns the specified value.
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @param mixed $default the default value if the evaluation
+     *                       fails
+     * @return mixed the appropriate value
+     */
+    public static function ifFalse($value, $default)
+    {
+        if (static::isFalse($value)) {
+            if (is_callable($default)) {
+                return call_user_func($default, $value);
+            }
 
-		/**
-		 * This method returns the specified default if the specified value is undefined; otherwise,
-		 * returns the specified value.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @param mixed $default                                    the default value if the evaluation
-		 *                                                          fails
-		 * @return mixed                                            the appropriate value
-		 */
-		public static function ifUndefined($value, $default) {
-			if (static::isUndefined($value)) {
-				if (is_callable($default)) {
-					return call_user_func($default, $value);
-				}
-				return $default;
-			}
-			return $value;
-		}
+            return $default;
+        }
 
-		/**
-		 * This method returns the specified default if the specified value is unset; otherwise,
-		 * returns the specified value.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @param mixed $default                                    the default value if the evaluation
-		 *                                                          fails
-		 * @return mixed                                            the appropriate value
-		 */
-		public static function ifUnset($value, $default) {
-			if (static::isUnset($value)) {
-				if (is_callable($default)) {
-					return call_user_func($default, $value);
-				}
-				return $default;
-			}
-			return $value;
-		}
+        return $value;
+    }
 
-		/**
-		 * This method returns the specified default if the specified value is zero; otherwise,
-		 * returns the specified value.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @param mixed $default                                    the default value if the evaluation
-		 *                                                          fails
-		 * @return mixed                                            the appropriate value
-		 */
-		public static function ifZero($value, $default) {
-			if (static::isZero($value)) {
-				if (is_callable($default)) {
-					return call_user_func($default, $value);
-				}
-				return $default;
-			}
-			return $value;
-		}
+    /**
+     * This method returns the specified default if the specified value is null; otherwise,
+     * returns the specified value.
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @param mixed $default the default value if the evaluation
+     *                       fails
+     * @return mixed the appropriate value
+     */
+    public static function ifNull($value, $default)
+    {
+        if (static::isNull($value)) {
+            if (is_callable($default)) {
+                return call_user_func($default, $value);
+            }
 
-		/**
-		 * This method returns whether the specified value is "empty" (i.e. "null", "undefined", or a string
-		 * of length "0").
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the value is "empty"
-		 */
-		public static function isEmpty($value) : bool {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (Common\StringRef::isTypeOf($value) && ((string) $value === '')));
-		}
+            return $default;
+        }
 
-		/**
-		 * This method returns whether the specified value is "false" (i.e. "null", "undefined", or loosely
-		 * evaluates to false).
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the value is "false"
-		 */
-		public static function isFalse($value) : bool {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || !$value);
-		}
+        return $value;
+    }
 
-		/**
-		 * This method returns whether the specified value is "null".
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the value is "null"
-		 */
-		public static function isNull($value) : bool {
-			return ($value === null);
-		}
+    /**
+     * This method returns the specified default if the specified value is undefined; otherwise,
+     * returns the specified value.
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @param mixed $default the default value if the evaluation
+     *                       fails
+     * @return mixed the appropriate value
+     */
+    public static function ifUndefined($value, $default)
+    {
+        if (static::isUndefined($value)) {
+            if (is_callable($default)) {
+                return call_user_func($default, $value);
+            }
 
-		/**
-		 * This method returns whether the specified value is "undefined".
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the value is "undefined"
-		 */
-		public static function isUndefined($value) : bool {
-			return Core\Data\Undefined::instance()->__equals($value);
-		}
+            return $default;
+        }
 
-		/**
-		 * This method returns the specified value is "unset" (i.e. "null" or "undefined").
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the value is "unset"
-		 */
-		public static function isUnset($value) : bool {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value));
-		}
+        return $value;
+    }
 
-		/**
-		 * This method returns whether the specified value is "zero" (i.e. "null", "undefined", or a
-		 * number is equal to "0").
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the value is "zero"
-		 */
-		public static function isZero($value) : bool {
-			return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (is_numeric($value) && ((float) $value == 0.0)));
-		}
+    /**
+     * This method returns the specified default if the specified value is unset; otherwise,
+     * returns the specified value.
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @param mixed $default the default value if the evaluation
+     *                       fails
+     * @return mixed the appropriate value
+     */
+    public static function ifUnset($value, $default)
+    {
+        if (static::isUnset($value)) {
+            if (is_callable($default)) {
+                return call_user_func($default, $value);
+            }
 
-		/**
-		 * This method returns the truncated value.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $value                                     the value to be processed
-		 * @param integer $length                                   the length to truncate at
-		 * @return string                                           the processed value
-		 */
-		public static function truncate(string $value, int $length) : string {
-			return (strlen($value) <= $length) ? $value : substr($value, 0, $length);
-		}
+            return $default;
+        }
 
-	}
+        return $value;
+    }
+
+    /**
+     * This method returns the specified default if the specified value is zero; otherwise,
+     * returns the specified value.
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @param mixed $default the default value if the evaluation
+     *                       fails
+     * @return mixed the appropriate value
+     */
+    public static function ifZero($value, $default)
+    {
+        if (static::isZero($value)) {
+            if (is_callable($default)) {
+                return call_user_func($default, $value);
+            }
+
+            return $default;
+        }
+
+        return $value;
+    }
+
+    /**
+     * This method returns whether the specified value is "empty" (i.e. "null", "undefined", or a string
+     * of length "0").
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the value is "empty"
+     */
+    public static function isEmpty($value): bool
+    {
+        return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (Common\StringRef::isTypeOf($value) && ((string) $value === '')));
+    }
+
+    /**
+     * This method returns whether the specified value is "false" (i.e. "null", "undefined", or loosely
+     * evaluates to false).
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the value is "false"
+     */
+    public static function isFalse($value): bool
+    {
+        return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || !$value);
+    }
+
+    /**
+     * This method returns whether the specified value is "null".
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the value is "null"
+     */
+    public static function isNull($value): bool
+    {
+        return ($value === null);
+    }
+
+    /**
+     * This method returns whether the specified value is "undefined".
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the value is "undefined"
+     */
+    public static function isUndefined($value): bool
+    {
+        return Core\Data\Undefined::instance()->__equals($value);
+    }
+
+    /**
+     * This method returns the specified value is "unset" (i.e. "null" or "undefined").
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the value is "unset"
+     */
+    public static function isUnset($value): bool
+    {
+        return (($value === null) || Core\Data\Undefined::instance()->__equals($value));
+    }
+
+    /**
+     * This method returns whether the specified value is "zero" (i.e. "null", "undefined", or a
+     * number is equal to "0").
+     *
+     * @access public
+     * @static
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the value is "zero"
+     */
+    public static function isZero($value): bool
+    {
+        return (($value === null) || Core\Data\Undefined::instance()->__equals($value) || (is_numeric($value) && ((float) $value == 0.0)));
+    }
+
+    /**
+     * This method returns the truncated value.
+     *
+     * @access public
+     * @static
+     * @param string $value the value to be processed
+     * @param integer $length the length to truncate at
+     * @return string the processed value
+     */
+    public static function truncate(string $value, int $length): string
+    {
+        return (strlen($value) <= $length) ? $value : substr($value, 0, $length);
+    }
 
 }

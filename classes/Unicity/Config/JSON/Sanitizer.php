@@ -16,106 +16,104 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\JSON {
+namespace Unicity\Config\JSON;
 
-	use \Peekmo\JsonPath;
-	use \Unicity\Config;
-	use \Unicity\Core;
+use Peekmo\JsonPath;
+use Unicity\Config;
+use Unicity\Core;
 
-	/**
-	 * This class defines the contract for sanitizing messages.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Sanitizer extends Config\Sanitizer {
+/**
+ * This class defines the contract for sanitizing messages.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Sanitizer extends Config\Sanitizer
+{
+    protected $filters;
 
-		protected $filters;
+    public function __construct($filters)
+    {
+        $filters = static::filters($filters);
+        $this->filters = [];
+        foreach ($filters as $filter) {
+            $rule = $filter->hasKey('rule') ? $filter->rule : null;
+            if (is_string($rule) && array_key_exists($rule, static::$rules)) {
+                $rule = static::$rules[$rule];
+            }
+            if ($filter->hasKey('keys')) {
+                foreach ($filter->keys as $key) {
+                    $this->filters[] = (object)[
+                        'path' => $key->path,
+                        'rule' => $rule,
+                    ];
+                }
+            }
+        }
+    }
 
-		public function __construct($filters) {
-			$filters = static::filters($filters);
-			$this->filters = array();
-			foreach ($filters as $filter) {
-				$rule = $filter->hasKey('rule') ? $filter->rule : null;
-				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
-					$rule = static::$rules[$rule];
-				}
-				if ($filter->hasKey('keys')) {
-					foreach ($filter->keys as $key) {
-						$this->filters[] = (object)[
-							'path' => $key->path,
-							'rule' => $rule,
-						];
-					}
-				}
-			}
-		}
+    public function sanitize($input, array $metadata = []): string
+    {
+        $json = Config\JSON\Helper::decode($input, $metadata);
+        if (!empty($json)) {
+            $store = new JsonPath\JsonStore($json);
+            foreach ($this->filters as $filter) {
+                $rule = $filter->rule;
+                $matches = [];
+                if (is_string($rule) && preg_match('/^whitelist\((.+)\)$/', $rule, $matches)) { // removes all other fields not in the whitelist
+                    $fields = array_map('trim', explode(',', $matches[1]));
+                    $results = $store->get($filter->path);
+                    if ($elements =&$results) {
+                        $removables = [];
+                        foreach ($elements as $element) {
+                            foreach ($element as $key => $val) {
+                                if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
+                                    $store->remove($filter->path . ".['{$key}']");
+                                    $removables[$key] = null;
+                                }
+                            }
+                        }
+                    }
+                } elseif (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
+                    $fields = array_map('trim', explode(',', $matches[1]));
+                    $results = $store->get($filter->path);
+                    if ($elements =&$results) {
+                        $removables = [];
+                        foreach ($elements as $element) {
+                            foreach ($element as $key => $val) {
+                                if (in_array($key, $fields) && !array_key_exists($key, $removables)) {
+                                    $store->remove($filter->path . ".['{$key}']");
+                                    $removables[$key] = null;
+                                }
+                            }
+                        }
+                    }
+                } elseif (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
+                    $results = $store->get($filter->path);
+                    if ($elements =&$results) {
+                        foreach ($elements as &$element) {
+                            $element = Core\Masks::last($element, 'x', $matches[1]);
+                        }
+                    }
+                } elseif (is_callable($rule)) {
+                    $results = $store->get($filter->path);
+                    if ($elements =&$results) {
+                        foreach ($elements as &$element) {
+                            $element = $rule($element);
+                        }
+                    }
+                } else { // remove
+                    $store->remove($filter->path);
+                }
+            }
 
-		public function sanitize($input, array $metadata = array()) : string {
-			$json = Config\JSON\Helper::decode($input, $metadata);
-			if (!empty($json)) {
-				$store = new JsonPath\JsonStore($json);
-				foreach ($this->filters as $filter) {
-					$rule = $filter->rule;
-					$matches = array();
-					if (is_string($rule) && preg_match('/^whitelist\((.+)\)$/', $rule, $matches)) { // removes all other fields not in the whitelist
-						$fields = array_map('trim', explode(',', $matches[1]));
-						$results = $store->get($filter->path);
-						if ($elements =& $results) {
-							$removables = array();
-							foreach ($elements as $element) {
-								foreach ($element as $key => $val) {
-									if (!in_array($key, $fields) && !array_key_exists($key, $removables)) {
-										$store->remove($filter->path . ".['{$key}']");
-										$removables[$key] = null;
-									}
-								}
-							}
-						}
-					}
-					else if (is_string($rule) && preg_match('/^blacklist\((.+)\)$/', $rule, $matches)) { // removes the specified fields in the blacklist
-						$fields = array_map('trim', explode(',', $matches[1]));
-						$results = $store->get($filter->path);
-						if ($elements =& $results) {
-							$removables = array();
-							foreach ($elements as $element) {
-								foreach ($element as $key => $val) {
-									if (in_array($key, $fields) && !array_key_exists($key, $removables)) {
-										$store->remove($filter->path . ".['{$key}']");
-										$removables[$key] = null;
-									}
-								}
-							}
-						}
-					}
-					else if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $matches)) {
-						$results = $store->get($filter->path);
-						if ($elements =& $results) {
-							foreach ($elements as &$element) {
-								$element = Core\Masks::last($element, 'x', $matches[1]);
-							}
-						}
-					}
-					else if (is_callable($rule)) {
-						$results = $store->get($filter->path);
-						if ($elements =& $results) {
-							foreach ($elements as &$element) {
-								$element = $rule($element);
-							}
-						}
-					}
-					else { // remove
-						$store->remove($filter->path);
-					}
-				}
-				return $store->toString();
-			}
-			return '';
-		}
+            return $store->toString();
+        }
 
-	}
+        return '';
+    }
 
 }

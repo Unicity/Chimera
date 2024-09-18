@@ -16,33 +16,36 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class OnStatement extends VLD\Parser\Definition\Statement {
+class OnStatement extends VLD\Parser\Definition\Statement
+{
+    protected static $events = null;
 
-		protected static $events = null;
+    public function get()
+    {
+        if (in_array($this->args['event']->get(), static::getEvents())) {
+            $object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
 
-		public function get() {
-			if (in_array($this->args['event']->get(), static::getEvents())) {
-				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
-				return $object->get();
-			}
-			return new VLD\Parser\Feedback();
-		}
+            return $object->get();
+        }
 
-		protected static function getEvents() {
-			if (static::$events === null) {
-				static::$events = (isset($_SERVER['HTTP_X_EVENT_TYPE']))
-					? array_map('trim', explode(';', $_SERVER['HTTP_X_EVENT_TYPE']))
-					: array();
-			}
-			return static::$events;
-		}
+        return new VLD\Parser\Feedback();
+    }
 
-	}
+    protected static function getEvents()
+    {
+        if (static::$events === null) {
+            static::$events = (isset($_SERVER['HTTP_X_EVENT_TYPE']))
+                ? array_map('trim', explode(';', $_SERVER['HTTP_X_EVENT_TYPE']))
+                : [];
+        }
+
+        return static::$events;
+    }
 
 }

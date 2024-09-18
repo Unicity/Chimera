@@ -16,25 +16,24 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class ContextStatement extends VLD\Parser\Definition\Statement {
+class ContextStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $this->context->push($this->args['path']);
 
-		public function get() {
-			$this->context->push($this->args['path']);
+        $object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']);
+        $feedback = $object->get();
 
-			$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']);
-			$feedback = $object->get();
+        $this->context->pop();
 
-			$this->context->pop();
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

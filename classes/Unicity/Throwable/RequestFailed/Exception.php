@@ -16,37 +16,36 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Throwable\RequestFailed {
+namespace Unicity\Throwable\RequestFailed;
 
-	use \Unicity\EVT;
-	use \Unicity\Throwable;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents a Request Failed Exception.
-	 *
-	 * @access public
-	 * @class
-	 * @package Throwable
-	 */
-	class Exception extends Throwable\Runtime\Exception {
+/**
+ * This class represents a Request Failed Exception.
+ *
+ * @access public
+ * @class
+ * @package Throwable
+ */
+class Exception extends Throwable\Runtime\Exception
+{
+    protected $response;
 
-		protected $response;
+    public function __construct($response, int $code = 0)
+    {
+        parent::__construct(
+            (is_object($response) && isset($response->body)) ? $response->body : '',
+            null,
+            $code
+        );
+        $this->response = $response;
+    }
 
-		public function __construct($response, int $code = 0) {
-			parent::__construct(
-				(is_object($response) && isset($response->body)) ? $response->body : '',
-				null,
-				$code
-			);
-			$this->response = $response;
-		}
-
-		public function getResponse() {
-			return $this->response;
-		}
-
-	}
+    public function getResponse()
+    {
+        return $this->response;
+    }
 
 }

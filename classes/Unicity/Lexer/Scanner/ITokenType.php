@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner {
+namespace Unicity\Lexer\Scanner;
 
-	/**
-	 * This interface represents the contract for defining a token type.
-	 *
-	 * @access public
-	 * @class
-	 * @final
-	 * @package Lexer
-	 */
-	interface ITokenType { }
-
+/**
+ * This interface represents the contract for defining a token type.
+ *
+ * @access public
+ * @class
+ * @final
+ * @package Lexer
+ */
+interface ITokenType
+{
 }

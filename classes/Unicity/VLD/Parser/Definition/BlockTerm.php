@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class BlockTerm extends VLD\Parser\Definition\Block {
+class BlockTerm extends VLD\Parser\Definition\Block
+{
+    protected $statements;
 
-		protected $statements;
+    public function __construct(VLD\Parser\Context $context, array $statements)
+    {
+        parent::__construct($context);
+        $this->statements = $statements;
+    }
 
-		public function __construct(VLD\Parser\Context $context, array $statements) {
-			parent::__construct($context);
-			$this->statements = $statements;
-		}
-
-		public function get() {
-			return $this->statements;
-		}
-
-	}
+    public function get()
+    {
+        return $this->statements;
+    }
 
 }

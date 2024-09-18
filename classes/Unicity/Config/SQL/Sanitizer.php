@@ -16,27 +16,26 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\SQL {
+namespace Unicity\Config\SQL;
 
-	use \Unicity\IO;
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This class defines the contract for sanitizing messages.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Sanitizer extends Config\Sanitizer {
+/**
+ * This class defines the contract for sanitizing messages.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Sanitizer extends Config\Sanitizer
+{
+    public function sanitize($input, array $metadata = []): string
+    {
+        $input = static::input($input);
 
-		public function sanitize($input, array $metadata = array()) : string {
-			$input = static::input($input);
-			return $input->getBytes();
-		}
-
-	}
+        return $input->getBytes();
+    }
 
 }

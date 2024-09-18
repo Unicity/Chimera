@@ -17,85 +17,83 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Common;
-	use \Unicity\Throwable;
+use Unicity\Common;
+use Unicity\Throwable;
 
-	/**
-	 * This interface defines the contract for an immutable map.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Common
-	 */
-	interface IMap extends \ArrayAccess, Common\ICollection {
+/**
+ * This interface defines the contract for an immutable map.
+ *
+ * @access public
+ * @interface
+ * @package Common
+ */
+interface IMap extends \ArrayAccess, Common\ICollection
+{
+    /**
+     * This method returns an array of all keys in the collection.
+     *
+     * @access public
+     * @return array an array of all keys in the collection
+     */
+    public function getKeys();
 
-		/**
-		 * This method returns an array of all keys in the collection.
-		 *
-		 * @access public
-		 * @return array                                            an array of all keys in the collection
-		 */
-		public function getKeys();
+    /**
+     * This method returns the value associated with the specified key.
+     *
+     * @access public
+     * @param mixed $key the key of the value to be returned
+     * @return mixed the element associated with the specified key
+     * @throws Throwable\InvalidArgument\Exception indicates that key is not a scaler type
+     * @throws Throwable\KeyNotFound\Exception indicates that key could not be found
+     */
+    public function getValue($key);
 
-		/**
-		 * This method returns the value associated with the specified key.
-		 *
-		 * @access public
-		 * @param mixed $key                                        the key of the value to be returned
-		 * @return mixed                                            the element associated with the specified key
-		 * @throws Throwable\InvalidArgument\Exception              indicates that key is not a scaler type
-		 * @throws Throwable\KeyNotFound\Exception                  indicates that key could not be found
-		 */
-		public function getValue($key);
+    /**
+     * This method returns an array of values in the collection.
+     *
+     * @access public
+     * @param $keys the keys of the values to be returned
+     * @return array an array of all values in the collection
+     */
+    public function getValues($keys = null);
 
-		/**
-		 * This method returns an array of values in the collection.
-		 *
-		 * @access public
-		 * @param $keys                                             the keys of the values to be returned
-		 * @return array                                            an array of all values in the collection
-		 */
-		public function getValues($keys = null);
+    /**
+     * This method determines whether the specified key exists in the collection.
+     *
+     * @access public
+     * @param mixed $key the key to be tested
+     * @return boolean whether the specified key exists
+     */
+    public function hasKey($key);
 
-		/**
-		 * This method determines whether the specified key exists in the collection.
-		 *
-		 * @access public
-		 * @param mixed $key                                        the key to be tested
-		 * @return boolean                                          whether the specified key exists
-		 */
-		public function hasKey($key);
+    /**
+     * This method determines whether the specified value exists in the collection.
+     *
+     * @access public
+     * @param mixed $value the value to be tested
+     * @return boolean whether the specified value exists
+     */
+    public function hasValue($value);
 
-		/**
-		 * This method determines whether the specified value exists in the collection.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be tested
-		 * @return boolean                                          whether the specified value exists
-		 */
-		public function hasValue($value);
+    /**
+     * This method determines whether all elements in the specified array are contained
+     * within the collection.
+     *
+     * @access public
+     * @param $values the values to be tested
+     * @return boolean whether all elements are contained within
+     *                 the collection
+     */
+    public function hasValues($values);
 
-		/**
-		 * This method determines whether all elements in the specified array are contained
-		 * within the collection.
-		 *
-		 * @access public
-		 * @param $values                                           the values to be tested
-		 * @return boolean                                          whether all elements are contained within
-		 *                                                          the collection
-		 */
-		public function hasValues($values);
-
-		/**
-		 * This method returns the collection as a list.
-		 *
-		 * @access public
-		 * @return \Unicity\Common\IList                            a list of the elements
-		 */
-		public function toList();
-
-	}
+    /**
+     * This method returns the collection as a list.
+     *
+     * @access public
+     * @return \Unicity\Common\IList a list of the elements
+     */
+    public function toList();
 
 }

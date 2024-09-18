@@ -16,168 +16,177 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
+use Unicity\Common;
+use Unicity\Core;
 
-	/**
-	 * This class creates an immutable boxed double value.
-	 *
-	 * @access public
-	 * @class
-	 * @package Common
-	 */
-	class DoubleVal extends Core\AbstractObject implements Common\IPrimitiveVal {
+/**
+ * This class creates an immutable boxed double value.
+ *
+ * @access public
+ * @class
+ * @package Common
+ */
+class DoubleVal extends Core\AbstractObject implements Common\IPrimitiveVal
+{
+    /**
+     * This variable stores the primitive value.
+     *
+     * @access protected
+     * @var boolean
+     */
+    protected $value;
 
-		/**
-		 * This variable stores the primitive value.
-		 *
-		 * @access protected
-		 * @var boolean
-		 */
-		protected $value;
+    /**
+     * This constructor initializes the class with the specified value.
+     *
+     * @access public
+     * @param double $value the primitive value to be boxed
+     */
+    public function __construct($value = 0.0)
+    {
+        $this->value = static::parse($value);
+    }
 
-		/**
-		 * This constructor initializes the class with the specified value.
-		 *
-		 * @access public
-		 * @param double $value                                     the primitive value to be boxed
-		 */
-		public function __construct($value = 0.0) {
-			$this->value = static::parse($value);
-		}
+    /**
+     * This method compares the specified object with the current object for order.
+     *
+     * @access public
+     * @param mixed $object the object to be compared
+     * @return integer a negative integer, zero, or a positive
+     *                 integer as this object is less than,
+     *                 equal to, or greater than the specified
+     *                 object
+     */
+    public function compareTo($object): int
+    {
+        $x = $this->value;
+        $y = static::parse($object);
 
-		/**
-		 * This method compares the specified object with the current object for order.
-		 *
-		 * @access public
-		 * @param mixed $object                                     the object to be compared
-		 * @return integer                                          a negative integer, zero, or a positive
-		 *                                                          integer as this object is less than,
-		 *                                                          equal to, or greater than the specified
-		 *                                                          object
-		 */
-		public function compareTo($object) : int {
-			$x = $this->value;
-			$y = static::parse($object);
+        if ($x < $y) {
+            return -1;
+        } elseif ($x == $y) {
+            return 0;
+        } else { // ($x > $y)
+            return 1;
+        }
+    }
 
-			if ($x < $y) {
-				return -1;
-			}
-			else if ($x == $y) {
-				return 0;
-			}
-			else { // ($x > $y)
-				return 1;
-			}
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->value);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->value);
-		}
+    /**
+     * This method evaluates whether the specified objects is equal to the current object.
+     *
+     * @access public
+     * @param mixed $object the object to be evaluated
+     * @return boolean whether the specified object is equal
+     *                 to the current object
+     */
+    public function __equals($object)
+    {
+        if ($object !== null) {
+            if (is_numeric($object)) {
+                return ($object == $this->value);
+            }
 
-		/**
-		 * This method evaluates whether the specified objects is equal to the current object.
-		 *
-		 * @access public
-		 * @param mixed $object                                     the object to be evaluated
-		 * @return boolean                                          whether the specified object is equal
-		 *                                                          to the current object
-		 */
-		public function __equals($object) {
-			if ($object !== null) {
-				if (is_numeric($object)) {
-					return ($object == $this->value);
-				}
-				return (($object instanceof Common\DoubleVal) && ($object->value == $this->value));
-			}
-			return false;
-		}
+            return (($object instanceof Common\DoubleVal) && ($object->value == $this->value));
+        }
 
-		/**
-		 * This method returns the current object as a string.
-		 *
-		 * @access public
-		 * @return string                                           a string representing the current
-		 *                                                          object
-		 */
-		public function __toString() {
-			return sprintf('%F', $this->value);
-		}
+        return false;
+    }
 
-		/**
-		 * This method returns the un-boxed value.
-		 *
-		 * @access public
-		 * @return double                                           the primitive value
-		 */
-		public function __value() {
-			return $this->value;
-		}
+    /**
+     * This method returns the current object as a string.
+     *
+     * @access public
+     * @return string a string representing the current
+     *                object
+     */
+    public function __toString()
+    {
+        return sprintf('%F', $this->value);
+    }
 
-		/**
-		 * This method returns how the two objects should be ordered.
-		 *
-		 * @access public
-		 * @param \Unicity\Common\DoubleVal $x                         the first primitive to compare
-		 * @param \Unicity\Common\DoubleVal $y                         the second primitive to compare
-		 * @return integer                                          a negative integer, zero, or a positive
-		 *                                                          integer as this object is less than,
-		 *                                                          equal to, or greater than the first
-		 *                                                          object
-		 */
-		public static function compare($x, $y) {
-			return $x->compareTo($y);
-		}
+    /**
+     * This method returns the un-boxed value.
+     *
+     * @access public
+     * @return double the primitive value
+     */
+    public function __value()
+    {
+        return $this->value;
+    }
 
-		/**
-		 * This method returns whether the data type of the specified value is related to the data type
-		 * of this class.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be evaluated
-		 * @return boolean                                          whether the data type of the specified
-		 *                                                          value is related to the data type of
-		 *                                                          this class
-		 */
-		public static function isTypeOf($value) {
-			if ($value !== null) {
-				return (is_numeric($value) || (is_object($value) && ($value instanceof Common\DoubleVal)));
-			}
-			return false;
-		}
+    /**
+     * This method returns how the two objects should be ordered.
+     *
+     * @access public
+     * @param \Unicity\Common\DoubleVal $x the first primitive to compare
+     * @param \Unicity\Common\DoubleVal $y the second primitive to compare
+     * @return integer a negative integer, zero, or a positive
+     *                 integer as this object is less than,
+     *                 equal to, or greater than the first
+     *                 object
+     */
+    public static function compare($x, $y)
+    {
+        return $x->compareTo($y);
+    }
 
-		/**
-		 * This method returns the value as a boxed primitive value.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be parsed
-		 * @return \Unicity\Common\IPrimitiveVal                    the primitive value
-		 */
-		public static function parse($value) {
-			return ($value instanceof Common\IPrimitiveVal) ? (double) $value->__value() : (double) $value;
-		}
+    /**
+     * This method returns whether the data type of the specified value is related to the data type
+     * of this class.
+     *
+     * @access public
+     * @param mixed $value the value to be evaluated
+     * @return boolean whether the data type of the specified
+     *                 value is related to the data type of
+     *                 this class
+     */
+    public static function isTypeOf($value)
+    {
+        if ($value !== null) {
+            return (is_numeric($value) || (is_object($value) && ($value instanceof Common\DoubleVal)));
+        }
 
-		/**
-		 * This method returns the value as a boxed primitive value.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be boxed
-		 * @return \Unicity\Common\IPrimitiveVal                    the boxed primitive value
-		 */
-		public static function valueOf($value) {
-			return new static($value);
-		}
+        return false;
+    }
 
-	}
+    /**
+     * This method returns the value as a boxed primitive value.
+     *
+     * @access public
+     * @param mixed $value the value to be parsed
+     * @return \Unicity\Common\IPrimitiveVal the primitive value
+     */
+    public static function parse($value)
+    {
+        return ($value instanceof Common\IPrimitiveVal) ? (float) $value->__value() : (float) $value;
+    }
+
+    /**
+     * This method returns the value as a boxed primitive value.
+     *
+     * @access public
+     * @param mixed $value the value to be boxed
+     * @return \Unicity\Common\IPrimitiveVal the boxed primitive value
+     */
+    public static function valueOf($value)
+    {
+        return new static($value);
+    }
 
 }

@@ -17,83 +17,91 @@
  */
 
 // http://en.wikipedia.org/wiki/List_of_file_signatures
-return array(
-	'bmp' => function($data) : bool {
-		$signature = '424D';
-		$length = strlen($data);
-		if ($length >= 2) {
-			$buffer = '';
-			for ($i = 0; $i < 2; $i++) {
-				$buffer .= bin2hex($data[$i]);
-			}
-			return (strtoupper($buffer) == $signature);
-		}
-		return false;
-	},
-	'csv' => function($data) : bool {
-		return (preg_match('/^(.*,)+/', $data) || preg_match('/^(.*\|)+/', $data));
-	},
-	'gif' => function($data) : bool {
-		$signature = array('474946383761', '474946383961');
-		$length = strlen($data);
-		if ($length >= 6) {
-			$buffer = '';
-			for ($i = 0; $i < 6; $i++) {
-				$buffer .= bin2hex($data[$i]);
-			}
-			return (in_array(strtoupper($buffer), $signature));
-		}
-		return false;
-	},
-	'html' => function($data) : bool {
-		return (bool) preg_match('/^<html/', $data);
-	},
-	'jpg' => function($data) : bool {
-		$signature = 'FFD8';
-		$length = strlen($data);
-		if ($length >= 2) {
-			$buffer = '';
-			for ($i = 0; $i < 2; $i++) {
-				$buffer .= bin2hex($data[$i]);
-			}
-			return (strtoupper($buffer) == $signature);
-		}
-		return false;
-	},
-	'json' => function($data) : bool {
-		return (bool) preg_match("/^[{]/", $data);
-	},
-	'php' => function($data) : bool {
-		return (bool) preg_match('/^<\?php/', $data);
-	},
-	'plist' => function($data) : bool {
-		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<plist/', $data));
-	},
-	'png' => function($data) : bool {
-		$signature = '89504E470D0A1A0A';
-		$length = strlen($data);
-		if ($length >= 8) {
-			$buffer = '';
-			for ($i = 0; $i < 8; $i++) {
-				$buffer .= bin2hex($data[$i]);
-			}
-			return (strtoupper($buffer) == $signature);
-		}
-		return false;
-	},
-	'properties' => function($data) : bool {
-		return (preg_match('/^[^=]+=.+/', $data) || preg_match('/^#.*$/', $data));
-	},
-	'spring' => function($data) : bool {
-		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<objects/', $data));
-	},
-	'soap' => function($data) : bool {
-		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<soap:Envelope/', $data));
-	},
-	'xml' => function($data) : bool {
-		return (bool) preg_match('/^<\?xml\s+.+\?>/', $data);
-	},
-	'wddx' => function($data) : bool {
-		return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<wddxPacket/', $data));
-	},
-);
+return [
+    'bmp' => function ($data): bool {
+        $signature = '424D';
+        $length = strlen($data);
+        if ($length >= 2) {
+            $buffer = '';
+            for ($i = 0; $i < 2; $i++) {
+                $buffer .= bin2hex($data[$i]);
+            }
+
+            return (strtoupper($buffer) == $signature);
+        }
+
+        return false;
+    },
+    'csv' => function ($data): bool {
+        return (preg_match('/^(.*,)+/', $data) || preg_match('/^(.*\|)+/', $data));
+    },
+    'gif' => function ($data): bool {
+        $signature = ['474946383761', '474946383961'];
+        $length = strlen($data);
+        if ($length >= 6) {
+            $buffer = '';
+            for ($i = 0; $i < 6; $i++) {
+                $buffer .= bin2hex($data[$i]);
+            }
+
+            return (in_array(strtoupper($buffer), $signature));
+        }
+
+        return false;
+    },
+    'html' => function ($data): bool {
+        return (bool) preg_match('/^<html/', $data);
+    },
+    'jpg' => function ($data): bool {
+        $signature = 'FFD8';
+        $length = strlen($data);
+        if ($length >= 2) {
+            $buffer = '';
+            for ($i = 0; $i < 2; $i++) {
+                $buffer .= bin2hex($data[$i]);
+            }
+
+            return (strtoupper($buffer) == $signature);
+        }
+
+        return false;
+    },
+    'json' => function ($data): bool {
+        return (bool) preg_match('/^[{]/', $data);
+    },
+    'php' => function ($data): bool {
+        return (bool) preg_match('/^<\?php/', $data);
+    },
+    'plist' => function ($data): bool {
+        return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<plist/', $data));
+    },
+    'png' => function ($data): bool {
+        $signature = '89504E470D0A1A0A';
+        $length = strlen($data);
+        if ($length >= 8) {
+            $buffer = '';
+            for ($i = 0; $i < 8; $i++) {
+                $buffer .= bin2hex($data[$i]);
+            }
+
+            return (strtoupper($buffer) == $signature);
+        }
+
+        return false;
+    },
+    'properties' => function ($data): bool {
+        return (preg_match('/^[^=]+=.+/', $data) || preg_match('/^#.*$/', $data));
+    },
+    'spring' => function ($data): bool {
+        return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<objects/', $data));
+    },
+    'soap' => function ($data): bool {
+        return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<soap:Envelope/', $data));
+    },
+    'xml' => function ($data): bool {
+        return (bool) preg_match('/^<\?xml\s+.+\?>/', $data);
+    },
+    'wddx' => function ($data): bool {
+        return (preg_match('/^<\?xml\s+.+\?>/', $data) && preg_match('/<wddxPacket/', $data));
+    },
+];

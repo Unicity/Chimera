@@ -16,146 +16,150 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	define('UNICITY_DATETIME_MAX', date('c', PHP_INT_MAX));
+define('UNICITY_DATETIME_MAX', date('c', PHP_INT_MAX));
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class defines regular expression for handling date/time string.
-	 *
-	 * @access public
-	 * @class
-	 * @package Core
-	 *
-	 * @see http://msdn.microsoft.com/en-us/library/az4se3k1%28v=vs.110%29.aspx
-	 * @see http://www.w3.org/TR/NOTE-datetime
-	 */
-	class DateTime extends Core\AbstractObject {
+/**
+ * This class defines regular expression for handling date/time string.
+ *
+ * @access public
+ * @class
+ * @package Core
+ *
+ * @see http://msdn.microsoft.com/en-us/library/az4se3k1%28v=vs.110%29.aspx
+ * @see http://www.w3.org/TR/NOTE-datetime
+ */
+class DateTime extends Core\AbstractObject
+{
+    /**
+     * This constant represents the maximum value for a timestamp.
+     *
+     * @access public
+     * @const string
+     */
+    public const MAX_VALUE = UNICITY_DATETIME_MAX;
 
-		/**
-		 * This constant represents the maximum value for a timestamp.
-		 *
-		 * @access public
-		 * @const string
-		 */
-		public const MAX_VALUE = UNICITY_DATETIME_MAX;
+    /**
+     * This constant represents the ISO 8601 pattern for timestamps.
+     *
+     * @access public
+     * @const regex
+     */
+    public const ISO_8601_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?[+-][0-9]{2}:[0-9]{2})?)?$/'; // 1997-07-16T19:20:30.45+01:00
 
-		/**
-		 * This constant represents the ISO 8601 pattern for timestamps.
-		 *
-		 * @access public
-		 * @const regex
-		 */
-		public const ISO_8601_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?[+-][0-9]{2}:[0-9]{2})?)?$/'; // 1997-07-16T19:20:30.45+01:00
+    /**
+     * This constant represents the Universal Sortable pattern for timestamps.
+     *
+     * @access public
+     * @const regex
+     */
+    public const UNIVERSAL_SORTABLE_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}( [0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?Z?)?)?$/'; // 2004-02-12 15:19:21.000000Z
 
-		/**
-		 * This constant represents the Universal Sortable pattern for timestamps.
-		 *
-		 * @access public
-		 * @const regex
-		 */
-		public const UNIVERSAL_SORTABLE_PATTERN = '/^[0-9]{4}(-[0-9]{2}(-[0-9]{2}( [0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?Z?)?)?$/'; // 2004-02-12 15:19:21.000000Z
+    /**
+     * This variable stores the default timestamp format formatting time.
+     *
+     * @access public
+     * @static
+     * @var string
+     */
+    public static $timestamp_format = 'Y-m-d H:i:s';
 
-		/**
-		 * This variable stores the default timestamp format formatting time.
-		 *
-		 * @access public
-		 * @static
-		 * @var string
-		 */
-		public static $timestamp_format = 'Y-m-d H:i:s';
+    /**
+     * This variable stores the timezone used for formatting time.
+     *
+     * @access public
+     * @static
+     * @var string
+     *
+     * @see http://uk2.php.net/manual/en/timezones.php
+     */
+    public static $timezone;
 
-		/**
-		 * This variable stores the timezone used for formatting time.
-		 *
-		 * @access public
-		 * @static
-		 * @var string
-		 *
-		 * @see http://uk2.php.net/manual/en/timezones.php
-		 */
-		public static $timezone;
+    /**
+     * This method returns a date/time string with the specified timestamp format.
+     *
+     * @access public
+     * @static
+     * @param string $datetime_str the datetime string
+     * @param string $timestamp_format the timestamp format
+     * @param string $timezone the timezone identifier
+     * @return string the formatted timestamp
+     *
+     * @see http://www.php.net/manual/datetime.construct
+     */
+    public static function formatted_time($datetime_str = 'now', $timestamp_format = null, $timezone = null)
+    {
+        $timestamp_format = ($timestamp_format == null) ? static::$timestamp_format : $timestamp_format;
+        $timezone = ($timezone === null) ? static::$timezone : $timezone;
 
-		/**
-		 * This method returns a date/time string with the specified timestamp format.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $datetime_str                              the datetime string
-		 * @param string $timestamp_format                          the timestamp format
-		 * @param string $timezone                                  the timezone identifier
-		 * @return string                                           the formatted timestamp
-		 *
-		 * @see http://www.php.net/manual/datetime.construct
-		 */
-		public static function formatted_time($datetime_str = 'now', $timestamp_format = null, $timezone = null) {
-			$timestamp_format = ($timestamp_format == null) ? static::$timestamp_format : $timestamp_format;
-			$timezone = ($timezone === null) ? static::$timezone : $timezone;
+        $tz = new \DateTimeZone($timezone ? $timezone : date_default_timezone_get());
+        $time = new \DateTime($datetime_str, $tz);
 
-			$tz = new \DateTimeZone($timezone ? $timezone : date_default_timezone_get());
-			$time = new \DateTime($datetime_str, $tz);
+        if ($time->getTimeZone()->getName() !== $tz->getName()) {
+            $time->setTimeZone($tz);
+        }
 
-			if ($time->getTimeZone()->getName() !== $tz->getName()) {
-				$time->setTimeZone($tz);
-			}
+        return $time->format($timestamp_format);
+    }
 
-			return $time->format($timestamp_format);
-		}
+    /**
+     * This method returns both the current date and the current time.
+     *
+     * @access public
+     * @static
+     * @return string
+     */
+    public static function now(string $format = 'Y-m-d H:i:s'): string
+    {
+        return date($format);
+    }
 
-		/**
-		 * This method returns both the current date and the current time.
-		 *
-		 * @access public
-		 * @static
-		 * @return string
-		 */
-		public static function now(string $format = 'Y-m-d H:i:s') : string {
-			return date($format);
-		}
+    /**
+     * This method returns the current time.
+     *
+     * @access public
+     * @static
+     * @return string
+     */
+    public static function timeOfDay(): string
+    {
+        return date('H:i:s');
+    }
 
-		/**
-		 * This method returns the current time.
-		 *
-		 * @access public
-		 * @static
-		 * @return string
-		 */
-		public static function timeOfDay() : string {
-			return date('H:i:s');
-		}
+    /**
+     * This method returns the current date without the current time.
+     *
+     * @access public
+     * @static
+     * @return string
+     */
+    public static function today(): string
+    {
+        return date('Y-m-d 00:00:00');
+    }
 
-		/**
-		 * This method returns the current date without the current time.
-		 *
-		 * @access public
-		 * @static
-		 * @return string
-		 */
-		public static function today() : string {
-			return date('Y-m-d 00:00:00');
-		}
+    /**
+     * This method attempts to parse the specified value as a date.
+     *
+     * @access public
+     * @param string $value the value to be parsed
+     * @param string &$output the output after parsing the value
+     * @return boolean whether the value could be parsed
+     */
+    public static function tryParse($value, &$output): bool
+    {
+        $info = date_parse($value);
+        if (($info['error_count'] > 0) /*|| ($info['warning_count'] > 0)*/) {
+            return false;
+        }
+        $output = date('c', strtotime($value));
 
-		/**
-		 * This method attempts to parse the specified value as a date.
-		 *
-		 * @access public
-		 * @param string $value                                     the value to be parsed
-		 * @param string &$output                                   the output after parsing the value
-		 * @return boolean                                          whether the value could be parsed
-		 */
-		public static function tryParse($value, &$output) : bool {
-			$info = date_parse($value);
-			if (($info['error_count'] > 0) /*|| ($info['warning_count'] > 0)*/) {
-				return false;
-			}
-			$output = date('c', strtotime($value));
-			return true;
-		}
-
-	}
+        return true;
+    }
 
 }

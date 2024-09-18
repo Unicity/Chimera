@@ -16,35 +16,35 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core\Util {
+namespace Unicity\Core\Util;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	class Closure extends Core\AbstractObject {
+class Closure extends Core\AbstractObject
+{
+    /**
+     * This method returns the result of the specified closure after using memoization
+     * to help improve performance.
+     *
+     * @access public
+     * @static
+     * @param callable $closure the closure to be called
+     * @return callable the result returned by the closure
+     */
+    public static function memoize(callable $closure): callable
+    {
+        return function () use ($closure) {
+            static $results = [];
+            $args = func_get_args();
+            $key = (string) serialize($args);
+            if (!array_key_exists($key, $results)) {
+                $results[$key] = call_user_func_array($closure, $args);
+            }
 
-		/**
-		 * This method returns the result of the specified closure after using memoization
-		 * to help improve performance.
-		 *
-		 * @access public
-		 * @static
-		 * @param callable $closure                                 the closure to be called
-		 * @return callable                                         the result returned by the closure
-		 */
-		public static function memoize(callable $closure) : callable {
-			return function() use ($closure) {
-				static $results = array();
-				$args = func_get_args();
-				$key = (string) serialize($args);
-				if (!array_key_exists($key, $results)) {
-					$results[$key] = call_user_func_array($closure, $args);
-				}
-				return $results[$key];
-			};
-		}
-
-	}
+            return $results[$key];
+        };
+    }
 
 }

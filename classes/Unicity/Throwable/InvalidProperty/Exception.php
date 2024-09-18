@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Throwable\InvalidProperty {
+namespace Unicity\Throwable\InvalidProperty;
 
-	use \Unicity\Throwable;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents an Invalid Property Exception.
-	 *
-	 * @access public
-	 * @class
-	 * @package Throwable
-	 */
-	class Exception extends Throwable\Runtime\Exception { }
-
+/**
+ * This class represents an Invalid Property Exception.
+ *
+ * @access public
+ * @class
+ * @package Throwable
+ */
+class Exception extends Throwable\Runtime\Exception
+{
 }

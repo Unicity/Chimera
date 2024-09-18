@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class BooleanVariable extends VLD\Parser\Definition\Term implements VLD\Parser\Definition\Variable {
+class BooleanVariable extends VLD\Parser\Definition\Term implements VLD\Parser\Definition\Variable
+{
+    protected $token;
 
-		protected $token;
+    public function __construct(VLD\Parser\Context $context, string $token)
+    {
+        parent::__construct($context);
+        $this->token = $token;
+    }
 
-		public function __construct(VLD\Parser\Context $context, string $token) {
-			parent::__construct($context);
-			$this->token = $token;
-		}
-
-		public function get() {
-			return $this->context->getValue($this->token);
-		}
-
-	}
+    public function get()
+    {
+        return $this->context->getValue($this->token);
+    }
 
 }

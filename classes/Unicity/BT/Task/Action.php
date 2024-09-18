@@ -1,18 +1,18 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\BT\Task {
+namespace Unicity\BT\Task;
 
-	use \Unicity\BT;
+use Unicity\BT;
 
-	/**
-	 * This class represents a task action.
-	 *
-	 * @access public
-	 * @abstract
-	 * @class
-	 */
-	abstract class Action extends BT\Task\Leaf { }
-
+/**
+ * This class represents a task action.
+ *
+ * @access public
+ * @abstract
+ * @class
+ */
+abstract class Action extends BT\Task\Leaf
+{
 }

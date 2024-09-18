@@ -16,14 +16,10 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Throwable;
-
-	interface IConsumer {
-
-		public function accept1($t) : void;
-
-	}
+interface IConsumer
+{
+    public function accept1($t): void;
 
 }

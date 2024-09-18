@@ -16,30 +16,31 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class NotStatement extends VLD\Parser\Definition\Statement {
+class NotStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $module = $this->args['module']->get();
+        $config = $this->context->getModule($module);
+        $policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : ($config['policy'] ?? null);
+        $paths = $this->context->getAbsolutePaths($this->args['paths']->get());
+        $entity = $this->context->getEntity();
+        $class = $config['class'];
+        $object = new $class($policy);
+        $feedback = call_user_func_array([$object, 'process'], [$entity, $paths]);
+        if ($feedback->getNumberOfViolations() > 0) {
+            $object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
 
-		public function get() {
-			$module = $this->args['module']->get();
-			$config = $this->context->getModule($module);
-			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : ($config['policy'] ?? null);
-			$paths = $this->context->getAbsolutePaths($this->args['paths']->get());
-			$entity = $this->context->getEntity();
-			$class = $config['class'];
-			$object = new $class($policy);
-			$feedback = call_user_func_array([$object, 'process'], [$entity, $paths]);
-			if ($feedback->getNumberOfViolations() > 0) {
-				$object = new VLD\Parser\Definition\SeqControl($this->context, null, $this->args['block']->get());
-				return $object->get();
-			}
-			return new VLD\Parser\Feedback();
-		}
+            return $object->get();
+        }
 
-	}
+        return new VLD\Parser\Feedback();
+    }
 
 }

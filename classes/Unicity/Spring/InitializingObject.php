@@ -17,27 +17,25 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring {
+namespace Unicity\Spring;
 
-	/**
-	 * This interface provides the contract for an initializing object.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Spring
-	 *
-	 * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/InitializingBean.html
-	 * @see http://www.mkyong.com/spring/spring-initializingbean-and-disposablebean-example/
-	 */
-	interface InitializingObject {
-
-		/**
-		 * This method is called object's properties have been set.
-		 *
-		 * @access public
-		 */
-		public function afterPropertiesSet();
-
-	}
+/**
+ * This interface provides the contract for an initializing object.
+ *
+ * @access public
+ * @interface
+ * @package Spring
+ *
+ * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/InitializingBean.html
+ * @see http://www.mkyong.com/spring/spring-initializingbean-and-disposablebean-example/
+ */
+interface InitializingObject
+{
+    /**
+     * This method is called object's properties have been set.
+     *
+     * @access public
+     */
+    public function afterPropertiesSet();
 
 }

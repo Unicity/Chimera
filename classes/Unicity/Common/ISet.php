@@ -17,41 +17,39 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Common;
+use Unicity\Common;
 
-	/**
-	 * This interface defines the contract for an immutable set.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Common
-	 */
-	interface ISet extends Common\ICollection {
+/**
+ * This interface defines the contract for an immutable set.
+ *
+ * @access public
+ * @interface
+ * @package Common
+ */
+interface ISet extends Common\ICollection
+{
+    /**
+     * This method determines whether the specified element is contained within the
+     * collection.
+     *
+     * @access public
+     * @param mixed $value the element to be tested
+     * @return boolean whether the specified element is contained
+     *                 within the collection
+     */
+    public function hasValue($value);
 
-		/**
-		 * This method determines whether the specified element is contained within the
-		 * collection.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the element to be tested
-		 * @return boolean                                          whether the specified element is contained
-		 *                                                          within the collection
-		 */
-		public function hasValue($value);
-
-		/**
-		 * This method determines whether all elements in the specified array are contained
-		 * within the collection.
-		 *
-		 * @access public
-		 * @param $values                                           the values to be tested
-		 * @return boolean                                          whether all elements are contained within
-		 *                                                          the collection
-		 */
-		public function hasValues($values);
-
-	}
+    /**
+     * This method determines whether all elements in the specified array are contained
+     * within the collection.
+     *
+     * @access public
+     * @param $values the values to be tested
+     * @return boolean whether all elements are contained within
+     *                 the collection
+     */
+    public function hasValues($values);
 
 }

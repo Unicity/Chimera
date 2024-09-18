@@ -16,27 +16,27 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class ArrayTerm extends VLD\Parser\Definition\Term {
+class ArrayTerm extends VLD\Parser\Definition\Term
+{
+    protected $terms;
 
-		protected $terms;
+    public function __construct(VLD\Parser\Context $context, array $terms)
+    {
+        parent::__construct($context);
+        $this->terms = $terms;
+    }
 
-		public function __construct(VLD\Parser\Context $context, array $terms) {
-			parent::__construct($context);
-			$this->terms = $terms;
-		}
-
-		public function get() {
-			return array_map(function(VLD\Parser\Definition\Term $term) {
-				return $term->get();
-			}, $this->terms);
-		}
-
-	}
+    public function get()
+    {
+        return array_map(function (VLD\Parser\Definition\Term $term) {
+            return $term->get();
+        }, $this->terms);
+    }
 
 }

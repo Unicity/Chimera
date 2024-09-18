@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Common;
+use Unicity\Common;
 
-	/**
-	 * This class creates an immutable boxed decimal value.
-	 *
-	 * @access public
-	 * @class
-	 * @package Common
-	 */
-	class DecimalVal extends Common\DoubleVal { }
-
+/**
+ * This class creates an immutable boxed decimal value.
+ *
+ * @access public
+ * @class
+ * @package Common
+ */
+class DecimalVal extends Common\DoubleVal
+{
 }

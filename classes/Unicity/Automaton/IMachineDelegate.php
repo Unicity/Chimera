@@ -16,67 +16,64 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Automaton {
+namespace Unicity\Automaton;
 
-	use \Unicity\Automaton;
-	use \Unicity\Common;
+use Unicity\Automaton;
 
-	/**
-	 * This interfaces defines the contract for monitoring an automaton.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Automaton
-	 */
-	interface IMachineDelegate {
+/**
+ * This interfaces defines the contract for monitoring an automaton.
+ *
+ * @access public
+ * @interface
+ * @package Automaton
+ */
+interface IMachineDelegate
+{
+    /**
+     * This method is called when a machine is finished running.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IMachine $machine the machine
+     * @param \Unicity\Automaton\IState $state the current state
+     */
+    public function onCompletion(Automaton\IMachine $machine, Automaton\IState $state);
 
-		/**
-		 * This method is called when a machine is finished running.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IMachine $machine              the machine
-		 * @param \Unicity\Automaton\IState $state                  the current state
-		 */
-		public function onCompletion(Automaton\IMachine $machine, Automaton\IState $state);
+    /**
+     * This method is called when a state is entered.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IMachine $machine the machine
+     * @param \Unicity\Automaton\IState $state the current state
+     */
+    public function onEntry(Automaton\IMachine $machine, Automaton\IState $state);
 
-		/**
-		 * This method is called when a state is entered.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IMachine $machine              the machine
-		 * @param \Unicity\Automaton\IState $state                  the current state
-		 */
-		public function onEntry(Automaton\IMachine $machine, Automaton\IState $state);
+    /**
+     * This method is called when a state is exited.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IMachine $machine the machine
+     * @param \Unicity\Automaton\IState $state the current state
+     */
+    public function onExit(Automaton\IMachine $machine, Automaton\IState $state);
 
-		/**
-		 * This method is called when a state is exited.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IMachine $machine              the machine
-		 * @param \Unicity\Automaton\IState $state                  the current state
-		 */
-		public function onExit(Automaton\IMachine $machine, Automaton\IState $state);
+    /**
+     * This method is called when a machine starts to run.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IMachine $machine the machine
+     * @param \Unicity\Automaton\IState $state the current state
+     */
+    public function onStart(Automaton\IMachine $machine, Automaton\IState $state);
 
-		/**
-		 * This method is called when a machine starts to run.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IMachine $machine              the machine
-		 * @param \Unicity\Automaton\IState $state                  the current state
-		 */
-		public function onStart(Automaton\IMachine $machine, Automaton\IState $state);
-
-		/**
-		 * This method is called when a transition is traversed.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IMachine $machine              the machine
-		 * @param \Unicity\Automaton\ITransition $transition        the current transition
-		 */
-		public function onTransition(Automaton\IMachine $machine, Automaton\ITransition $transition);
-
-	}
+    /**
+     * This method is called when a transition is traversed.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IMachine $machine the machine
+     * @param \Unicity\Automaton\ITransition $transition the current transition
+     */
+    public function onTransition(Automaton\IMachine $machine, Automaton\ITransition $transition);
 
 }

@@ -1,15 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity {
+namespace Unicity;
 
-	final class Console {
-
-		public static function log($message) {
-			fwrite(fopen("php://stdout", "w"), strval($message));
-		}
-
-	}
+final class Console
+{
+    public static function log($message)
+    {
+        fwrite(fopen('php://stdout', 'w'), strval($message));
+    }
 
 }

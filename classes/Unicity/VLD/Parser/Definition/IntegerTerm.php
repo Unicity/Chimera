@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class IntegerTerm extends VLD\Parser\Definition\RealTerm {
+class IntegerTerm extends VLD\Parser\Definition\RealTerm
+{
+    public function __construct(VLD\Parser\Context $context, string $value)
+    {
+        parent::__construct($context, $value);
+        $this->value = intval($value);
+    }
 
-		public function __construct(VLD\Parser\Context $context, string $value) {
-			parent::__construct($context, $value);
-			$this->value = intval($value);
-		}
-
-		public function get() {
-			return $this->value;
-		}
-
-	}
+    public function get()
+    {
+        return $this->value;
+    }
 
 }

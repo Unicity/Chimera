@@ -16,40 +16,40 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Multithreading {
+namespace Unicity\Multithreading;
 
-	class ThreadWorker extends \Thread {
+class ThreadWorker extends \Thread
+{
+    /**
+     * This variable stores a reference to the closure to be ran.
+     *
+     * @access protected
+     * @var callable
+     */
+    protected $runnable;
 
-		/**
-		 * This variable stores a reference to the closure to be ran.
-		 *
-		 * @access protected
-		 * @var callable
-		 */
-		protected $runnable;
+    /**
+     * This constructor initializes the class with the specified closure to be ran.
+     *
+     * @access public
+     * @param callable $runnable the closure to be ran
+     */
+    public function __construct(callable $runnable)
+    {
+        $this->runnable = $runnable;
+    }
 
-		/**
-		 * This constructor initializes the class with the specified closure to be ran.
-		 *
-		 * @access public
-		 * @param callable $runnable                                the closure to be ran
-		 */
-		public function __construct(callable $runnable) {
-			$this->runnable = $runnable;
-		}
-
-		/**
-		 * This method runs the closure as a thread.
-		 *
-		 * @access public
-		 */
-		public function run() {
-			$runnable = $this->runnable;
-			$runnable();
-		}
-
-	}
+    /**
+     * This method runs the closure as a thread.
+     *
+     * @access public
+     */
+    public function run()
+    {
+        $runnable = $this->runnable;
+        $runnable();
+    }
 
 }

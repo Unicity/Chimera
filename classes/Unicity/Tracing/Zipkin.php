@@ -16,212 +16,217 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Tracing {
+namespace Unicity\Tracing;
 
-	/**
-	 * This class converts a base data type to another base data type.
-	 *
-	 * @access public
-	 * @class
-	 * @package Core
-	 */
-	class Zipkin {
+/**
+ * This class converts a base data type to another base data type.
+ *
+ * @access public
+ * @class
+ * @package Core
+ */
+class Zipkin
+{
+    private static $trace_headers = [
+        # Unicity headers
+        'HTTP_X_REQUEST_UUID' => 'x-request-uuid', // @deprecated
+        'HTTP_X_REQUEST_RELEASE' => 'x-request-release',
 
-		private static $trace_headers = [
-			# Unicity headers
-			'HTTP_X_REQUEST_UUID' => 'x-request-uuid', // @deprecated
-			'HTTP_X_REQUEST_RELEASE' => 'x-request-release',
+        # Envoy headers
+        'HTTP_X_OT_SPAN_CONTEXT' => 'x-ot-span-context',
+        'HTTP_X_REQUEST_ID' => 'x-request-id',
 
-			# Envoy headers
-			'HTTP_X_OT_SPAN_CONTEXT' => 'x-ot-span-context',
-			'HTTP_X_REQUEST_ID' => 'x-request-id',
+        # Zipkin headers
+        'HTTP_X_B3_TRACEID' => 'x-b3-traceid',
+        'HTTP_X_B3_SPANID' => 'x-b3-spanid',
+        'HTTP_X_B3_PARENTSPANID' => 'x-b3-parentspanid',
+        'HTTP_X_B3_SAMPLED' => 'x-b3-sampled',
+        'HTTP_X_B3_FLAGS' => 'x-b3-flags',
 
-			# Zipkin headers
-			'HTTP_X_B3_TRACEID' => 'x-b3-traceid',
-			'HTTP_X_B3_SPANID' => 'x-b3-spanid',
-			'HTTP_X_B3_PARENTSPANID' => 'x-b3-parentspanid',
-			'HTTP_X_B3_SAMPLED' => 'x-b3-sampled',
-			'HTTP_X_B3_FLAGS' => 'x-b3-flags',
+        # Jaeger headers
+        'HTTP_UBER_TRACE_ID' => 'uber-trace-id',
 
-			# Jaeger headers
-			'HTTP_UBER_TRACE_ID' => 'uber-trace-id',
+        # AMZN Headers
+        'HTTP_X_AMZN_TRACE_ID' => 'x-amzn-trace-id',
+    ];
 
-			# AMZN Headers
-			'HTTP_X_AMZN_TRACE_ID' => 'x-amzn-trace-id',
-		];
+    public static function addHeaders(array $headers = [], $flatten = false) // this function will lowercase all header keys
+    {$buffer = [];
+        foreach ($headers as $key => $value) {
+            $buffer[strtolower($key)] = $value;
+        }
+        foreach (static::$trace_headers as $ingress_header => $egress_header) {
+            if (isset($_SERVER[$ingress_header])) {
+                $buffer[$egress_header] = $_SERVER[$ingress_header];
+            }
+        }
+        if ($flatten) {
+            return static::flatten($buffer);
+        }
 
-		public static function addHeaders(array $headers = [], $flatten = false) { // this function will lowercase all header keys
-			$buffer = [];
-			foreach ($headers as $key => $value) {
-				$buffer[strtolower($key)] = $value;
-			}
-			foreach (static::$trace_headers as $ingress_header => $egress_header) {
-				if (isset($_SERVER[$ingress_header])) {
-					$buffer[$egress_header] = $_SERVER[$ingress_header];
-				}
-			}
-			if ($flatten) {
-				return static::flatten($buffer);
-			}
-			return $buffer;
-		}
+        return $buffer;
+    }
 
-		public static function flatten(array $headers) : array {
-			$buffer = [];
-			foreach ($headers as $key => $value) {
-				$buffer[] = "{$key}: {$value}";
-			}
-			return $buffer;
-		}
+    public static function flatten(array $headers): array
+    {
+        $buffer = [];
+        foreach ($headers as $key => $value) {
+            $buffer[] = "{$key}: {$value}";
+        }
 
-		public static function now() : int {
-			return (int) (microtime(true) * 1000 * 1000);
-		}
+        return $buffer;
+    }
 
-		public static function generateSpanId() : string {
-			return bin2hex(openssl_random_pseudo_bytes(8));
-		}
+    public static function now(): int
+    {
+        return (int) (microtime(true) * 1000 * 1000);
+    }
 
-		public static function toAWSMessageAttributes(array $headers, array $buffer = []) : array {
-			foreach ($headers as $key => $value) {
-				$buffer[str_replace('-', '_', strtoupper($key))] = [
-					'DataType' => 'String',
-					'StringValue' => strval($value),
-				];
-			}
-			return $buffer;
-		}
+    public static function generateSpanId(): string
+    {
+        return bin2hex(openssl_random_pseudo_bytes(8));
+    }
 
-		public static function traceV1(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = []) {
-			try {
-				// https://zipkin.io/zipkin-api/zipkin-api.yaml
-				$body = [
-					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'] ?? '',
-					'name' => $serverName, // spanName
-					'id' => static::generateSpanId(),
-					'parentId' => $_SERVER['HTTP_X_B3_SPANID'] ?? '',
-					'timestamp' => $startTime,
-					'duration' => $finishTime - $startTime,
-					'annotations' => [
-						[
-							'timestamp' => $startTime,
-							'value' => 'sr', // Server Start
-							'endpoint' => [
-								'serviceName' => $serverName,
-							],
-						],
-						[
-							'timestamp' => $finishTime,
-							'value' => 'ss', // Server Finish
-							'endpoint' => [
-								'serviceName' => $serverName,
-							],
-						],
-					],
-					'binaryAnnotations' => [],
-				];
+    public static function toAWSMessageAttributes(array $headers, array $buffer = []): array
+    {
+        foreach ($headers as $key => $value) {
+            $buffer[str_replace('-', '_', strtoupper($key))] = [
+                'DataType' => 'String',
+                'StringValue' => strval($value),
+            ];
+        }
 
-				$tags = array_merge([
-					'component' => 'driver',
-					'downstream_cluster' => '-',
-					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? '',
-					'upstream_cluster'=> $clientName,
-				], $tags);
+        return $buffer;
+    }
 
-				foreach ($tags as $key => $value) {
-					$body['binaryAnnotations'][] = [
-						'key' => $key,
-						'value' => ($value !== null) ? strval($value) : '',
-					];
-				}
+    public static function traceV1(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = [])
+    {
+        try {
+            // https://zipkin.io/zipkin-api/zipkin-api.yaml
+            $body = [
+                'traceId' => $_SERVER['HTTP_X_B3_TRACEID'] ?? '',
+                'name' => $serverName, // spanName
+                'id' => static::generateSpanId(),
+                'parentId' => $_SERVER['HTTP_X_B3_SPANID'] ?? '',
+                'timestamp' => $startTime,
+                'duration' => $finishTime - $startTime,
+                'annotations' => [
+                    [
+                        'timestamp' => $startTime,
+                        'value' => 'sr', // Server Start
+                        'endpoint' => [
+                            'serviceName' => $serverName,
+                        ],
+                    ],
+                    [
+                        'timestamp' => $finishTime,
+                        'value' => 'ss', // Server Finish
+                        'endpoint' => [
+                            'serviceName' => $serverName,
+                        ],
+                    ],
+                ],
+                'binaryAnnotations' => [],
+            ];
 
-				$data = json_encode([$body]);
+            $tags = array_merge([
+                'component' => 'driver',
+                'downstream_cluster' => '-',
+                'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? '',
+                'upstream_cluster' => $clientName,
+            ], $tags);
 
-				$request = curl_init();
+            foreach ($tags as $key => $value) {
+                $body['binaryAnnotations'][] = [
+                    'key' => $key,
+                    'value' => ($value !== null) ? strval($value) : '',
+                ];
+            }
 
-				curl_setopt($request, CURLOPT_POST, 1);
-				curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-				curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
-				curl_setopt($request, CURLOPT_TIMEOUT, 30);
-				curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v1/spans');
-				curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
-					'Accept' => 'application/json',
-					'Content-Type' => 'application/json',
-				]));
-				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+            $data = json_encode([$body]);
 
-				if (curl_exec($request) !== false) {
-					curl_close($request);
-				}
-			}
-			catch (\Exception $e) {
-				// do nothing
-			}
-		}
+            $request = curl_init();
 
-		public static function traceV2(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = []) {
-			try {
-				// https://zipkin.io/zipkin-api/zipkin2-api.yaml
-				$body = [
-					'traceId' => $_SERVER['HTTP_X_B3_TRACEID'] ?? '',
-					'name' => $serverName, // spanName
-					'id' => static::generateSpanId(),
-					'parentId' => $_SERVER['HTTP_X_B3_SPANID'] ?? '',
-					'timestamp' => $startTime,
-					'duration' => $finishTime - $startTime,
-					'kind' => 'SERVER',
-					'localEndpoint' => [
-						'serviceName' => $clientName,
-					],
-					'remoteEndpoint' => [
-						'serverName' => $serverName,
-					],
-					'tags' => [],
-				];
+            curl_setopt($request, CURLOPT_POST, 1);
+            curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($request, CURLOPT_TIMEOUT, 30);
+            curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v1/spans');
+            curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ]));
+            curl_setopt($request, CURLOPT_POSTFIELDS, $data);
 
-				$tags = array_merge([
-					'component' => 'driver',
-					'downstream_cluster' => '-',
-					'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? '',
-					'upstream_cluster'=> $clientName,
-				], $tags);
+            if (curl_exec($request) !== false) {
+                curl_close($request);
+            }
+        } catch (\Exception $e) {
+            // do nothing
+        }
+    }
 
-				foreach ($tags as $key => $value) {
-					$tags[$key] = ($value !== null) ? strval($value) : '';
-				}
+    public static function traceV2(string $zipkinURL, string $clientName, string $serverName, int $startTime, int $finishTime, array $tags = [])
+    {
+        try {
+            // https://zipkin.io/zipkin-api/zipkin2-api.yaml
+            $body = [
+                'traceId' => $_SERVER['HTTP_X_B3_TRACEID'] ?? '',
+                'name' => $serverName, // spanName
+                'id' => static::generateSpanId(),
+                'parentId' => $_SERVER['HTTP_X_B3_SPANID'] ?? '',
+                'timestamp' => $startTime,
+                'duration' => $finishTime - $startTime,
+                'kind' => 'SERVER',
+                'localEndpoint' => [
+                    'serviceName' => $clientName,
+                ],
+                'remoteEndpoint' => [
+                    'serverName' => $serverName,
+                ],
+                'tags' => [],
+            ];
 
-				$body['tags'] = $tags;
+            $tags = array_merge([
+                'component' => 'driver',
+                'downstream_cluster' => '-',
+                'guid:x-request-id' => $_SERVER['HTTP_X_REQUEST_ID'] ?? '',
+                'upstream_cluster' => $clientName,
+            ], $tags);
 
-				$data = json_encode([$body]);
+            foreach ($tags as $key => $value) {
+                $tags[$key] = ($value !== null) ? strval($value) : '';
+            }
 
-				$request = curl_init();
+            $body['tags'] = $tags;
 
-				curl_setopt($request, CURLOPT_POST, 1);
-				curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-				curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
-				curl_setopt($request, CURLOPT_TIMEOUT, 30);
-				curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v2/spans');
-				curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
-					'Accept' => 'application/json',
-					'Content-Type' => 'application/json',
-				]));
-				curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+            $data = json_encode([$body]);
 
-				if (curl_exec($request) !== false) {
-					curl_close($request);
-				}
-			}
-			catch (\Exception $e) {
-				// do nothing
-			}
-		}
+            $request = curl_init();
 
-	}
+            curl_setopt($request, CURLOPT_POST, 1);
+            curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($request, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($request, CURLOPT_TIMEOUT, 30);
+            curl_setopt($request, CURLOPT_URL, $zipkinURL . '/api/v2/spans');
+            curl_setopt($request, CURLOPT_HTTPHEADER, static::flatten([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ]));
+            curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+
+            if (curl_exec($request) !== false) {
+                curl_close($request);
+            }
+        } catch (\Exception $e) {
+            // do nothing
+        }
+    }
 
 }

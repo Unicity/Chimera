@@ -16,120 +16,125 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Common\Mutable {
+namespace Unicity\Common\Mutable;
 
-	use \Unicity\Common;
-	use \Unicity\Throwable;
+use Unicity\Common;
 
-	/**
-	 * This class creates a mutable string object.
-	 *
-	 * @access public
-	 * @class
-	 * @package Common
-	 *
-	 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/StringBuilder.html
-	 */
-	class StringRef extends Common\StringRef {
+/**
+ * This class creates a mutable string object.
+ *
+ * @access public
+ * @class
+ * @package Common
+ *
+ * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/StringBuilder.html
+ */
+class StringRef extends Common\StringRef
+{
+    /**
+     * This method appends the string representation of the specified value.
+     *
+     * @access public
+     * @param mixed $value the value to be appended
+     * @param vararg $mixed any data to be formatted
+     * @return Common\Mutable\StringRef a reference to this string object
+     */
+    public function append(/*$value, $mixed...*/)
+    {
+        $argc = func_num_args();
 
-		/**
-		 * This method appends the string representation of the specified value.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be appended
-		 * @param vararg $mixed                                     any data to be formatted
-		 * @return Common\Mutable\StringRef                         a reference to this string object
-		 */
-		public function append(/*$value, $mixed...*/) {
-			$argc = func_num_args();
+        $buffer = ($argc >= 1)
+            ? (string)func_get_arg(0)
+            : '';
 
-			$buffer = ($argc >= 1)
-				? (string)func_get_arg(0)
-				: '';
+        for ($i = 1; $i < $argc; $i++) {
+            $argv = (string)func_get_arg($i);
+            $j = $i - 1;
+            $search = '{' . $j . '}';
+            $buffer = str_replace($search, $argv, $buffer);
+        }
 
-			for ($i = 1; $i < $argc; $i++) {
-				$argv = (string)func_get_arg($i);
-				$j = $i - 1;
-				$search = '{' . $j . '}';
-				$buffer = str_replace($search, $argv, $buffer);
-			}
+        $this->string .= $buffer;
 
-			$this->string .= $buffer;
-			
-			return $this;
-		}
+        return $this;
+    }
 
-		/**
-		 * This method removes the characters in a substring of this sequence.
-		 *
-		 * @access public
-		 * @param integer $sIndex                                   the beginning index
-		 * @param integer $eIndex                                   the ending index
-		 * @return Common\Mutable\StringRef                         a reference to this string object
-		 */
-		public function delete($sIndex, $eIndex = null) {
-			if ($eIndex === null) {
-				$eIndex = $sIndex + 1;
-			}
-			$this->string = substr($this->string, 0, $sIndex) . substr($this->string, $eIndex);
-			return $this;
-		}
+    /**
+     * This method removes the characters in a substring of this sequence.
+     *
+     * @access public
+     * @param integer $sIndex the beginning index
+     * @param integer $eIndex the ending index
+     * @return Common\Mutable\StringRef a reference to this string object
+     */
+    public function delete($sIndex, $eIndex = null)
+    {
+        if ($eIndex === null) {
+            $eIndex = $sIndex + 1;
+        }
+        $this->string = substr($this->string, 0, $sIndex) . substr($this->string, $eIndex);
 
-		/**
-		 * This method inserts the string representation of the value into the string.
-		 *
-		 * @access public
-		 * @param integer $offset                                   the beginning index
-		 * @param mixed $value                                      the value to be inserted
-		 * @return Common\Mutable\StringRef                         a reference to this string object
-		 */
-		public function insert($offset, $value) {
-			$this->string = substr($this->string, 0, $offset) . $value . substr($this->string, $offset);
-			return $this;
-		}
+        return $this;
+    }
 
-		/**
-		 * This method prepends the string representation of the specified value.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be prepended
-		 * @param vararg $mixed                                     any data to be formatted
-		 * @return Common\Mutable\StringRef                         a reference to this string object
-		 */
-		public function prepend(/*$value, $mixed...*/) {
-			$argc = func_num_args();
+    /**
+     * This method inserts the string representation of the value into the string.
+     *
+     * @access public
+     * @param integer $offset the beginning index
+     * @param mixed $value the value to be inserted
+     * @return Common\Mutable\StringRef a reference to this string object
+     */
+    public function insert($offset, $value)
+    {
+        $this->string = substr($this->string, 0, $offset) . $value . substr($this->string, $offset);
 
-			$buffer = ($argc > 1)
-				? (string)func_get_arg(0)
-				: '';
+        return $this;
+    }
 
-			for ($i = 1; $i < $argc; $i++) {
-				$argv = (string)func_get_arg($i);
-				$j = $i - 1;
-				$search = '{' . $j . '}';
-				$buffer = str_replace($search, $argv, $buffer);
-			}
+    /**
+     * This method prepends the string representation of the specified value.
+     *
+     * @access public
+     * @param mixed $value the value to be prepended
+     * @param vararg $mixed any data to be formatted
+     * @return Common\Mutable\StringRef a reference to this string object
+     */
+    public function prepend(/*$value, $mixed...*/)
+    {
+        $argc = func_num_args();
 
-			$this->string = $buffer . $this->string;
+        $buffer = ($argc > 1)
+            ? (string)func_get_arg(0)
+            : '';
 
-			return $this;
-		}
+        for ($i = 1; $i < $argc; $i++) {
+            $argv = (string)func_get_arg($i);
+            $j = $i - 1;
+            $search = '{' . $j . '}';
+            $buffer = str_replace($search, $argv, $buffer);
+        }
 
-		/**
-		 * This method sets the value of the string.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be substituted
-		 * @return Common\Mutable\StringRef                         a reference to this string object
-		 */
-		public function setValue($value) {
-			$this->string = (string)$value;
-			$this->position = 0;
-			return $this;
-		}
+        $this->string = $buffer . $this->string;
 
-	}
+        return $this;
+    }
+
+    /**
+     * This method sets the value of the string.
+     *
+     * @access public
+     * @param mixed $value the value to be substituted
+     * @return Common\Mutable\StringRef a reference to this string object
+     */
+    public function setValue($value)
+    {
+        $this->string = (string)$value;
+        $this->position = 0;
+
+        return $this;
+    }
 
 }

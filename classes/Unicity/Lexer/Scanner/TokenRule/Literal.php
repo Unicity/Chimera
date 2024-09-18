@@ -17,85 +17,89 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner\TokenRule {
+namespace Unicity\Lexer\Scanner\TokenRule;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Lexer;
 
-	/**
-	 * This class represents the rule definition for a "literal" token, which the tokenizer will use
-	 * to tokenize a string.
-	 *
-	 * @access public
-	 * @class
-	 * @package Lexer
-	 */
-	class Literal extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
+/**
+ * This class represents the rule definition for a "literal" token, which the tokenizer will use
+ * to tokenize a string.
+ *
+ * @access public
+ * @class
+ * @package Lexer
+ */
+class Literal extends Core\AbstractObject implements Lexer\Scanner\ITokenRule
+{
+    /**
+     * This variable stores the quotation mark that signals the beginning and end of the token.
+     *
+     * @access protected
+     * @var string
+     */
+    protected $quotation;
 
-		/**
-		 * This variable stores the quotation mark that signals the beginning and end of the token.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $quotation;
+    /**
+     * This constructor initializes the class.
+     *
+     * @access public
+     * @param string $quotation the quotation mark that will signal
+     *                          the beginning and end of the token
+     */
+    public function __construct(string $quotation)
+    {
+        $this->quotation = $quotation;
+    }
 
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 * @param string $quotation                                 the quotation mark that will signal
-		 *                                                          the beginning and end of the token
-		 */
-		public function __construct(string $quotation) {
-			$this->quotation = $quotation;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->quotation);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->quotation);
-		}
+    /**
+     * This method return a tuple representing the token discovered.
+     *
+     * @access public
+     * @param \Unicity\IO\Reader $reader the reader to be used
+     * @return \Unicity\Lexer\Scanner\Tuple a tuple representing the token
+     *                                      discovered
+     */
+    public function process(IO\Reader $reader): ?Lexer\Scanner\Tuple
+    {
+        $index = $reader->position();
+        $char = $reader->readChar($index, false);
+        if ($char == $this->quotation) {
+            $lookahead = $index + 1;
+            $length = $reader->length() - 1;
+            while ($lookahead <= $length) {
+                if ($reader->readChar($lookahead, false) == $this->quotation) {
+                    if (($lookahead == $length) || ($reader->readChar($lookahead + 1, false) != $this->quotation)) {
+                        $lookahead++;
 
-		/**
-		 * This method return a tuple representing the token discovered.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\Reader $reader                        the reader to be used
-		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
-		 *                                                          discovered
-		 */
-		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
-			$index = $reader->position();
-			$char = $reader->readChar($index, false);
-			if ($char == $this->quotation) {
-				$lookahead = $index + 1;
-				$length = $reader->length() - 1;
-				while ($lookahead <= $length) {
-					if ($reader->readChar($lookahead, false) == $this->quotation) {
-						if (($lookahead == $length) || ($reader->readChar($lookahead + 1, false) != $this->quotation)) {
-							$lookahead++;
-							break;
-						}
-						$lookahead++;
-					}
-					$lookahead++;
-				}
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::literal(), new Common\StringRef($token), $index);
-				return $tuple;
-			}
-			return null;
-		}
+                        break;
+                    }
+                    $lookahead++;
+                }
+                $lookahead++;
+            }
+            $token = $reader->readRange($index, $lookahead);
+            $tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::literal(), new Common\StringRef($token), $index);
 
-	}
+            return $tuple;
+        }
+
+        return null;
+    }
 
 }

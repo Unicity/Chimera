@@ -16,51 +16,52 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT\EventWriter {
+namespace Unicity\EVT\EventWriter;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Syslog extends EVT\EventWriter {
+class Syslog extends EVT\EventWriter
+{
+    /**
+     * This constructor initializes the class with the specified resource.
+     *
+     * @access public
+     * @param array $metadata the metadata to be set
+     * @see http://www.php.net/manual/function.openlog
+     */
+    public function __construct(array $metadata = [])
+    {
+        parent::__construct(array_merge([
+            'facility' => LOG_USER,
+            'identifier' => 'Unknown',
+        ], $metadata));
+        openlog($this->metadata['identifier'], LOG_CONS, $this->metadata['facility']);
+    }
 
-		/**
-		 * This constructor initializes the class with the specified resource.
-		 *
-		 * @access public
-		 * @param array $metadata                                   the metadata to be set
-		 * @see http://www.php.net/manual/function.openlog
-		 */
-		public function __construct(array $metadata = array()) {
-			parent::__construct(array_merge(array(
-				'facility' => LOG_USER,
-				'identifier' => 'Unknown',
-			), $metadata));
-			openlog($this->metadata['identifier'], LOG_CONS, $this->metadata['facility']);
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        closelog();
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			closelog();
-		}
-
-		/**
-		 * This method writes an array of events to the event storage.
-		 *
-		 * @access public
-		 * @param array $events                                     the events to be written
-		 */
-		public function write(array $events) {
-			foreach ($events as $event) {
-				syslog(LOG_NOTICE, json_encode($event));
-			}
-		}
-
-	}
+    /**
+     * This method writes an array of events to the event storage.
+     *
+     * @access public
+     * @param array $events the events to be written
+     */
+    public function write(array $events)
+    {
+        foreach ($events as $event) {
+            syslog(LOG_NOTICE, json_encode($event));
+        }
+    }
 
 }

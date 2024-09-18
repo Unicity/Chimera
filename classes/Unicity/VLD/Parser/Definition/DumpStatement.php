@@ -16,27 +16,26 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class DumpStatement extends VLD\Parser\Definition\Statement {
+class DumpStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : [];
+        $paths = $this->context->getAbsolutePaths($paths);
 
-		public function get() {
-			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
-			$paths = $this->context->getAbsolutePaths($paths);
+        $entity = $this->context->getEntity();
+        $components = array_map(function ($path) use ($entity) {
+            return $entity->getComponentAtPath($path);
+        }, $paths);
+        call_user_func_array('var_dump', $components);
 
-			$entity = $this->context->getEntity();
-			$components = array_map(function($path) use($entity) {
-				return $entity->getComponentAtPath($path);
-			}, $paths);
-			call_user_func_array('var_dump', $components);
-
-			return new VLD\Parser\Feedback();
-		}
-
-	}
+        return new VLD\Parser\Feedback();
+    }
 
 }

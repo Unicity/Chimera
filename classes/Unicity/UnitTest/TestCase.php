@@ -16,35 +16,33 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\UnitTest {
+namespace Unicity\UnitTest;
 
-	/**
-	 * This class represents the parent of a test case.
-	 *
-	 * @access public
-	 * @class
-	 * @package UnitTest
-	 */
-	class TestCase extends \PHPUnit\Framework\TestCase {
-
-		/**
-		 * This method asserts that a variable is one of the given types.
-		 *
-		 * @param array $expected                                   the expected set of data types
-		 * @param mixed $actual                                     the variable to be tested
-		 * @param string $message                                   the message reported when the assertion
-		 *                                                          fails
-		 */
-		public function assertInternalTypes(array $expected, $actual, $message = '') { // TODO handle class inheritence and interfaces, as well as object
-			$type = gettype($actual);
-			if ($type == 'object') {
-				$type = trim(get_class($actual), '\\');
-			}
-			$this->assertTrue(in_array($type, $expected), $message);
-		}
-
-	}
+/**
+ * This class represents the parent of a test case.
+ *
+ * @access public
+ * @class
+ * @package UnitTest
+ */
+class TestCase extends \PHPUnit\Framework\TestCase
+{
+    /**
+     * This method asserts that a variable is one of the given types.
+     *
+     * @param array $expected the expected set of data types
+     * @param mixed $actual the variable to be tested
+     * @param string $message the message reported when the assertion
+     *                        fails
+     */
+    public function assertInternalTypes(array $expected, $actual, $message = '') // TODO handle class inheritence and interfaces, as well as object
+    {$type = gettype($actual);
+        if ($type == 'object') {
+            $type = trim(get_class($actual), '\\');
+        }
+        $this->assertTrue(in_array($type, $expected), $message);
+    }
 
 }

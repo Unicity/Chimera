@@ -16,75 +16,78 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\IO {
+namespace Unicity\IO;
 
-	use \Unicity\IO;
+use Unicity\IO;
 
-	/**
-	 * This class represent an output buffer.
-	 *
-	 * @access public
-	 * @class
-	 * @package IO
-	 */
-	class OutputBuffer extends IO\File implements IO\Buffer {
+/**
+ * This class represent an output buffer.
+ *
+ * @access public
+ * @class
+ * @package IO
+ */
+class OutputBuffer extends IO\File implements IO\Buffer
+{
+    /**
+     * This constructor initializes the class with the PHP's standard output buffer.
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        $this->name = null;
+        $this->path = null;
+        $this->ext = null;
 
-		/**
-		 * This constructor initializes the class with the PHP's standard output buffer.
-		 *
-		 * @access public
-		 */
-		public function __construct() {
-			$this->name = null;
-			$this->path = null;
-			$this->ext = null;
+        $this->uri = IO\File::STDOUT;
+        $this->temporary = false;
+    }
 
-			$this->uri = IO\File::STDOUT;
-			$this->temporary = false;
-		}
+    /**
+     * This method returns whether the file actually exists.
+     *
+     * @access public
+     * @return boolean whether the file actually exists
+     */
+    public function exists(): bool
+    {
+        return true;
+    }
 
-		/**
-		 * This method returns whether the file actually exists.
-		 *
-		 * @access public
-		 * @return boolean                                          whether the file actually exists
-		 */
-		public function exists() : bool {
-			return true;
-		}
+    /**
+     * This method returns whether the file is executable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isExecutable(): bool
+    {
+        return false;
+    }
 
-		/**
-		 * This method returns whether the file is executable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isExecutable() : bool {
-			return false;
-		}
+    /**
+     * This method returns whether the file is readable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isReadable(): bool
+    {
+        return false;
+    }
 
-		/**
-		 * This method returns whether the file is readable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isReadable() : bool {
-			return false;
-		}
-
-		/**
-		 * This method returns whether the file is writable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isWritable() : bool {
-			return true;
-		}
-
-	}
+    /**
+     * This method returns whether the file is writable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isWritable(): bool
+    {
+        return true;
+    }
 
 }

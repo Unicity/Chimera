@@ -16,14 +16,10 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Throwable;
-
-	interface IPredicate {
-
-		public function test1($t) : bool;
-
-	}
+interface IPredicate
+{
+    public function test1($t): bool;
 
 }

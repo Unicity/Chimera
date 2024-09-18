@@ -17,45 +17,45 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring\Object\Factory {
+namespace Unicity\Spring\Object\Factory;
 
-	use \Unicity\Spring;
-	use \Unicity\Throwable;
+use Unicity\Spring;
+use Unicity\Throwable;
 
-	class ExpressionElement extends Spring\Object\Factory {
+class ExpressionElement extends Spring\Object\Factory
+{
+    /**
+     * This method returns an object matching the description specified by the element.
+     *
+     * @access public
+     * @param Spring\Object\Parser $parser a reference to the parser
+     * @param \SimpleXMLElement $element the element to be parsed
+     * @return mixed an object matching the description
+     *               specified by the element
+     * @throws Throwable\Parse\Exception indicates that a problem occurred
+     *                                   when parsing
+     */
+    public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element)
+    {
+        $attributes = $parser->getElementAttributes($element);
+        $expression = $parser->valueOf($element[0]);
+        $value = null;
 
-		/**
-		 * This method returns an object matching the description specified by the element.
-		 *
-		 * @access public
-		 * @param Spring\Object\Parser $parser                      a reference to the parser
-		 * @param \SimpleXMLElement $element                        the element to be parsed
-		 * @return mixed                                            an object matching the description
-		 *                                                          specified by the element
-		 * @throws Throwable\Parse\Exception                        indicates that a problem occurred
-		 *                                                          when parsing
-		 */
-		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $parser->getElementAttributes($element);
-			$expression = $parser->valueOf($element[0]);
-			$value = null;
-			/*
-			@eval('$value = ' . $expression . ';');
-			if (isset($attributes['type'])) {
-				$type = $parser->valueOf($attributes['type']);
-				if (!$parser->isPrimitiveType($type)) {
-					throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid primitive type, but got ":type".', array(':type' => $type));
-				}
-				if (!isset($value)) {
-					$type = 'NULL';
-					$value = null;
-				}
-				$value = Core\Convert::changeType($value, $type);
-			}
-			*/
-			return $value;
-		}
-
-	}
+        /*
+        @eval('$value = ' . $expression . ';');
+        if (isset($attributes['type'])) {
+            $type = $parser->valueOf($attributes['type']);
+            if (!$parser->isPrimitiveType($type)) {
+                throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid primitive type, but got ":type".', array(':type' => $type));
+            }
+            if (!isset($value)) {
+                $type = 'NULL';
+                $value = null;
+            }
+            $value = Core\Convert::changeType($value, $type);
+        }
+        */
+        return $value;
+    }
 
 }

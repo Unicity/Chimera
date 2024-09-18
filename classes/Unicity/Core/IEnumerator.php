@@ -16,42 +16,40 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	/**
-	 * This interface defines the contract for an enumerable object.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Core
-	 */
-	interface IEnumerator {
+/**
+ * This interface defines the contract for an enumerable object.
+ *
+ * @access public
+ * @interface
+ * @package Core
+ */
+interface IEnumerator
+{
+    /**
+     * This method returns the current value.
+     *
+     * @access public
+     * @return mixed the current value
+     */
+    public function current();
 
-		/**
-		 * This method returns the current value.
-		 *
-		 * @access public
-		 * @return mixed                                            the current value
-		 */
-		public function current();
+    /**
+     * This method moves to the next value.
+     *
+     * @access public
+     * @return boolean indicates if another value is found
+     */
+    public function next();
 
-		/**
-		 * This method moves to the next value.
-		 *
-		 * @access public
-		 * @return boolean                                          indicates if another value is found
-		 */
-		public function next();
-
-		/**
-		 * This method rewinds the iterator back to the starting position.
-		 *
-		 * @access public
-		 */
-		public function rewind();
-
-	}
+    /**
+     * This method rewinds the iterator back to the starting position.
+     *
+     * @access public
+     */
+    public function rewind();
 
 }

@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SOAP {
+namespace Unicity\SOAP;
 
-	use \Unicity\HTTP;
+use Unicity\HTTP;
 
-	class Response extends HTTP\Response { }
-
+class Response extends HTTP\Response
+{
 }

@@ -17,84 +17,87 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner\TokenRule {
+namespace Unicity\Lexer\Scanner\TokenRule;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Lexer;
 
-	/**
-	 * This class represents the rule definition for an "EOL comment" token, which the tokenizer will use
-	 * to tokenize a string.
-	 *
-	 * @access public
-	 * @class
-	 * @package Lexer
-	 */
-	class EOLComment extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
+/**
+ * This class represents the rule definition for an "EOL comment" token, which the tokenizer will use
+ * to tokenize a string.
+ *
+ * @access public
+ * @class
+ * @package Lexer
+ */
+class EOLComment extends Core\AbstractObject implements Lexer\Scanner\ITokenRule
+{
+    /**
+     * This variable stores the end-of-line characters.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $eol;
 
-		/**
-		 * This variable stores the end-of-line characters.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $eol;
+    /**
+     * This variable stores the symbol that signals the start of the EOL comments.
+     *
+     * @access protected
+     * @var string
+     */
+    protected $symbol;
 
-		/**
-		 * This variable stores the symbol that signals the start of the EOL comments.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $symbol;
+    /**
+     * This constructor initializes the class.
+     *
+     * @access public
+     */
+    public function __construct(string $symbol)
+    {
+        $this->eol = ["\n", "\r", "\x0C", '', null]; // http://php.net/manual/en/regexp.reference.escape.php
+        $this->symbol = $symbol;
+    }
 
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 */
-		public function __construct(string $symbol) {
-			$this->eol = array("\n", "\r", "\x0C", '', null); // http://php.net/manual/en/regexp.reference.escape.php
-			$this->symbol = $symbol;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->eol);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->eol);
-		}
+    /**
+     * This method return a tuple representing the token discovered.
+     *
+     * @access public
+     * @param \Unicity\IO\Reader $reader the reader to be used
+     * @return \Unicity\Lexer\Scanner\Tuple a tuple representing the token
+     *                                      discovered
+     */
+    public function process(IO\Reader $reader): ?Lexer\Scanner\Tuple
+    {
+        $index = $reader->position();
+        $char = $reader->readChar($index, false);
+        if ($char === $this->symbol) {
+            $lookahead = $index + 1;
+            while (!in_array($reader->readChar($lookahead, false), $this->eol)) {
+                $lookahead++;
+            }
+            $token = $reader->readRange($index, $lookahead);
+            $tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
 
-		/**
-		 * This method return a tuple representing the token discovered.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\Reader $reader                        the reader to be used
-		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
-		 *                                                          discovered
-		 */
-		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
-			$index = $reader->position();
-			$char = $reader->readChar($index, false);
-			if ($char === $this->symbol) {
-				$lookahead = $index + 1;
-				while (!in_array($reader->readChar($lookahead, false), $this->eol)) {
-					$lookahead++;
-				}
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
-				return $tuple;
-			}
-			return null;
-		}
+            return $tuple;
+        }
 
-	}
+        return null;
+    }
 
 }

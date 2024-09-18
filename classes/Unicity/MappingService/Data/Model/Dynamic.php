@@ -16,39 +16,40 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data\Model {
+namespace Unicity\MappingService\Data\Model;
 
-	use \Unicity\Core;
-	use \Unicity\MappingService;
+use Unicity\Core;
+use Unicity\MappingService;
 
-	class Dynamic extends \stdClass implements MappingService\Data\IModel {
+class Dynamic extends \stdClass implements MappingService\Data\IModel
+{
+    /**
+     * This constructor initializes the class.
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        // do nothing
+    }
 
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 */
-		public function __construct() {
-			// do nothing
-		}
+    /**
+     * This method returns the value associated with the specified property name.
+     *
+     * @access public
+     * @param string $name the name of the property
+     * @return mixed the value for the specified
+     *               property name
+     */
+    public function __get($name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
 
-		/**
-		 * This method returns the value associated with the specified property name.
-		 *
-		 * @access public
-		 * @param string $name                                      the name of the property
-		 * @return mixed                                            the value for the specified
-		 *                                                          property name
-		 */
-		public function __get($name) {
-			if (property_exists($this, $name)) {
-				return $this->$name;
-			}
-			return Core\Data\Undefined::instance();
-		}
-
-	}
+        return Core\Data\Undefined::instance();
+    }
 
 }

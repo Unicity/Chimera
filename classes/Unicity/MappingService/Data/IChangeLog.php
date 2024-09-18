@@ -16,32 +16,30 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data {
+namespace Unicity\MappingService\Data;
 
-	use \Unicity\Common;
+use Unicity\Common;
 
-	/**
-	 * This interface provides a contract that defines a model as a change log.
-	 *
-	 * @access public
-	 * @interface
-	 * @package MappingService
-	 */
-	interface IChangeLog {
-
-		/**
-		 * This method returns a map that represent which fields are considered to be last changed
-		 * by humans.
-		 *
-		 * @access public
-		 * @static
-		 * @param array $logs                                       an indexed array of change logs
-		 * @return Common\IMap                                      a map with the changes last made by humans
-		 */
-		public static function commits(array $logs);
-
-	}
+/**
+ * This interface provides a contract that defines a model as a change log.
+ *
+ * @access public
+ * @interface
+ * @package MappingService
+ */
+interface IChangeLog
+{
+    /**
+     * This method returns a map that represent which fields are considered to be last changed
+     * by humans.
+     *
+     * @access public
+     * @static
+     * @param array $logs an indexed array of change logs
+     * @return Common\IMap a map with the changes last made by humans
+     */
+    public static function commits(array $logs);
 
 }

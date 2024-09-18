@@ -16,28 +16,27 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Module {
+namespace Unicity\VLD\Module;
 
-	use \Unicity\BT;
-	use \Unicity\VLD;
+use Unicity\BT;
+use Unicity\VLD;
 
-	class IsNull extends VLD\Module {
+class IsNull extends VLD\Module
+{
+    public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback();
+        foreach ($paths as $path) {
+            $v1 = $entity->getComponentAtPath($path);
+            if (!is_null($v1)) {
+                $feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NULL, [$path]);
+            }
+        }
 
-			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if (!is_null($v1)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NULL, [$path]);
-				}
-			}
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

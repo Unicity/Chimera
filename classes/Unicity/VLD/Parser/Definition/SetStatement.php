@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class SetStatement extends VLD\Parser\Definition\Statement {
+class SetStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $this->context->putEntry($this->args['key']->get(), $this->args['term']->get());
 
-		public function get() {
-			$this->context->putEntry($this->args['key']->get(), $this->args['term']->get());
-			return new VLD\Parser\Feedback();
-		}
-
-	}
+        return new VLD\Parser\Feedback();
+    }
 
 }

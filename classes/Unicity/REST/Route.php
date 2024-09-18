@@ -16,111 +16,112 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\REST {
+namespace Unicity\REST;
 
-	use \Unicity\Core;
-	use \Unicity\REST;
+use Unicity\Core;
+use Unicity\REST;
 
-	class Route extends Core\AbstractObject {
+class Route extends Core\AbstractObject
+{
+    /**
+     * This variable stores any internal arguments.
+     *
+     * @access public
+     * @var REST\Arguments
+     */
+    public $arguments;
 
-		/**
-		 * This variable stores any internal arguments.
-		 *
-		 * @access public
-		 * @var REST\Arguments
-		 */
-		public $arguments;
+    /**
+     * This variable stores the HTTP methods.
+     *
+     * @access public
+     * @var array
+     */
+    public $methods;
 
-		/**
-		 * This variable stores the HTTP methods.
-		 *
-		 * @access public
-		 * @var array
-		 */
-		public $methods;
+    /**
+     * This variable stores the path segments.
+     *
+     * @access public
+     * @var array
+     */
+    public $path;
 
-		/**
-		 * This variable stores the path segments.
-		 *
-		 * @access public
-		 * @var array
-		 */
-		public $path;
+    /**
+     * This variable stores the pipeline.
+     *
+     * @access public
+     * @var callable
+     */
+    public $pipeline;
 
-		/**
-		 * This variable stores the pipeline.
-		 *
-		 * @access public
-		 * @var callable
-		 */
-		public $pipeline;
+    /**
+     * This variable stores the patterns for evaluating path segments.
+     *
+     * @access public
+     * @var array
+     */
+    public $patterns;
 
-		/**
-		 * This variable stores the patterns for evaluating path segments.
-		 *
-		 * @access public
-		 * @var array
-		 */
-		public $patterns;
+    /**
+     * This variable stores the "when" predicates.
+     *
+     * @access public
+     * @var array
+     */
+    public $when;
 
-		/**
-		 * This variable stores the "when" predicates.
-		 *
-		 * @access public
-		 * @var array
-		 */
-		public $when;
+    /**
+     * This constructor initializes the class with the specified parameters.
+     *
+     * @access public
+     * @param array $methods the methods to be routed
+     * @param array $path the path segments to be routed
+     * @param array $patterns the patterns for evaluating path
+     *                        segments
+     */
+    public function __construct(array $methods, array $path, array $patterns)
+    {
+        $this->arguments = REST\Arguments::factory();
+        $this->methods = $methods;
+        $this->path = $path;
+        $this->patterns = $patterns;
+        $this->pipeline = null;
+        $this->when = [];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified parameters.
-		 *
-		 * @access public
-		 * @param array $methods                                    the methods to be routed
-		 * @param array $path                                       the path segments to be routed
-		 * @param array $patterns                                   the patterns for evaluating path
-		 *                                                          segments
-		 */
-		public function __construct(array $methods, array $path, array $patterns) {
-			$this->arguments = REST\Arguments::factory();
-			$this->methods = $methods;
-			$this->path = $path;
-			$this->patterns = $patterns;
-			$this->pipeline = null;
-			$this->when = [];
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->arguments);
+        unset($this->methods);
+        unset($this->path);
+        unset($this->patterns);
+        unset($this->pipeline);
+        unset($this->when);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->arguments);
-			unset($this->methods);
-			unset($this->path);
-			unset($this->patterns);
-			unset($this->pipeline);
-			unset($this->when);
-		}
-
-		/**
-		 * This method returns a new route definition.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $method                                    the method(s) to be routed
-		 * @param string $path                                      the path to be routed
-		 * @param array $patterns                                   the patterns for evaluating path
-		 *                                                          segments
-		 * @return REST\RouteDefinition                             the new route definition
-		 */
-		public static function request(string $method, string $path, array $patterns = []) : REST\RouteDefinition {
-			return new REST\RouteDefinition($method, $path, $patterns);
-		}
-
-	}
+    /**
+     * This method returns a new route definition.
+     *
+     * @access public
+     * @static
+     * @param string $method the method(s) to be routed
+     * @param string $path the path to be routed
+     * @param array $patterns the patterns for evaluating path
+     *                        segments
+     * @return REST\RouteDefinition the new route definition
+     */
+    public static function request(string $method, string $path, array $patterns = []): REST\RouteDefinition
+    {
+        return new REST\RouteDefinition($method, $path, $patterns);
+    }
 
 }

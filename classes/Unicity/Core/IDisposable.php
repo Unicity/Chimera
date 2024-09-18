@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	/**
-	 * This interface provides the contract for a class representing a disposable object.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Core
-	 */
-	interface IDisposable {
-
-		/**
-		 * This method assists with freeing, releasing, and resetting un-managed resources.
-		 *
-		 * @access public
-		 * @param boolean $disposing                                whether managed resources can be disposed
-		 *                                                          in addition to un-managed resources
-		 *
-		 * @see http://paul-m-jones.com/archives/262
-		 * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
-		 */
-		public function dispose(bool $disposing = true) : void;
-
-	}
+/**
+ * This interface provides the contract for a class representing a disposable object.
+ *
+ * @access public
+ * @interface
+ * @package Core
+ */
+interface IDisposable
+{
+    /**
+     * This method assists with freeing, releasing, and resetting un-managed resources.
+     *
+     * @access public
+     * @param boolean $disposing whether managed resources can be disposed
+     *                           in addition to un-managed resources
+     *
+     * @see http://paul-m-jones.com/archives/262
+     * @see http://www.alexatnet.com/articles/optimize-php-memory-usage-eliminate-circular-references
+     */
+    public function dispose(bool $disposing = true): void;
 
 }

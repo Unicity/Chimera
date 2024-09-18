@@ -17,83 +17,81 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common\Mutable {
+namespace Unicity\Common\Mutable;
 
-	use \Unicity\Common;
+use Unicity\Common;
 
-	/**
-	 * This interface defines the contract for a mutable set.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Common
-	 */
-	interface ISet extends Common\Mutable\ICollection, Common\ISet {
+/**
+ * This interface defines the contract for a mutable set.
+ *
+ * @access public
+ * @interface
+ * @package Common
+ */
+interface ISet extends Common\Mutable\ICollection, Common\ISet
+{
+    /**
+     * This method returns an array of arguments for constructing another collection
+     * via function programming.
+     *
+     * @access public
+     * @return array the argument array for initialization
+     */
+    public function __constructor_args(): array;
 
-		/**
-		 * This method returns an array of arguments for constructing another collection
-		 * via function programming.
-		 *
-		 * @access public
-		 * @return array                                            the argument array for initialization
-		 */
-		public function __constructor_args() : array;
+    /**
+     * This method will add the element specified.
+     *
+     * @access public
+     * @param mixed $value the value to be added
+     * @return boolean whether the element was added
+     */
+    public function putValue($value);
 
-		/**
-		 * This method will add the element specified.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be added
-		 * @return boolean                                          whether the element was added
-		 */
-		public function putValue($value);
+    /**
+     * This method will add the elements in the specified array to the collection.
+     *
+     * @access public
+     * @param $values the values to be added
+     * @return boolean whether any values were added
+     */
+    public function putValues($values);
 
-		/**
-		 * This method will add the elements in the specified array to the collection.
-		 *
-		 * @access public
-		 * @param $values                                           the values to be added
-		 * @return boolean                                          whether any values were added
-		 */
-		public function putValues($values);
+    /**
+     * This method removes the specified element in the collection if found.
+     *
+     * @access public
+     * @param mixed $value the element to be removed
+     * @return boolean whether the element was removed
+     */
+    public function removeValue($value);
 
-		/**
-		 * This method removes the specified element in the collection if found.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the element to be removed
-		 * @return boolean                                          whether the element was removed
-		 */
-		public function removeValue($value);
+    /**
+     * This method removes all elements in the collection that pair up with an element in the
+     * specified array.
+     *
+     * @access public
+     * @param $values an array of values to be removed
+     * @return boolean whether any values were removed
+     */
+    public function removeValues($values);
 
-		/**
-		 * This method removes all elements in the collection that pair up with an element in the
-		 * specified array.
-		 *
-		 * @access public
-		 * @param $values                                           an array of values to be removed
-		 * @return boolean                                          whether any values were removed
-		 */
-		public function removeValues($values);
+    /**
+     * This method will retain only those elements contained in the specified collection.
+     *
+     * @access public
+     * @param mixed $value the element that is to be retained
+     * @return boolean
+     */
+    public function retainValue($value);
 
-		/**
-		 * This method will retain only those elements contained in the specified collection.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the element that is to be retained
-		 * @return boolean
-		 */
-		public function retainValue($value);
-
-		/**
-		 * This method will retain only those elements not in the specified array.
-		 *
-		 * @access public
-		 * @param $values                                           an array of values that are to be retained
-		 * @return boolean                                          whether any values were retained
-		 */
-		public function retainValues($values);
-
-	}
+    /**
+     * This method will retain only those elements not in the specified array.
+     *
+     * @access public
+     * @param $values an array of values that are to be retained
+     * @return boolean whether any values were retained
+     */
+    public function retainValues($values);
 
 }

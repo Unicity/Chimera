@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class NullTerm extends VLD\Parser\Definition\Term {
+class NullTerm extends VLD\Parser\Definition\Term
+{
+    protected $value;
 
-		protected $value;
+    public function __construct(VLD\Parser\Context $context)
+    {
+        parent::__construct($context);
+        $this->value = null;
+    }
 
-		public function __construct(VLD\Parser\Context $context) {
-			parent::__construct($context);
-			$this->value = null;
-		}
-
-		public function get() {
-			return $this->value;
-		}
-
-	}
+    public function get()
+    {
+        return $this->value;
+    }
 
 }

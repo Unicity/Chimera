@@ -16,58 +16,58 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class is used to write an event to an event storage.
-	 *
-	 * @access public
-	 * @package EVT
-	 */
-	abstract class EventWriter extends Core\AbstractObject {
+/**
+ * This class is used to write an event to an event storage.
+ *
+ * @access public
+ * @package EVT
+ */
+abstract class EventWriter extends Core\AbstractObject
+{
+    /**
+     * This variable stores any metadata associated with the writer.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $metadata;
 
-		/**
-		 * This variable stores any metadata associated with the writer.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $metadata;
+    /**
+     * This method initializes the class.
+     *
+     * @access public
+     * @param array $metadata any metadata to be used by
+     *                        the writer
+     */
+    public function __construct(array $metadata = [])
+    {
+        $this->metadata = $metadata;
+    }
 
-		/**
-		 * This method initializes the class.
-		 *
-		 * @access public
-		 * @param array $metadata                                   any metadata to be used by
-		 *                                                          the writer
-		 */
-		public function __construct(array $metadata = array()) {
-			$this->metadata = $metadata;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->metadata);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->metadata);
-		}
-
-		/**
-		 * This method writes an array of events to the event storage.
-		 *
-		 * @access public
-		 * @abstract
-		 * @param array $events                                     the events to be written
-		 */
-		public abstract function write(array $events);
-
-	}
+    /**
+     * This method writes an array of events to the event storage.
+     *
+     * @access public
+     * @abstract
+     * @param array $events the events to be written
+     */
+    abstract public function write(array $events);
 
 }

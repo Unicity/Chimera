@@ -16,29 +16,30 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class MapTerm extends VLD\Parser\Definition\Term {
+class MapTerm extends VLD\Parser\Definition\Term
+{
+    protected $entries;
 
-		protected $entries;
+    public function __construct(VLD\Parser\Context $context, array $entries)
+    {
+        parent::__construct($context);
+        $this->entries = $entries;
+    }
 
-		public function __construct(VLD\Parser\Context $context, array $entries) {
-			parent::__construct($context);
-			$this->entries = $entries;
-		}
+    public function get()
+    {
+        $map = [];
+        foreach ($this->entries as $entry) {
+            $map[$entry->first()->get()] = $entry->second()->get();
+        }
 
-		public function get() {
-			$map = array();
-			foreach ($this->entries as $entry) {
-				$map[$entry->first()->get()] = $entry->second()->get();
-			}
-			return $map;
-		}
-
-	}
+        return $map;
+    }
 
 }

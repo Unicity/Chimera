@@ -16,18 +16,17 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Response extends EVT\Message {
-
-		public function __construct(array $map = []) {
-			parent::__construct($map);
-		}
-
-	}
+class Response extends EVT\Message
+{
+    public function __construct(array $map = [])
+    {
+        parent::__construct($map);
+    }
 
 }

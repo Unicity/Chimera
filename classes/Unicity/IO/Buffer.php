@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\IO {
+namespace Unicity\IO;
 
-	/**
-	 * This interface provides the contract for defining a buffer.
-	 *
-	 * @access public
-	 * @interface
-	 * @package IO
-	 */
-	interface Buffer { }
-
+/**
+ * This interface provides the contract for defining a buffer.
+ *
+ * @access public
+ * @interface
+ * @package IO
+ */
+interface Buffer
+{
 }

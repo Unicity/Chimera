@@ -16,131 +16,134 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data {
+namespace Unicity\MappingService\Data;
 
-	use \Unicity\MappingService;
-	use \Unicity\Throwable;
+use Unicity\MappingService;
 
-	/**
-	 * This class represents an associated array as an object.
-	 *
-	 * @access public
-	 * @class
-	 * @package MappingService
-	 */
-	class Field extends MappingService\Data\Metadata {
+/**
+ * This class represents an associated array as an object.
+ *
+ * @access public
+ * @class
+ * @package MappingService
+ */
+class Field extends MappingService\Data\Metadata
+{
+    /**
+     * This variable stores an array of serialized class objects, which is
+     * used when type casting a result set.
+     *
+     * @access protected
+     * @static
+     * @var array
+     */
+    protected static $objects = [];
 
-		/**
-		 * This variable stores an array of serialized class objects, which is
-		 * used when type casting a result set.
-		 *
-		 * @access protected
-		 * @static
-		 * @var array
-		 */
-		protected static $objects = array();
+    /**
+     * This variable stores the format type of the data.
+     *
+     * @access protected
+     * @var \Unicity\MappingService\Data\FormatType the format type token associated
+     *                                              with the data
+     */
+    protected $format;
 
-		/**
-		 * This variable stores the format type of the data.
-		 *
-		 * @access protected
-		 * @var \Unicity\MappingService\Data\FormatType             the format type token associated
-		 *                                                          with the data
-		 */
-		protected $format;
+    /**
+     * This method initializes the class.
+     *
+     * @access public
+     * @param \Unicity\MappingService\Data\FormatType $format the format type token associated
+     *                                                        with the data
+     * @param $items a traversable array or collection
+     */
+    public function __construct(MappingService\Data\FormatType $format, $items = null)
+    {
+        parent::__construct($items);
+        $this->format = $format;
+    }
 
-		/**
-		 * This method initializes the class.
-		 *
-		 * @access public
-		 * @param \Unicity\MappingService\Data\FormatType $format   the format type token associated
-		 *                                                          with the data
-		 * @param $items                                            a traversable array or collection
-		 */
-		public function __construct(MappingService\Data\FormatType $format, $items = null) {
-			parent::__construct($items);
-			$this->format = $format;
-		}
+    /**
+     * This method returns an array of arguments for constructing another collection
+     * via function programming.
+     *
+     * @access public
+     * @return array the argument array for initialization
+     */
+    public function __constructor_args(): array
+    {
+        return [$this->format, null];
+    }
 
-		/**
-		 * This method returns an array of arguments for constructing another collection
-		 * via function programming.
-		 *
-		 * @access public
-		 * @return array                                            the argument array for initialization
-		 */
-		public function __constructor_args() : array {
-			return array($this->format, null);
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->format);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->format);
-		}
+    /**
+     * This method returns format type associated with the data.
+     *
+     * @access public
+     * @return \Unicity\MappingService\Data\FormatType the format type token associated
+     *                                                 with the data
+     */
+    public function getFormatType(): \Unicity\MappingService\Data\FormatType
+    {
+        return $this->format;
+    }
 
-		/**
-		 * This method returns format type associated with the data.
-		 *
-		 * @access public
-		 * @return \Unicity\MappingService\Data\FormatType          the format type token associated
-		 *                                                          with the data
-		 */
-		public function getFormatType() : \Unicity\MappingService\Data\FormatType {
-			return $this->format;
-		}
+    /**
+     * This method sets the data's format type.
+     *
+     * @param \Unicity\MappingService\Data\FormatType $format the format type token associated
+     *                                                        with the data
+     */
+    public function setFormatType(MappingService\Data\FormatType $format)
+    {
+        $this->format = $format;
+    }
 
-		/**
-		 * This method sets the data's format type.
-		 *
-		 * @param \Unicity\MappingService\Data\FormatType $format   the format type token associated
-		 *                                                          with the data
-		 */
-		public function setFormatType(MappingService\Data\FormatType $format) {
-			$this->format = $format;
-		}
+    /**
+     * This method return an instance of a canonical field.
+     *
+     * @access public
+     * @return MappingService\Data\Field a new instance of the field
+     */
+    public static function ofCanonicalType()
+    {
+        if (!isset(static::$objects['canonical'])) {
+            $object = new MappingService\Data\Field(MappingService\Data\FormatType::canonical());
+            static::$objects['canonical'] = serialize($object);
+        } else {
+            $object = unserialize((string) static::$objects['canonical']);
+        }
 
-		/**
-		 * This method return an instance of a canonical field.
-		 *
-		 * @access public
-		 * @return MappingService\Data\Field                        a new instance of the field
-		 */
-		public static function ofCanonicalType() {
-			if ( ! isset(static::$objects['canonical'])) {
-				$object = new MappingService\Data\Field(MappingService\Data\FormatType::canonical());
-				static::$objects['canonical'] = serialize($object);
-			}
-			else {
-				$object = unserialize( (string) static::$objects['canonical']);
-			}
-			return $object;
-		}
+        return $object;
+    }
 
-		/**
-		 * This method return an instance of a model field.
-		 *
-		 * @access public
-		 * @return MappingService\Data\Field                        a new instance of the field
-		 */
-		public static function ofModelType() {
-			if ( ! isset(static::$objects['model'])) {
-				$object = new MappingService\Data\Field(MappingService\Data\FormatType::model());
-				static::$objects['model'] = serialize($object);
-			}
-			else {
-				$object = unserialize( (string) static::$objects['model']);
-			}
-			return $object;
-		}
+    /**
+     * This method return an instance of a model field.
+     *
+     * @access public
+     * @return MappingService\Data\Field a new instance of the field
+     */
+    public static function ofModelType()
+    {
+        if (!isset(static::$objects['model'])) {
+            $object = new MappingService\Data\Field(MappingService\Data\FormatType::model());
+            static::$objects['model'] = serialize($object);
+        } else {
+            $object = unserialize((string) static::$objects['model']);
+        }
 
-
-	}
+        return $object;
+    }
 
 }

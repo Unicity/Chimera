@@ -16,79 +16,82 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\HTML {
+namespace Unicity\Config\HTML;
 
-	use \Unicity\Config;
-	use \Unicity\IO;
-	use \Unicity\Minify;
+use Unicity\Config;
+use Unicity\IO;
+use Unicity\Minify;
 
-	/**
-	 * This class is used to write a collection to an HTML file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to an HTML file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = static::useArrays($data, true);
+        $this->metadata = [
+            'declaration' => true,
+            'ext' => '.html',
+            'mime' => 'text/html',
+            'minify' => [],
+            'template' => '',
+            'url' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = static::useArrays($data, true);
-			$this->metadata = array(
-				'declaration' => true,
-				'ext' => '.html',
-				'mime' => 'text/html',
-				'minify' => array(),
-				'template' => '',
-				'url' => null,
-			);
-		}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the data as string
+     * @throws \Exception indicates a problem occurred
+     *                    when generating the template
+     */
+    public function render(): string
+    {
+        $declaration = ($this->metadata['declaration'])
+            ? '<!DOCTYPE html>' . "\n"
+            : '';
+        if (!empty($this->metadata['template'])) {
+            $file = new IO\File($this->metadata['template']);
+            $mustache = new \Mustache_Engine([
+                'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
+                'escape' => function ($string) {
+                    return htmlentities($string);
+                },
+            ]);
+            ob_start();
 
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the data as string
-		 * @throws \Exception                                       indicates a problem occurred
-		 *                                                          when generating the template
-		 */
-		public function render() : string {
-			$declaration = ($this->metadata['declaration'])
-				? '<!DOCTYPE html>' . "\n"
-				: '';
-			if (!empty($this->metadata['template'])) {
-				$file = new IO\File($this->metadata['template']);
-				$mustache = new \Mustache_Engine(array(
-					'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
-					'escape' => function($string) {
-						return htmlentities($string);
-					},
-				));
-				ob_start();
-				try {
-					echo $declaration;
-					echo $mustache->render($file->getFileName(), $this->data);
-				}
-				catch (\Throwable $ex) {
-					ob_end_clean();
-					throw $ex;
-				}
-				$template = ob_get_clean();
-				//if (!empty($this->metadata['minify'])) {
-				//	$template = Minify\HTML::minify($template, $this->metadata['minify']);
-				//}
-				return $template;
-			}
-			return $declaration;
-		}
+            try {
+                echo $declaration;
+                echo $mustache->render($file->getFileName(), $this->data);
+            } catch (\Throwable $ex) {
+                ob_end_clean();
 
-	}
+                throw $ex;
+            }
+            $template = ob_get_clean();
+
+            //if (!empty($this->metadata['minify'])) {
+            //	$template = Minify\HTML::minify($template, $this->metadata['minify']);
+            //}
+            return $template;
+        }
+
+        return $declaration;
+    }
 
 }

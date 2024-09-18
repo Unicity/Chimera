@@ -16,32 +16,31 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\REST\URI {
+namespace Unicity\REST\URI;
 
-	use \Unicity\Core;
-	use \Unicity\EVT;
+use Unicity\Core;
+use Unicity\EVT;
 
-	class Assert extends Core\AbstractObject {
+class Assert extends Core\AbstractObject
+{
+    #region Assertions
 
-		#region Assertions
+    /**
+     * This method returns whether the request body contains a URL with a a query string.
+     *
+     * @access public
+     * @static
+     * @param EVT\Request $request the request to be evaluated
+     * @return bool whether the request body contains
+     *              a URL with a query string
+     */
+    public static function hasQueryString(EVT\Request $request): bool
+    {
+        return (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']));
+    }
 
-		/**
-		 * This method returns whether the request body contains a URL with a a query string.
-		 *
-		 * @access public
-		 * @static
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return bool                                             whether the request body contains
-		 *                                                          a URL with a query string
-		 */
-		public static function hasQueryString(EVT\Request $request) : bool {
-			return (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']));
-		}
-
-		#endregion
-
-	}
+    #endregion
 
 }

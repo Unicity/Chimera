@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-$directory = implode(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..'));
-$loader = require(implode(DIRECTORY_SEPARATOR, array($directory, 'vendor', 'autoload.php')));
-$loader->add('Unicity', implode(DIRECTORY_SEPARATOR, array($directory, 'tests')));
+$directory = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), '..']);
+$loader = require(implode(DIRECTORY_SEPARATOR, [$directory, 'vendor', 'autoload.php']));
+$loader->add('Unicity', implode(DIRECTORY_SEPARATOR, [$directory, 'tests']));
 unset($directory);

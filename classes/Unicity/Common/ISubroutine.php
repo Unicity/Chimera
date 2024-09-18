@@ -16,14 +16,10 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Throwable;
-
-	interface ISubroutine {
-
-		public function apply1($t);
-
-	}
+interface ISubroutine
+{
+    public function apply1($t);
 
 }

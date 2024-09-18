@@ -16,72 +16,74 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\AOP {
+namespace Unicity\AOP;
 
-	use \Unicity\AOP;
-	use \Unicity\Core;
+use Unicity\AOP;
+use Unicity\Core;
 
-	/**
-	 * This class represents a pointcut in Aspect Oriented Programming (AOP).
-	 *
-	 * @access public
-	 * @class
-	 * @package AOP
-	 */
-	class Pointcut extends Core\AbstractObject {
+/**
+ * This class represents a pointcut in Aspect Oriented Programming (AOP).
+ *
+ * @access public
+ * @class
+ * @package AOP
+ */
+class Pointcut extends Core\AbstractObject
+{
+    /**
+     * This variable stores the expression.
+     *
+     * @var mixed
+     */
+    protected $expression;
 
-		/**
-		 * This variable stores the expression.
-		 *
-		 * @var mixed
-		 */
-		protected $expression;
+    /**
+     * This constructor initializes the class with an expression.
+     *
+     * @access public
+     * @param mixed $expression the expression to be processed
+     */
+    public function __construct($expression)
+    {
+        $this->expression = $expression;
+    }
 
-		/**
-		 * This constructor initializes the class with an expression.
-		 *
-		 * @access public
-		 * @param mixed $expression                                 the expression to be processed
-		 */
-		public function __construct($expression) {
-			$this->expression = $expression;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->expression);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->expression);
-		}
+    /**
+     * This method returns the expression to be processed.
+     *
+     * @access public
+     * @return mixed the expression to be processed
+     */
+    public function getExpression()
+    {
+        return $this->expression;
+    }
 
-		/**
-		 * This method returns the expression to be processed.
-		 *
-		 * @access public
-		 * @return mixed                                            the expression to be processed
-		 */
-		public function getExpression() {
-			return $this->expression;
-		}
-
-		/**
-		 * This method executes the expression.
-		 *
-		 * @access public
-		 * @param JoinPoint $joinPoint                              the joint point to be passed
-		 */
-		public function __invoke(AOP\JoinPoint $joinPoint) {
-			$expression = $this->expression;
-			if (is_callable($expression)) {
-				$expression($joinPoint);
-			}
-		}
-
-	}
+    /**
+     * This method executes the expression.
+     *
+     * @access public
+     * @param JoinPoint $joinPoint the joint point to be passed
+     */
+    public function __invoke(AOP\JoinPoint $joinPoint)
+    {
+        $expression = $this->expression;
+        if (is_callable($expression)) {
+            $expression($joinPoint);
+        }
+    }
 
 }

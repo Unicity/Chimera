@@ -16,38 +16,36 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This interface defines the contract for a boxed primitive value.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Common
-	 */
-	interface IPrimitiveVal extends Core\IComparable {
+/**
+ * This interface defines the contract for a boxed primitive value.
+ *
+ * @access public
+ * @interface
+ * @package Common
+ */
+interface IPrimitiveVal extends Core\IComparable
+{
+    /**
+     * This method returns the un-boxed value.
+     *
+     * @access public
+     * @return mixed the primitive value
+     */
+    public function __value();
 
-		/**
-		 * This method returns the un-boxed value.
-		 *
-		 * @access public
-		 * @return mixed                                            the primitive value
-		 */
-		public function __value();
-
-		/**
-		 * This method returns the value as a boxed primitive value.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value to be boxed
-		 * @return \Unicity\Common\IPrimitiveVal                    the boxed primitive value
-		 */
-		public static function valueOf($value);
-
-	}
+    /**
+     * This method returns the value as a boxed primitive value.
+     *
+     * @access public
+     * @param mixed $value the value to be boxed
+     * @return \Unicity\Common\IPrimitiveVal the boxed primitive value
+     */
+    public static function valueOf($value);
 
 }

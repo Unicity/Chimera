@@ -1,19 +1,19 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	class Env {
+class Env
+{
+    public static function get(string $key, string $default = ''): string
+    {
+        $value = getenv($key);
+        if (is_string($value)) {
+            return trim($value);
+        }
 
-		public static function get(string $key, string $default = '') : string {
-			$value = getenv($key);
-			if (is_string($value)) {
-				return trim($value);
-			}
-			return trim($default);
-		}
-
-	}
+        return trim($default);
+    }
 
 }

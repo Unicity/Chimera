@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\QueryString {
+namespace Unicity\Config\QueryString;
 
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This interface provides a contract that defines a query string builder.
-	 *
-	 * @access public
-	 * @interface
-	 * @package MappingService
-	 */
-	interface IBuilder {
-
-		/**
-		 * This method returns the data as a query string.
-		 *
-		 * @access public
-		 * @static
-		 * @param Config\QueryString\Writer $writer                 the query string writer to be used
-		 * @return string                                           the query string
-		 */
-		public static function toQueryString(Config\QueryString\Writer $writer);
-
-	}
+/**
+ * This interface provides a contract that defines a query string builder.
+ *
+ * @access public
+ * @interface
+ * @package MappingService
+ */
+interface IBuilder
+{
+    /**
+     * This method returns the data as a query string.
+     *
+     * @access public
+     * @static
+     * @param Config\QueryString\Writer $writer the query string writer to be used
+     * @return string the query string
+     */
+    public static function toQueryString(Config\QueryString\Writer $writer);
 
 }

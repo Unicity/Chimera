@@ -16,21 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Automaton {
+namespace Unicity\Automaton;
 
-	/**
-	 * This interfaces defines the contract for an action in an automaton.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Automaton
-	 */
-	interface IAction {
-
-		public function execute();
-
-	}
+/**
+ * This interfaces defines the contract for an action in an automaton.
+ *
+ * @access public
+ * @interface
+ * @package Automaton
+ */
+interface IAction
+{
+    public function execute();
 
 }

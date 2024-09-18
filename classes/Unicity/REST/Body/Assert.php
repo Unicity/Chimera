@@ -16,117 +16,124 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\REST\Body {
+namespace Unicity\REST\Body;
 
-	use \Unicity\Core;
-	use \Unicity\EVT;
-	use \Unicity\IO;
+use Unicity\Core;
+use Unicity\EVT;
+use Unicity\IO;
 
-	class Assert extends Core\AbstractObject {
+class Assert extends Core\AbstractObject
+{
+    #region Assertions
 
-		#region Assertions
+    /**
+     * This method returns whether the request body contains JSON.
+     *
+     * @access public
+     * @static
+     * @param EVT\Request $request the request to be evaluated
+     * @return bool whether the request body contains
+     *              JSON
+     */
+    public static function hasJSON(EVT\Request $request): bool
+    {
+        json_decode(static::getBody($request));
 
-		/**
-		 * This method returns whether the request body contains JSON.
-		 *
-		 * @access public
-		 * @static
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return bool                                             whether the request body contains
-		 *                                                          JSON
-		 */
-		public static function hasJSON(EVT\Request $request) : bool {
-			json_decode(static::getBody($request));
-			return (json_last_error() == JSON_ERROR_NONE);
-		}
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
 
-		/**
-		 * This method returns whether the request body contains an SQL statement.
-		 *
-		 * @access public
-		 * @static
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return bool                                             whether the request body contains
-		 *                                                          an SQL statement
-		 */
-		public static function hasSQL(EVT\Request $request) : bool {
-			$body = urlencode(static::getBody($request));
-			if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
-				return true;
-			}
-			if (preg_match('/^SELECT.+FROM/i', $body)) {
-				return true;
-			}
-			if (preg_match('/^UPDATE.+SET/i', $body)) {
-				return true;
-			}
-			if (preg_match('/^DELETE.+FROM/i', $body)) {
-				return true;
-			}
-			return false;
-		}
+    /**
+     * This method returns whether the request body contains an SQL statement.
+     *
+     * @access public
+     * @static
+     * @param EVT\Request $request the request to be evaluated
+     * @return bool whether the request body contains
+     *              an SQL statement
+     */
+    public static function hasSQL(EVT\Request $request): bool
+    {
+        $body = urlencode(static::getBody($request));
+        if (preg_match('/^INSERT.+INTO.+VALUES/i', $body)) {
+            return true;
+        }
+        if (preg_match('/^SELECT.+FROM/i', $body)) {
+            return true;
+        }
+        if (preg_match('/^UPDATE.+SET/i', $body)) {
+            return true;
+        }
+        if (preg_match('/^DELETE.+FROM/i', $body)) {
+            return true;
+        }
 
-		/**
-		 * This method returns whether the request body contains a URL.
-		 *
-		 * @access public
-		 * @static
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return bool                                             whether the request body contains
-		 *                                                          a URL
-		 */
-		public static function hasURL(EVT\Request $request) : bool {
-			return (bool) filter_var(static::getBody($request), FILTER_VALIDATE_URL);
-		}
+        return false;
+    }
 
-		/**
-		 * This method returns whether the request body contains a URL with a a query string.
-		 *
-		 * @access public
-		 * @static
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return bool                                             whether the request body contains
-		 *                                                          a URL with a query string
-		 */
-		public static function hasURLWithQueryString(EVT\Request $request) : bool {
-			return (bool) filter_var(static::getBody($request), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
-		}
+    /**
+     * This method returns whether the request body contains a URL.
+     *
+     * @access public
+     * @static
+     * @param EVT\Request $request the request to be evaluated
+     * @return bool whether the request body contains
+     *              a URL
+     */
+    public static function hasURL(EVT\Request $request): bool
+    {
+        return (bool) filter_var(static::getBody($request), FILTER_VALIDATE_URL);
+    }
 
-		/**
-		 * This method returns whether the request body contains XML.
-		 *
-		 * @access public
-		 * @static
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return bool                                             whether the request body contains
-		 *                                                          XML
-		 */
-		public static function hasXML(EVT\Request $request) : bool {
-			return (bool) preg_match('/^<\?xml\s+.+\?>/', static::getBody($request));
-		}
+    /**
+     * This method returns whether the request body contains a URL with a a query string.
+     *
+     * @access public
+     * @static
+     * @param EVT\Request $request the request to be evaluated
+     * @return bool whether the request body contains
+     *              a URL with a query string
+     */
+    public static function hasURLWithQueryString(EVT\Request $request): bool
+    {
+        return (bool) filter_var(static::getBody($request), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED);
+    }
 
-		#endregion
+    /**
+     * This method returns whether the request body contains XML.
+     *
+     * @access public
+     * @static
+     * @param EVT\Request $request the request to be evaluated
+     * @return bool whether the request body contains
+     *              XML
+     */
+    public static function hasXML(EVT\Request $request): bool
+    {
+        return (bool) preg_match('/^<\?xml\s+.+\?>/', static::getBody($request));
+    }
 
-		#region Helpers
+    #endregion
 
-		/**
-		 * This method returns the request body as a string.
-		 *
-		 * @access protected
-		 * @param EVT\Request $request                              the request to be evaluated
-		 * @return string                                           the request body as a string
-		 */
-		protected static function getBody(EVT\Request $request) : string {
-			if (is_object($request->body) && ($request->body instanceof IO\File)) {
-				return $request->body->getBytes();
-			}
-			return Core\Convert::toString($request->body);
-		}
+    #region Helpers
 
-		#endregion
+    /**
+     * This method returns the request body as a string.
+     *
+     * @access protected
+     * @param EVT\Request $request the request to be evaluated
+     * @return string the request body as a string
+     */
+    protected static function getBody(EVT\Request $request): string
+    {
+        if (is_object($request->body) && ($request->body instanceof IO\File)) {
+            return $request->body->getBytes();
+        }
 
-	}
+        return Core\Convert::toString($request->body);
+    }
+
+    #endregion
 
 }

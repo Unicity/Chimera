@@ -16,60 +16,61 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\Spring {
+namespace Unicity\Config\Spring;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\Minify;
-	use \Unicity\Spring;
+use Unicity\Common;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\Minify;
+use Unicity\Spring;
 
-	/**
-	 * This class is used to write a collection to a Spring XML file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to a Spring XML file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = Common\Collection::useObjects($data);
+        $this->metadata = [
+            'encoding' => [Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING],
+            'ext' => '.xml',
+            'mime' => 'text/xml',
+            'minify' => [],
+            'prototype' => true,
+            'url' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = Common\Collection::useObjects($data);
-			$this->metadata = array(
-				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
-				'ext' => '.xml',
-				'mime' => 'text/xml',
-				'minify' => array(),
-				'prototype' => true,
-				'url' => null,
-			);
-		}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the processed data
+     */
+    public function render(): string
+    {
+        $object_exporter = new Spring\XMLObjectExporter($this->data);
+        $object_exporter->encoding = $this->metadata['encoding'];
+        $object_exporter->prototype = $this->metadata['prototype'];
+        $spring_xml = $object_exporter->render();
+        if (!empty($this->metadata['minify'])) {
+            $spring_xml = Minify\XML::minify($spring_xml, $this->metadata['minify']);
+        }
 
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the processed data
-		 */
-		public function render() : string {
-			$object_exporter = new Spring\XMLObjectExporter($this->data);
-			$object_exporter->encoding = $this->metadata['encoding'];
-			$object_exporter->prototype = $this->metadata['prototype'];
-			$spring_xml = $object_exporter->render();
-			if (!empty($this->metadata['minify'])) {
-				$spring_xml = Minify\XML::minify($spring_xml, $this->metadata['minify']);
-			}
-			return $spring_xml;
-		}
-
-	}
+        return $spring_xml;
+    }
 
 }

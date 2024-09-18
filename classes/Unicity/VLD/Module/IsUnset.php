@@ -16,28 +16,27 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Module {
+namespace Unicity\VLD\Module;
 
-	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\VLD;
+use Unicity\BT;
+use Unicity\Core;
+use Unicity\VLD;
 
-	class IsUnset extends VLD\Module {
+class IsUnset extends VLD\Module
+{
+    public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback();
+        foreach ($paths as $path) {
+            if (!Core\Data\ToolKit::isUnset($entity->getComponentAtPath($path))) {
+                $feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_UNSET, [$path]);
+            }
+        }
 
-			foreach ($paths as $path) {
-				if (!Core\Data\ToolKit::isUnset($entity->getComponentAtPath($path))) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_UNSET, [$path]);
-				}
-			}
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

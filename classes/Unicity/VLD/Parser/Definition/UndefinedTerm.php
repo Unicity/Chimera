@@ -16,26 +16,26 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\Core;
-	use \Unicity\VLD;
+use Unicity\Core;
+use Unicity\VLD;
 
-	class UndefinedTerm extends VLD\Parser\Definition\Term {
+class UndefinedTerm extends VLD\Parser\Definition\Term
+{
+    protected $value;
 
-		protected $value;
+    public function __construct(VLD\Parser\Context $context)
+    {
+        parent::__construct($context);
+        $this->value = Core\Data\Undefined::instance();
+    }
 
-		public function __construct(VLD\Parser\Context $context) {
-			parent::__construct($context);
-			$this->value = Core\Data\Undefined::instance();
-		}
-
-		public function get() {
-			return $this->value;
-		}
-
-	}
+    public function get()
+    {
+        return $this->value;
+    }
 
 }

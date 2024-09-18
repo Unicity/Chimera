@@ -16,30 +16,29 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Module {
+namespace Unicity\VLD\Module;
 
-	use \Unicity\BT;
-	use \Unicity\VLD;
+use Unicity\BT;
+use Unicity\VLD;
 
-	class IsEqualToRegex extends VLD\Module {
+class IsEqualToRegex extends VLD\Module
+{
+    public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback();
+        $v2 = $this->policy;
 
-			$v2 = $this->policy;
+        foreach ($paths as $path) {
+            $v1 = $entity->getComponentAtPath($path);
+            if (!preg_match($v2, $v1)) {
+                $feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_REGEX, [$path], ['{{ regex }}' => $v2]);
+            }
+        }
 
-			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if (!preg_match($v2, $v1)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_REGEX, [$path], ['{{ regex }}' => $v2]);
-				}
-			}
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

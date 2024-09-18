@@ -17,87 +17,81 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner\TokenRule {
+namespace Unicity\Lexer\Scanner\TokenRule;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Lexer;
 
-	/**
-	 * This class represents the rule definition for a "number" token, which the tokenizer will use
-	 * to tokenize a string.
-	 *
-	 * @access public
-	 * @class
-	 * @package Lexer
-	 */
-	class Number extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
+/**
+ * This class represents the rule definition for a "number" token, which the tokenizer will use
+ * to tokenize a string.
+ *
+ * @access public
+ * @class
+ * @package Lexer
+ */
+class Number extends Core\AbstractObject implements Lexer\Scanner\ITokenRule
+{
+    /**
+     * This method return a tuple representing the token discovered.
+     *
+     * @access public
+     * @param \Unicity\IO\Reader $reader the reader to be used
+     * @return \Unicity\Lexer\Scanner\Tuple a tuple representing the token
+     *                                      discovered
+     */
+    public function process(IO\Reader $reader): ?Lexer\Scanner\Tuple
+    {
+        $index = $reader->position();
+        $char = $reader->readChar($index, false);
+        if (($char !== null) && ($char >= '0') && ($char <= '9')) { // "integer" token, "real" token, or "hexadecimal" token
+            $type = null;
+            $lookahead = $index;
+            if ($char == '0') {
+                $lookahead++;
+                $next = $reader->readChar($lookahead, false);
+                if (($next == 'x') || ($next == 'X')) {
+                    do {
+                        $lookahead++;
+                        $next = $reader->readChar($lookahead, false);
+                    } while (($next !== null) && ($next >= '0') && ($next <= '9'));
+                    $type = Lexer\Scanner\TokenType::hexadecimal();
+                } elseif ($next == '.') {
+                    do {
+                        $lookahead++;
+                        $next = $reader->readChar($lookahead, false);
+                    } while (($next !== null) && ($next >= '0') && ($next <= '9'));
+                    $type = Lexer\Scanner\TokenType::real();
+                } else {
+                    $type = Lexer\Scanner\TokenType::integer();
+                }
+            } else {
+                $next = null;
+                do {
+                    $lookahead++;
+                    $next = $reader->readChar($lookahead, false);
+                } while (($next !== null) && ($next >= '0') && ($next <= '9'));
+                if ($next == '.') {
+                    do {
+                        $lookahead++;
+                        $next = $reader->readChar($lookahead, false);
+                    } while (($next !== null) && ($next >= '0') && ($next <= '9'));
+                    $type = Lexer\Scanner\TokenType::real();
+                } else {
+                    $type = Lexer\Scanner\TokenType::integer();
+                }
+            }
+            $token = $reader->readRange($index, $lookahead);
+            $tuple = new Lexer\Scanner\Tuple($type, new Common\StringRef($token), $index);
 
-		/**
-		 * This method return a tuple representing the token discovered.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\Reader $reader                        the reader to be used
-		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
-		 *                                                          discovered
-		 */
-		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
-			$index = $reader->position();
-			$char = $reader->readChar($index, false);
-			if (($char !== null) && ($char >= '0') && ($char <= '9')) { // "integer" token, "real" token, or "hexadecimal" token
-				$type = null;
-				$lookahead = $index;
-				if ($char == '0') {
-					$lookahead++;
-					$next = $reader->readChar($lookahead, false);
-					if (($next == 'x') || ($next == 'X')) {
-						do {
-							$lookahead++;
-							$next = $reader->readChar($lookahead, false);
-						}
-						while (($next !== null) && ($next >= '0') && ($next <= '9'));
-						$type = Lexer\Scanner\TokenType::hexadecimal();
-					}
-					else if ($next == '.') {
-						do {
-							$lookahead++;
-							$next = $reader->readChar($lookahead, false);
-						}
-						while (($next !== null) && ($next >= '0') && ($next <= '9'));
-						$type = Lexer\Scanner\TokenType::real();
-					}
-					else {
-						$type = Lexer\Scanner\TokenType::integer();
-					}
-				}
-				else {
-					$next = null;
-					do {
-						$lookahead++;
-						$next = $reader->readChar($lookahead, false);
-					}
-					while (($next !== null) && ($next >= '0') && ($next <= '9'));
-					if ($next == '.') {
-						do {
-							$lookahead++;
-							$next = $reader->readChar($lookahead, false);
-						} while (($next !== null) && ($next >= '0') && ($next <= '9'));
-						$type = Lexer\Scanner\TokenType::real();
-					}
-					else {
-						$type = Lexer\Scanner\TokenType::integer();
-					}
-				}
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple($type, new Common\StringRef($token), $index);
-				return $tuple;
-			}
-			return null;
-		}
+            return $tuple;
+        }
 
-	}
+        return null;
+    }
 
 }

@@ -16,85 +16,85 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data\Translator {
+namespace Unicity\MappingService\Data\Translator;
 
-	use \Unicity\Core;
-	use \Unicity\MappingService;
-	use \Unicity\Throwable;
+use Unicity\MappingService;
 
-	/**
-	 * This class is used to translate a data model using data translations.
-	 *
-	 * @abstract
-	 * @access public
-	 * @class
-	 * @package MappingService
-	 */
-	class Identity extends MappingService\Data\Translator {
+/**
+ * This class is used to translate a data model using data translations.
+ *
+ * @abstract
+ * @access public
+ * @class
+ * @package MappingService
+ */
+class Identity extends MappingService\Data\Translator
+{
+    /**
+     * This method attempts to call the specified getter/setter.
+     *
+     * @access public
+     * @param string $method the name of the method to be
+     *                       called
+     * @param array $args the arguments passed
+     * @return mixed the result of the method
+     */
+    public function __call($method, $args)
+    {
+        if (preg_match('/^get[_a-zA-Z0-9]+$/', $method)) {
+            $properties = preg_split('/_+/', substr($method, 3));
+            $key = null;
+            $value = $this->models;
+            foreach ($properties as $property) {
+                $key = $property;
+                if (!property_exists($value, $key)) {
+                    return null;
+                }
+                $value = $value->$key;
+            }
+            $field = new MappingService\Data\Field(MappingService\Data\FormatType::canonical());
+            if (is_object($value)) {
+                $properties = get_object_vars($value);
+                foreach ($properties as $key => $value) {
+                    $field->putItem($key, $value);
+                }
+            } else {
+                $field->putItem($key, $value);
+            }
 
-		/**
-		 * This method attempts to call the specified getter/setter.
-		 *
-		 * @access public
-		 * @param string $method                                    the name of the method to be
-		 *                                                          called
-		 * @param array $args                                       the arguments passed
-		 * @return mixed                                            the result of the method
-		 */
-		public function __call($method, $args) {
-			if (preg_match('/^get[_a-zA-Z0-9]+$/', $method)) {
-				$properties = preg_split('/_+/', substr($method, 3));
-				$key = null;
-				$value = $this->models;
-				foreach ($properties as $property) {
-					$key = $property;
-					if (!property_exists($value, $key)) {
-						return null;
-					}
-					$value = $value->$key;
-				}
-				$field = new MappingService\Data\Field(MappingService\Data\FormatType::canonical());
-				if (is_object($value)) {
-					$properties = get_object_vars($value);
-					foreach ($properties as $key => $value) {
-						$field->putItem($key, $value);
-					}
-				}
-				else {
-					$field->putItem($key, $value);
-				}
-				return $field;
-			}
-			return null;
-		}
+            return $field;
+        }
 
-		/**
-		 * This method returns whether the specified method exists.
-		 *
-		 * @access public
-		 * @param string $method                                    the name of the method
-		 * @return boolean                                          whether the specified method exists
-		 */
-		public function __hasMethod($method) {
-			if (parent::__hasMethod($method)) {
-				return true;
-			}
-			else if (preg_match('/^get[_a-zA-Z0-9]+$/', $method)) {
-				$properties = preg_split('/_+/', substr($method, 3));
-				$value = $this->models;
-				foreach ($properties as $key) {
-					if (!property_exists($value, $key)) {
-						return false;
-					}
-					$value = $value->$key;
-				}
-				return true;
-			}
-			return false;
-		}
+        return null;
+    }
 
-	}
+    /**
+     * This method returns whether the specified method exists.
+     *
+     * @access public
+     * @param string $method the name of the method
+     * @return boolean whether the specified method exists
+     */
+    public function __hasMethod($method)
+    {
+        if (parent::__hasMethod($method)) {
+            return true;
+        } elseif (preg_match('/^get[_a-zA-Z0-9]+$/', $method)) {
+            $properties = preg_split('/_+/', substr($method, 3));
+            $value = $this->models;
+            foreach ($properties as $key) {
+                if (!property_exists($value, $key)) {
+                    return false;
+                }
+                $value = $value->$key;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 
 }

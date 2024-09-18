@@ -17,119 +17,125 @@
  * limitations under the License.
  */
 
-namespace Unicity\Throwable\Runtime {
+namespace Unicity\Throwable\Runtime;
 
-	use \Unicity\Core;
-	use \Unicity\Throwable;
+use Unicity\Core;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents a Runtime Exception.
-	 *
-	 * @access public
-	 * @class
-	 * @package Throwable
-	 */
-	class Exception extends \Exception implements Core\IObject {
+/**
+ * This class represents a Runtime Exception.
+ *
+ * @access public
+ * @class
+ * @package Throwable
+ */
+class Exception extends \Exception implements Core\IObject
+{
+    /**
+     * This variable stores the code associated with the exception.
+     *
+     * @access protected
+     * @var int
+     */
+    protected $code;
 
-		/**
-		 * This variable stores the code associated with the exception.
-		 *
-		 * @access protected
-		 * @var int
-		 */
-		protected $code;
+    /**
+     * This constructor creates a new runtime exception.
+     *
+     *     throw new Throwable\Runtime\Exception('Unable to find :uri', array(':uri' => $uri));
+     *
+     * @access public
+     * @param string $message the error message
+     * @param array $variables the translation variables
+     * @param integer $code the exception code
+     */
+    public function __construct($message = '', array $variables = null, $code = 0)
+    {
+        parent::__construct(
+            empty($variables) ? (string) $message : strtr((string) $message, $variables),
+            (int) $code
+        );
+        $this->code = (int) $code; // Known bug: http://bugs.php.net/39615
+    }
 
-		/**
-		 * This constructor creates a new runtime exception.
-		 *
-		 *     throw new Throwable\Runtime\Exception('Unable to find :uri', array(':uri' => $uri));
-		 *
-		 * @access public
-		 * @param string $message                                   the error message
-		 * @param array $variables                                  the translation variables
-		 * @param integer $code                                     the exception code
-		 */
-		public function __construct($message = '', array $variables = null, $code = 0) {
-			parent::__construct(
-				empty($variables) ? (string) $message : strtr((string) $message, $variables),
-				(int) $code
-			);
-			$this->code = (int) $code; // Known bug: http://bugs.php.net/39615
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        unset($this->code);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			unset($this->code);
-		}
+    /**
+     * This method nicely writes out information about the object.
+     *
+     * @access public
+     */
+    public function __debug(): void
+    {
+        var_dump($this);
+    }
 
-		/**
-		 * This method nicely writes out information about the object.
-		 *
-		 * @access public
-		 */
-		public function __debug() : void {
-			var_dump($this);
-		}
+    /**
+     * This method evaluates whether the specified objects is equal to the current object.
+     *
+     * @access public
+     * @param mixed $object the object to be evaluated
+     * @return boolean whether the specified object is equal
+     *                 to the current object
+     */
+    public function __equals($object)
+    {
+        return (($object !== null) && ($object instanceof Throwable\Runtime\Exception) && ((string) serialize($object) == (string) serialize($this)));
+    }
 
-		/**
-		 * This method evaluates whether the specified objects is equal to the current object.
-		 *
-		 * @access public
-		 * @param mixed $object                                     the object to be evaluated
-		 * @return boolean                                          whether the specified object is equal
-		 *                                                          to the current object
-		 */
-		public function __equals($object) {
-			return (($object !== null) && ($object instanceof Throwable\Runtime\Exception) && ((string) serialize($object) == (string) serialize($this)));
-		}
+    /**
+     * This method returns the name of the called class.
+     *
+     * @access public
+     * @return string the name of the called class
+     */
+    public function __getClass(): string
+    {
+        return get_called_class();
+    }
 
-		/**
-		 * This method returns the name of the called class.
-		 *
-		 * @access public
-		 * @return string                                           the name of the called class
-		 */
-		public function __getClass() : string {
-			return get_called_class();
-		}
+    /**
+     * This method returns the current object's hash code.
+     *
+     * @access public
+     * @return string the current object's hash code
+     */
+    public function __hashCode(): string
+    {
+        return spl_object_hash($this);
+    }
 
-		/**
-		 * This method returns the current object's hash code.
-		 *
-		 * @access public
-		 * @return string                                           the current object's hash code
-		 */
-		public function __hashCode() : string {
-			return spl_object_hash($this);
-		}
+    /**
+     * This function returns the exception as a string.
+     *
+     * @access public
+     * @override
+     * @return string a string representing the exception
+     */
+    public function __toString()
+    {
+        return static::text($this);
+    }
 
-		/**
-		 * This function returns the exception as a string.
-		 *
-		 * @access public
-		 * @override
-		 * @return string                                           a string representing the exception
-		 */
-		public function __toString() {
-			return static::text($this);
-		}
-
-		/**
-		 * This method returns the exception as a string.
-		 *
-		 * @access public
-		 * @static
-		 * @param \Exception $exception                             the exception to be processed
-		 * @return string                                           a string representing the exception
-		 */
-		public static function text(\Exception $exception) : string {
-			return sprintf('%s [ %s ]: %s ~ %s [ %d ]', get_class($exception), $exception->getCode(), strip_tags($exception->getMessage()), $exception->getFile(), $exception->getLine());
-		}
-
-	}
+    /**
+     * This method returns the exception as a string.
+     *
+     * @access public
+     * @static
+     * @param \Exception $exception the exception to be processed
+     * @return string a string representing the exception
+     */
+    public static function text(\Exception $exception): string
+    {
+        return sprintf('%s [ %s ]: %s ~ %s [ %d ]', get_class($exception), $exception->getCode(), strip_tags($exception->getMessage()), $exception->getFile(), $exception->getLine());
+    }
 
 }

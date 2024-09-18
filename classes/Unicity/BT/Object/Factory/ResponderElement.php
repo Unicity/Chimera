@@ -1,52 +1,51 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\BT\Object\Factory {
+namespace Unicity\BT\Object\Factory;
 
-	use \Unicity\BT;
-	use \Unicity\Spring;
-	use \Unicity\Throwable;
+use Unicity\BT;
+use Unicity\Spring;
+use Unicity\Throwable;
 
-	class ResponderElement extends Spring\Object\Factory {
+class ResponderElement extends Spring\Object\Factory
+{
+    /**
+     * This method returns an object matching the description specified by the element.
+     *
+     * @access public
+     * @param Spring\Object\Parser $parser a reference to the parser
+     * @param \SimpleXMLElement $element the element to be parsed
+     * @return mixed an object matching the description
+     *               specified by the element
+     * @throws Throwable\Parse\Exception indicates that a problem occurred
+     *                                   when parsing
+     */
+    public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element)
+    {
+        $attributes = $parser->getElementAttributes($element);
 
-		/**
-		 * This method returns an object matching the description specified by the element.
-		 *
-		 * @access public
-		 * @param Spring\Object\Parser $parser                      a reference to the parser
-		 * @param \SimpleXMLElement $element                        the element to be parsed
-		 * @return mixed                                            an object matching the description
-		 *                                                          specified by the element
-		 * @throws Throwable\Parse\Exception                        indicates that a problem occurred
-		 *                                                          when parsing
-		 */
-		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $parser->getElementAttributes($element);
+        $type = (isset($attributes['type']))
+            ? $parser->valueOf($attributes['type'])
+            : '\\Unicity\\BT\\Task\\Responder';
 
-			$type = (isset($attributes['type']))
-				? $parser->valueOf($attributes['type'])
-				: '\\Unicity\\BT\\Task\\Responder';
+        $element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
+        $children = $element->xpath('./spring-bt:policy');
+        $policy = (!empty($children))
+            ? $parser->getObjectFromElement($children[0])
+            : null;
 
-			$element->registerXPathNamespace('spring-bt', BT\Schema::NAMESPACE_URI);
-			$children = $element->xpath('./spring-bt:policy');
-			$policy = (!empty($children))
-				? $parser->getObjectFromElement($children[0])
-				: null;
+        $object = new $type($policy);
 
-			$object = new $type($policy);
+        if (!($object instanceof BT\Task\Responder)) {
+            throw new Throwable\Parse\Exception('Invalid type defined. Expected a task responder, but got an element of type ":type" instead.', [':type' => $type]);
+        }
 
-			if (!($object instanceof BT\Task\Responder)) {
-				throw new Throwable\Parse\Exception('Invalid type defined. Expected a task responder, but got an element of type ":type" instead.', array(':type' => $type));
-			}
+        if (isset($attributes['title'])) {
+            $object->setTitle($parser->valueOf($attributes['title']));
+        }
 
-			if (isset($attributes['title'])) {
-				$object->setTitle($parser->valueOf($attributes['title']));
-			}
-
-			return $object;
-		}
-
-	}
+        return $object;
+    }
 
 }

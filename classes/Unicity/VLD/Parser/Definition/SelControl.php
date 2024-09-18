@@ -16,48 +16,49 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class SelControl extends VLD\Parser\Definition\Control {
+class SelControl extends VLD\Parser\Definition\Control
+{
+    protected $policy;
 
-		protected $policy;
+    protected $statements;
 
-		protected $statements;
+    public function __construct(VLD\Parser\Context $context, $policy, array $statements)
+    {
+        parent::__construct($context);
+        $this->policy = $policy;
+        $this->statements = $statements;
+    }
 
-		public function __construct(VLD\Parser\Context $context, $policy, array $statements) {
-			parent::__construct($context);
-			$this->policy = $policy;
-			$this->statements = $statements;
-		}
+    public function get()
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function get() {
-			$feedback = new VLD\Parser\Feedback();
+        $results = [];
+        $success = false;
 
-			$results = array();
-			$success = false;
+        foreach ($this->statements as $i => $statement) {
+            $results[$i] = $statement->get();
+            $feedback->addRecommendations($results[$i]);
+            if ($results[$i]->getNumberOfViolations() === 0) {
+                $success = true;
 
-			foreach ($this->statements as $i => $statement) {
-				$results[$i] = $statement->get();
-				$feedback->addRecommendations($results[$i]);
-				if ($results[$i]->getNumberOfViolations() === 0) {
-					$success = true;
-					break;
-				}
-			}
+                break;
+            }
+        }
 
-			if (!$success) {
-				foreach ($results as $result) {
-					$feedback->addViolations($result);
-				}
-			}
+        if (!$success) {
+            foreach ($results as $result) {
+                $feedback->addViolations($result);
+            }
+        }
 
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

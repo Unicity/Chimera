@@ -1,205 +1,247 @@
 <?php
 
-namespace Unicity\Immutable {
+namespace Unicity\Immutable;
 
-	final class ObjectPluginRef implements IObjectRef {
+final class ObjectPluginRef implements IObjectRef
+{
+    #region Properties
 
-		#region Properties
+    private $idref;
+    private $objectRef;
 
-		private $idref;
-		private $objectRef;
+    #endregion
 
-		#endregion
+    #region Instance Methods
 
-		#region Instance Methods
+    final public function __construct(string $idref, ObjectRef $objectRef)
+    {
+        $this->idref = $idref;
+        $this->objectRef = $objectRef;
+    }
 
-		public final function __construct(string $idref, ObjectRef $objectRef) {
-			$this->idref = $idref;
-			$this->objectRef = $objectRef;
-		}
+    final public function apply(callable $operator, $params = null): IObjectRef
+    {
+        return $this->objectRef->apply($operator, $params);
+    }
 
-		public final function apply(callable $operator, $params = null): IObjectRef {
-			return $this->objectRef->apply($operator, $params);
-		}
+    final public function __call(string $method, array $args)
+    {
+        array_unshift($args, $this->objectRef);
+        $objectRef = call_user_func_array(
+            [ObjectPluginRef::getPlugin($this->idref), $method],
+            $args
+        );
 
-		public final function __call(string $method, array $args) {
-			array_unshift($args, $this->objectRef);
-			$objectRef = call_user_func_array(
-				[ObjectPluginRef::getPlugin($this->idref), $method],
-				$args
-			);
-			return ($objectRef instanceof ObjectPluginRef) ? $objectRef : new ObjectPluginRef($this->idref, $objectRef);
-		}
+        return ($objectRef instanceof ObjectPluginRef) ? $objectRef : new ObjectPluginRef($this->idref, $objectRef);
+    }
 
-		public final function count() : int {
-			return $this->objectRef->count();
-		}
+    final public function count(): int
+    {
+        return $this->objectRef->count();
+    }
 
-		public final function current() {
-			return new ObjectPluginRef($this->idref, $this->objectRef->current());
-		}
+    final public function current()
+    {
+        return new ObjectPluginRef($this->idref, $this->objectRef->current());
+    }
 
-		public function __destruct() {
-			unset($this->idref);
-			unset($this->objectRef);
-		}
+    public function __destruct()
+    {
+        unset($this->idref);
+        unset($this->objectRef);
+    }
 
-		public final function dump(bool $exit = true) : IObjectRef {
-			$this->objectRef->dump($exit);
-			return $this;
-		}
+    final public function dump(bool $exit = true): IObjectRef
+    {
+        $this->objectRef->dump($exit);
 
-		public final function __get($key) {
-			return new ObjectPluginRef($this->idref, $this->objectRef->__get($key));
-		}
+        return $this;
+    }
 
-		public final function idref() : string {
-			return $this->objectRef->idref();
-		}
+    final public function __get($key)
+    {
+        return new ObjectPluginRef($this->idref, $this->objectRef->__get($key));
+    }
 
-		public function isArray() : bool {
-			return $this->objectRef->isArray();
-		}
+    final public function idref(): string
+    {
+        return $this->objectRef->idref();
+    }
 
-		public function isBoolean() : bool {
-			return $this->objectRef->isBoolean();
-		}
+    public function isArray(): bool
+    {
+        return $this->objectRef->isArray();
+    }
 
-		public function isInteger() : bool {
-			return $this->objectRef->isInteger();
-		}
+    public function isBoolean(): bool
+    {
+        return $this->objectRef->isBoolean();
+    }
 
-		public function isNull() : bool {
-			return $this->objectRef->isNull();
-		}
+    public function isInteger(): bool
+    {
+        return $this->objectRef->isInteger();
+    }
 
-		public function isNumber() : bool {
-			return $this->objectRef->isNumber();
-		}
+    public function isNull(): bool
+    {
+        return $this->objectRef->isNull();
+    }
 
-		public function isObject() : bool {
-			return $this->objectRef->isObject();
-		}
+    public function isNumber(): bool
+    {
+        return $this->objectRef->isNumber();
+    }
 
-		public final function __isset($key) : bool {
-			return $this->objectRef->__isset($key);
-		}
+    public function isObject(): bool
+    {
+        return $this->objectRef->isObject();
+    }
 
-		public function isString() : bool {
-			return $this->objectRef->isString();
-		}
+    final public function __isset($key): bool
+    {
+        return $this->objectRef->__isset($key);
+    }
 
-		public final function jsonSerialize() {
-			return $this->objectRef->jsonSerialize();
-		}
+    public function isString(): bool
+    {
+        return $this->objectRef->isString();
+    }
 
-		public final function key() {
-			return $this->objectRef->key();
-		}
+    final public function jsonSerialize()
+    {
+        return $this->objectRef->jsonSerialize();
+    }
 
-		public final function merge(array $array) : IObjectRef {
-			return $this->objectRef->merge($array);
-		}
+    final public function key()
+    {
+        return $this->objectRef->key();
+    }
 
-		public final function next() : void {
-			$this->objectRef->next();
-		}
+    final public function merge(array $array): IObjectRef
+    {
+        return $this->objectRef->merge($array);
+    }
 
-		public final function offsetExists($offset) {
-			return $this->objectRef->offsetExists($offset);
-		}
+    final public function next(): void
+    {
+        $this->objectRef->next();
+    }
 
-		public final function offsetGet($offset) {
-			return $this->__get($offset);
-		}
+    final public function offsetExists($offset)
+    {
+        return $this->objectRef->offsetExists($offset);
+    }
 
-		public final function offsetSet($offset, $value) {
-			$this->objectRef->offsetSet($offset, $value);
-		}
+    final public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
 
-		public final function offsetUnset($offset) {
-			$this->objectRef->offsetUnset($offset);
-		}
+    final public function offsetSet($offset, $value)
+    {
+        $this->objectRef->offsetSet($offset, $value);
+    }
 
-		public final function plugin(string $idref) : IObjectRef {
-			$idref = ObjectPluginRef::buildIdref($idref, $this->objectRef);
-			if ($this->idref !== $idref) {
-				return new ObjectPluginRef($idref, $this->objectRef);
-			}
-			return $this;
-		}
+    final public function offsetUnset($offset)
+    {
+        $this->objectRef->offsetUnset($offset);
+    }
 
-		public final function preview(bool $exit = true) : IObjectRef {
-			$this->objectRef->preview($exit);
-			return $this;
-		}
+    final public function plugin(string $idref): IObjectRef
+    {
+        $idref = ObjectPluginRef::buildIdref($idref, $this->objectRef);
+        if ($this->idref !== $idref) {
+            return new ObjectPluginRef($idref, $this->objectRef);
+        }
 
-		public final function put(object $object) : IObjectRef {
-			return $this->objectRef->put($object);
-		}
+        return $this;
+    }
 
-		public final function rewind() {
-			$this->objectRef->rewind();
-		}
+    final public function preview(bool $exit = true): IObjectRef
+    {
+        $this->objectRef->preview($exit);
 
-		public final function __set($key, $value) {
-			$this->objectRef->__set($key, $value);
-		}
+        return $this;
+    }
 
-		public final function __unset($key) {
-			$this->objectRef->__unset($key);
-		}
+    final public function put(object $object): IObjectRef
+    {
+        return $this->objectRef->put($object);
+    }
 
-		public final function use(string $idref, callable $operator) : IObjectRef {
-			return $operator($this->plugin($idref));
-		}
+    final public function rewind()
+    {
+        $this->objectRef->rewind();
+    }
 
-		public final function valid() : bool {
-			return $this->objectRef->valid();
-		}
+    final public function __set($key, $value)
+    {
+        $this->objectRef->__set($key, $value);
+    }
 
-		public final function value() {
-			return $this->objectRef->value();
-		}
+    final public function __unset($key)
+    {
+        $this->objectRef->__unset($key);
+    }
 
-		#endregion
+    final public function use(string $idref, callable $operator): IObjectRef
+    {
+        return $operator($this->plugin($idref));
+    }
 
-		#region Plugin Helpers
+    final public function valid(): bool
+    {
+        return $this->objectRef->valid();
+    }
 
-		private static $plugins = array();
+    final public function value()
+    {
+        return $this->objectRef->value();
+    }
 
-		public final static function bootstrap(string $file) : void {
-			ObjectPluginRef::$plugins = array_merge(ObjectPluginRef::$plugins, include($file));
-		}
+    #endregion
 
-		public final static function buildIdref(string $idref, ObjectRef $objectRef) : string {
-			$idref = trim($idref, ". \t\n\r\0\x0B");
-			if ($idref === '') {
-				return $objectRef->idref();
-			}
-			if (preg_match('/^' . preg_quote('@.') . '/', $idref)) {
-				return $objectRef->idref() . substr($idref, 1);
-			}
-			if (preg_match('/^' . preg_quote('$.') . '/', $idref)) {
-				return $idref;
-			}
-			return implode('.', [$objectRef->idref(), $idref]);
-		}
+    #region Plugin Helpers
 
-		private final static function getPlugin(string $idref) {
-			return ObjectPluginRef::hasPlugin($idref) ? ObjectPluginRef::$plugins[$idref] : null;
-		}
+    private static $plugins = [];
 
-		private final static function hasPlugin(string $idref) : bool {
-			return isset(ObjectPluginRef::$plugins[$idref]);
-		}
+    final public static function bootstrap(string $file): void
+    {
+        ObjectPluginRef::$plugins = array_merge(ObjectPluginRef::$plugins, include($file));
+    }
 
-		public final static function import(string $idref, string $class) : void {
-			ObjectPluginRef::$plugins[$idref] = $class;
-		}
+    final public static function buildIdref(string $idref, ObjectRef $objectRef): string
+    {
+        $idref = trim($idref, ". \t\n\r\0\x0B");
+        if ($idref === '') {
+            return $objectRef->idref();
+        }
+        if (preg_match('/^' . preg_quote('@.') . '/', $idref)) {
+            return $objectRef->idref() . substr($idref, 1);
+        }
+        if (preg_match('/^' . preg_quote('$.') . '/', $idref)) {
+            return $idref;
+        }
 
-		#endregion
+        return implode('.', [$objectRef->idref(), $idref]);
+    }
 
-	}
+    final private static function getPlugin(string $idref)
+    {
+        return ObjectPluginRef::hasPlugin($idref) ? ObjectPluginRef::$plugins[$idref] : null;
+    }
+
+    final private static function hasPlugin(string $idref): bool
+    {
+        return isset(ObjectPluginRef::$plugins[$idref]);
+    }
+
+    final public static function import(string $idref, string $class): void
+    {
+        ObjectPluginRef::$plugins[$idref] = $class;
+    }
+
+    #endregion
 
 }

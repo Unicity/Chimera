@@ -16,21 +16,20 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	abstract class Statement extends VLD\Parser\Definition {
+abstract class Statement extends VLD\Parser\Definition
+{
+    protected $args;
 
-		protected $args;
-
-		public function __construct(VLD\Parser\Context $context, array $args) {
-			parent::__construct($context);
-			$this->args = $args;
-		}
-
-	}
+    public function __construct(VLD\Parser\Context $context, array $args)
+    {
+        parent::__construct($context);
+        $this->args = $args;
+    }
 
 }

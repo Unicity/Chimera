@@ -16,34 +16,34 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class SelectStatement extends VLD\Parser\Definition\Statement {
+class SelectStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
+        $policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
+        $paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : [];
+        $paths = $this->context->getAbsolutePaths($paths);
+        $block = $this->args['block']->get();
 
-		public function get() {
-			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
-			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
-			$paths = (isset($this->args['paths'])) ? $this->args['paths']->get() : array();
-			$paths = $this->context->getAbsolutePaths($paths);
-			$block = $this->args['block']->get();
+        $statements = [];
+        foreach ($paths as $path) {
+            $statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
+                'path' => $path,
+                'block' => $block,
+            ]);
+        }
 
-			$statements = array();
-			foreach ($paths as $path) {
-				$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-					'path' => $path,
-					'block' => $block,
-				]);
-			}
+        $class = VLD\Parser\Definition\Control::getControl($control);
+        $object = new $class($this->context, $policy, $statements);
 
-			$class = VLD\Parser\Definition\Control::getControl($control);
-			$object = new $class($this->context, $policy, $statements);
-			return $object->get();
-		}
-
-	}
+        return $object->get();
+    }
 
 }
