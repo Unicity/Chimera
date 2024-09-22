@@ -53,7 +53,8 @@ class Zipkin
     ];
 
     public static function addHeaders(array $headers = [], $flatten = false) // this function will lowercase all header keys
-    {$buffer = [];
+    {
+        $buffer = [];
         foreach ($headers as $key => $value) {
             $buffer[strtolower($key)] = $value;
         }

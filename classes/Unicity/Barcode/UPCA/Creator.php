@@ -162,7 +162,8 @@ class Creator extends Barcode\Creator
      * @return mixed the checksum for the specified data string
      */
     public static function checksum($data) // Computes the EAN-13 Checksum digit
-    {$ncode = '0' . $data;
+    {
+        $ncode = '0' . $data;
         $even = 0;
         $odd = 0;
         for ($x = 0; $x < 12; $x++) {

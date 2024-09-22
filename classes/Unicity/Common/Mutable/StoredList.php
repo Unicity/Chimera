@@ -375,7 +375,8 @@ class StoredList extends Core\AbstractObject implements Common\Mutable\IList
      * @see http://www.justin-cook.com/wp/2006/08/02/php-insert-into-an-array-at-a-specific-position/
      */
     public function insertValue(int $index, $value): bool // TODO implement
-    {return false;
+    {
+        return false;
         /*
         $count = $this->count();
         if (($index >= 0) && ($index < $count)) {

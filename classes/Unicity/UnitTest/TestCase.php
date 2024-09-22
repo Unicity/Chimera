@@ -38,7 +38,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
      *                        fails
      */
     public function assertInternalTypes(array $expected, $actual, $message = '') // TODO handle class inheritence and interfaces, as well as object
-    {$type = gettype($actual);
+    {
+        $type = gettype($actual);
         if ($type == 'object') {
             $type = trim(get_class($actual), '\\');
         }
