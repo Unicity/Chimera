@@ -110,18 +110,13 @@ uninstall-phpunit:
 start-docker:
 	sudo service docker restart; sleep 10; docker --version
 
-# make build-docker
-build-docker:
-	docker build -t $(DOCKER_GIT) .
-
 # make run-docker
-run-docker: build-docker clean-docker
-	docker run -d -p 80:$(DOCKER_PORT) --name="$(DOCKER_APP)" \
-	$(DOCKER_GIT) /bin/bash -c "php-fpm -D && nginx -g 'daemon off;'"
+run-docker: clean-docker
+	docker-compose up -d
 
 # make clean-docker
 clean-docker:
-	-docker stop $(DOCKER_APP)
+	-docker-compose down
 	-docker rm -f $(DOCKER_APP)
 
 # make clean

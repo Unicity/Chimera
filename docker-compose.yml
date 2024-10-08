@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./setup/nginx.chimera.conf:/etc/nginx/conf.d/default.conf  # Correct path for Nginx config
+      - ./classes:/usr/share/nginx/classes  # Correct path for your classes
+
+  php:
+    image: php:7.4-fpm
