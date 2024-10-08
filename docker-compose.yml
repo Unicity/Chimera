@@ -10,3 +10,5 @@ services:
 
   php:
     image: php:7.4-fpm
+    ports:
+      - "8080:80"
