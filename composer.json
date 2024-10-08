@@ -7,10 +7,10 @@
     "keywords": ["AOP", "behavior tree", "lexer", "mapping", "Spring"],
     "license": "Apache-2.0",
     "require": {
-        "php": ">=7.0.0"
+        "php": ">=7.4.0"
     },
     "require-dev": {
-        "php": ">=7.0.0"
+        "php": ">=7.4.0"
     },
     "suggest": {
         "ext-mbstring": "*"
