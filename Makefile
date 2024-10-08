@@ -73,51 +73,12 @@ install-phpunit:
 	./$(PHPUNIT_EXE) --version
 
 ########################################################################
-# Rules (for Updating)
-########################################################################
-
-# make update
-update: update-composer update-phpunit
-
-# make update-composer
-update-composer:
-	php $(COMPOSER_PHAR) self-update
-
-# make update-phpunit
-update-phpunit: uninstall-phpunit install-phpunit
-
-########################################################################
-# Rules (for Uninstalling)
-########################################################################
-
-# make uninstall
-uninstall: uninstall-composer uninstall-phpunit
-
-# make uninstall-composer
-uninstall-composer:
-	rm -rf $(COMPOSER_DIR)
-	rm -f $(COMPOSER_PHAR)
-
-# make uninstall-phpunit
-uninstall-phpunit:
-	rm -f $(PHPUNIT_EXE)
-
-########################################################################
 # Rules (for Docker)
 ########################################################################
 
-# make start-docker
-start-docker:
-	sudo service docker restart; sleep 10; docker --version
-
 # make run-docker
-run-docker: clean-docker
+run-docker:
 	docker-compose up -d
-
-# make clean-docker
-clean-docker:
-	-docker-compose down
-	-docker rm -f $(DOCKER_APP)
 
 # make clean
 .PHONY: clean

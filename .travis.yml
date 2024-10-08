@@ -4,12 +4,8 @@ services:
 language: php
 php:
   - '7.0'
-before_install:
-  - docker rm -f $(docker ps -aq) || true
-  - make start-docker
 install:
   - make run-docker
-  - make install-composer
-  - make install-phpunit
+  - make install
 script:
   - make unit-test GROUP=OrderCalc
