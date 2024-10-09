@@ -1,0 +1,6 @@
+version: '3'
+services:
+  php:
+    image: php:8.2-fpm
+    ports:
+      - "5000:80"

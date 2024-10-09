@@ -22,20 +22,15 @@
 # Definitions
 ########################################################################
 
-DOCKER_APP = chimera-app
-DOCKER_GIT = unicity/chimera
-DOCKER_PORT = 5000
-
 BOOTSTRAP_FILE = ./tests/Bootstrap.php
 BOOTSTRAP_SWITCH = --bootstrap $(BOOTSTRAP_FILE)
 
-COMPOSER_DIR = vendor
 COMPOSER_PHAR = composer.phar
 COMPOSER_URL = http://getcomposer.org/installer
 
 PHPUNIT_DIR = ./
 PHPUNIT_EXE = phpunit
-PHPUNIT_PHAR = phpunit-7.0.2.phar
+PHPUNIT_PHAR = phpunit-8.5.phar
 PHPUNIT_URL = https://phar.phpunit.de/$(PHPUNIT_PHAR)
 
 UNIT_TESTS = ./tests
@@ -73,57 +68,9 @@ install-phpunit:
 	./$(PHPUNIT_EXE) --version
 
 ########################################################################
-# Rules (for Updating)
-########################################################################
-
-# make update
-update: update-composer update-phpunit
-
-# make update-composer
-update-composer:
-	php $(COMPOSER_PHAR) self-update
-
-# make update-phpunit
-update-phpunit: uninstall-phpunit install-phpunit
-
-########################################################################
-# Rules (for Uninstalling)
-########################################################################
-
-# make uninstall
-uninstall: uninstall-composer uninstall-phpunit
-
-# make uninstall-composer
-uninstall-composer:
-	rm -rf $(COMPOSER_DIR)
-	rm -f $(COMPOSER_PHAR)
-
-# make uninstall-phpunit
-uninstall-phpunit:
-	rm -f $(PHPUNIT_EXE)
-
-########################################################################
 # Rules (for Docker)
 ########################################################################
 
-# make start-docker
-start-docker:
-	sudo service docker restart; sleep 10; docker --version
-
-# make build-docker
-build-docker:
-	docker build -t $(DOCKER_GIT) .
-
 # make run-docker
-run-docker: build-docker clean-docker
-	docker run -d -p 80:$(DOCKER_PORT) --name="$(DOCKER_APP)" \
-	$(DOCKER_GIT) /bin/bash -c "php-fpm -D && nginx -g 'daemon off;'"
-
-# make clean-docker
-clean-docker:
-	-docker stop $(DOCKER_APP)
-	-docker rm -f $(DOCKER_APP)
-
-# make clean
-.PHONY: clean
-clean: uninstall clean-docker
+run-docker:
+	docker-compose up -d
