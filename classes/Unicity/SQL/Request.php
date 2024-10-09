@@ -16,22 +16,21 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SQL {
+namespace Unicity\SQL;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Request extends EVT\Request {
-
-		public function __construct(array $map = []) {
-			parent::__construct(array_merge([
-				'method' => 'QUERY',
-				'source' => [],
-				'text' => '',
-			], $map));
-		}
-
-	}
+class Request extends EVT\Request
+{
+    public function __construct(array $map = [])
+    {
+        parent::__construct(array_merge([
+            'method' => 'QUERY',
+            'source' => [],
+            'text' => '',
+        ], $map));
+    }
 
 }

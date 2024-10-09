@@ -17,30 +17,28 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring\Object\Definition {
+namespace Unicity\Spring\Object\Definition;
 
-	use \Unicity\Throwable;
+use Unicity\Throwable;
 
-	/**
-	 * This interface provides the contract for defining a SpringXML object.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Spring
-	 */
-	interface Parser {
-
-		/**
-		 * This method parses the specified node.
-		 *
-		 * @access public
-		 * @param \SimpleXMLElement $node                           the node to be parsed
-		 * @return mixed                                            the object
-		 * @throws Throwable\Parse\Exception                        indicates that problem occurred while
-		 *                                                          parsing
-		 */
-		public function parse(\SimpleXMLElement $node);
-
-	}
+/**
+ * This interface provides the contract for defining a SpringXML object.
+ *
+ * @access public
+ * @interface
+ * @package Spring
+ */
+interface Parser
+{
+    /**
+     * This method parses the specified node.
+     *
+     * @access public
+     * @param \SimpleXMLElement $node the node to be parsed
+     * @return mixed the object
+     * @throws Throwable\Parse\Exception indicates that problem occurred while
+     *                                   parsing
+     */
+    public function parse(\SimpleXMLElement $node);
 
 }

@@ -16,36 +16,39 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\Core;
-	use \Unicity\EVT;
+use Unicity\Core;
+use Unicity\EVT;
 
-	abstract class EventArgs extends Core\AbstractObject { // subclass using "present" tense
+abstract class EventArgs extends Core\AbstractObject
+{ // subclass using "present" tense
 
-		protected $target;
+    protected $target;
 
-		public function __construct(EVT\Target $target) {
-			$this->target = $target;
-		}
+    public function __construct(EVT\Target $target)
+    {
+        $this->target = $target;
+    }
 
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->target);
-		}
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->target);
+    }
 
-		public function getTarget() : EVT\Target {
-			return $this->target;
-		}
+    public function getTarget(): EVT\Target
+    {
+        return $this->target;
+    }
 
-		public function jsonSerialize() {
-			return [
-				'target' => $this->target,
-			];
-		}
-
-	}
+    public function jsonSerialize()
+    {
+        return [
+            'target' => $this->target,
+        ];
+    }
 
 }

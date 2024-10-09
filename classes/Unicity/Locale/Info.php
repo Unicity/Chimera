@@ -16,71 +16,73 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Locale {
+namespace Unicity\Locale;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	class Info extends Core\AbstractObject {
+class Info extends Core\AbstractObject
+{
+    /**
+     * This variable caches which languages have been set in the request.
+     *
+     * @access protected
+     * @static
+     * @var array
+     */
+    protected static $languages = null;
 
-		/**
-		 * This variable caches which languages have been set in the request.
-		 *
-		 * @access protected
-		 * @static
-		 * @var array
-		 */
-		protected static $languages = null;
+    /**
+     * This method returns the languages in the request sorted by their respective "q" value.
+     *
+     * @access public
+     * @static
+     * @return array the languages in the request
+     */
+    public static function getLanguages(): array
+    {
+        if (static::$languages === null) {
+            if (isset($_GET['_httpHeaderAccept-Language'])) {
+                $matches = [];
+                if (preg_match('/^([a-zA-Z]{2})\\-([a-zA-Z]{2})/', $_GET['_httpHeaderAccept-Language'], $matches)) {
+                    $buffer = [];
+                    $codes = [$matches[1], $matches[2]];
+                    $key = strtolower($codes[0]) . (isset($codes[1]) ? '-' . strtoupper($codes[1]) : '');
+                    $value = (isset($tuples[1])) ? (float)$tuples[1] : 1.0;
+                    $buffer[$key] = $value;
+                    static::$languages = $buffer;
 
-		/**
-		 * This method returns the languages in the request sorted by their respective "q" value.
-		 *
-		 * @access public
-		 * @static
-		 * @return array                                            the languages in the request
-		 */
-		public static function getLanguages() : array {
-			if (static::$languages === null) {
-				if (isset($_GET['_httpHeaderAccept-Language'])) {
-					$matches = array();
-					if (preg_match('/^([a-zA-Z]{2})\\-([a-zA-Z]{2})/', $_GET['_httpHeaderAccept-Language'], $matches)) {
-						$buffer = array();
-						$codes = [$matches[1], $matches[2]];
-						$key = strtolower($codes[0]) . (isset($codes[1]) ? '-' . strtoupper($codes[1]) : '');
-						$value = (isset($tuples[1])) ? (float)$tuples[1] : 1.0;
-						$buffer[$key] = $value;
-						static::$languages = $buffer;
-						return static::$languages;
-					}
-					unset($matches);
-				}
-				if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && is_string($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-					$languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-					if (count($languages) > 0) {
-						$buffer = array();
-						foreach ($languages as $language) {
-							$tuples = preg_split('/;\s*q\s*=\s*/', $language);
-							$codes = explode('-', trim($tuples[0]));
-							$key = strtolower($codes[0]) . (isset($codes[1]) ? '-' . strtoupper($codes[1]) : '');
-							$value = (isset($tuples[1])) ? (float)$tuples[1] : 1.0;
-							$buffer[$key] = $value;
-						}
-						if (count($buffer) > 0) {
-							arsort($buffer);
-							static::$languages = $buffer;
-							return static::$languages;
-						}
-					}
-				}
-				static::$languages = array(
-					'en-US' => 1.0,
-					'en' => 0.8,
-				);
-			}
-			return static::$languages;
-		}
+                    return static::$languages;
+                }
+                unset($matches);
+            }
+            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && is_string($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                $languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                if (count($languages) > 0) {
+                    $buffer = [];
+                    foreach ($languages as $language) {
+                        $tuples = preg_split('/;\s*q\s*=\s*/', $language);
+                        $codes = explode('-', trim($tuples[0]));
+                        $key = strtolower($codes[0]) . (isset($codes[1]) ? '-' . strtoupper($codes[1]) : '');
+                        $value = (isset($tuples[1])) ? (float)$tuples[1] : 1.0;
+                        $buffer[$key] = $value;
+                    }
+                    if (count($buffer) > 0) {
+                        arsort($buffer);
+                        static::$languages = $buffer;
 
-	}
+                        return static::$languages;
+                    }
+                }
+            }
+            static::$languages = [
+                'en-US' => 1.0,
+                'en' => 0.8,
+            ];
+        }
+
+        return static::$languages;
+    }
 
 }

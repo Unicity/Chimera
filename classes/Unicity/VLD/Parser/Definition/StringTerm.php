@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class StringTerm extends VLD\Parser\Definition\Term {
+class StringTerm extends VLD\Parser\Definition\Term
+{
+    protected $token;
 
-		protected $token;
+    public function __construct(VLD\Parser\Context $context, string $token)
+    {
+        parent::__construct($context);
+        $this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
+    }
 
-		public function __construct(VLD\Parser\Context $context, string $token) {
-			parent::__construct($context);
-			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
-		}
-
-		public function get() {
-			return $this->token;
-		}
-
-	}
+    public function get()
+    {
+        return $this->token;
+    }
 
 }

@@ -16,59 +16,58 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\SQL {
+namespace Unicity\Config\SQL;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
+use Unicity\Config;
+use Unicity\Core;
 
-	/**
-	 * This class is used to write a collection to an SQL export file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to an SQL export file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = static::useArrays($data, true);
+        $this->metadata = [
+            'builder' => '',
+            'command' => 'insert', // 'update'
+            'data_source' => 'default',
+            'encoding' => [Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING],
+            'eol' => "\n",
+            'ext' => '.sql',
+            'mime' => 'text/x-sql',
+            'schema' => [],
+            'url' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = static::useArrays($data, true);
-			$this->metadata = array(
-				'builder' => '',
-				'command' => 'insert', // 'update'
-				'data_source' => 'default',
-				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
-				'eol' => "\n",
-				'ext' => '.sql',
-				'mime' => 'text/x-sql',
-				'schema' => array(),
-				'url' => null,
-			);
-		}
-
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the processed data
-		 */
-		public function render() : string {
-			switch ($this->metadata['command']) {
-				case 'update':
-					return call_user_func($this->metadata['builder'] . "::toUpdateStatement", $this);
-				default:
-					return call_user_func($this->metadata['builder'] . "::toInsertStatement", $this);
-			}
-		}
-
-	}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the processed data
+     */
+    public function render(): string
+    {
+        switch ($this->metadata['command']) {
+            case 'update':
+                return call_user_func($this->metadata['builder'] . '::toUpdateStatement', $this);
+            default:
+                return call_user_func($this->metadata['builder'] . '::toInsertStatement', $this);
+        }
+    }
 
 }

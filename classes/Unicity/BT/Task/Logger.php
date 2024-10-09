@@ -1,115 +1,109 @@
 <?php
 
+declare(strict_types=1);
+
+namespace Unicity\BT\Task;
+
+use Unicity\BT;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\Log;
+
 /**
- * Copyright 2015-2016 Unicity International
+ * This class represents a task logger.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @access public
+ * @class
  */
+class Logger extends BT\Task\Decorator
+{
+    /**
+     * This variable stores the log level.
+     *
+     * @access protected
+     * @var Log\Level
+     */
+    protected $level;
 
-declare(strict_types = 1);
+    /**
+     * This constructor initializes the class with the specified parameters.
+     *
+     * @access public
+     * @param Common\Mutable\IMap $policy the task's policy
+     */
+    public function __construct(Common\Mutable\IMap $policy = null)
+    {
+        parent::__construct($policy);
+        $this->level = Log\Level::informational();
+    }
 
-namespace Unicity\BT\Task {
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->level);
+    }
 
-	use \Unicity\BT;
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\Log;
+    /**
+     * This method returns whether the logger is enabled.
+     *
+     * @access public
+     * @return boolean whether the logger is enabled
+     */
+    public function isEnabled(): bool
+    {
+        if ($this->policy->hasKey('enabled')) {
+            return Core\Convert::toBoolean($this->policy->getValue('enabled'));
+        }
 
-	/**
-	 * This class represents a task logger.
-	 *
-	 * @access public
-	 * @class
-	 */
-	class Logger extends BT\Task\Decorator {
+        return true;
+    }
 
-		/**
-		 * This variable stores the log level.
-		 *
-		 * @access protected
-		 * @var Log\Level
-		 */
-		protected $level;
+    /**
+     * This method processes an entity.
+     *
+     * @access public
+     * @param BT\Engine $engine the engine running
+     * @param string $entityId the entity id being processed
+     * @return integer the status
+     */
+    public function process(BT\Engine $engine, string $entityId): int
+    {
+        $status = BT\Task\Handler::process($this->task, $engine, $entityId);
+        if ($this->isEnabled()) {
+            switch ($status) {
+                case BT\Status::INACTIVE:
+                    $engine->getLogger()->add($this->level, 'Task: :task Status: Inactive', [':task' => $this->task]);
 
-		/**
-		 * This constructor initializes the class with the specified parameters.
-		 *
-		 * @access public
-		 * @param Common\Mutable\IMap $policy                       the task's policy
-		 */
-		public function __construct(Common\Mutable\IMap $policy = null) {
-			parent::__construct($policy);
-			$this->level = Log\Level::informational();
-		}
+                    break;
+                case BT\Status::ACTIVE:
+                    $engine->getLogger()->add($this->level, 'Task: :task Status: Active', [':task' => $this->task]);
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->level);
-		}
+                    break;
+                case BT\Status::SUCCESS:
+                    $engine->getLogger()->add($this->level, 'Task: :task Status: Success', [':task' => $this->task]);
 
-		/**
-		 * This method returns whether the logger is enabled.
-		 *
-		 * @access public
-		 * @return boolean                                          whether the logger is enabled
-		 */
-		public function isEnabled() : bool {
-			if ($this->policy->hasKey('enabled')) {
-				return Core\Convert::toBoolean($this->policy->getValue('enabled'));
-			}
-			return true;
-		}
+                    break;
+                case BT\Status::FAILED:
+                    $engine->getLogger()->add($this->level, 'Task: :task Status: Failed', [':task' => $this->task]);
 
-		/**
-		 * This method processes an entity.
-		 *
-		 * @access public
-		 * @param BT\Engine $engine                                 the engine running
-		 * @param string $entityId                                  the entity id being processed
-		 * @return integer                                          the status
-		 */
-		public function process(BT\Engine $engine, string $entityId) : int {
-			$status = BT\Task\Handler::process($this->task, $engine, $entityId);
-			if ($this->isEnabled()) {
-				switch ($status) {
-					case BT\Status::INACTIVE:
-						$engine->getLogger()->add($this->level, 'Task: :task Status: Inactive', array(':task' => $this->task));
-						break;
-					case BT\Status::ACTIVE:
-						$engine->getLogger()->add($this->level, 'Task: :task Status: Active', array(':task' => $this->task));
-						break;
-					case BT\Status::SUCCESS:
-						$engine->getLogger()->add($this->level, 'Task: :task Status: Success', array(':task' => $this->task));
-						break;
-					case BT\Status::FAILED:
-						$engine->getLogger()->add($this->level, 'Task: :task Status: Failed', array(':task' => $this->task));
-						break;
-					case BT\Status::ERROR:
-						$engine->getLogger()->add($this->level, 'Task: :task Status: Error', array(':task' => $this->task));
-						break;
-					case BT\Status::QUIT:
-						$engine->getLogger()->add($this->level, 'Task: :task Status: Quit', array(':task' => $this->task));
-						break;
-				}
-			}
-			return $status;
-		}
+                    break;
+                case BT\Status::ERROR:
+                    $engine->getLogger()->add($this->level, 'Task: :task Status: Error', [':task' => $this->task]);
 
-	}
+                    break;
+                case BT\Status::QUIT:
+                    $engine->getLogger()->add($this->level, 'Task: :task Status: Quit', [':task' => $this->task]);
+
+                    break;
+            }
+        }
+
+        return $status;
+    }
 
 }

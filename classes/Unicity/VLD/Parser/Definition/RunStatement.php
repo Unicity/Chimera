@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class RunStatement extends VLD\Parser\Definition\Statement {
+class RunStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
+        $policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
+        $block = $this->args['block']->get();
+        $class = VLD\Parser\Definition\Control::getControl($control);
+        $object = new $class($this->context, $policy, $block);
 
-		public function get() {
-			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
-			$policy = (isset($this->args['policy'])) ? $this->args['policy']->get() : null;
-			$block = $this->args['block']->get();
-			$class = VLD\Parser\Definition\Control::getControl($control);
-			$object = new $class($this->context, $policy, $block);
-			return $object->get();
-		}
-
-	}
+        return $object->get();
+    }
 
 }

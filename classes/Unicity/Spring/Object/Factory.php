@@ -17,35 +17,33 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring\Object {
+namespace Unicity\Spring\Object;
 
-	use \Unicity\Core;
-	use \Unicity\Spring;
-	use \Unicity\Throwable;
+use Unicity\Core;
+use Unicity\Spring;
+use Unicity\Throwable;
 
-	/**
-	 * This class defines the contract for parsing an XML element.
-	 *
-	 * @access public
-	 * @abstract
-	 * @class
-	 */
-	abstract class Factory extends Core\AbstractObject {
-
-		/**
-		 * This method returns an object matching the description specified by the element.
-		 *
-		 * @access public
-		 * @abstract
-		 * @param Spring\Object\Parser $parser                      a reference to the parser
-		 * @param \SimpleXMLElement $element                        the element to be parsed
-		 * @return mixed                                            an object matching the description
-		 *                                                          specified by the element
-		 * @throws Throwable\Parse\Exception                        indicates that a problem occurred
-		 *                                                          when parsing
-		 */
-		public abstract function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element);
-
-	}
+/**
+ * This class defines the contract for parsing an XML element.
+ *
+ * @access public
+ * @abstract
+ * @class
+ */
+abstract class Factory extends Core\AbstractObject
+{
+    /**
+     * This method returns an object matching the description specified by the element.
+     *
+     * @access public
+     * @abstract
+     * @param Spring\Object\Parser $parser a reference to the parser
+     * @param \SimpleXMLElement $element the element to be parsed
+     * @return mixed an object matching the description
+     *               specified by the element
+     * @throws Throwable\Parse\Exception indicates that a problem occurred
+     *                                   when parsing
+     */
+    abstract public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element);
 
 }

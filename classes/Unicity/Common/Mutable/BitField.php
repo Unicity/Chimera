@@ -17,48 +17,49 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common\Mutable {
+namespace Unicity\Common\Mutable;
 
-	use \Unicity\Common;
-	use \Unicity\Throwable;
+use Unicity\Common;
+use Unicity\Throwable;
 
-	/**
-	 * This class creates a mutable bit-field.
-	 *
-	 * @access public
-	 * @class
-	 * @package Common
-	 */
-	class BitField extends Common\BitField {
+/**
+ * This class creates a mutable bit-field.
+ *
+ * @access public
+ * @class
+ * @package Common
+ */
+class BitField extends Common\BitField
+{
+    /**
+     * This method sets the value for the specified field.
+     *
+     * @access public
+     * @param string $field the name of the field
+     * @param mixed $value the value of the field
+     * @throws Throwable\InvalidProperty\Exception indicates that the specified property is
+     *                                             either inaccessible or undefined
+     */
+    public function __set($field, $value)
+    {
+        if (!array_key_exists($field, $this->values)) {
+            throw new Throwable\InvalidProperty\Exception('Unable to set the specified property. Property :field is either inaccessible or undefined.', [':field' => $field, ':value' => $value]);
+        }
+        $this->values[$field] = bindec(static::unpack($value, $this->boundary));
+    }
 
-		/**
-		 * This method sets the value for the specified field.
-		 *
-		 * @access public
-		 * @param string $field                                     the name of the field
-		 * @param mixed $value                                      the value of the field
-		 * @throws Throwable\InvalidProperty\Exception              indicates that the specified property is
-		 *                                                          either inaccessible or undefined
-		 */
-		public function __set($field, $value) {
-			if ( ! array_key_exists($field, $this->values)) {
-				throw new Throwable\InvalidProperty\Exception('Unable to set the specified property. Property :field is either inaccessible or undefined.', array(':field' => $field, ':value' => $value));
-			}
-			$this->values[$field] = bindec(static::unpack($value, $this->boundary));
-		}
+    /**
+     * This method sets the value for the bit field.
+     *
+     * @access public
+     * @param mixed $value the value of the field
+     * @return BitField a reference to the current instance
+     */
+    public function setValue($value)
+    {
+        $this->map($value);
 
-		/**
-		 * This method sets the value for the bit field.
-		 *
-		 * @access public
-		 * @param mixed $value                                      the value of the field
-		 * @return BitField                                         a reference to the current instance
-		 */
-		public function setValue($value) {
-			$this->map($value);
-			return $this;
-		}
-
-	}
+        return $this;
+    }
 
 }

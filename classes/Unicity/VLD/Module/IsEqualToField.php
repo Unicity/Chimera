@@ -16,31 +16,30 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Module {
+namespace Unicity\VLD\Module;
 
-	use \Unicity\BT;
-	use \Unicity\VLD;
+use Unicity\BT;
+use Unicity\VLD;
 
-	class IsEqualToField extends VLD\Module {
+class IsEqualToField extends VLD\Module
+{
+    public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback();
+        $field = $this->policy;
+        $v2 = $entity->getComponentAtPath($field);
 
-			$field = $this->policy;
-			$v2 = $entity->getComponentAtPath($field);
+        foreach ($paths as $path) {
+            $v1 = $entity->getComponentAtPath($path);
+            if ($v2 !== $v1) {
+                $feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_FIELD, [$path], ['{{ field }}' => VLD\Parser\Feedback::formatKey($field)]);
+            }
+        }
 
-			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if ($v2 !== $v1) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_EQ_FIELD, [$path], ['{{ field }}' => VLD\Parser\Feedback::formatKey($field)]);
-				}
-			}
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

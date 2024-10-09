@@ -16,36 +16,40 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	abstract class Query extends EVT\EventArgs { // subclass using "present" tense
+abstract class Query extends EVT\EventArgs
+{ // subclass using "present" tense
 
-		protected $result;
+    protected $result;
 
-		public function __construct(EVT\Target $target, $result = null) {
-			parent::__construct($target);
-			$this->result = $result;
-		}
+    public function __construct(EVT\Target $target, $result = null)
+    {
+        parent::__construct($target);
+        $this->result = $result;
+    }
 
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->result);
-		}
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->result);
+    }
 
-		public function getResult() {
-			return $this->result;
-		}
+    public function getResult()
+    {
+        return $this->result;
+    }
 
-		public function jsonSerialize() {
-			$serialized = parent::jsonSerialize();
-			$serialized['result'] = $this->result;
-			return $serialized;
-		}
+    public function jsonSerialize()
+    {
+        $serialized = parent::jsonSerialize();
+        $serialized['result'] = $this->result;
 
-	}
+        return $serialized;
+    }
 
 }

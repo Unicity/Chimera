@@ -16,57 +16,55 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\ORM;
-	use \Unicity\VLD;
+use Unicity\ORM;
+use Unicity\VLD;
 
-	class IterateStatement extends VLD\Parser\Definition\Statement {
+class IterateStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
+        if (isset($this->args['policy'])) {
+            $policy = $this->args['policy']->get();
+            if (!is_array($policy)) {
+                $policy = [];
+            }
+        } else {
+            $policy = [];
+        }
+        $path = $this->context->getCurrentPath();
+        $block = $this->args['block']->get();
+        $direction = $policy['direction'] ?? 'forward';
+        $step = intval($policy['step'] ?? 1);
 
-		public function get() {
-			$control = (isset($this->args['control'])) ? $this->args['control']->get() : 'seq';
-			if (isset($this->args['policy'])) {
-				$policy = $this->args['policy']->get();
-				if (!is_array($policy)) {
-					$policy = array();
-				}
-			}
-			else {
-				$policy = array();
-			}
-			$path = $this->context->getCurrentPath();
-			$block = $this->args['block']->get();
-			$direction = $policy['direction'] ?? 'forward';
-			$step = intval($policy['step'] ?? 1);
+        $components = $this->context->getEntity()->getComponentAtPath($path);
+        $length = count($components);
 
-			$components = $this->context->getEntity()->getComponentAtPath($path);
-			$length = count($components);
+        $statements = [];
+        if ($direction === 'reverse') {
+            for ($i = $length - 1; $i >= 0; $i -= $step) {
+                $statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
+                    'path' => ORM\Query::appendIndex($path, $i),
+                    'block' => $block,
+                ]);
+            }
+        } else {
+            for ($i = 0; $i < $length; $i += $step) {
+                $statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
+                    'path' => ORM\Query::appendIndex($path, $i),
+                    'block' => $block,
+                ]);
+            }
+        }
 
-			$statements = array();
-			if ($direction === 'reverse') {
-				for ($i = $length - 1; $i >= 0; $i -= $step) {
-					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-						'path' => ORM\Query::appendIndex($path, $i),
-						'block' => $block,
-					]);
-				}
-			}
-			else {
-				for ($i = 0; $i < $length; $i += $step) {
-					$statements[] = new VLD\Parser\Definition\ContextStatement($this->context, [
-						'path' => ORM\Query::appendIndex($path, $i),
-						'block' => $block,
-					]);
-				}
-			}
+        $class = VLD\Parser\Definition\Control::getControl($control);
+        $object = new $class($this->context, $policy, $statements);
 
-			$class = VLD\Parser\Definition\Control::getControl($control);
-			$object = new $class($this->context, $policy, $statements);
-			return $object->get();
-		}
-
-	}
+        return $object->get();
+    }
 
 }

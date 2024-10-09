@@ -16,25 +16,24 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SQL {
+namespace Unicity\SQL;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Response extends EVT\Response {
-
-		public function __construct(array $map = []) {
-			parent::__construct(array_merge([
-				'body' => '',
-				'headers' => [],
-				'source' => [],
-				'status' => 200,
-				'statusText' => 'OK',
-				'text' => '',
-			], $map));
-		}
-
-	}
+class Response extends EVT\Response
+{
+    public function __construct(array $map = [])
+    {
+        parent::__construct(array_merge([
+            'body' => '',
+            'headers' => [],
+            'source' => [],
+            'status' => 200,
+            'statusText' => 'OK',
+            'text' => '',
+        ], $map));
+    }
 
 }

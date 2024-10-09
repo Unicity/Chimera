@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	/**
-	 * This interface defines the contract for a comparable object.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Core
-	 */
-	interface IComparable {
-
-		/**
-		 * This method compares the specified object with the current object for order.
-		 *
-		 * @access public
-		 * @param mixed $object                                     the object to be compared
-		 * @return integer                                          a negative integer, zero, or a positive
-		 *                                                          integer as this object is less than,
-		 *                                                          equal to, or greater than the specified
-		 *                                                          object
-		 */
-		public function compareTo($object) : int;
-
-	}
+/**
+ * This interface defines the contract for a comparable object.
+ *
+ * @access public
+ * @interface
+ * @package Core
+ */
+interface IComparable
+{
+    /**
+     * This method compares the specified object with the current object for order.
+     *
+     * @access public
+     * @param mixed $object the object to be compared
+     * @return integer a negative integer, zero, or a positive
+     *                 integer as this object is less than,
+     *                 equal to, or greater than the specified
+     *                 object
+     */
+    public function compareTo($object): int;
 
 }

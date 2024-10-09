@@ -16,41 +16,39 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\SQL {
+namespace Unicity\Config\SQL;
 
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This interface provides a contract that defines an SQL statement builder.
-	 *
-	 * @access public
-	 * @interface
-	 * @package MappingService
-	 */
-	interface IBuilder {
+/**
+ * This interface provides a contract that defines an SQL statement builder.
+ *
+ * @access public
+ * @interface
+ * @package MappingService
+ */
+interface IBuilder
+{
+    /**
+     * This method returns the data as an SQL insert statement.
+     *
+     * @access public
+     * @static
+     * @param Config\SQL\Writer $writer the SQL statement writer to be used
+     * @return string the SQL statement
+     */
+    public static function toInsertStatement(Config\SQL\Writer $writer);
 
-		/**
-		 * This method returns the data as an SQL insert statement.
-		 *
-		 * @access public
-		 * @static
-		 * @param Config\SQL\Writer $writer                         the SQL statement writer to be used
-		 * @return string                                           the SQL statement
-		 */
-		public static function toInsertStatement(Config\SQL\Writer $writer);
-
-		/**
-		 * This method returns the data as an SQL update statement.
-		 *
-		 * @access public
-		 * @static
-		 * @param Config\SQL\Writer $writer                         the SQL statement writer to be used
-		 * @return string                                           the SQL statement
-		 */
-		public static function toUpdateStatement(Config\SQL\Writer $writer);
-
-	}
+    /**
+     * This method returns the data as an SQL update statement.
+     *
+     * @access public
+     * @static
+     * @param Config\SQL\Writer $writer the SQL statement writer to be used
+     * @return string the SQL statement
+     */
+    public static function toUpdateStatement(Config\SQL\Writer $writer);
 
 }

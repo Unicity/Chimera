@@ -16,34 +16,32 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Module {
+namespace Unicity\VLD\Module;
 
-	use \Unicity\BT;
-	use \Unicity\Common;
-	use \Unicity\VLD;
+use Unicity\BT;
+use Unicity\Common;
+use Unicity\VLD;
 
-	class IsNotEqualToLength extends VLD\Module {
+class IsNotEqualToLength extends VLD\Module
+{
+    public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback {
-			$feedback = new VLD\Parser\Feedback();
+        $v2 = $this->policy;
 
-			$v2 = $this->policy;
+        foreach ($paths as $path) {
+            $v1 = $entity->getComponentAtPath($path);
+            if (is_string($v1) && (strlen($v1) === $v2)) {
+                $feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_LENGTH, [$path], ['{{ length }}' => $v2]);
+            } elseif (($v1 instanceof Common\IList) && ($v1->count() === $v2)) {
+                $feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_SIZE, [$path], ['{{ size }}' => $v2]);
+            }
+        }
 
-			foreach ($paths as $path) {
-				$v1 = $entity->getComponentAtPath($path);
-				if (is_string($v1) && (strlen($v1) === $v2)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_LENGTH, [$path], ['{{ length }}' => $v2]);
-				}
-				else if (($v1 instanceof Common\IList) && ($v1->count() === $v2)) {
-					$feedback->addViolation(VLD\RuleType::mismatch(), VLD\Code::VALUE_IS_NE_SIZE, [$path], ['{{ size }}' => $v2]);
-				}
-			}
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

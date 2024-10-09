@@ -16,66 +16,69 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class provides helper methods for processing operands.
-	 *
-	 * @access public
-	 * @class
-	 * @package Core
-	 */
-	class Operator extends Core\AbstractObject {
+/**
+ * This class provides helper methods for processing operands.
+ *
+ * @access public
+ * @class
+ * @package Core
+ */
+class Operator extends Core\AbstractObject
+{
+    /**
+     * This method returns whether the given expression is valid.
+     *
+     * @access public
+     * @static
+     * @param mixed $x the "x" operand
+     * @param string $op the operator
+     * @param mixed $y the "y" operand
+     * @return boolean whether the expression is valid
+     *
+     * @see https://en.wikipedia.org/wiki/Relational_operator
+     */
+    public static function isEquatable($x, string $op, $y): bool
+    {
+        $x = Core\Convert::toDouble($x);
+        $y = Core\Convert::toDouble($y);
 
-		/**
-		 * This method returns whether the given expression is valid.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed $x                                          the "x" operand
-		 * @param string $op                                        the operator
-		 * @param mixed $y                                          the "y" operand
-		 * @return boolean                                          whether the expression is valid
-		 *
-		 * @see https://en.wikipedia.org/wiki/Relational_operator
-		 */
-		public static function isEquatable($x, string $op, $y) : bool {
-			switch (strtolower($op)) {
-				case '<':
-				case 'lt':
-					return ($x < $y);
-				case '≤':
-				case '<=':
-				case 'le':
-					return ($x <= $y);
-				case '=':
-				case '==':
-				case 'eq':
-					return ($x == $y);
-				case '===':
-					return ($x === $y);
-				case '≠':
-				case '!=':
-				case '<>':
-				case 'ne':
-					return ($x != $y);
-				case '!==':
-					return ($x !== $y);
-				case '≥':
-				case '>=':
-				case 'ge':
-					return ($x >= $y);
-				case '>':
-				case 'gt':
-					return ($x > $y);
-			}
-			return false;
-		}
+        switch (strtolower($op)) {
+            case '<':
+            case 'lt':
+                return ($x < $y);
+            case '≤':
+            case '<=':
+            case 'le':
+                return ($x <= $y);
+            case '=':
+            case '==':
+            case 'eq':
+                return ($x == $y);
+            case '===':
+                return ($x === $y);
+            case '≠':
+            case '!=':
+            case '<>':
+            case 'ne':
+                return ($x != $y);
+            case '!==':
+                return ($x !== $y);
+            case '≥':
+            case '>=':
+            case 'ge':
+                return ($x >= $y);
+            case '>':
+            case 'gt':
+                return ($x > $y);
+        }
 
-	}
+        return false;
+    }
 
 }

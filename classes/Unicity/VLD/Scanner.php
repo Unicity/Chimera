@@ -16,67 +16,65 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD {
+namespace Unicity\VLD;
 
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
-	use \Unicity\Throwable;
-	use \Unicity\VLD;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Lexer;
+use Unicity\VLD;
 
-	class Scanner extends Core\AbstractObject {
+class Scanner extends Core\AbstractObject
+{
+    public static function factory(IO\Reader $reader): Lexer\Scanner
+    {
+        $scanner = new Lexer\Scanner($reader);
 
-		public static function factory(IO\Reader $reader) : Lexer\Scanner {
-			$scanner = new Lexer\Scanner($reader);
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
+        $scanner->addRule(new Lexer\Scanner\TokenRule\BlockComment('/*', '*/'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment('`'));
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Whitespace());
-			$scanner->addRule(new Lexer\Scanner\TokenRule\BlockComment('/*', '*/'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\EOLComment('`'));
+        $scanner->addRule(new VLD\Scanner\TokenRule\LeftArrow());
 
-			$scanner->addRule(new VLD\Scanner\TokenRule\LeftArrow());
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Number());
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Literal('"'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Number());
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('('));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(')'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('['));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(']'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('{'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('}'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(','));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('_'));
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('('));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(')'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('['));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(']'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('{'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('}'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(','));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol(':'));
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Symbol('_'));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Terminal('.'));
+        $scanner->addRule(new VLD\Scanner\TokenRule\ArrayVariable());
+        $scanner->addRule(new VLD\Scanner\TokenRule\BlockVariable());
+        $scanner->addRule(new VLD\Scanner\TokenRule\BooleanVariable());
+        $scanner->addRule(new VLD\Scanner\TokenRule\MapVariable());
+        $scanner->addRule(new VLD\Scanner\TokenRule\MixedVariable());
+        $scanner->addRule(new VLD\Scanner\TokenRule\NumberVariable());
+        $scanner->addRule(new VLD\Scanner\TokenRule\StringVariable());
 
-			$scanner->addRule(new VLD\Scanner\TokenRule\ArrayVariable());
-			$scanner->addRule(new VLD\Scanner\TokenRule\BlockVariable());
-			$scanner->addRule(new VLD\Scanner\TokenRule\BooleanVariable());
-			$scanner->addRule(new VLD\Scanner\TokenRule\MapVariable());
-			$scanner->addRule(new VLD\Scanner\TokenRule\MixedVariable());
-			$scanner->addRule(new VLD\Scanner\TokenRule\NumberVariable());
-			$scanner->addRule(new VLD\Scanner\TokenRule\StringVariable());
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
+            'dump', 'eval', 'halt', 'install', 'set', // simple statements
+            'is', 'iterate', 'on', 'not', 'run', 'select', // complex statements
+            'do', // symbols
+            'false', 'true', // boolean values
+            'null', // null value
+        ]));
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Keyword([
-				'dump', 'eval', 'halt', 'install', 'set', // simple statements
-				'is', 'iterate', 'on', 'not', 'run', 'select', // complex statements
-				'do', // symbols
-				'false', 'true', // boolean values
-				'null', // null value
-			]));
+        $scanner->addRule(new Lexer\Scanner\TokenRule\Unknown());
 
-			$scanner->addRule(new Lexer\Scanner\TokenRule\Unknown());
+        $scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
 
-			$scanner->addIgnorable(Lexer\Scanner\TokenType::whitespace());
+        //while ($scanner->next()) { var_dump($scanner->current()); } exit();
 
-			//while ($scanner->next()) { var_dump($scanner->current()); } exit();
-
-			return $scanner;
-		}
-
-	}
+        return $scanner;
+    }
 
 }

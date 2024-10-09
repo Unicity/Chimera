@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Common;
+use Unicity\Common;
 
-	/**
-	 * This class creates an immutable boxed float value.
-	 *
-	 * @access public
-	 * @class
-	 * @package Common
-	 */
-	class FloatVal extends Common\DoubleVal { }
-
+/**
+ * This class creates an immutable boxed float value.
+ *
+ * @access public
+ * @class
+ * @package Common
+ */
+class FloatVal extends Common\DoubleVal
+{
 }

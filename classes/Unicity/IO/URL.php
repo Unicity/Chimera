@@ -16,34 +16,34 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\IO {
+namespace Unicity\IO;
 
-	use \Unicity\IO;
+use Unicity\IO;
 
-	/**
-	 * This class represent a URL.
-	 *
-	 * @access public
-	 * @class
-	 * @package IO
-	 */
-	class URL extends IO\File {
+/**
+ * This class represent a URL.
+ *
+ * @access public
+ * @class
+ * @package IO
+ */
+class URL extends IO\File
+{
+    /**
+     * This method returns whether the URL is active.  Caution: Calling this method might
+     * cause side effects.
+     *
+     * @access public
+     * @return boolean whether the URL is active
+     */
+    public function exists(): bool
+    {
+        $headers = @get_headers($this->uri);
+        $exists = (is_array($headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $headers[0]));
 
-		/**
-		 * This method returns whether the URL is active.  Caution: Calling this method might
-		 * cause side effects.
-		 *
-		 * @access public
-		 * @return boolean                                          whether the URL is active
-		 */
-		public function exists() : bool {
-			$headers = @get_headers($this->uri);
-			$exists = (is_array($headers) && preg_match('/^HTTP\\/\\d+\\.\\d+\\s+2\\d\\d\\s+.*$/', $headers[0]));
-			return $exists;
-		}
-
-	}
+        return $exists;
+    }
 
 }

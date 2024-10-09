@@ -16,25 +16,24 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\TCP {
+namespace Unicity\TCP;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Response extends EVT\Response {
-
-		public function __construct(array $map = []) {
-			parent::__construct(array_merge([
-				'body' => '',
-				'headers' => [],
-				'host' => '',
-				'port' => 80,
-				'status' => 200,
-				'statusText' => 'OK',
-			], $map));
-		}
-
-	}
+class Response extends EVT\Response
+{
+    public function __construct(array $map = [])
+    {
+        parent::__construct(array_merge([
+            'body' => '',
+            'headers' => [],
+            'host' => '',
+            'port' => 80,
+            'status' => 200,
+            'statusText' => 'OK',
+        ], $map));
+    }
 
 }

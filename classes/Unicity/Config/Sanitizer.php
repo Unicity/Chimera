@@ -16,45 +16,43 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config {
+namespace Unicity\Config;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
+use Unicity\Common;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\IO;
 
-	/**
-	 * This class defines the contract for sanitizing messages.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	abstract class Sanitizer extends Core\AbstractObject {
+/**
+ * This class defines the contract for sanitizing messages.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+abstract class Sanitizer extends Core\AbstractObject
+{
+    protected static $rules = [
+        'mask' => '\\Unicity\\Core\\Masks::all',
+        'mask_cc' => '\\Unicity\\Core\\Masks::creditCard',
+        'mask_ip' => '\\Unicity\\Core\\Masks::ipAddress',
+        'mask_tk' => '\\Unicity\\Core\\Masks::token',
+        'remove' => null,
+    ];
 
-		protected static $rules = array(
-			'mask' => '\\Unicity\\Core\\Masks::all',
-			'mask_cc' => '\\Unicity\\Core\\Masks::creditCard',
-			'mask_ip' => '\\Unicity\\Core\\Masks::ipAddress',
-			'remove' => null,
-		);
+    abstract public function sanitize($input, array $metadata = []): string;
 
-		public abstract function sanitize($input, array $metadata = array()) : string;
-
-		protected static function filters($filters) : Common\IList {
-			if ($filters instanceof IO\File) {
-				return Common\Collection::useCollections(Config\JSON\Reader::load($filters)->read());
-			}
-			else if (Common\StringRef::isTypeOf($filters)) {
-				return Common\Collection::useCollections(json_decode(Core\Convert::toString($filters)));
-			}
-			else {
-				return Common\Collection::useCollections($filters);
-			}
-		}
-
-	}
+    protected static function filters($filters): Common\IList
+    {
+        if ($filters instanceof IO\File) {
+            return Common\Collection::useCollections(Config\JSON\Reader::load($filters)->read());
+        } elseif (Common\StringRef::isTypeOf($filters)) {
+            return Common\Collection::useCollections(json_decode(Core\Convert::toString($filters)));
+        } else {
+            return Common\Collection::useCollections($filters);
+        }
+    }
 
 }

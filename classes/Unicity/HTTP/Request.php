@@ -16,23 +16,22 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\HTTP {
+namespace Unicity\HTTP;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Request extends EVT\Request {
-
-		public function __construct(array $map = []) {
-			parent::__construct(array_merge([
-				'body' => '',
-				'headers' => [],
-				'method' => 'GET',
-				'url' => '',
-			], $map));
-		}
-
-	}
+class Request extends EVT\Request
+{
+    public function __construct(array $map = [])
+    {
+        parent::__construct(array_merge([
+            'body' => '',
+            'headers' => [],
+            'method' => 'GET',
+            'url' => '',
+        ], $map));
+    }
 
 }

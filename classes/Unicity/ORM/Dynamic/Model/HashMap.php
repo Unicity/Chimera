@@ -16,143 +16,148 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\ORM\Dynamic\Model {
+namespace Unicity\ORM\Dynamic\Model;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\ORM;
-	use \Unicity\Throwable;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\ORM;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents a hash map.
-	 *
-	 * @access public
-	 * @class
-	 * @package ORM
-	 */
-	class HashMap extends Common\Mutable\HashMap implements ORM\IModel {
+/**
+ * This class represents a hash map.
+ *
+ * @access public
+ * @class
+ * @package ORM
+ */
+class HashMap extends Common\Mutable\HashMap implements ORM\IModel
+{
+    /**
+     * This variable stores whether field names are case sensitive.
+     *
+     * @access protected
+     * @var boolean
+     */
+    protected $case_sensitive;
 
-		/**
-		 * This variable stores whether field names are case sensitive.
-		 *
-		 * @access protected
-		 * @var boolean
-		 */
-		protected $case_sensitive;
+    /**
+     * This method initializes the class.
+     *
+     * @access public
+     * @param $elements a traversable array or collection
+     * @param boolean $case_sensitive whether field names are case
+     *                                sensitive
+     */
+    public function __construct($elements = null, bool $case_sensitive = true)
+    {
+        $this->case_sensitive = $case_sensitive;
+        parent::__construct($elements);
+    }
 
-		/**
-		 * This method initializes the class.
-		 *
-		 * @access public
-		 * @param \Traversable $elements                            a traversable array or collection
-		 * @param boolean $case_sensitive                           whether field names are case
-		 *                                                          sensitive
-		 */
-		public function __construct($elements = null, bool $case_sensitive = true) {
-			$this->case_sensitive = $case_sensitive;
-			parent::__construct($elements);
-		}
+    /**
+     * This method returns an array of arguments for constructing another collection
+     * via function programming.
+     *
+     * @access public
+     * @return array the argument array for initialization
+     */
+    public function __constructor_args(): array
+    {
+        return [null, $this->case_sensitive];
+    }
 
-		/**
-		 * This method returns an array of arguments for constructing another collection
-		 * via function programming.
-		 *
-		 * @access public
-		 * @return array                                            the argument array for initialization
-		 */
-		public function __constructor_args() : array {
-			return array(null, $this->case_sensitive);
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->case_sensitive);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->case_sensitive);
-		}
+    /**
+     * This method processes the key for use by the hash map.
+     *
+     * @access protected
+     * @param mixed $key the key to be processed
+     * @return string the key to be used
+     * @throws \Unicity\Throwable\InvalidArgument\Exception indicates an invalid key was specified
+     */
+    protected function getKey($key)
+    {
+        $key = parent::getKey($key);
+        if (!$this->case_sensitive) {
+            $key = strtolower($key);
+        }
 
-		/**
-		 * This method processes the key for use by the hash map.
-		 *
-		 * @access protected
-		 * @param mixed $key                                        the key to be processed
-		 * @return string                                           the key to be used
-		 * @throws \Unicity\Throwable\InvalidArgument\Exception     indicates an invalid key was specified
-		 */
-		protected function getKey($key) {
-			$key = parent::getKey($key);
-			if (!$this->case_sensitive) {
-				$key = strtolower($key);
-			}
-			return $key;
-		}
+        return $key;
+    }
 
-		/**
-		 * This method returns the schema associated with this model.
-		 *
-		 * @access public
-		 * @return array                                            the model's schema
-		 */
-		public function getSchema() {
-			return null;
-		}
+    /**
+     * This method returns the schema associated with this model.
+     *
+     * @access public
+     * @return array the model's schema
+     */
+    public function getSchema()
+    {
+        return null;
+    }
 
-		/**
-		 * This method returns the value associated with the specified key.
-		 *
-		 * @access public
-		 * @override
-		 * @param mixed $key                                        the key of the value to be returned
-		 * @return mixed                                            the element associated with the specified key
-		 * @throws Throwable\InvalidArgument\Exception              indicates that key is not a scaler type
-		 * @throws Throwable\KeyNotFound\Exception                  indicates that key could not be found
-		 */
-		public function getValue($key) {
-			try {
-				return parent::getValue($key);
-			}
-			catch (Throwable\KeyNotFound\Exception $ex) {
-				return Core\Data\Undefined::instance();
-			}
-		}
+    /**
+     * This method returns the value associated with the specified key.
+     *
+     * @access public
+     * @override
+     * @param mixed $key the key of the value to be returned
+     * @return mixed the element associated with the specified key
+     * @throws Throwable\InvalidArgument\Exception indicates that key is not a scaler type
+     * @throws Throwable\KeyNotFound\Exception indicates that key could not be found
+     */
+    public function getValue($key)
+    {
+        try {
+            return parent::getValue($key);
+        } catch (Throwable\KeyNotFound\Exception $ex) {
+            return Core\Data\Undefined::instance();
+        }
+    }
 
-		/**
-		 * This method puts the key/value mapping to the collection.
-		 *
-		 * @access public
-		 * @override
-		 * @param mixed $key                                        the key to be mapped
-		 * @param mixed $value                                      the value to be mapped
-		 * @return boolean                                          whether the key/value pair was set
-		 */
-		public function putEntry($key, $value) {
-			if (Core\Data\Undefined::instance()->__equals($value)) {
-				return $this->removeKey($key);
-			}
-			else {
-				return parent::putEntry($key, $value);
-			}
-		}
+    /**
+     * This method puts the key/value mapping to the collection.
+     *
+     * @access public
+     * @override
+     * @param mixed $key the key to be mapped
+     * @param mixed $value the value to be mapped
+     * @return boolean whether the key/value pair was set
+     */
+    public function putEntry($key, $value)
+    {
+        if (Core\Data\Undefined::instance()->__equals($value)) {
+            return $this->removeKey($key);
+        } else {
+            return parent::putEntry($key, $value);
+        }
+    }
 
-		/**
-		 * This method will rename a key.
-		 *
-		 * @access public
-		 * @override
-		 * @param mixed $old                                        the key to be renamed
-		 * @param mixed $new                                        the name of the new key
-		 * @throws Throwable\UnimplementedMethod\Exception          indicates the method has not been
-		 *                                                          implemented
-		 */
-		public function renameKey($old, $new) {
-			throw new Throwable\UnimplementedMethod\Exception('Invalid call to member function. Method has not been implemented.');
-		}
-
-	}
+    /**
+     * This method will rename a key.
+     *
+     * @access public
+     * @override
+     * @param mixed $old the key to be renamed
+     * @param mixed $new the name of the new key
+     * @throws Throwable\UnimplementedMethod\Exception indicates the method has not been
+     *                                                 implemented
+     */
+    public function renameKey($old, $new)
+    {
+        throw new Throwable\UnimplementedMethod\Exception('Invalid call to member function. Method has not been implemented.');
+    }
 
 }

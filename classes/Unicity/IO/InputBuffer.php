@@ -16,103 +16,109 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\IO {
+namespace Unicity\IO;
 
-	use \Unicity\IO;
+use Unicity\IO;
 
-	/**
-	 * This class represent an input buffer.
-	 *
-	 * @access public
-	 * @class
-	 * @package IO
-	 */
-	class InputBuffer extends IO\File implements IO\Buffer {
+/**
+ * This class represent an input buffer.
+ *
+ * @access public
+ * @class
+ * @package IO
+ */
+class InputBuffer extends IO\File implements IO\Buffer
+{
+    /**
+     * This constructor initializes the class with the PHP's standard input buffer.
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        $this->name = null;
+        $this->path = null;
+        $this->ext = null;
 
-		/**
-		 * This constructor initializes the class with the PHP's standard input buffer.
-		 *
-		 * @access public
-		 */
-		public function __construct() {
-			$this->name = null;
-			$this->path = null;
-			$this->ext = null;
+        $input = file_get_contents(static::INPUT);
+        if ($input == '') {
+            $handle = fopen(static::STDIN, 'r');
+            stream_set_blocking($handle, false);
+            $input = stream_get_contents($handle);
+            fclose($handle);
+        }
+        $this->uri = 'data://text/plain,' . $input; // +'s may go missing (see http://php.net/manual/en/wrappers.data.php)
+    }
 
-			$input = file_get_contents(static::INPUT);
-			if ($input == '') {
-				$handle = fopen(static::STDIN, 'r');
-				$input = stream_get_contents($handle);
-				fclose($handle);
-			}
-			$this->uri = 'data://text/plain,' . $input; // +'s may go missing (see http://php.net/manual/en/wrappers.data.php)
-		}
+    /**
+     * This method returns whether the file actually exists.
+     *
+     * @access public
+     * @return boolean whether the file actually exists
+     */
+    public function exists(): bool
+    {
+        return true;
+    }
 
-		/**
-		 * This method returns whether the file actually exists.
-		 *
-		 * @access public
-		 * @return boolean                                          whether the file actually exists
-		 */
-		public function exists() : bool {
-			return true;
-		}
+    /**
+     * This method returns the content type associated with the file based on the file's content.
+     * Caution: Calling this method might cause side effects.
+     *
+     * @access public
+     * @return string the content type associated with
+     *                the file
+     */
+    public function getContentTypeFromStream()
+    {
+        $getContentTypes = function () {
+            return include(implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'Config', 'MIME.php']));
+        };
+        $config = $getContentTypes();
+        $ext = $this->getFileExtensionFromStream();
+        if (($ext != '') && isset($config[$ext][0])) {
+            return $config[$ext][0];
+        }
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            return $_SERVER['CONTENT_TYPE'];
+        }
 
-		/**
-		 * This method returns the content type associated with the file based on the file's content.
-		 * Caution: Calling this method might cause side effects.
-		 *
-		 * @access public
-		 * @return string                                           the content type associated with
-		 *                                                          the file
-		 */
-		public function getContentTypeFromStream() {
-			$getContentTypes = function() {
-				return include(implode(DIRECTORY_SEPARATOR, array(dirname(__FILE__), 'Config', 'MIME.php')));
-			};
-			$config = $getContentTypes();
-			$ext = $this->getFileExtensionFromStream();
-			if (($ext != '') && isset($config[$ext][0])) {
-				return $config[$ext][0];
-			}
-			if (isset($_SERVER['CONTENT_TYPE'])) {
-				return $_SERVER['CONTENT_TYPE'];
-			}
-			return 'application/octet-stream';
-		}
+        return 'application/octet-stream';
+    }
 
-		/**
-		 * This method returns whether the file is executable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isExecutable() : bool {
-			return false;
-		}
+    /**
+     * This method returns whether the file is executable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isExecutable(): bool
+    {
+        return false;
+    }
 
-		/**
-		 * This method returns whether the file is readable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isReadable() : bool {
-			return true;
-		}
+    /**
+     * This method returns whether the file is readable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isReadable(): bool
+    {
+        return true;
+    }
 
-		/**
-		 * This method returns whether the file is writable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isWritable() : bool {
-			return false;
-		}
-
-	}
+    /**
+     * This method returns whether the file is writable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isWritable(): bool
+    {
+        return false;
+    }
 
 }

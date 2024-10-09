@@ -16,55 +16,56 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\JSON {
+namespace Unicity\Config\JSON;
 
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This class is used to write a collection to a JSON file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to a JSON file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = static::useArrays($data, false);
+        $this->metadata = [
+            'ext' => '.json',
+            'mime' => 'application/json',
+            'prefix' => '',
+            'pretty' => false,
+            'suffix' => '',
+            'uri' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = static::useArrays($data, false);
-			$this->metadata = array(
-				'ext' => '.json',
-				'mime' => 'application/json',
-				'prefix' => '',
-				'pretty' => false,
-				'suffix' => '',
-				'uri' => null,
-			);
-		}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the processed data
+     */
+    public function render(): string
+    {
+        $prefix = (isset($this->metadata['prefix'])) ? $this->metadata['prefix'] : '';
+        $suffix = (isset($this->metadata['suffix'])) ? $this->metadata['suffix'] : '';
+        $options = 0;
+        if (isset($this->metadata['pretty']) && $this->metadata['pretty']) {
+            $options |= JSON_PRETTY_PRINT;
+        }
 
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the processed data
-		 */
-		public function render() : string {
-			$prefix = (isset($this->metadata['prefix'])) ? $this->metadata['prefix'] : '';
-			$suffix = (isset($this->metadata['suffix'])) ? $this->metadata['suffix'] : '';
-			$options = 0;
-			if (isset($this->metadata['pretty']) && $this->metadata['pretty']) {
-				$options |= JSON_PRETTY_PRINT;
-			}
-			return $prefix . json_encode($this->data, $options) . $suffix;
-		}
-
-	}
+        return $prefix . json_encode($this->data, $options) . $suffix;
+    }
 
 }

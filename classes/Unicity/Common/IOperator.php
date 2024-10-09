@@ -16,14 +16,10 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Throwable;
-
-	interface IOperator {
-
-		public function apply2($t, $u);
-
-	}
+interface IOperator
+{
+    public function apply2($t, $u);
 
 }

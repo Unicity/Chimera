@@ -16,29 +16,27 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SOAP\Data {
+namespace Unicity\SOAP\Data;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class represents SOAP XML using dom document format.
-	 *
-	 * @access public
-	 * @class
-	 * @package SOAP
-	 */
-	class XML extends Core\Data\XML {
-
-		/**
-		 * This constant represents the default namespace used by SOAP XML.
-		 *
-		 * @access public
-		 * @const string
-		 */
-		public const DEFAULT_NAMESPACE = 'http://schemas.xmlsoap.org/soap/envelope/';
-
-	}
+/**
+ * This class represents SOAP XML using dom document format.
+ *
+ * @access public
+ * @class
+ * @package SOAP
+ */
+class XML extends Core\Data\XML
+{
+    /**
+     * This constant represents the default namespace used by SOAP XML.
+     *
+     * @access public
+     * @const string
+     */
+    public const DEFAULT_NAMESPACE = 'http://schemas.xmlsoap.org/soap/envelope/';
 
 }

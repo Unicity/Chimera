@@ -16,35 +16,33 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data {
+namespace Unicity\MappingService\Data;
 
-	use \Unicity\Common;
-	use \Unicity\MappingService;
+use Unicity\Common;
+use Unicity\MappingService;
 
-	/**
-	 * This interface provides a contract that defines a model sync.
-	 *
-	 * @access public
-	 * @interface
-	 * @package MappingService
-	 */
-	interface ISync {
-
-		/**
-		 * This method returns a new model with the sync differences.
-		 *
-		 * @access public
-		 * @static
-		 * @param \Unicity\MappingService\Data\Model $theirs        the model going to be synced
-		 * @param \Unicity\MappingService\Data\Model $ours          the model representing the current
-		 *                                                          record in the database
-		 * @param \Unicity\Common\IMap $commits                     the last commits made by humans
-		 * @return \Unicity\MappingService\Data\ISync               a model representing the differences
-		 */
-		public static function differences(MappingService\Data\Model $theirs, MappingService\Data\Model $ours, Common\IMap $commits = null);
-
-	}
+/**
+ * This interface provides a contract that defines a model sync.
+ *
+ * @access public
+ * @interface
+ * @package MappingService
+ */
+interface ISync
+{
+    /**
+     * This method returns a new model with the sync differences.
+     *
+     * @access public
+     * @static
+     * @param \Unicity\MappingService\Data\Model $theirs the model going to be synced
+     * @param \Unicity\MappingService\Data\Model $ours the model representing the current
+     *                                                 record in the database
+     * @param \Unicity\Common\IMap $commits the last commits made by humans
+     * @return \Unicity\MappingService\Data\ISync a model representing the differences
+     */
+    public static function differences(MappingService\Data\Model $theirs, MappingService\Data\Model $ours, Common\IMap $commits = null);
 
 }

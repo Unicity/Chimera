@@ -16,82 +16,87 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\TXT {
+namespace Unicity\Config\TXT;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Throwable;
+use Unicity\Common;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\IO;
 
-	/**
-	 * This class defines the contract for sanitizing messages.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Sanitizer extends Config\Sanitizer {
+/**
+ * This class defines the contract for sanitizing messages.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Sanitizer extends Config\Sanitizer
+{
+    protected $filters;
 
-		protected $filters;
+    public function __construct($filters)
+    {
+        $filters = static::filters($filters);
+        $this->filters = [];
+        foreach ($filters as $filter) {
+            $rule = $filter->hasKey('rule') ? $filter->rule : null;
+            if (is_string($rule) && array_key_exists($rule, static::$rules)) {
+                $rule = static::$rules[$rule];
+            }
+            if ($filter->hasKey('keys')) {
+                foreach ($filter->keys as $key) {
+                    $this->filters[] = (object)[
+                        'pattern' => Core\Convert::toString($key->pattern),
+                        'rule' => $rule,
+                    ];
+                }
+            }
+        }
+    }
 
-		public function __construct($filters) {
-			$filters = static::filters($filters);
-			$this->filters = array();
-			foreach ($filters as $filter) {
-				$rule = $filter->hasKey('rule') ? $filter->rule : null;
-				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
-					$rule = static::$rules[$rule];
-				}
-				if ($filter->hasKey('keys')) {
-					foreach ($filter->keys as $key) {
-						$this->filters[] = (object)[
-							'pattern' => Core\Convert::toString($key->pattern),
-							'rule' => $rule,
-						];
-					}
-				}
-			}
-		}
+    public function sanitize($input, array $metadata = []): string
+    {
+        $buffer = new Common\Mutable\StringRef();
+        $encoding = $metadata['encoding'] ?? \Unicity\Core\Data\Charset::UTF_8_ENCODING;
+        $input = Core\Convert::toString($input);
+        if (!empty($input)) {
+            IO\FileReader::read(new IO\StringRef($input), function (IO\FileReader $reader, $line, $index) use ($buffer, $encoding) {
+                $line = \Unicity\Core\Data\Charset::encode($line, $encoding, \Unicity\Core\Data\Charset::UTF_8_ENCODING);
+                foreach ($this->filters as $filter) {
+                    $pattern = $filter->pattern;
+                    $rule = $filter->rule;
+                    if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $args)) {
+                        $line = preg_replace_callback($pattern, function ($matches) use ($rule, $args) {
+                            if (isset($matches[1])) {
+                                return str_replace($matches[1], Core\Masks::last($matches[1], 'x', $args[1]), $matches[0]);
+                            }
 
-		public function sanitize($input, array $metadata = array()) : string {
-			$buffer = new Common\Mutable\StringRef();
-			IO\FileReader::read(new IO\StringRef($input), function(IO\FileReader $reader, $line, $index) use ($buffer) {
-				foreach ($this->filters as $filter) {
-					$pattern = $filter->pattern;
-					$rule = $filter->rule;
-					if (is_string($rule) && preg_match('/^mask_last\(([0-9]+)\)$/', $rule, $args)) {
-						$line = preg_replace_callback($pattern, function($matches) use ($rule, $args) {
-							if (isset($matches[1])) {
-								return str_replace($matches[1], Core\Masks::last($matches[1], 'x', $args[1]), $matches[0]);
-							}
-							return $matches[0];
-						}, $line);
-					}
-					else if (is_callable($rule)) {
-						if (preg_match($pattern, $line)) {
-							$line = preg_replace_callback($pattern, function($matches) use ($rule) {
-								if (isset($matches[1])) {
-									return str_replace($matches[1], Core\Convert::toString($rule($matches[1])), $matches[0]);
-								}
-								return $matches[0];
-							}, $line);
-						}
-					}
-					else { // remove
-						if (preg_match($pattern, $line)) {
-							$line = preg_replace_callback($pattern, function($matches) use ($rule) {
-								return '';
-							}, $line);
-						}
-					}
-				}
-				$buffer->append($line);
-			});
-			return $buffer->__toString();
-		}
-	}
+                            return $matches[0];
+                        }, $line);
+                    } elseif (is_callable($rule)) {
+                        if (preg_match($pattern, $line)) {
+                            $line = preg_replace_callback($pattern, function ($matches) use ($rule) {
+                                if (isset($matches[1])) {
+                                    return str_replace($matches[1], Core\Convert::toString($rule($matches[1])), $matches[0]);
+                                }
 
+                                return $matches[0];
+                            }, $line);
+                        }
+                    } else { // remove
+                        if (preg_match($pattern, $line)) {
+                            $line = preg_replace_callback($pattern, function ($matches) use ($rule) {
+                                return '';
+                            }, $line);
+                        }
+                    }
+                }
+                $buffer->append($line);
+            });
+        }
+
+        return $buffer->__toString();
+    }
 }

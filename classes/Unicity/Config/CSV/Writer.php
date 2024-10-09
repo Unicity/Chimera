@@ -16,185 +16,181 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\CSV {
+namespace Unicity\Config\CSV;
 
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\IO;
 
-	/**
-	 * This class is used to write a collection to a CSV file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to a CSV file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = static::useArrays($data, true);
+        $this->metadata = [
+            'delimiter' => ',',
+            'enclosure' => '"',
+            'encoding' => [Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING],
+            'eol' => "\n",
+            'escape' => '\\',
+            'ext' => '.csv',
+            'filter' => null, // callable
+            'header' => true,
+            'headings' => [],
+            'mime' => 'text/csv',
+            'template' => '',
+            'url' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = static::useArrays($data, true);
-			$this->metadata = array(
-				'delimiter' => ',',
-				'enclosure' => '"',
-				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
-				'eol' => "\n",
-				'escape' => '\\',
-				'ext' => '.csv',
-				'filter' => null, // callable
-				'header' => true,
-				'headings' => array(),
-				'mime' => 'text/csv',
-				'template' => '',
-				'url' => null,
-			);
-		}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the data as string
+     * @throws \Exception indicates a problem occurred
+     *                    when generating the template
+     */
+    public function render(): string
+    {
+        $delimiter = $this->metadata['delimiter'];
+        $enclosure = $this->metadata['enclosure'];
+        $escape = $this->metadata['escape'];
+        $eol = $this->metadata['eol'];
+        $encoding = $this->metadata['encoding'];
+        ob_start();
 
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the data as string
-		 * @throws \Exception                                       indicates a problem occurred
-		 *                                                          when generating the template
-		 */
-		public function render() : string {
-			$delimiter = $this->metadata['delimiter'];
-			$enclosure = $this->metadata['enclosure'];
-			$escape = $this->metadata['escape'];
-			$eol = $this->metadata['eol'];
-			$encoding = $this->metadata['encoding'];
-			ob_start();
-			try {
-				if (!empty($this->metadata['template'])) {
-					$file = new IO\File($this->metadata['template']);
-					if (!is_callable($this->metadata['filter'])) {
-						$filter = function ($field) use ($delimiter, $enclosure, $escape, $encoding) {
-							$value = Core\Data\Charset::encode($field, $encoding[0], $encoding[1]);
-							if (($enclosure != '') &&
-								((strpos($value, $delimiter) !== false) ||
-									(strpos($value, $enclosure) !== false) ||
-									(strpos($value, "\n") !== false) ||
-									(strpos($value, "\r") !== false) ||
-									(strpos($value, "\t") !== false) ||
-									(strpos($value, ' ') !== false))
-							) {
-								$literal = $enclosure;
-								$escaped = 0;
-								$length = strlen($value);
-								for ($i = 0; $i < $length; $i++) {
-									if ($value[$i] == $escape) {
-										$escaped = 1;
-									}
-									else if (!$escaped && $value[$i] == $enclosure) {
-										$literal .= $enclosure;
-									}
-									else {
-										$escaped = 0;
-									}
-									$literal .= $value[$i];
-								}
-								$literal .= $enclosure;
-								return $literal;
-							}
-							else {
-								return Core\Convert::toString($value);
-							}
-						};
-					}
-					else {
-						$filter = $this->metadata['filter'];
-					}
-					$mustache = new \Mustache_Engine(array(
-						'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
-						'escape' => $filter,
-					));
-					echo $mustache->render($file->getFileName(), $this->data);
-				}
-				else {
-					if ($this->metadata['header']) {
-						if (!empty($this->metadata['headings'])) {
-							echo static::format($this->metadata['headings'], $delimiter, $enclosure, $escape, $eol, $encoding);
-						}
-						else if (!empty($this->data)) {
-							echo static::format(array_keys($this->data[0]), $delimiter, $enclosure, $escape, $eol, $encoding);
-						}
-					}
-					foreach ($this->data as $values) {
-						echo static::format($values, $delimiter, $enclosure, $escape, $eol, $encoding);
-					}
-				}
-			}
-			catch (\Exception $ex) {
-				ob_end_clean();
-				throw $ex;
-			}
-			$template = ob_get_clean();
-			return $template;
-		}
+        try {
+            if (!empty($this->metadata['template'])) {
+                $file = new IO\File($this->metadata['template']);
+                if (!is_callable($this->metadata['filter'])) {
+                    $filter = function ($field) use ($delimiter, $enclosure, $escape, $encoding) {
+                        $value = Core\Data\Charset::encode($field, $encoding[0], $encoding[1]);
+                        if (($enclosure != '') &&
+                            ((strpos($value, $delimiter) !== false) ||
+                                (strpos($value, $enclosure) !== false) ||
+                                (strpos($value, "\n") !== false) ||
+                                (strpos($value, "\r") !== false) ||
+                                (strpos($value, "\t") !== false) ||
+                                (strpos($value, ' ') !== false))
+                        ) {
+                            $literal = $enclosure;
+                            $escaped = 0;
+                            $length = strlen($value);
+                            for ($i = 0; $i < $length; $i++) {
+                                if ($value[$i] == $escape) {
+                                    $escaped = 1;
+                                } elseif (!$escaped && $value[$i] == $enclosure) {
+                                    $literal .= $enclosure;
+                                } else {
+                                    $escaped = 0;
+                                }
+                                $literal .= $value[$i];
+                            }
+                            $literal .= $enclosure;
 
-		/**
-		 * This method formats an array of values using CSV conventions.
-		 *
-		 * @access public
-		 * @static
-		 * @param array $fields                                     the values to be formatted
-		 * @param string $delimiter                                 the delimiter to be used
-		 * @param string $enclosure                                 the enclosure to be used
-		 * @param string $escape                                    the escape character to be used
-		 * @param string $eol                                       the end-of-line character to be used
-		 * @param array $encoding                                   the character set encoding to be used
-		 * @return string                                           the formatted string
-		 *
-		 * @see http://php.net/manual/en/function.fputcsv.php#77866
-		 */
-		public static function format(array $fields, $delimiter = ',', $enclosure = '"', $escape = '\\', $eol = "\n", array $encoding = null) {
-			$buffer = '';
-			if (empty($encoding)) {
-				$encoding = array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING);
-			}
-			foreach ($fields as $field) {
-				$value = Core\Data\Charset::encode($field, $encoding[0], $encoding[1]);
-				if (($enclosure != '') &&
-					((strpos($value, $delimiter) !== false) ||
-						(strpos($value, $enclosure) !== false) ||
-						(strpos($value, "\n") !== false) ||
-						(strpos($value, "\r") !== false) ||
-						(strpos($value, "\t") !== false) ||
-						(strpos($value, ' ') !== false))) {
-					$literal = $enclosure;
-					$escaped = 0;
-					$length = strlen($value);
-					for ($i = 0; $i < $length; $i++) {
-						if ($value[$i] == $escape) {
-							$escaped = 1;
-						}
-						else if (!$escaped && $value[$i] == $enclosure) {
-							$literal .= $enclosure;
-						}
-						else {
-							$escaped = 0;
-						}
-						$literal .= $value[$i];
-					}
-					$literal .= $enclosure;
-					$buffer .= $literal . $delimiter;
-				}
-				else {
-					$buffer .= Core\Convert::toString($value) . $delimiter;
-				}
-			}
-			$buffer = substr($buffer, 0, -1) . $eol;
-			return $buffer;
-		}
+                            return $literal;
+                        } else {
+                            return Core\Convert::toString($value);
+                        }
+                    };
+                } else {
+                    $filter = $this->metadata['filter'];
+                }
+                $mustache = new \Mustache_Engine([
+                    'loader' => new \Mustache_Loader_FilesystemLoader($file->getFilePath()),
+                    'escape' => $filter,
+                ]);
+                echo $mustache->render($file->getFileName(), $this->data);
+            } else {
+                if ($this->metadata['header']) {
+                    if (!empty($this->metadata['headings'])) {
+                        echo static::format($this->metadata['headings'], $delimiter, $enclosure, $escape, $eol, $encoding);
+                    } elseif (!empty($this->data)) {
+                        echo static::format(array_keys($this->data[0]), $delimiter, $enclosure, $escape, $eol, $encoding);
+                    }
+                }
+                foreach ($this->data as $values) {
+                    echo static::format($values, $delimiter, $enclosure, $escape, $eol, $encoding);
+                }
+            }
+        } catch (\Throwable $ex) {
+            ob_end_clean();
 
-	}
+            throw $ex;
+        }
+        $template = ob_get_clean();
+
+        return $template;
+    }
+
+    /**
+     * This method formats an array of values using CSV conventions.
+     *
+     * @access public
+     * @static
+     * @param array $fields the values to be formatted
+     * @param string $delimiter the delimiter to be used
+     * @param string $enclosure the enclosure to be used
+     * @param string $escape the escape character to be used
+     * @param string $eol the end-of-line character to be used
+     * @param array $encoding the character set encoding to be used
+     * @return string the formatted string
+     *
+     * @see http://php.net/manual/en/function.fputcsv.php#77866
+     */
+    public static function format(array $fields, $delimiter = ',', $enclosure = '"', $escape = '\\', $eol = "\n", array $encoding = null)
+    {
+        $buffer = '';
+        if (empty($encoding)) {
+            $encoding = [Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING];
+        }
+        foreach ($fields as $field) {
+            $value = Core\Data\Charset::encode($field, $encoding[0], $encoding[1]);
+            if (($enclosure != '') &&
+                ((strpos($value, $delimiter) !== false) ||
+                    (strpos($value, $enclosure) !== false) ||
+                    (strpos($value, "\n") !== false) ||
+                    (strpos($value, "\r") !== false) ||
+                    (strpos($value, "\t") !== false) ||
+                    (strpos($value, ' ') !== false))) {
+                $literal = $enclosure;
+                $escaped = 0;
+                $length = strlen($value);
+                for ($i = 0; $i < $length; $i++) {
+                    if ($value[$i] == $escape) {
+                        $escaped = 1;
+                    } elseif (!$escaped && $value[$i] == $enclosure) {
+                        $literal .= $enclosure;
+                    } else {
+                        $escaped = 0;
+                    }
+                    $literal .= $value[$i];
+                }
+                $literal .= $enclosure;
+                $buffer .= $literal . $delimiter;
+            } else {
+                $buffer .= Core\Convert::toString($value) . $delimiter;
+            }
+        }
+        $buffer = substr($buffer, 0, -1) . $eol;
+
+        return $buffer;
+    }
 
 }

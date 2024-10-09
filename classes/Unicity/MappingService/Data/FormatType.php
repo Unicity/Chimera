@@ -16,86 +16,89 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data {
+namespace Unicity\MappingService\Data;
 
-	use \Unicity\Core;
-	use \Unicity\MappingService;
+use Unicity\Core;
+use Unicity\MappingService;
 
-	/**
-	 * This class enumerates the different types of data format used by the mapping service
-	 * via the data translation.
-	 *
-	 * @access public
-	 * @class
-	 * @final
-	 * @package MappingService
-	 */
-	final class FormatType extends Core\Enum {
+/**
+ * This class enumerates the different types of data format used by the mapping service
+ * via the data translation.
+ *
+ * @access public
+ * @class
+ * @final
+ * @package MappingService
+ */
+final class FormatType extends Core\Enum
+{
+    /**
+     * This variable stores the enumerations.
+     *
+     * @access protected
+     * @static
+     * @var array an indexed array of the enumerations
+     */
+    protected static $__enums;
 
-		/**
-		 * This variable stores the enumerations.
-		 *
-		 * @access protected
-		 * @static
-		 * @var array                                               an indexed array of the enumerations
-		 */
-		protected static $__enums;
+    /**
+     * This method returns the token at the specified ordinal index.
+     *
+     * @access protected
+     * @static
+     * @param integer $ordinal the ordinal index of the token
+     * @return MappingService\Data\FormatType the token
+     */
+    protected static function __enum(int $ordinal): MappingService\Data\FormatType
+    {
+        if (!is_array(static::$__enums)) {
+            static::$__enums = [];
+            static::$__enums[] = new static('canonical', 'Canonical');
+            static::$__enums[] = new static('model', 'Model');
+        }
 
-		/**
-		 * This method returns the token at the specified ordinal index.
-		 *
-		 * @access protected
-		 * @static
-		 * @param integer $ordinal                                  the ordinal index of the token
-		 * @return MappingService\Data\FormatType                   the token
-		 */
-		protected static function __enum(int $ordinal) : MappingService\Data\FormatType {
-			if (!is_array(static::$__enums)) {
-				static::$__enums = array();
-				static::$__enums[] = new static('canonical', 'Canonical');
-				static::$__enums[] = new static('model', 'Model');
-			}
-			return static::$__enums[$ordinal];
-		}
+        return static::$__enums[$ordinal];
+    }
 
-		/**
-		 * This constructor initializes the enumeration.
-		 *
-		 * @access protected
-		 * @param string $name                                      the name of the enumeration
-		 * @param mixed $value                                      the value to be assigned to the
-		 *                                                          enumeration
-		 */
-		protected function __construct(string $name, $value) {
-			$this->__name = $name;
-			$this->__value = $value;
-			$this->__ordinal = count(static::$__enums);
-		}
+    /**
+     * This constructor initializes the enumeration.
+     *
+     * @access protected
+     * @param string $name the name of the enumeration
+     * @param mixed $value the value to be assigned to the
+     *                     enumeration
+     */
+    protected function __construct(string $name, $value)
+    {
+        $this->__name = $name;
+        $this->__value = $value;
+        $this->__ordinal = count(static::$__enums);
+    }
 
-		/**
-		 * This method returns the "canonical" token.
-		 *
-		 * @access public
-		 * @static
-		 * @return MappingService\Data\FormatType                   the format type token
-		 */
-		public static function canonical() : \Unicity\MappingService\Data\FormatType {
-			return static::__enum(0);
-		}
+    /**
+     * This method returns the "canonical" token.
+     *
+     * @access public
+     * @static
+     * @return MappingService\Data\FormatType the format type token
+     */
+    public static function canonical(): \Unicity\MappingService\Data\FormatType
+    {
+        return static::__enum(0);
+    }
 
-		/**
-		 * This method returns the "model" token.
-		 *
-		 * @access public
-		 * @static
-		 * @return MappingService\Data\FormatType                   the format type token
-		 */
-		public static function model() : \Unicity\MappingService\Data\FormatType {
-			return static::__enum(1);
-		}
-
-	}
+    /**
+     * This method returns the "model" token.
+     *
+     * @access public
+     * @static
+     * @return MappingService\Data\FormatType the format type token
+     */
+    public static function model(): \Unicity\MappingService\Data\FormatType
+    {
+        return static::__enum(1);
+    }
 
 }

@@ -16,46 +16,46 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\Object {
+namespace Unicity\Config\Object;
 
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This class is used to write a collection to a PHP serialized object file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to a PHP serialized object file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = static::useArrays($data, true);
+        $this->metadata = [
+            'ext' => '.txt',
+            'mime' => 'application/x-php-serialized-object',
+            'uri' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = static::useArrays($data, true);
-			$this->metadata = array(
-				'ext' => '.txt',
-				'mime' => 'application/x-php-serialized-object',
-				'uri' => null,
-			);
-		}
-
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the processed data
-		 */
-		public function render() : string {
-			return (string) serialize($this->data);
-		}
-
-	}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the processed data
+     */
+    public function render(): string
+    {
+        return (string) serialize($this->data);
+    }
 
 }

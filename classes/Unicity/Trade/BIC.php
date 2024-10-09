@@ -16,83 +16,85 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Trade {
+namespace Unicity\Trade;
 
-	use \Unicity\Core;
-	use \Unicity\Throwable;
+use Unicity\Core;
 
-	/**
-	 * This class represents a BIC.
-	 *
-	 * @access public
-	 * @class
-	 * @package Trade
-	 *
-	 */
-	class BIC extends Core\AbstractObject {
+/**
+ * This class represents a BIC.
+ *
+ * @access public
+ * @class
+ * @package Trade
+ *
+ */
+class BIC extends Core\AbstractObject
+{
+    /**
+     * This variable stores the value of the BIC as defined in ISO 9362.
+     *
+     * @access protected
+     * @var string
+     */
+    protected $value;
 
-		/**
-		 * This variable stores the value of the BIC as defined in ISO 9362.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $value;
+    /**
+     * This constructor initializes the class with the specified value.
+     *
+     * @access public
+     * @param string $value a valid BIC number
+     */
+    public function __construct(string $value)
+    {
+        $this->value = strtoupper($value);
+    }
 
-		/**
-		 * This constructor initializes the class with the specified value.
-		 *
-		 * @access public
-		 * @param string $value                                     a valid BIC number
-		 */
-		public function __construct(string $value) {
-			$this->value = strtoupper($value);
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->value);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->value);
-		}
+    /**
+     * This method returns the 2-letter country code as defined in ISO 3166.
+     *
+     * @access public
+     * @return string the country code
+     */
+    public function getCountry(): string
+    {
+        return substr($this->value, 4, 2);
+    }
 
-		/**
-		 * This method returns the 2-letter country code as defined in ISO 3166.
-		 *
-		 * @access public
-		 * @return string                                           the country code
-		 */
-		public function getCountry() : string {
-			return substr($this->value, 4, 2);
-		}
+    /**
+     * This method returns the BIC as defined in ISO 9362.
+     *
+     * @access public
+     * @return string the country code
+     */
+    public function __toString()
+    {
+        return $this->value;
+    }
 
-		/**
-		 * This method returns the BIC as defined in ISO 9362.
-		 *
-		 * @access public
-		 * @return string                                           the country code
-		 */
-		public function __toString() {
-			return $this->value;
-		}
-
-		/**
-		 * This method returns whether the specified value is a valid BIC as defined in ISO 9362.
-		 *
-		 * @access public
-		 * @param string $value                                     the value to be evaluated
-		 * @return boolean                                          whether the specified value
-		 *                                                          is a valid BIC
-		 */
-		public static function isValid($value) : bool {
-			return (is_string($value) && preg_match('/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/', $value));
-		}
-
-	}
+    /**
+     * This method returns whether the specified value is a valid BIC as defined in ISO 9362.
+     *
+     * @access public
+     * @param string $value the value to be evaluated
+     * @return boolean whether the specified value
+     *                 is a valid BIC
+     */
+    public static function isValid($value): bool
+    {
+        return (is_string($value) && preg_match('/^([a-zA-Z]){4}([a-zA-Z]){2}([0-9a-zA-Z]){2}([0-9a-zA-Z]{3})?$/', $value));
+    }
 
 }

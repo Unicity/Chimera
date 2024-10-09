@@ -16,136 +16,151 @@
  * limitations under the License.
  */
 
-namespace Unicity\Minify {
+namespace Unicity\Minify;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class will minify an XML file by removing unnecessary content according
-	 * to selected options.
-	 */
-	class XML extends Core\AbstractObject {
+/**
+ * This class will minify an XML file by removing unnecessary content according
+ * to selected options.
+ */
+class XML extends Core\AbstractObject
+{
+    /**
+     * This variable stores the XML data being processed.
+     *
+     * @access protected
+     * @var mixed
+     */
+    protected $xml;
 
-		/**
-		 * This variable stores the XML data being processed.
-		 *
-		 * @access protected
-		 * @var mixed
-		 */
-		protected $xml;
+    /**
+     * This variable stores which options to use when processing the XML.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $options;
 
-		/**
-		 * This variable stores which options to use when processing the XML.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $options;
+    /**
+     * "Minify" XML
+     *
+     * @access public
+     * @static
+     * @param string $xml
+     * @param array $options
+     *
+     * 'preserveComments' : boolean - (optional) whether to preserve (i.e. not remove) comments
+     * 'preserveEmptyNodes' : boolean - (optional) whether to preserve (i.e. not remove) empty nodes
+     * 'preserveWhiteSpace' : boolean - (optional) whether to preserve (i.e. not remove) redundant whitespace
+     *
+     * @return string
+     */
+    public static function minify(string $xml, $options = []): string
+    {
+        $minifier = new static($xml, $options);
 
-		/**
-		 * "Minify" XML
-		 *
-		 * @access public
-		 * @static
-		 * @param string $xml
-		 * @param array $options
-		 *
-		 * 'preserveComments' : boolean - (optional) whether to preserve (i.e. not remove) comments
-		 * 'preserveEmptyNodes' : boolean - (optional) whether to preserve (i.e. not remove) empty nodes
-		 * 'preserveWhiteSpace' : boolean - (optional) whether to preserve (i.e. not remove) redundant whitespace
-		 *
-		 * @return string
-		 */
-		public static function minify(string $xml, $options = array()) : string {
-			$minifier = new static($xml, $options);
-			return $minifier->process();
-		}
+        return $minifier->process();
+    }
 
-		/**
-		 * Create a minifier object
-		 *
-		 * @access public
-		 * @param string $xml
-		 * @param array $options
-		 */
-		public function __construct(string $xml, array $options = array()) {
-			$this->xml = str_replace("\r\n", "\n", trim($xml));
-			$this->options = array_merge(array(
-				'preserveComments' => true,
-				'preserveEmptyLines' => true,
-				'preserveEmptyNodes' => true,
-				'preserveWhiteSpace' => true,
-			), $options);
-		}
+    /**
+     * Create a minifier object
+     *
+     * @access public
+     * @param string $xml
+     * @param array $options
+     */
+    public function __construct(string $xml, array $options = [])
+    {
+        $this->xml = str_replace("\r\n", "\n", trim($xml));
+        $this->options = array_merge([
+            'preserveComments' => true,
+            'preserveEmptyAttributes' => true,
+            'preserveEmptyLines' => true,
+            'preserveEmptyNodes' => true,
+            'preserveWhiteSpace' => true,
+            'removeEmptyNodes' => [],
+        ], $options);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->xml);
-			unset($this->options);
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->xml);
+        unset($this->options);
+    }
 
-		/**
-		 * Minify the markeup given in the constructor
-		 *
-		 * @return string
-		 */
-		public function process() : string {
-			$xml = $this->xml;
+    /**
+     * Minify the markeup given in the constructor
+     *
+     * @return string
+     */
+    public function process(): string
+    {
+        $xml = $this->xml;
 
-			$document = new \DOMDocument();
+        $document = new \DOMDocument();
 
-			if (!$this->options['preserveWhiteSpace']) {
-				$document->preserveWhiteSpace = false;
-			}
-			else {
-				$xml = preg_replace('/ +/', ' ', $xml);
-				$xml = preg_replace('/ +(\\R)+/', "\n", $xml);
-			}
+        if (!$this->options['preserveWhiteSpace']) {
+            $document->preserveWhiteSpace = false;
+        } else {
+            $xml = preg_replace('/ +/', ' ', $xml);
+            $xml = preg_replace('/ +(\\R)+/', "\n", $xml);
+        }
 
-			$document->loadXML($xml, LIBXML_NOWARNING);
+        $document->loadXML($xml, LIBXML_NOWARNING);
 
-			$xpath = new \DOMXPath($document);
+        $xpath = new \DOMXPath($document);
 
-			// http://www.meetup.com/sf-php/messages/boards/thread/9078171
-			if (!$this->options['preserveComments']) {
-				while (($nodes = $xpath->query('//comment()')) && $nodes->length) {
-					foreach ($nodes as $node) {
-						$node->parentNode->removeChild($node);
-					}
-				}
-			}
+        // http://www.meetup.com/sf-php/messages/boards/thread/9078171
+        if (!$this->options['preserveComments']) {
+            while (($nodes = $xpath->query('//comment()')) && $nodes->length) {
+                foreach ($nodes as $node) {
+                    $node->parentNode->removeChild($node);
+                }
+            }
+        }
 
-			// http://stackoverflow.com/questions/8603237/remove-empty-tags-from-a-xml-with-php
-			// not(*) does not have children elements
-			// not(@*) does not have attributes
-			// text()[normalize-space()] nodes that include whitespace text
-			if (!$this->options['preserveEmptyNodes']) {
-				while (($nodes = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && $nodes->length) {
-					foreach ($nodes as $node) {
-						$node->parentNode->removeChild($node);
-					}
-				}
-			}
+        // http://stackoverflow.com/questions/8603237/remove-empty-tags-from-a-xml-with-php
+        // not(*) does not have children elements
+        // not(@*) does not have attributes
+        // text()[normalize-space()] nodes that include whitespace text
+        if (!$this->options['preserveEmptyNodes']) {
+            while (($nodes = $xpath->query('//*[not(*) and not(@*) and not(text()[normalize-space()])]')) && ($nodes->length > 0)) {
+                foreach ($nodes as $node) {
+                    $node->parentNode->removeChild($node);
+                }
+            }
+        }
 
-			$xml = $document->saveXML();
+        $xml = $document->saveXML();
 
-			if (!$this->options['preserveEmptyLines']) {
-				$lines = preg_split('/\\R/', $xml);
-				$lines = array_filter($lines, function($line) {
-					return (trim($line) != '');
-				});
-				$xml = implode("\n", $lines);
-				unset($lines);
-			}
+        $removeEmptyNodes = $this->options['removeEmptyNodes'];
+        if (is_array($removeEmptyNodes) && !empty($removeEmptyNodes)) {
+            foreach ($removeEmptyNodes as $node) {
+                $xml = preg_replace("/((<{$node}>\s+<\/{$node}>)|<{$node}\s*\/>)/", '', $xml);
+            }
+        }
 
-			return $xml;
-		}
+        if (!$this->options['preserveEmptyLines']) {
+            $lines = preg_split('/\\R/', $xml);
+            $lines = array_filter($lines, function ($line) {
+                return (trim($line) != '');
+            });
+            $xml = implode("\n", $lines);
+            unset($lines);
+        }
 
-	}
+        if (!$this->options['preserveEmptyAttributes']) {
+            $xml = preg_replace('/\s+([_a-z][_a-z0-9]+:)?[_a-z][_a-z0-9]+=""/i', '', $xml);
+        }
+
+        return $xml;
+    }
 
 }

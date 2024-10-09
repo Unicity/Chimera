@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\MappingService\Data {
+namespace Unicity\MappingService\Data;
 
-	/**
-	 * This interface provides a contract that defines a model.
-	 *
-	 * @access public
-	 * @interface
-	 * @package MappingService
-	 */
-	interface IModel { }
-
+/**
+ * This interface provides a contract that defines a model.
+ *
+ * @access public
+ * @interface
+ * @package MappingService
+ */
+interface IModel
+{
 }

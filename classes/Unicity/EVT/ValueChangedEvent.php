@@ -16,45 +16,49 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class ValueChangedEvent extends EVT\Event {
+class ValueChangedEvent extends EVT\Event
+{
+    protected $after;
+    protected $before;
 
-		protected $after;
-		protected $before;
+    public function __construct(EVT\Source $source, $before, $after)
+    {
+        parent::__construct($source);
+        $this->before = $before;
+        $this->after = $after;
+        $this->version = 1.0;
+    }
 
-		public function __construct(EVT\Source $source, $before, $after) {
-			parent::__construct($source);
-			$this->before = $before;
-			$this->after = $after;
-			$this->version = 1.0;
-		}
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->before);
+        unset($this->after);
+    }
 
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->before);
-			unset($this->after);
-		}
+    public function getAfter()
+    {
+        return $this->after;
+    }
 
-		public function getAfter() {
-			return $this->after;
-		}
+    public function getBefore()
+    {
+        return $this->before;
+    }
 
-		public function getBefore() {
-			return $this->before;
-		}
+    public function jsonSerialize()
+    {
+        $serialized = parent::jsonSerialize();
+        $serialized['details']['after'] = $this->after;
+        $serialized['details']['before'] = $this->before;
 
-		public function jsonSerialize() {
-			$serialized = parent::jsonSerialize();
-			$serialized['details']['after'] = $this->after;
-			$serialized['details']['before'] = $this->before;
-			return $serialized;
-		}
-
-	}
+        return $serialized;
+    }
 
 }

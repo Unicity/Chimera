@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Throwable\EmptyCollection {
+namespace Unicity\Throwable\EmptyCollection;
 
-	use \Unicity\Throwable;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents an Empty Collection Exception.
-	 *
-	 * @access public
-	 * @class
-	 * @package Throwable
-	 */
-	class Exception extends Throwable\Runtime\Exception { }
-
+/**
+ * This class represents an Empty Collection Exception.
+ *
+ * @access public
+ * @class
+ * @package Throwable
+ */
+class Exception extends Throwable\Runtime\Exception
+{
 }

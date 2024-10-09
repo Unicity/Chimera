@@ -16,27 +16,28 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\IO;
-	use \Unicity\VLD;
+use Unicity\IO;
+use Unicity\VLD;
 
-	class BlockRef extends VLD\Parser\Definition\Block {
+class BlockRef extends VLD\Parser\Definition\Block
+{
+    protected $token;
 
-		protected $token;
+    public function __construct(VLD\Parser\Context $context, string $token)
+    {
+        parent::__construct($context);
+        $this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
+    }
 
-		public function __construct(VLD\Parser\Context $context, string $token) {
-			parent::__construct($context);
-			$this->token = (strlen($token) > 2) ? substr($token, 1, -1) : '';
-		}
+    public function get()
+    {
+        $parser = new VLD\Parser(new \Unicity\IO\FileReader(new IO\File($this->token)));
 
-		public function get() {
-			$parser = new VLD\Parser(new \Unicity\IO\FileReader(new IO\File($this->token)));
-			return $parser->read($this->context);
-		}
-
-	}
+        return $parser->read($this->context);
+    }
 
 }

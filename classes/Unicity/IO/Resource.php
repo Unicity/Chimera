@@ -16,22 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\IO {
+namespace Unicity\IO;
 
-	use \Unicity\Core;
-	use \Unicity\Throwable;
+use Unicity\Core;
 
-	/**
-	 * This class represent a resource.
-	 *
-	 * @access public
-	 * @class
-	 * @package IO
-	 */
-	class Resource extends Core\AbstractObject {
-
-	}
-
+/**
+ * This class represent a resource.
+ *
+ * @access public
+ * @class
+ * @package IO
+ */
+class Resource extends Core\AbstractObject
+{
 }

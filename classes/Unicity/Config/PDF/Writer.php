@@ -16,106 +16,107 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\PDF {
+namespace Unicity\Config\PDF;
 
-	include_once(implode(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', '..', '..', 'mPDF', 'mpdf.php')));
+include_once(implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), '..', '..', '..', 'mPDF', 'mpdf.php']));
 
-	use \Unicity\Config;
-	use \Unicity\Core;
+use Unicity\Config;
+use Unicity\Core;
 
-	/**
-	 * This class is used to write a collection to an XML file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\HTML\Writer {
+/**
+ * This class is used to write a collection to an XML file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\HTML\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = static::useArrays($data, true);
+        $this->metadata = [
+            'declaration' => true,
+            'ext' => '.pdf',
+            'memory_limit' => '64M',
+            'mime' => 'application/pdf',
+            'minify' => [],
+            'template' => '',
+            'url' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = static::useArrays($data, true);
-			$this->metadata = array(
-				'declaration' => true,
-				'ext' => '.pdf',
-				'memory_limit' => '64M',
-				'mime' => 'application/pdf',
-				'minify' => array(),
-				'template' => '',
-				'url' => null,
-			);
-		}
+    /**
+     * This method displays the data.
+     *
+     * @access public
+     * @param Core\IMessage $message the message container
+     */
+    public function display(Core\IMessage $message = null): void
+    {
+        ini_set('memory_limit', $this->metadata['memory_limit']);
 
-		/**
-		 * This method displays the data.
-		 *
-		 * @access public
-		 * @param Core\IMessage $message                            the message container
-		 */
-		public function display(Core\IMessage $message = null) : void {
-			ini_set('memory_limit', $this->metadata['memory_limit']);
+        $buffer = $this->render();
 
-			$buffer = $this->render();
+        $mpdf = new \mPDF();
+        $mpdf->WriteHTML($buffer, 0);
+        $mpdf->Output();
+        exit();
+    }
 
-			$mpdf = new \mPDF();
-			$mpdf->WriteHTML($buffer, 0);
-			$mpdf->Output();
-			exit();
-		}
+    /**
+     * This method exports the data.
+     *
+     * @access public
+     * @param Core\IMessage $message the message container
+     */
+    public function export(Core\IMessage $message = null): void
+    {
+        ini_set('memory_limit', $this->metadata['memory_limit']);
 
-		/**
-		 * This method exports the data.
-		 *
-		 * @access public
-		 * @param Core\IMessage $message                            the message container
-		 */
-		public function export(Core\IMessage $message = null) : void {
-			ini_set('memory_limit', $this->metadata['memory_limit']);
+        if (isset($this->metadata['uri']) && !empty($this->metadata['uri'])) {
+            $uri = preg_split('!(\?.*|/)!', $this->metadata['uri'], -1, PREG_SPLIT_NO_EMPTY);
+            $uri = $uri[count($uri) - 1];
+        } else {
+            $uri = date('YmdHis') . $this->metadata['ext'];
+        }
 
-			if (isset($this->metadata['uri']) && !empty($this->metadata['uri'])) {
-				$uri = preg_split('!(\?.*|/)!', $this->metadata['uri'], -1, PREG_SPLIT_NO_EMPTY);
-				$uri = $uri[count($uri) - 1];
-			}
-			else {
-				$uri = date('YmdHis') . $this->metadata['ext'];
-			}
+        $buffer = $this->render();
 
-			$buffer = $this->render();
+        $mpdf = new \mPDF();
+        $mpdf->WriteHTML($buffer, 0);
+        $mpdf->Output($uri, 'D');
+        exit();
+    }
 
-			$mpdf = new \mPDF();
-			$mpdf->WriteHTML($buffer, 0);
-			$mpdf->Output($uri, 'D');
-			exit();
-		}
+    /**
+     * This method saves the data to disk.
+     *
+     * @access public
+     */
+    public function save()
+    {
+        ini_set('memory_limit', $this->metadata['memory_limit']);
 
-		/**
-		 * This method saves the data to disk.
-		 *
-		 * @access public
-		 */
-		public function save() {
-			ini_set('memory_limit', $this->metadata['memory_limit']);
+        if (!isset($this->metadata['uri']) || empty($this->metadata['uri'])) {
+            date_default_timezone_set('America/Denver');
+            $this->metadata['uri'] = date('YmdHis') . $this->metadata['ext'];
+        }
 
-			if (!isset($this->metadata['uri']) || empty($this->metadata['uri'])) {
-				date_default_timezone_set('America/Denver');
-				$this->metadata['uri'] = date('YmdHis') . $this->metadata['ext'];
-			}
+        $uri = $this->metadata['uri'];
+        $buffer = $this->render();
 
-			$uri = $this->metadata['uri'];
-			$buffer = $this->render();
-
-			$mpdf = new \mPDF();
-			$mpdf->WriteHTML($buffer, 0);
-			$mpdf->Output($uri, 'F');
-		}
-
-	}
+        $mpdf = new \mPDF();
+        $mpdf->WriteHTML($buffer, 0);
+        $mpdf->Output($uri, 'F');
+    }
 
 }

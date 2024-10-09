@@ -16,64 +16,65 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT\EventWriter;
 
-	use \Aws\Kinesis\KinesisClient;
-	use \Unicity\EVT;
+use Aws\Kinesis\KinesisClient;
+use Unicity\EVT;
 
-	class Kinesis extends EVT\EventWriter {
+class Kinesis extends EVT\EventWriter
+{
+    /**
+     * This variable stores a reference to the Kinesis client.
+     *
+     * @access protected
+     * @var string
+     */
+    protected $client;
 
-		/**
-		 * This variable stores a reference to the Kinesis client.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $client;
+    /**
+     * This constructor initializes the class with the specified resource.
+     *
+     * @access public
+     * @param array $metadata the metadata to be set
+     */
+    public function __construct(array $metadata = [])
+    {
+        parent::__construct($metadata);
+        $this->client = KinesisClient::factory([
+            'key' => $metadata['key'],
+            'secret' => $metadata['secret'],
+            'region' => $metadata['region'],
+        ]);
+    }
 
-		/**
-		 * This constructor initializes the class with the specified resource.
-		 *
-		 * @access public
-		 * @param array $metadata                                   the metadata to be set
-		 */
-		public function __construct(array $metadata = array()) {
-			parent::__construct($metadata);
-			$this->client = KinesisClient::factory(array(
-				'key' => $metadata['key'],
-				'secret' => $metadata['secret'],
-				'region'  => $metadata['region'],
-			));
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->client);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->client);
-		}
-
-		/**
-		 * This method writes an array of events to the event storage.
-		 *
-		 * @access public
-		 * @param array $events                                     the events to be written
-		 */
-		public function write(array $events) {
-			foreach ($events as $event) {
-				$this->client->putRecord([
-					'Data' => json_encode($event),
-					'PartitionKey' => $this->metadata['partition'],
-					'StreamName' => $this->metadata['stream'],
-				]);
-			}
-		}
-
-	}
+    /**
+     * This method writes an array of events to the event storage.
+     *
+     * @access public
+     * @param array $events the events to be written
+     */
+    public function write(array $events)
+    {
+        foreach ($events as $event) {
+            $this->client->putRecord([
+                'Data' => json_encode($event),
+                'PartitionKey' => $this->metadata['partition'],
+                'StreamName' => $this->metadata['stream'],
+            ]);
+        }
+    }
 
 }

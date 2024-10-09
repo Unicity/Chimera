@@ -16,58 +16,57 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\Core;
-	use \Unicity\VLD;
+use Unicity\Core;
+use Unicity\VLD;
 
-	class AllControl extends VLD\Parser\Definition\Control {
+class AllControl extends VLD\Parser\Definition\Control
+{
+    protected $policy;
 
-		protected $policy;
+    protected $statements;
 
-		protected $statements;
+    public function __construct(VLD\Parser\Context $context, $policy, array $statements)
+    {
+        parent::__construct($context);
+        $this->policy = $policy;
+        $this->statements = $statements;
+    }
 
-		public function __construct(VLD\Parser\Context $context, $policy, array $statements) {
-			parent::__construct($context);
-			$this->policy = $policy;
-			$this->statements = $statements;
-		}
+    public function get()
+    {
+        if (is_array($this->policy) && isset($this->policy['successes'])) {
+            $successesRequired = Core\Convert::toInteger($this->policy['successes']);
+            if ($successesRequired < 0) {
+                $successesRequired = count($this->statements) + $successesRequired;
+            }
+        } else {
+            $successesRequired = count($this->statements);
+        }
 
-		public function get() {
-			if (is_array($this->policy) && isset($this->policy['successes'])) {
-				$successesRequired = Core\Convert::toInteger($this->policy['successes']);
-				if ($successesRequired < 0) {
-					$successesRequired = count($this->statements) + $successesRequired;
-				}
-			}
-			else {
-				$successesRequired = count($this->statements);
-			}
+        $feedback = new VLD\Parser\Feedback();
 
-			$feedback = new VLD\Parser\Feedback();
+        $results = [];
+        $successes = 0;
 
-			$results = array();
-			$successes = 0;
+        foreach ($this->statements as $i => $statement) {
+            $results[$i] = $statement->get();
+            $feedback->addRecommendations($results[$i]);
+            if ($results[$i]->getNumberOfViolations() === 0) {
+                $successes++;
+            }
+        }
 
-			foreach ($this->statements as $i => $statement) {
-				$results[$i] = $statement->get();
-				$feedback->addRecommendations($results[$i]);
-				if ($results[$i]->getNumberOfViolations() === 0) {
-                    $successes++;
-                }
-			}
+        if ($successes < $successesRequired) {
+            foreach ($results as $result) {
+                $feedback->addViolations($result);
+            }
+        }
 
-			if ($successes < $successesRequired) {
-				foreach ($results as $result) {
-					$feedback->addViolations($result);
-				}
-			}
-
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

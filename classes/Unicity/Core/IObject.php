@@ -17,60 +17,58 @@
  * limitations under the License.
  */
 
-namespace Unicity\Core {
+namespace Unicity\Core;
 
-	/**
-	 * This interface provides a contract that defines an object.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Core
-	 */
-	interface IObject {
+/**
+ * This interface provides a contract that defines an object.
+ *
+ * @access public
+ * @interface
+ * @package Core
+ */
+interface IObject
+{
+    /**
+     * This method nicely writes out information about the object.
+     *
+     * @access public
+     */
+    public function __debug(): void;
 
-		/**
-		 * This method nicely writes out information about the object.
-		 *
-		 * @access public
-		 */
-		public function __debug() : void;
+    /**
+     * This method evaluates whether the specified object is equal to the current
+     * object.
+     *
+     * @access public
+     * @param mixed $object the object to be evaluated
+     * @return boolean whether the specified object is equal
+     *                 to the current object
+     */
+    public function __equals($object);
 
-		/**
-		 * This method evaluates whether the specified object is equal to the current
-		 * object.
-		 *
-		 * @access public
-		 * @param mixed $object                                     the object to be evaluated
-		 * @return boolean                                          whether the specified object is equal
-		 *                                                          to the current object
-		 */
-		public function __equals($object);
+    /**
+     * This method returns the name of the called class.
+     *
+     * @access public
+     * @return string the name of the called class
+     */
+    public function __getClass(): string;
 
-		/**
-		 * This method returns the name of the called class.
-		 *
-		 * @access public
-		 * @return string                                           the name of the called class
-		 */
-		public function __getClass() : string;
+    /**
+     * This method returns the current object's hash code.
+     *
+     * @access public
+     * @return string the current object's hash code
+     */
+    public function __hashCode(): string;
 
-		/**
-		 * This method returns the current object's hash code.
-		 *
-		 * @access public
-		 * @return string                                           the current object's hash code
-		 */
-		public function __hashCode() : string;
-
-		/**
-		 * This method returns the current object as a serialized string.
-		 *
-		 * @access public
-		 * @return string                                           a serialized string representing
-		 *                                                          the current object
-		 */
-		public function __toString();
-
-	}
+    /**
+     * This method returns the current object as a serialized string.
+     *
+     * @access public
+     * @return string a serialized string representing
+     *                the current object
+     */
+    public function __toString();
 
 }

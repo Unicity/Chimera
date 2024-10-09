@@ -16,24 +16,23 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD {
+namespace Unicity\VLD;
 
-	use \Unicity\BT;
-	use \Unicity\Core;
-	use \Unicity\VLD;
+use Unicity\BT;
+use Unicity\Core;
+use Unicity\VLD;
 
-	abstract class Module extends Core\AbstractObject {
+abstract class Module extends Core\AbstractObject
+{
+    protected $policy;
 
-		protected $policy;
+    public function __construct($policy)
+    {
+        $this->policy = $policy;
+    }
 
-		public function __construct($policy) {
-			$this->policy = $policy;
-		}
-
-		public abstract function process(BT\Entity $entity, array $paths) : VLD\Parser\Feedback;
-
-	}
+    abstract public function process(BT\Entity $entity, array $paths): VLD\Parser\Feedback;
 
 }

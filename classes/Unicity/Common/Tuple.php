@@ -17,168 +17,177 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common {
+namespace Unicity\Common;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\Throwable;
+use Unicity\Common;
+use Unicity\Core;
 
-	final class Tuple extends Core\AbstractObject /*implements Common\IList*/ {
+final class Tuple extends Core\AbstractObject /*implements Common\IList*/
+{
+    #region Properties
 
-		#region Properties
+    /**
+     * This variable stores references to commonly used singletons.
+     *
+     * @access protected
+     * @static
+     * @var array
+     */
+    protected static $singletons = [];
 
-		/**
-		 * This variable stores references to commonly used singletons.
-		 *
-		 * @access protected
-		 * @static
-		 * @var array
-		 */
-		protected static $singletons = array();
+    /**
+     * This variable stores the elements in the collection.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $elements;
 
-		/**
-		 * This variable stores the elements in the collection.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $elements;
+    #endregion
 
-		#endregion
+    #region Methods -> Initialization
 
-		#region Methods -> Initialization
+    /**
+     * This method returns a value as a boxed object.  A value is typically a PHP typed
+     * primitive or object.  It is considered "not" type-safe.
+     *
+     * @access public
+     * @static
+     * @param array $xs the value(s) to be boxed
+     * @return Common\Tuple the boxed object
+     */
+    public static function box(array $xs)
+    {
+        return new Common\Tuple($xs);
+    }
 
-		/**
-		 * This method returns a value as a boxed object.  A value is typically a PHP typed
-		 * primitive or object.  It is considered "not" type-safe.
-		 *
-		 * @access public
-		 * @static
-		 * @param array $xs                                         the value(s) to be boxed
-		 * @return Common\Tuple                                      the boxed object
-		 */
-		public static function box(array $xs) {
-			return new Common\Tuple($xs);
-		}
+    /**
+     * This method returns a value as a boxed object.  A value is typically a PHP typed
+     * primitive or object.  It is considered "not" type-safe.
+     *
+     * @access public
+     * @static
+     * @param mixed ...$xs the value(s) to be boxed
+     * @return Common\Tuple the boxed object
+     */
+    public static function box2(...$xs)
+    {
+        return Common\Tuple::box($xs);
+    }
 
-		/**
-		 * This method returns a value as a boxed object.  A value is typically a PHP typed
-		 * primitive or object.  It is considered "not" type-safe.
-		 *
-		 * @access public
-		 * @static
-		 * @param mixed ...$xs                                      the value(s) to be boxed
-		 * @return Common\Tuple                                      the boxed object
-		 */
-		public static function box2(...$xs) {
-			return Common\Tuple::box($xs);
-		}
+    /**
+     * This method returns an empty instance.
+     *
+     * @access public
+     * @static
+     * @return Common\Tuple an empty array list
+     */
+    public static function empty_()
+    {
+        if (!isset(static::$singletons[0])) {
+            static::$singletons[0] = new Common\Tuple([]);
+        }
 
-		/**
-		 * This method returns an empty instance.
-		 *
-		 * @access public
-		 * @static
-		 * @return Common\Tuple                                      an empty array list
-		 */
-		public static function empty_() {
-			if (!isset(static::$singletons[0])) {
-				static::$singletons[0] = new Common\Tuple(array());
-			}
-			return static::$singletons[0];
-		}
+        return static::$singletons[0];
+    }
 
-		#endregion
+    #endregion
 
-		#region Methods -> Interface
+    #region Methods -> Interface
 
-		/**
-		 * This constructor initializes the class with the specified value.
-		 *
-		 * @access public
-		 * @param array $value                                      the value to be assigned
-		 */
-		public function __construct(array $value) {
-			$this->elements = $value;
-		}
+    /**
+     * This constructor initializes the class with the specified value.
+     *
+     * @access public
+     * @param array $value the value to be assigned
+     */
+    public function __construct(array $value)
+    {
+        $this->elements = $value;
+    }
 
-		/**
-		 * This method returns the length of this array list.
-		 *
-		 * @access public
-		 * @final
-		 * @return int                                              the length of this array list
-		 */
-		public function count() {
-			return count($this->elements);
-		}
+    /**
+     * This method returns the length of this array list.
+     *
+     * @access public
+     * @final
+     * @return int the length of this array list
+     */
+    public function count()
+    {
+        return count($this->elements);
+    }
 
-		/**
-		 * This method returns the first item in the tuple.
-		 *
-		 * @access public
-		 * @return mixed                                            the first item in the tuple
-		 */
-		public function first() {
-			return $this->elements[0];
-		}
+    /**
+     * This method returns the first item in the tuple.
+     *
+     * @access public
+     * @return mixed the first item in the tuple
+     */
+    public function first()
+    {
+        return $this->elements[0];
+    }
 
-		/**
-		 * This method returns the item at the specified index.
-		 *
-		 * @access public
-		 * @final
-		 * @param integer $i                                    the index of the item
-		 * @return mixed                                            the item at the specified index
-		 */
-		public function getValue($i) {
-			return $this->elements[$i];
-		}
+    /**
+     * This method returns the item at the specified index.
+     *
+     * @access public
+     * @final
+     * @param integer $i the index of the item
+     * @return mixed the item at the specified index
+     */
+    public function getValue($i)
+    {
+        return $this->elements[$i];
+    }
 
-		/**
-		 * This method (aka "null") returns whether this list is empty.
-		 *
-		 * @access public
-		 * @return boolean                                          whether the list is empty
-		 */
-		public final function isEmpty() {
-			return empty($this->elements);
-		}
+    /**
+     * This method (aka "null") returns whether this list is empty.
+     *
+     * @access public
+     * @return boolean whether the list is empty
+     */
+    final public function isEmpty()
+    {
+        return empty($this->elements);
+    }
 
-		/**
-		 * This method evaluates whether the tuple is a pair.
-		 *
-		 * @access public
-		 * @return boolean                                             whether the tuple is a pair
-		 */
-		public function isPair() {
-			return ($this->count() == 2);
-		}
+    /**
+     * This method evaluates whether the tuple is a pair.
+     *
+     * @access public
+     * @return boolean whether the tuple is a pair
+     */
+    public function isPair()
+    {
+        return ($this->count() == 2);
+    }
 
-		/**
-		 * This method returns the second item in the tuple.
-		 *
-		 * @access public
-		 * @final
-		 * @return mixed                                            the second item in the tuple
-		 */
-		public function second() {
-			return $this->elements[1];
-		}
+    /**
+     * This method returns the second item in the tuple.
+     *
+     * @access public
+     * @final
+     * @return mixed the second item in the tuple
+     */
+    public function second()
+    {
+        return $this->elements[1];
+    }
 
-		/**
-		 * This method returns the object as a string.
-		 *
-		 * @access public
-		 * @final
-		 * @return string                                           the object as a string
-		 */
-		public final function __toString() {
-			return json_encode($this->elements);
-		}
+    /**
+     * This method returns the object as a string.
+     *
+     * @access public
+     * @final
+     * @return string the object as a string
+     */
+    final public function __toString()
+    {
+        return json_encode($this->elements);
+    }
 
-		#endregion
-
-	}
+    #endregion
 
 }

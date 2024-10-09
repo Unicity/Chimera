@@ -17,72 +17,75 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner\TokenRule {
+namespace Unicity\Lexer\Scanner\TokenRule;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Lexer;
 
-	/**
-	 * This class represents the rule definition for a "delimiter" token, which the tokenizer will use
-	 * to tokenize a string.
-	 *
-	 * @access public
-	 * @class
-	 * @package Lexer
-	 */
-	class Delimiter extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
+/**
+ * This class represents the rule definition for a "delimiter" token, which the tokenizer will use
+ * to tokenize a string.
+ *
+ * @access public
+ * @class
+ * @package Lexer
+ */
+class Delimiter extends Core\AbstractObject implements Lexer\Scanner\ITokenRule
+{
+    /**
+     * This variable stores the delimiter character.
+     *
+     * @access protected
+     * @var string
+     */
+    protected $delimiter;
 
-		/**
-		 * This variable stores the delimiter character.
-		 *
-		 * @access protected
-		 * @var string
-		 */
-		protected $delimiter;
+    /*
+     * This constructor initializes the class.
+     *
+     * @access public
+     * @param string $delimiter                                 the delimiter character
+     */
+    public function __construct(string $delimiter)
+    {
+        $this->delimiter = $delimiter;
+    }
 
-		/*
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 * @param string $delimiter                                 the delimiter character
-		 */
-		public function __construct(string $delimiter) {
-			$this->delimiter = $delimiter;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->delimiter);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->delimiter);
-		}
+    /**
+     * This method return a tuple representing the token discovered.
+     *
+     * @access public
+     * @param \Unicity\IO\Reader $reader the reader to be used
+     * @return \Unicity\Lexer\Scanner\Tuple a tuple representing the token
+     *                                      discovered
+     */
+    public function process(IO\Reader $reader): ?Lexer\Scanner\Tuple
+    {
+        $index = $reader->position();
+        $char = $reader->readChar($index, false);
+        if (($char !== null) && ($char == $this->delimiter)) {
+            $tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::delimiter(), new Common\StringRef($char), $index);
+            $reader->skip(1);
 
-		/**
-		 * This method return a tuple representing the token discovered.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\Reader $reader                        the reader to be used
-		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
-		 *                                                          discovered
-		 */
-		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
-			$index = $reader->position();
-		    $char = $reader->readChar($index, false);
-			if (($char !== null) && ($char == $this->delimiter)) {
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::delimiter(), new Common\StringRef($char), $index);
-				$reader->skip(1);
-				return $tuple;
-			}
-			return null;
-		}
+            return $tuple;
+        }
 
-	}
+        return null;
+    }
 
 }

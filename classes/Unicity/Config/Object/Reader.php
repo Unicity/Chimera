@@ -16,65 +16,69 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\Object {
+namespace Unicity\Config\Object;
 
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Throwable;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\IO;
 
-	/**
-	 * This class is used to build a collection from a PHP serialized object file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Reader extends Config\Reader {
+/**
+ * This class is used to build a collection from a PHP serialized object file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Reader extends Config\Reader
+{
+    /**
+     * This constructor initializes the class with the specified resource.
+     *
+     * @access public
+     * @param IO\File $file the file to be processed
+     * @param array $metadata the metadata to be set
+     */
+    public function __construct(IO\File $file, array $metadata = [])
+    {
+        $this->file = $file;
+        $this->metadata = array_merge([
+            'bom' => false, // whether to remove BOM from the first line
+        ], $metadata);
+    }
 
-		/**
-		 * This constructor initializes the class with the specified resource.
-		 *
-		 * @access public
-		 * @param IO\File $file                                     the file to be processed
-		 * @param array $metadata                                   the metadata to be set
-		 */
-		public function __construct(IO\File $file, array $metadata = array()) {
-			$this->file = $file;
-			$this->metadata = array_merge(array(
-				'bom' => false, // whether to remove BOM from the first line
-			), $metadata);
-		}
+    /**
+     * This method returns the processed resource as a collection.
+     *
+     * @access public
+     * @param string $path the path to the value to be returned
+     * @return mixed the resource as a collection
+     */
+    public function read($path = null)
+    {
+        if ($this->file->getFileSize() > 0) {
+            $buffer = file_get_contents((string)$this->file);
 
-		/**
-		 * This method returns the processed resource as a collection.
-		 *
-		 * @access public
-		 * @param string $path                                      the path to the value to be returned
-		 * @return mixed                                            the resource as a collection
-		 */
-		public function read($path = null) {
-			if ($this->file->getFileSize() > 0) {
-				$buffer = file_get_contents((string)$this->file);
+            if ($this->metadata['bom']) {
+                $buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
+            }
 
-				if ($this->metadata['bom']) {
-					$buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
-				}
+            $collection = unserialize($buffer);
 
-				$collection = unserialize($buffer);
+            if ($path !== null) {
+                try {
+                    $path = Core\Convert::toString($path);
+                    $collection = Config\Helper::factory($collection)->getValue($path);
+                } catch (\Throwable $ex) {
+                    return null;
+                }
+            }
 
-				if ($path !== null) {
-					$path = Core\Convert::toString($path);
-					$collection = Config\Helper::factory($collection)->getValue($path);
-				}
+            return $collection;
+        }
 
-				return $collection;
-			}
-			return null;
-		}
-
-	}
+        return null;
+    }
 
 }

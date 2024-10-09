@@ -16,112 +16,113 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SOAP {
+namespace Unicity\SOAP;
 
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Throwable;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents SOAP client to send requests.
-	 *
-	 * @access public
-	 * @class
-	 * @package SOAP
-	 */
-	class Client extends Core\AbstractObject {
+/**
+ * This class represents SOAP client to send requests.
+ *
+ * @access public
+ * @class
+ * @package SOAP
+ */
+class Client extends Core\AbstractObject
+{
+    /**
+     * This variable stores the options associated with the request.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $options;
 
-		/**
-		 * This variable stores the options associated with the request.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $options;
+    /**
+     * This variable stores the URL to be used when making a request.
+     *
+     * @access protected
+     * @var \Unicity\IO\URL
+     */
+    protected $url;
 
-		/**
-		 * This variable stores the URL to be used when making a request.
-		 *
-		 * @access protected
-		 * @var \Unicity\IO\URL
-		 */
-		protected $url;
+    /**
+     * This constructor initializes the class with the specified URL.
+     *
+     * @access public
+     * @param \Unicity\IO\URL $url the URL to be used
+     * @param array $options the options to be associated
+     *                       with the request
+     */
+    public function __construct(IO\URL $url, array $options = [])
+    {
+        $this->url = $url;
+        $this->options = $options;
+    }
 
-		/**
-		 * This constructor initializes the class with the specified URL.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\URL $url                              the URL to be used
-		 * @param array $options                                    the options to be associated
-		 *                                                          with the request
-		 */
-		public function __construct(IO\URL $url, array $options = array()) {
-			$this->url = $url;
-			$this->options = $options;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->options);
+        unset($this->url);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->options);
-			unset($this->url);
-		}
+    /**
+     * This method makes a SOAP request with the specified envelop.
+     *
+     * @access public
+     * @param string $envelop the envelop to be sent
+     * @return mixed the response message
+     * @throws \Unicity\Throwable\Runtime\Exception indicates that the request could
+     *                                              not be processed
+     *
+     * @see http://eureka.ykyuen.info/2011/05/05/php-send-a-soap-request-by-curl/
+     */
+    public function send($envelop)
+    {
+        $request = \Leap\Core\Web\cURL\Request::factory($this->url)
+            ->setHeader('Content-Type', 'text/xml; charset="UTF-8"')
+            ->setHeader('Accept', 'text/xml')
+            ->setHeader('Cache-Control', 'no-cache')
+            ->setHeader('Pragma', 'no-cache')
+            ->setHeader('SOAPAction', '"run"')
+            ->setHeader('Content-Length', strlen($envelop));
 
-		/**
-		 * This method makes a SOAP request with the specified envelop.
-		 *
-		 * @access public
-		 * @param string $envelop                                   the envelop to be sent
-		 * @return mixed                                            the response message
-		 * @throws \Unicity\Throwable\Runtime\Exception             indicates that the request could
-		 *                                                          not be processed
-		 *
-		 * @see http://eureka.ykyuen.info/2011/05/05/php-send-a-soap-request-by-curl/
-		 */
-		public function send($envelop) {
-			$request = \Leap\Core\Web\cURL\Request::factory($this->url)
-				->setHeader('Content-Type', 'text/xml; charset="UTF-8"')
-				->setHeader('Accept', 'text/xml')
-				->setHeader('Cache-Control', 'no-cache')
-				->setHeader('Pragma', 'no-cache')
-				->setHeader('SOAPAction', '"run"')
-				->setHeader('Content-Length', strlen($envelop));
+        $defaults = [
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+        ];
 
-			$defaults = array(
-				CURLOPT_CONNECTTIMEOUT => 10,
-				CURLOPT_TIMEOUT => 10,
-				CURLOPT_SSL_VERIFYPEER => false,
-				CURLOPT_SSL_VERIFYHOST => false,
-			);
+        $message = [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $envelop,
+        ];
 
-			$message = array(
-				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => $envelop,
-			);
+        $options = $defaults + $this->options + $message;
 
-			$options = $defaults + $this->options + $message;
+        foreach ($options as $key => $value) {
+            $request->setOption($key, $value);
+        }
 
-			foreach ($options as $key => $value) {
-				$request->setOption($key, $value);
-			}
+        $response = $request->post(true);
 
-			$response = $request->post(TRUE);
+        $status = $response->getHeader('http_code');
 
-			$status = $response->getHeader('http_code');
+        if (!in_array($status, [200])) {
+            throw new Throwable\Runtime\Exception('Failed to execute SOAP request. Expected status code "200", but got ":status" instead.', [':status' => $status]);
+        }
 
-			if (!in_array($status, array(200))) {
-				throw new Throwable\Runtime\Exception('Failed to execute SOAP request. Expected status code "200", but got ":status" instead.', array(':status' => $status));
-			}
-
-			return $response->getBody();
-		}
-
-	}
+        return $response->getBody();
+    }
 
 }

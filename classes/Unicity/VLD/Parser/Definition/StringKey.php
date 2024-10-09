@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class StringKey extends VLD\Parser\Definition\Key {
+class StringKey extends VLD\Parser\Definition\Key
+{
+    protected $token;
 
-		protected $token;
+    public function __construct(VLD\Parser\Context $context, string $token)
+    {
+        parent::__construct($context);
+        $this->token = $token;
+    }
 
-		public function __construct(VLD\Parser\Context $context, string $token) {
-			parent::__construct($context);
-			$this->token = $token;
-		}
-
-		public function get() {
-			return $this->token;
-		}
-
-	}
+    public function get()
+    {
+        return $this->token;
+    }
 
 }

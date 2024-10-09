@@ -16,39 +16,40 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	class SeqControl extends VLD\Parser\Definition\Control {
+class SeqControl extends VLD\Parser\Definition\Control
+{
+    protected $policy;
 
-		protected $policy;
+    protected $statements;
 
-		protected $statements;
+    public function __construct(VLD\Parser\Context $context, $policy, array $statements)
+    {
+        parent::__construct($context);
+        $this->policy = $policy;
+        $this->statements = $statements;
+    }
 
-		public function __construct(VLD\Parser\Context $context, $policy, array $statements) {
-			parent::__construct($context);
-			$this->policy = $policy;
-			$this->statements = $statements;
-		}
+    public function get()
+    {
+        $feedback = new VLD\Parser\Feedback();
 
-		public function get() {
-			$feedback = new VLD\Parser\Feedback();
+        foreach ($this->statements as $statement) {
+            $result = $statement->get();
+            $feedback->addRecommendations($result);
+            if ($result->getNumberOfViolations() > 0) {
+                $feedback->addViolations($result);
 
-			foreach ($this->statements as $statement) {
-				$result = $statement->get();
-				$feedback->addRecommendations($result);
-				if ($result->getNumberOfViolations() > 0) {
-					$feedback->addViolations($result);
-					break;
-				}
-			}
+                break;
+            }
+        }
 
-			return $feedback;
-		}
-
-	}
+        return $feedback;
+    }
 
 }

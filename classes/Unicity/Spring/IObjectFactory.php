@@ -17,79 +17,77 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring {
+namespace Unicity\Spring;
 
-	use \Unicity\Spring;
+use Unicity\Spring;
 
-	/**
-	 * This class provides the contract for an object factory that will read a container
-	 * with object definitions.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Spring
-	 */
-	interface IObjectFactory {
+/**
+ * This class provides the contract for an object factory that will read a container
+ * with object definitions.
+ *
+ * @access public
+ * @interface
+ * @package Spring
+ */
+interface IObjectFactory
+{
+    /**
+     * This function instantiates an object identified by the specified id.
+     *
+     * @access public
+     * @param string $id the object's id
+     * @return mixed an instance of the class
+     */
+    public function getObject(string $id);
 
-		/**
-		 * This function instantiates an object identified by the specified id.
-		 *
-		 * @access public
-		 * @param string $id                                        the object's id
-		 * @return mixed                                            an instance of the class
-		 */
-		public function getObject(string $id);
+    /**
+     * This method returns the definition of an object matching the specified id.
+     *
+     * @access public
+     * @param string $id the object's id
+     * @return Spring\Object\Definition the object's definition
+     */
+    public function getObjectDefinition(string $id);
 
-		/**
-		 * This method returns the definition of an object matching the specified id.
-		 *
-		 * @access public
-		 * @param string $id                                        the object's id
-		 * @return Spring\Object\Definition                         the object's definition
-		 */
-		public function getObjectDefinition(string $id);
+    /**
+     * This method returns an array of object ids that match the specified type (or if no type is specified
+     * then all ids in the current context).
+     *
+     * @access public
+     * @param string $type the type of objects
+     * @return array an array object ids
+     */
+    public function getObjectIds(string $type = null);
 
-		/**
-		 * This method returns an array of object ids that match the specified type (or if no type is specified
-		 * then all ids in the current context).
-		 *
-		 * @access public
-		 * @param string $type                                      the type of objects
-		 * @return array                                            an array object ids
-		 */
-		public function getObjectIds(string $type = null);
+    /**
+     * This function returns the scope of the object with the specified id.
+     *
+     * @access public
+     * @param string $id the object's id
+     * @return string the scope of the the object with the
+     *                specified id
+     */
+    public function getObjectScope(string $id);
 
-		/**
-		 * This function returns the scope of the object with the specified id.
-		 *
-		 * @access public
-		 * @param string $id                                        the object's id
-		 * @return string                                           the scope of the the object with the
-		 *                                                          specified id
-		 */
-		public function getObjectScope(string $id);
+    /**
+     * This function returns either the object's type for the specified id or NULL if the object's
+     * type cannot be determined.
+     *
+     * @access public
+     * @param string $id the object's id
+     * @return string the object's type
+     */
+    public function getObjectType(string $id);
 
-		/**
-		 * This function returns either the object's type for the specified id or NULL if the object's
-		 * type cannot be determined.
-		 *
-		 * @access public
-		 * @param string $id                                        the object's id
-		 * @return string                                           the object's type
-		 */
-		public function getObjectType(string $id);
-
-		/**
-		 * This function determines whether an object with the specified id has been defined
-		 * in the container.
-		 *
-		 * @access public
-		 * @param string $id                                        the object's id
-		 * @return boolean                                          whether an object with the specified id has
-		 *                                                          been defined in the container
-		 */
-		public function hasObject(string $id) : bool;
-
-	}
+    /**
+     * This function determines whether an object with the specified id has been defined
+     * in the container.
+     *
+     * @access public
+     * @param string $id the object's id
+     * @return boolean whether an object with the specified id has
+     *                 been defined in the container
+     */
+    public function hasObject(string $id): bool;
 
 }

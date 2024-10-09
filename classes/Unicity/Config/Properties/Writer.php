@@ -16,83 +16,83 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\Properties {
+namespace Unicity\Config\Properties;
 
-	use \Unicity\Config;
-	use \Unicity\Core;
+use Unicity\Config;
+use Unicity\Core;
 
-	/**
-	 * This class is used to write a collection to a Java-style properties file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Writer extends Config\Writer {
+/**
+ * This class is used to write a collection to a Java-style properties file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Writer extends Config\Writer
+{
+    /**
+     * This constructor initializes the class with the specified data.
+     *
+     * @access public
+     * @param mixed $data the data to be written
+     */
+    public function __construct($data)
+    {
+        $this->data = $data;
+        $this->metadata = [
+            'encoding' => [Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING],
+            'eol' => "\n",
+            'ext' => '.properties',
+            'mime' => 'text/x-java-properties',
+            'schema' => [],
+            'url' => null,
+        ];
+    }
 
-		/**
-		 * This constructor initializes the class with the specified data.
-		 *
-		 * @access public
-		 * @param mixed $data                                       the data to be written
-		 */
-		public function __construct($data) {
-			$this->data = $data;
-			$this->metadata = array(
-				'encoding' => array(Core\Data\Charset::UTF_8_ENCODING, Core\Data\Charset::UTF_8_ENCODING),
-				'eol' => "\n",
-				'ext' => '.properties',
-				'mime' => 'text/x-java-properties',
-				'schema' => array(),
-				'url' => null,
-			);
-		}
+    /**
+     * This method renders the data for the writer.
+     *
+     * @access public
+     * @return string the processed data
+     */
+    public function render(): string
+    {
+        $buffer = '';
+        foreach ($this->data as $key => $value) {
+            $this->addProperty($buffer, Core\Convert::toString($key), $value);
+        }
 
-		/**
-		 * This method renders the data for the writer.
-		 *
-		 * @access public
-		 * @return string                                           the processed data
-		 */
-		public function render() : string {
-			$buffer = '';
-			foreach ($this->data as $key => $value) {
-				$this->addProperty($buffer, Core\Convert::toString($key), $value);
-			}
-			return $buffer;
-		}
+        return $buffer;
+    }
 
-		/**
-		 * This method recursively adds each entry as a property.
-		 *
-		 * @access protected
-		 * @param string &$buffer                                   the string buffer
-		 * @param string $key                                       the key to be used
-		 * @param mixed $value                                      the value to be added
-		 */
-		protected function addProperty(&$buffer, $key, $value) {
-			if (!is_array($value)) {
-				if (($value == null) || (is_object($value) && ($value instanceof Core\Data\Undefined))) {
-					$buffer .= $key . '=' . '';
-				}
-				else {
-					$type = (isset($this->metadata['schema'][$key])) ? $this->metadata['schema'][$key] : 'string';
-					$datum = Core\Convert::changeType($value, $type);
-					$datum = Core\Convert::toString($datum);
-					$datum = Core\Data\Charset::encode($datum, $this->metadata['encoding'][0], $this->metadata['encoding'][1]);
-					$buffer .= $key . '=' . $datum;
-				}
-				$buffer .= $this->metadata['eol'];
-			}
-			else {
-				foreach ($value as $k => $v) {
-					$this->addProperty($buffer, $key . '.' . Core\Convert::toString($k), $v);
-				}
-			}
-		}
-
-	}
+    /**
+     * This method recursively adds each entry as a property.
+     *
+     * @access protected
+     * @param string &$buffer the string buffer
+     * @param string $key the key to be used
+     * @param mixed $value the value to be added
+     */
+    protected function addProperty(&$buffer, $key, $value)
+    {
+        if (!is_array($value)) {
+            if (($value == null) || (is_object($value) && ($value instanceof Core\Data\Undefined))) {
+                $buffer .= $key . '=' . '';
+            } else {
+                $type = (isset($this->metadata['schema'][$key])) ? $this->metadata['schema'][$key] : 'string';
+                $datum = Core\Convert::changeType($value, $type);
+                $datum = Core\Convert::toString($datum);
+                $datum = Core\Data\Charset::encode($datum, $this->metadata['encoding'][0], $this->metadata['encoding'][1]);
+                $buffer .= $key . '=' . $datum;
+            }
+            $buffer .= $this->metadata['eol'];
+        } else {
+            foreach ($value as $k => $v) {
+                $this->addProperty($buffer, $key . '.' . Core\Convert::toString($k), $v);
+            }
+        }
+    }
 
 }

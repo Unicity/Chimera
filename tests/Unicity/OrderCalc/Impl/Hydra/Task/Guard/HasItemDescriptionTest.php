@@ -16,38 +16,39 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\OrderCalc\Engine\Task\Guard {
+namespace Unicity\OrderCalc\Engine\Task\Guard;
 
-	use \Unicity\UnitTest;
+use Unicity\UnitTest;
 
-	/**
-	 * @group OrderCalc
-	 */
-	class HasItemDescriptionTest extends UnitTest\TestCase {
+/**
+ * @group OrderCalc
+ */
+class HasItemDescriptionTest extends UnitTest\TestCase
+{
+    /**
+     * This method provides the data for testing the "process" method.
+     *
+     * @return array
+     */
+    public function data_process()
+    {
+        $data = [
+            [[1], [1]],
+        ];
 
-		/**
-		 * This method provides the data for testing the "process" method.
-		 *
-		 * @return array
-		 */
-		public function data_process() {
-			$data = array(
-				array(array(1), array(1)),
-			);
-			return $data;
-		}
+        return $data;
+    }
 
-		/**
-		 * This method tests the "process" method.
-		 *
-		 * @dataProvider data_process
-		 */
-		public function test_process(array $provided, array $expected) {
-			$this->assertSame($expected[0], $provided[0]);
-		}
-
-	}
+    /**
+     * This method tests the "process" method.
+     *
+     * @dataProvider data_process
+     */
+    public function test_process(array $provided, array $expected)
+    {
+        $this->assertSame($expected[0], $provided[0]);
+    }
 
 }

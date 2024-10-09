@@ -16,76 +16,77 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Core\Data\XML {
+namespace Unicity\Core\Data\XML;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class represents a filter for an XML document.
-	 *
-	 * @abstract
-	 * @access public
-	 * @class
-	 * @package Core
-	 */
-	abstract class Filter extends Core\AbstractObject {
+/**
+ * This class represents a filter for an XML document.
+ *
+ * @abstract
+ * @access public
+ * @class
+ * @package Core
+ */
+abstract class Filter extends Core\AbstractObject
+{
+    /**
+     * This variable stores a reference to the XML document.
+     *
+     * @access public
+     * @var \SimpleXMLElement
+     */
+    protected $xml;
 
-		/**
-		 * This variable stores a reference to the XML document.
-		 *
-		 * @access public
-		 * @var \SimpleXMLElement
-		 */
-		protected $xml;
+    /**
+     * This constructor initializes the class using the specified XML document.
+     *
+     * @access public
+     * @param \Unicity\Core\Data\XML $xml the XML document to be processed
+     */
+    public function __construct(Core\Data\XML $xml)
+    {
+        $this->xml = $xml;
+    }
 
-		/**
-		 * This constructor initializes the class using the specified XML document.
-		 *
-		 * @access public
-		 * @param \Unicity\Core\Data\XML $xml                       the XML document to be processed
-		 */
-		public function __construct(Core\Data\XML $xml) {
-			$this->xml = $xml;
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->xml);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->xml);
-		}
+    /**
+     * This method invokes the logic that will filter the XML document.
+     *
+     * @access public
+     * @abstract
+     */
+    abstract public function invoke(): void;
 
-		/**
-		 * This method invokes the logic that will filter the XML document.
-		 *
-		 * @access public
-		 * @abstract
-		 */
-		public abstract function invoke() : void;
-
-		/**
-		 * This method processes the XML document using the "php-filter" processing instruction.
-		 *
-		 * @access public
-		 * @static
-		 * @param \Unicity\Core\Data\XML $xml                       the XML document to be processed
-		 */
-		public static function process(Core\Data\XML $xml) : void {
-			$directives = $xml->getProcessingInstruction('php-filter');
-			if (isset($directives['invoke'])) {
-				$filters = array_map('trim', preg_split('/,/', $directives['invoke']));
-				foreach ($filters as $filter) {
-					$object = new $filter($xml);
-					$object->invoke();
-				}
-			}
-		}
-
-	}
+    /**
+     * This method processes the XML document using the "php-filter" processing instruction.
+     *
+     * @access public
+     * @static
+     * @param \Unicity\Core\Data\XML $xml the XML document to be processed
+     */
+    public static function process(Core\Data\XML $xml): void
+    {
+        $directives = $xml->getProcessingInstruction('php-filter');
+        if (isset($directives['invoke'])) {
+            $filters = array_map('trim', preg_split('/,/', $directives['invoke']));
+            foreach ($filters as $filter) {
+                $object = new $filter($xml);
+                $object->invoke();
+            }
+        }
+    }
 
 }

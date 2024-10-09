@@ -16,22 +16,21 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser {
+namespace Unicity\VLD\Parser;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	abstract class Definition {
+abstract class Definition
+{
+    protected $context;
 
-		protected $context;
+    public function __construct(VLD\Parser\Context $context)
+    {
+        $this->context = $context;
+    }
 
-		public function __construct(VLD\Parser\Context $context) {
-			$this->context = $context;
-		}
-
-		public abstract function get();
-
-	}
+    abstract public function get();
 
 }

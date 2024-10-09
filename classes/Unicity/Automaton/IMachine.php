@@ -16,110 +16,108 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Automaton {
+namespace Unicity\Automaton;
 
-	use \Unicity\Automaton;
-	use \Unicity\Common;
+use Unicity\Automaton;
+use Unicity\Common;
 
-	/**
-	 * This interface defines the contract for an automaton.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Automaton
-	 */
-	interface IMachine {
+/**
+ * This interface defines the contract for an automaton.
+ *
+ * @access public
+ * @interface
+ * @package Automaton
+ */
+interface IMachine
+{
+    /**
+     * This method adds a state to the machine.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IState $state the state to be added
+     * @param boolean $initial whether the state is considered an
+     *                         initial state
+     */
+    public function addState(Automaton\IState $state, $initial = false);
 
-		/**
-		 * This method adds a state to the machine.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IState $state                  the state to be added
-		 * @param boolean $initial                                  whether the state is considered an
-		 *                                                          initial state
-		 */
-		public function addState(Automaton\IState $state, $initial = false);
+    /**
+     * This method adds a transition to the machine.
+     *
+     * @access public
+     * @param \Unicity\Automaton\ITransition $transition the transition to be added
+     */
+    public function addTransition(Automaton\ITransition $transition);
 
-		/**
-		 * This method adds a transition to the machine.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\ITransition $transition        the transition to be added
-		 */
-		public function addTransition(Automaton\ITransition $transition);
+    /**
+     * This method returns the delegate for the machine.
+     *
+     * @access public
+     * @return \Unicity\Automaton\IMachineDelegate the delegate for the machine
+     */
+    public function getDelegate();
 
-		/**
-		 * This method returns the delegate for the machine.
-		 *
-		 * @access public
-		 * @return \Unicity\Automaton\IMachineDelegate              the delegate for the machine
-		 */
-		public function getDelegate();
+    /**
+     * This method returns the state with the specified id.
+     *
+     * @access public
+     * @param string $id the id of the state to be
+     *                   returned
+     * @return \Unicity\Automaton\IState the state with the specified id
+     */
+    public function getStateWithId($id);
 
-		/**
-		 * This method returns the state with the specified id.
-		 *
-		 * @access public
-		 * @param string $id                                        the id of the state to be
-		 *                                                          returned
-		 * @return \Unicity\Automaton\IState                        the state with the specified id
-		 */
-		public function getStateWithId($id);
+    /**
+     * This method returns the transition with the specified id.
+     *
+     * @access public
+     * @param string $id the id of the transition to be
+     *                   returned
+     * @return \Unicity\Automaton\ITransition the transition with the specified id
+     */
+    public function getTransitionWithId($id);
 
-		/**
-		 * This method returns the transition with the specified id.
-		 *
-		 * @access public
-		 * @param string $id                                        the id of the transition to be
-		 *                                                          returned
-		 * @return \Unicity\Automaton\ITransition                   the transition with the specified id
-		 */
-		public function getTransitionWithId($id);
+    /**
+     * This method removes a state from the machine.
+     *
+     * @access public
+     * @param string $id the id of the state to be
+     *                   removed
+     */
+    public function removeStateWithId($id);
 
-		/**
-		 * This method removes a state from the machine.
-		 *
-		 * @access public
-		 * @param string $id                                        the id of the state to be
-		 *                                                          removed
-		 */
-		public function removeStateWithId($id);
+    /**
+     * This method removes a transition from the machine.
+     *
+     * @access public
+     * @param string $id the id of the transition to be
+     *                   removed
+     */
+    public function removeTransitionWithId($id);
 
-		/**
-		 * This method removes a transition from the machine.
-		 *
-		 * @access public
-		 * @param string $id                                        the id of the transition to be
-		 *                                                          removed
-		 */
-		public function removeTransitionWithId($id);
+    /**
+     * This method runs the machine using the specified sigma (i.e. the input alphabet/sequence).
+     *
+     * @access public
+     * @param \Unicity\Common\IList $sigma the sigma to be processed
+     * @param \Unicity\Common\Mutable\IList $path the path through which the pattern
+     *                                            was found
+     * @return boolean whether the machine finished in
+     *                 a goal state
+     * @throws \Unicity\Throwable\InvalidArgument\Exception indicates that no sigma has been
+     *                                                      specified
+     * @throws \Unicity\Throwable\Parse\Exception indicates that the machine failed
+     *                                            to parse
+     */
+    public function run(Common\IList $sigma, Common\Mutable\IList $path = null);
 
-		/**
-		 * This method runs the machine using the specified sigma (i.e. the input alphabet/sequence).
-		 *
-		 * @access public
-		 * @param \Unicity\Common\IList $sigma                      the sigma to be processed
-		 * @param \Unicity\Common\Mutable\IList $path               the path through which the pattern
-		 *                                                          was found
-		 * @return boolean                                          whether the machine finished in
-		 *                                                          a goal state
-		 * @throws \Unicity\Throwable\InvalidArgument\Exception     indicates that no sigma has been
-		 *                                                          specified
-		 * @throws \Unicity\Throwable\Parse\Exception               indicates that the machine failed
-		 *                                                          to parse
-		 */
-		public function run(Common\IList $sigma, Common\Mutable\IList $path = null);
-
-		/**
-		 * This method sets the delegate for the machine.
-		 *
-		 * @access public
-		 * @param \Unicity\Automaton\IMachineDelegate $delegate     the delegate for the machine
-		 */
-		public function setDelegate(Automaton\IMachineDelegate $delegate);
-
-	}
+    /**
+     * This method sets the delegate for the machine.
+     *
+     * @access public
+     * @param \Unicity\Automaton\IMachineDelegate $delegate the delegate for the machine
+     */
+    public function setDelegate(Automaton\IMachineDelegate $delegate);
 
 }

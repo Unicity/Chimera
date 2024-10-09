@@ -16,63 +16,61 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\AOP {
+namespace Unicity\AOP;
 
-	use \Unicity\AOP;
+use Unicity\AOP;
 
-	/**
-	 * This interface is used to mark a class as an aspect in Aspect Oriented Programming (AOP).  An aspect
-	 * is a class containing a set of advice methods.
-	 *
-	 * @access public
-	 * @interface
-	 * @package AOP
-	 */
-	interface IAspect {
+/**
+ * This interface is used to mark a class as an aspect in Aspect Oriented Programming (AOP).  An aspect
+ * is a class containing a set of advice methods.
+ *
+ * @access public
+ * @interface
+ * @package AOP
+ */
+interface IAspect
+{
+    /**
+     * This method runs before the concern's execution.
+     *
+     * @access public
+     * @param AOP\JoinPoint $joinPoint the join point being used
+     */
+    //public function before(AOP\JoinPoint $joinPoint) : void;
 
-		/**
-		 * This method runs before the concern's execution.
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		//public function before(AOP\JoinPoint $joinPoint) : void;
+    /**
+     * This method runs around (i.e before and after) the other advice types and the concern's
+     * execution.
+     *
+     * @access public
+     * @param AOP\JoinPoint $joinPoint the join point being used
+     */
+    //public function around(AOP\JoinPoint $joinPoint) : void;
 
-		/**
-		 * This method runs around (i.e before and after) the other advice types and the concern's
-		 * execution.
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		//public function around(AOP\JoinPoint $joinPoint) : void;
+    /**
+     * This method runs when the concern's execution is successful (and a result is returned).
+     *
+     * @access public
+     * @param AOP\JoinPoint $joinPoint the join point being used
+     */
+    //public function afterReturning(AOP\JoinPoint $joinPoint) : void;
 
-		/**
-		 * This method runs when the concern's execution is successful (and a result is returned).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		//public function afterReturning(AOP\JoinPoint $joinPoint) : void;
+    /**
+     * This method runs when the concern's throws an exception.
+     *
+     * @access public
+     * @param AOP\JoinPoint $joinPoint the join point being used
+     */
+    //public function afterThrowing(AOP\JoinPoint $joinPoint) : void;
 
-		/**
-		 * This method runs when the concern's throws an exception.
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		//public function afterThrowing(AOP\JoinPoint $joinPoint) : void;
-
-		/**
-		 * This method runs when the concern's execution is finished (even if an exception was thrown).
-		 *
-		 * @access public
-		 * @param AOP\JoinPoint $joinPoint                          the join point being used
-		 */
-		//public function after(AOP\JoinPoint $joinPoint) : void;
-
-	}
+    /**
+     * This method runs when the concern's execution is finished (even if an exception was thrown).
+     *
+     * @access public
+     * @param AOP\JoinPoint $joinPoint the join point being used
+     */
+    //public function after(AOP\JoinPoint $joinPoint) : void;
 
 }

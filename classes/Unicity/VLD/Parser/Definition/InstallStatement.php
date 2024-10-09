@@ -16,22 +16,22 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\Config;
-	use \Unicity\IO;
-	use \Unicity\VLD;
+use Unicity\Config;
+use Unicity\IO;
+use Unicity\VLD;
 
-	class InstallStatement extends VLD\Parser\Definition\Statement {
+class InstallStatement extends VLD\Parser\Definition\Statement
+{
+    public function get()
+    {
+        $modules = Config\JSON\Reader::load(new IO\File($this->args['uri']->get()))->read();
+        $this->context->addModules($modules);
 
-		public function get() {
-			$modules = Config\JSON\Reader::load(new IO\File($this->args['uri']->get()))->read();
-			$this->context->addModules($modules);
-			return new VLD\Parser\Feedback();
-		}
-
-	}
+        return new VLD\Parser\Feedback();
+    }
 
 }

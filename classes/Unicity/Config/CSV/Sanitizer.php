@@ -16,57 +16,57 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\CSV {
+namespace Unicity\Config\CSV;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This class defines the contract for sanitizing messages.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Sanitizer extends Config\Sanitizer {
+/**
+ * This class defines the contract for sanitizing messages.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Sanitizer extends Config\Sanitizer
+{
+    protected $filters;
 
-		protected $filters;
+    public function __construct($filters)
+    {
+        $filters = static::filters($filters);
+        $this->filters = [];
+        foreach ($filters as $filter) {
+            $rule = $filter->hasKey('rule') ? $filter->rule : null;
+            if (is_string($rule) && array_key_exists($rule, static::$rules)) {
+                $rule = static::$rules[$rule];
+            }
+            if ($filter->hasKey('keys')) {
+                foreach ($filter->keys as $key) {
+                    $this->filters[] = (object)[
+                        'name' => $key->name,
+                        'rule' => $rule,
+                    ];
+                }
+            }
+        }
+    }
 
-		public function __construct($filters) {
-			$filters = static::filters($filters);
-			$this->filters = array();
-			foreach ($filters as $filter) {
-				$rule = $filter->hasKey('rule') ? $filter->rule : null;
-				if (is_string($rule) && array_key_exists($rule, static::$rules)) {
-					$rule = static::$rules[$rule];
-				}
-				if ($filter->hasKey('keys')) {
-					foreach ($filter->keys as $key) {
-						$this->filters[] = (object)[
-							'name' => $key->name,
-							'rule' => $rule,
-						];
-					}
-				}
-			}
-		}
+    public function sanitize($input, array $metadata = []): string
+    {
+        $records = Config\CSV\Helper::unmarshal($input, $metadata);
+        foreach ($records as $record) {
+            foreach ($this->filters as $filter) {
+                $rule = $filter->rule;
+                $name = $filter->name;
+                if ($record->hasKey($name)) {
+                    $record->$name = is_callable($rule) ? $rule($record->$name) : '';
+                }
+            }
+        }
 
-		public function sanitize($input, array $metadata = array()) : string {
-			$records = Config\CSV\Helper::unmarshal($input, $metadata);
-			foreach ($records as $record) {
-				foreach ($this->filters as $filter) {
-					$rule = $filter->rule;
-					$name = $filter->name;
-					if ($record->hasKey($name)) {
-						$record->$name = is_callable($rule) ? $rule($record->$name) : '';
-					}
-				}
-			}
-			return Config\CSV\Helper::encode($records);
-		}
-
-	}
+        return Config\CSV\Helper::encode($records);
+    }
 
 }

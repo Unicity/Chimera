@@ -16,35 +16,34 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SOAP\Data\XML {
+namespace Unicity\SOAP\Data\XML;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	/**
-	 * This class provides a set of helper methods to process tokens in SOAP XML.
-	 *
-	 * @access public
-	 * @class
-	 * @package SOAP
-	 */
-	class Syntax extends Core\AbstractObject {
-
-		/**
-		 * This method evaluates whether the specified string matches the syntax for a boolean
-		 * value.
-		 *
-		 * @access public
-		 * @static
-		 * @param string $token                                     the string to be evaluated
-		 * @return boolean                                          whether the specified string matches the syntax
-		 *                                                          for a boolean value
-		 */
-		public static function isBoolean($token) : bool {
-			return is_string($token) && preg_match('/^(true|false)$/', $token);
-		}
-
-	}
+/**
+ * This class provides a set of helper methods to process tokens in SOAP XML.
+ *
+ * @access public
+ * @class
+ * @package SOAP
+ */
+class Syntax extends Core\AbstractObject
+{
+    /**
+     * This method evaluates whether the specified string matches the syntax for a boolean
+     * value.
+     *
+     * @access public
+     * @static
+     * @param string $token the string to be evaluated
+     * @return boolean whether the specified string matches the syntax
+     *                 for a boolean value
+     */
+    public static function isBoolean($token): bool
+    {
+        return is_string($token) && preg_match('/^(true|false)$/', $token);
+    }
 
 }

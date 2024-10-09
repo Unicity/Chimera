@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	abstract class Key extends VLD\Parser\Definition { }
-
+abstract class Key extends VLD\Parser\Definition
+{
 }

@@ -17,28 +17,26 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring {
+namespace Unicity\Spring;
 
-	/**
-	 * This class provides the contract for an object factory that will read a container
-	 * with object definitions.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Spring
-	 *
-	 * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/FactoryBean.html
-	 */
-	interface FactoryObject {
-
-		/**
-		 * This method returns the object created.
-		 *
-		 * @access public
-		 * @return object
-		 */
-		public function getObject();
-
-	}
+/**
+ * This class provides the contract for an object factory that will read a container
+ * with object definitions.
+ *
+ * @access public
+ * @interface
+ * @package Spring
+ *
+ * @see http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/FactoryBean.html
+ */
+interface FactoryObject
+{
+    /**
+     * This method returns the object created.
+     *
+     * @access public
+     * @return object
+     */
+    public function getObject();
 
 }

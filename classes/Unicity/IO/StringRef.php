@@ -16,67 +16,69 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\IO {
+namespace Unicity\IO;
 
-	use \Unicity\Core;
-	use \Unicity\IO;
+use Unicity\Core;
+use Unicity\IO;
 
-	/**
-	 * This class represent a string buffer.
-	 *
-	 * @access public
-	 * @class
-	 * @package IO
-	 */
-	class StringRef extends IO\File {
+/**
+ * This class represent a string buffer.
+ *
+ * @access public
+ * @class
+ * @package IO
+ */
+class StringRef extends IO\File
+{
+    /**
+     * This constructor initializes the class with a string.
+     *
+     * @access public
+     * @param string $string the string to be buffered
+     */
+    public function __construct($string)
+    {
+        $this->name = null;
+        $this->path = null;
+        $this->ext = null;
 
-		/**
-		 * This constructor initializes the class with a string.
-		 *
-		 * @access public
-		 * @param string $string                                    the string to be buffered
-		 */
-		public function __construct($string) {
-			$this->name = null;
-			$this->path = null;
-			$this->ext = null;
+        $this->uri = 'data://text/plain,' . Core\Convert::toString($string);
+        $this->temporary = false;
+    }
 
-			$this->uri = 'data://text/plain,' . Core\Convert::toString($string);
-			$this->temporary = false;
-		}
+    /**
+     * This method returns whether the file is executable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isExecutable(): bool
+    {
+        return false;
+    }
 
-		/**
-		 * This method returns whether the file is executable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isExecutable() : bool {
-			return false;
-		}
+    /**
+     * This method returns whether the file is readable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isReadable(): bool
+    {
+        return true;
+    }
 
-		/**
-		 * This method returns whether the file is readable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isReadable() : bool {
-			return true;
-		}
-
-		/**
-		 * This method returns whether the file is writable.
-		 *
-		 * @access public
-		 * @return boolean
-		 */
-		public function isWritable() : bool {
-			return false;
-		}
-
-	}
+    /**
+     * This method returns whether the file is writable.
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isWritable(): bool
+    {
+        return false;
+    }
 
 }

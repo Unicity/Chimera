@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\SOAP {
+namespace Unicity\SOAP;
 
-	use \Unicity\HTTP;
+use Unicity\HTTP;
 
-	class RequestBroker extends HTTP\RequestBroker { }
-
+class RequestBroker extends HTTP\RequestBroker
+{
 }

@@ -16,48 +16,49 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\ORM\JSON\Model {
+namespace Unicity\ORM\JSON\Model;
 
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\ORM;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\ORM;
 
-	class Marshaller {
+class Marshaller
+{
+    /**
+     * This method loads the specified file for reading.
+     *
+     * @access public
+     * @static
+     * @param Config\Reader $reader the config reader to use
+     * @param array $policy the policy for reading in the data
+     * @return ORM\IModel the model
+     */
+    public static function unmarshal(Config\Reader $reader, array $policy = [])
+    {
+        $case_sensitive = isset($policy['case_sensitive'])
+            ? Core\Convert::toBoolean($policy['case_sensitive'])
+            : true;
+        $path = isset($policy['path']) ? $policy['path'] : null;
+        if (($path !== null) && !$case_sensitive) {
+            $path = strtolower($path);
+        }
+        $schema = isset($policy['schema']) ? $policy['schema'] : [];
+        $schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
+        $type = isset($schema['type']) ? $schema['type'] : 'object';
+        switch ($type) {
+            case 'array':
+                $array = new ORM\JSON\Model\ArrayList($schema, $case_sensitive);
+                $array->addValues($reader->read($path));
 
-		/**
-		 * This method loads the specified file for reading.
-		 *
-		 * @access public
-		 * @static
-		 * @param Config\Reader $reader                             the config reader to use
-		 * @param array $policy                                     the policy for reading in the data
-		 * @return ORM\IModel                                       the model
-		 */
-		public static function unmarshal(Config\Reader $reader, array $policy = array()) {
-			$case_sensitive = isset($policy['case_sensitive'])
-				? Core\Convert::toBoolean($policy['case_sensitive'])
-				: true;
-			$path = isset($policy['path']) ? $policy['path'] : null;
-			if (($path !== null) && !$case_sensitive) {
-				$path = strtolower($path);
-			}
-			$schema = isset($policy['schema']) ? $policy['schema'] : array();
-			$schema = ORM\JSON\Model\Helper::resolveJSONSchema($schema);
-			$type = isset($schema['type']) ? $schema['type'] : 'object';
-			switch ($type) {
-				case 'array':
-					$array = new ORM\JSON\Model\ArrayList($schema, $case_sensitive);
-					$array->addValues($reader->read($path));
-					return $array;
-				default:
-					$object = new ORM\JSON\Model\HashMap($schema, $case_sensitive);
-					$object->putEntries($reader->read($path));
-					return $object;
-			}
-		}
+                return $array;
+            default:
+                $object = new ORM\JSON\Model\HashMap($schema, $case_sensitive);
+                $object->putEntries($reader->read($path));
 
-	}
+                return $object;
+        }
+    }
 
 }

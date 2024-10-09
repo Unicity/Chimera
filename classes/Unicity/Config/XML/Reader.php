@@ -16,200 +16,207 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\XML {
+namespace Unicity\Config\XML;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Throwable;
+use Unicity\Common;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Throwable;
 
-	/**
-	 * This class is used to build a collection from XML.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Reader extends Config\Reader {
+/**
+ * This class is used to build a collection from XML.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Reader extends Config\Reader
+{
+    /**
+     * This variable stores the directives for parsing the XML.
+     *
+     * @access protected
+     * @var Common\Mutable\HashMap
+     */
+    protected $directives;
 
-		/**
-		 * This variable stores the directives for parsing the XML.
-		 *
-		 * @access protected
-		 * @var Common\Mutable\HashMap
-		 */
-		protected $directives;
+    /**
+     * This constructor initializes the class with the specified resource.
+     *
+     * @access public
+     * @param IO\File $file the file to be processed
+     * @param array $metadata the metadata to be set
+     */
+    public function __construct(IO\File $file, array $metadata = [])
+    {
+        $this->file = $file;
+        $this->metadata = array_merge([
+            'namespace' => [],
+            'xpath' => '.',
+        ], $metadata);
+        $this->directives = new Common\Mutable\HashMap();
+        if (array_key_exists('expandableProperties', $metadata)) {
+            $this->setExpandableProperties(new Common\HashSet($metadata['expandableProperties']));
+        }
+    }
 
-		/**
-		 * This constructor initializes the class with the specified resource.
-		 *
-		 * @access public
-		 * @param IO\File $file                                     the file to be processed
-		 * @param array $metadata                                   the metadata to be set
-		 */
-		public function __construct(IO\File $file, array $metadata = array()) {
-			$this->file = $file;
-			$this->metadata = array_merge(array(
-				'namespace' => array(),
-				'xpath' => '.',
-			), $metadata);
-			$this->directives = new Common\Mutable\HashMap();
-			if (array_key_exists('expandableProperties', $metadata)) {
-				$this->setExpandableProperties(new Common\HashSet($metadata['expandableProperties']));
-			}
-		}
+    /**
+     * This method sets the metadata for the reader.
+     *
+     * @access public
+     * @param array $metadata the metadata to be set
+     * @return Config\Reader a reference to this class
+     * @throws Throwable\InvalidProperty\Exception indicates that the specified property
+     *                                             is either inaccessible or undefined
+     */
+    public function config(array $metadata)
+    {
+        if ($metadata !== null) {
+            foreach ($metadata as $name => $value) {
+                if ($name == 'expandableProperties') {
+                    $this->setExpandableProperties(new Common\HashSet($value));
+                } else {
+                    $this->$name = $value;
+                }
+            }
+        }
 
-		/**
-		 * This method sets the metadata for the reader.
-		 *
-		 * @access public
-		 * @param array $metadata                                   the metadata to be set
-		 * @return Config\Reader                                    a reference to this class
-		 * @throws Throwable\InvalidProperty\Exception              indicates that the specified property
-		 *                                                          is either inaccessible or undefined
-		 */
-		public function config(array $metadata) {
-			if ($metadata !== null) {
-				foreach ($metadata as $name => $value) {
-					if ($name == 'expandableProperties') {
-						$this->setExpandableProperties(new Common\HashSet($value));
-					}
-					else {
-						$this->$name = $value;
-					}
-				}
-			}
-			return $this;
-		}
+        return $this;
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->directives);
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->directives);
+    }
 
-		/**
-		 * This method parses a child node.
-		 *
-		 * @access protected
-		 * @param \SimpleXMLElement $node                           a reference to a child node
-		 * @return mixed                                            the value of the node
-		 *                                                          in the soap file
-		 * @throws \Unicity\Throwable\Parse\Exception               indicates that an unrecognized child
-		 *                                                          node was encountered
-		 */
-		protected function parseChildElement(\SimpleXMLElement $node) {
-			if (!$node) {
-				return '';
-			}
-			$children = $node->children();
-			if (count($children) > 0) {
-				$list = new Common\Mutable\ArrayList();
-				$map = new Common\Mutable\HashMap();
-				foreach ($children as $child) {
-					$name = $child->getName();
-					$value = $this->parseChildElement($child);
+    /**
+     * This method parses a child node.
+     *
+     * @access protected
+     * @param \SimpleXMLElement $node a reference to a child node
+     * @return mixed the value of the node
+     *               in the soap file
+     * @throws \Unicity\Throwable\Parse\Exception indicates that an unrecognized child
+     *                                            node was encountered
+     */
+    protected function parseChildElement(\SimpleXMLElement $node)
+    {
+        if (!$node) {
+            return '';
+        }
+        $children = $node->children();
+        if (count($children) > 0) {
+            $list = new Common\Mutable\ArrayList();
+            $map = new Common\Mutable\HashMap();
+            foreach ($children as $child) {
+                $name = $child->getName();
+                $value = $this->parseChildElement($child);
 
-					$temp = new Common\Mutable\HashMap();
-					$temp->putEntry($name, $value);
+                $temp = new Common\Mutable\HashMap();
+                $temp->putEntry($name, $value);
 
-					$list->addValue($temp);
-					$map->putEntry($name, $value);
-				}
-				return (($list->count() > $map->count()) || ($this->directives->hasKey('expandableProperties') && $this->directives->getValue('expandableProperties')->hasValue($node->getName()))) ? $list : $map;
-			}
-			else {
-				$value = dom_import_simplexml($node)->textContent;
-				$value = trim($value);
-				if ($value == '') {
-					$value = Core\Data\Undefined::instance();
-				}
-				else if (preg_match('/^(true|false)$/i', $value)) {
-					$value = Core\Convert::toBoolean($value);
-				}
-				else if (preg_match('/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/', $value)) {
-					$value = Core\Convert::toDouble($value);
-				}
-				else if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-					$value = Core\Convert::toInteger($value);
-				}
-				else {
-					$value = Core\Convert::toString($value);
-				}
-				return $value;
-			}
-		}
+                $list->addValue($temp);
+                $map->putEntry($name, $value);
+            }
 
-		/**
-		 * This method parses a "root" node.
-		 *
-		 * @access protected
-		 * @param \SimpleXMLElement $node                           a reference to the "root" node
-		 * @return \Unicity\Common\Mutable\HashMap                  a key/value map
-		 * @throws \Unicity\Throwable\Parse\Exception               indicates that problem occurred while
-		 *                                                          parsing
-		 */
-		protected function parseRootElement(\SimpleXMLElement $node) {
-			$map = new Common\Mutable\HashMap();
+            return (($list->count() > $map->count()) || ($this->directives->hasKey('expandableProperties') && $this->directives->getValue('expandableProperties')->hasValue($node->getName()))) ? $list : $map;
+        } else {
+            $value = dom_import_simplexml($node)->textContent;
+            $value = trim($value);
+            if ($value == '') {
+                $value = Core\Data\Undefined::instance();
+            } elseif (preg_match('/^(true|false)$/i', $value)) {
+                $value = Core\Convert::toBoolean($value);
+            } elseif (preg_match('/^[+-]?(0|[1-9][0-9]*)((\.[0-9]+)|([eE][+-]?(0|[1-9][0-9]*)))$/', $value)) {
+                $value = Core\Convert::toDouble($value);
+            } elseif (filter_var($value, FILTER_VALIDATE_INT) !== false) {
+                $value = Core\Convert::toInteger($value);
+            } else {
+                $value = Core\Convert::toString($value);
+            }
 
-			if (isset($this->metadata['namespace']['prefix']) && isset($this->metadata['namespace']['uri'])) {
-				$node->registerXPathNamespace($this->metadata['namespace']['prefix'], $this->metadata['namespace']['uri']);
-			}
+            return $value;
+        }
+    }
 
-			$children = $node->xpath($this->metadata['xpath']);
-			foreach ($children as $child) {
-				$map->putEntry($child->getName(), $this->parseChildElement($child));
-			}
+    /**
+     * This method parses a "root" node.
+     *
+     * @access protected
+     * @param \SimpleXMLElement $node a reference to the "root" node
+     * @return \Unicity\Common\Mutable\HashMap a key/value map
+     * @throws \Unicity\Throwable\Parse\Exception indicates that problem occurred while
+     *                                            parsing
+     */
+    protected function parseRootElement(\SimpleXMLElement $node)
+    {
+        $map = new Common\Mutable\HashMap();
 
-			return $map;
-		}
+        if (isset($this->metadata['namespace']['prefix']) && isset($this->metadata['namespace']['uri'])) {
+            $node->registerXPathNamespace($this->metadata['namespace']['prefix'], $this->metadata['namespace']['uri']);
+        }
 
-		/**
-		 * This method returns the processed resource as a collection.
-		 *
-		 * @access public
-		 * @param string $path                                      the path to the value to be returned
-		 * @return mixed                                            the resource as a collection
-		 */
-		public function read($path = null) {
-			if ($this->file->getFileSize() > 0) {
-				$xml = Core\Data\XML::load($this->file);
+        $children = $node->xpath($this->metadata['xpath']);
+        foreach ($children as $child) {
+            $map->putEntry($child->getName(), $this->parseChildElement($child));
+        }
 
-				$directives = $xml->getProcessingInstruction('php-marshal');
-				if (isset($directives['expandableProperties'])) {
-					$this->directives->putEntry('expandableProperties', new Common\HashSet(preg_split('/\s+/', $directives['expandableProperties'])));
-				}
+        return $map;
+    }
 
-				$collection = $this->parseRootElement($xml);
+    /**
+     * This method returns the processed resource as a collection.
+     *
+     * @access public
+     * @param string $path the path to the value to be returned
+     * @return mixed the resource as a collection
+     */
+    public function read($path = null)
+    {
+        if ($this->file->getFileSize() > 0) {
+            $xml = Core\Data\XML::load($this->file);
 
-				if ($path !== null) {
-					$path = Core\Convert::toString($path);
-					$collection = Config\Helper::factory($collection)->getValue($path);
-				}
+            $directives = $xml->getProcessingInstruction('php-marshal');
+            if (isset($directives['expandableProperties'])) {
+                $this->directives->putEntry('expandableProperties', new Common\HashSet(preg_split('/\s+/', $directives['expandableProperties'])));
+            }
 
-				return $collection;
-			}
-			return null;
-		}
+            $collection = $this->parseRootElement($xml);
 
-		/**
-		 * This method sets which nodes are to be treated as ArrayLists.
-		 *
-		 * @access public
-		 * @param Common\HashSet $properties                        the properties that will be
-		 *                                                          considered expandable
-		 */
-		public function setExpandableProperties(Common\HashSet $properties) {
-			$this->directives->putEntry('expandableProperties', $properties);
-		}
+            if ($path !== null) {
+                try {
+                    $path = Core\Convert::toString($path);
+                    $collection = Config\Helper::factory($collection)->getValue($path);
+                } catch (\Throwable $ex) {
+                    return null;
+                }
+            }
 
-	}
+            return $collection;
+        }
+
+        return null;
+    }
+
+    /**
+     * This method sets which nodes are to be treated as ArrayLists.
+     *
+     * @access public
+     * @param Common\HashSet $properties the properties that will be
+     *                                   considered expandable
+     */
+    public function setExpandableProperties(Common\HashSet $properties)
+    {
+        $this->directives->putEntry('expandableProperties', $properties);
+    }
 
 }

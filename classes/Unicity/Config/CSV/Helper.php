@@ -16,57 +16,62 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\CSV {
+namespace Unicity\Config\CSV;
 
-	use \Unicity\Common;
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\MappingService;
+use Unicity\Common;
+use Unicity\Config;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\MappingService;
 
-	class Helper extends Core\AbstractObject {
+class Helper extends Core\AbstractObject
+{
+    public static function decode($data, array $metadata = []) /* array|object */
+    {
+        return Common\Collection::useObjects(static::unmarshal($data, $metadata));
+    }
 
-		public static function decode($data, array $metadata = array()) /* array|object */{
-			return Common\Collection::useObjects(static::unmarshal($data, $metadata));
-		}
+    public static function encode($collection, array $metadata = []): string
+    {
+        if ($collection instanceof \JsonSerializable) {
+            return (new Config\CSV\Writer(json_decode(json_encode($collection))))->render();
+        }
+        if ($collection instanceof IO\FIle) {
+            return $collection->getBytes();
+        }
+        if (Common\StringRef::isTypeOf($collection)) {
+            return Core\Convert::toString($collection);
+        }
 
-		public static function encode($collection, array $metadata = array()) : string {
-			if ($collection instanceof \JsonSerializable) {
-				return (new Config\CSV\Writer(json_decode(json_encode($collection))))->render();
-			}
-			if ($collection instanceof IO\FIle) {
-				return $collection->getBytes();
-			}
-			if (Common\StringRef::isTypeOf($collection)) {
-				return Core\Convert::toString($collection);
-			}
-			return (new Config\CSV\Writer($collection))->config($metadata)->render();
-		}
+        return (new Config\CSV\Writer($collection))->config($metadata)->render();
+    }
 
-		public static function marshal($collection, array $metadata = array()) : IO\File {
-			return new IO\StringRef(static::encode($collection, $metadata));
-		}
+    public static function marshal($collection, array $metadata = []): IO\File
+    {
+        return new IO\StringRef(static::encode($collection, $metadata));
+    }
 
-		public static function unmarshal($data, array $metadata = array()) /* list|map */{
-			if ($data instanceof \JsonSerializable) {
-				$data = new IO\StringRef(json_encode($data));
-			}
-			if ($data instanceof Common\ICollection) {
-				if (isset($metadata['encoding'])) {
-					$data = \Unicity\Core\Data\Charset::encodeData($data, $metadata['encoding'][0], $metadata['encoding'][0]);
-				}
-				return $data;
-			}
-			if (Common\StringRef::isTypeOf($data)) {
-				$data = new IO\StringRef(Core\Convert::toString($data));
-			}
-			return MappingService\Data\Model\Marshaller::unmarshal(
-				Config\CSV\Reader::load($data, $metadata)
-			);
-		}
+    public static function unmarshal($data, array $metadata = []) /* list|map */
+    {
+        if ($data instanceof \JsonSerializable) {
+            $data = new IO\StringRef(json_encode($data));
+        }
+        if ($data instanceof Common\ICollection) {
+            if (isset($metadata['encoding'])) {
+                $data = \Unicity\Core\Data\Charset::encodeData($data, $metadata['encoding'][0], $metadata['encoding'][0]);
+            }
 
-	}
+            return $data;
+        }
+        if (Common\StringRef::isTypeOf($data)) {
+            $data = new IO\StringRef(Core\Convert::toString($data));
+        }
+
+        return MappingService\Data\Model\Marshaller::unmarshal(
+            Config\CSV\Reader::load($data, $metadata)
+        );
+    }
 
 }

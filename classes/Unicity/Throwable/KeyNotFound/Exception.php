@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Throwable\KeyNotFound {
+namespace Unicity\Throwable\KeyNotFound;
 
-	use \Unicity\Throwable;
+use Unicity\Throwable;
 
-	/**
-	 * This class represents a Key Not Found Exception.
-	 *
-	 * @access public
-	 * @class
-	 * @package Throwable
-	 */
-	class Exception extends Throwable\Runtime\Exception { }
-
+/**
+ * This class represents a Key Not Found Exception.
+ *
+ * @access public
+ * @class
+ * @package Throwable
+ */
+class Exception extends Throwable\Runtime\Exception
+{
 }

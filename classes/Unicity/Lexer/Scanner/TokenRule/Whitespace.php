@@ -17,77 +17,79 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner\TokenRule {
+namespace Unicity\Lexer\Scanner\TokenRule;
 
-	use \Unicity\Common;
-	use \Unicity\Core;
-	use \Unicity\IO;
-	use \Unicity\Lexer;
+use Unicity\Common;
+use Unicity\Core;
+use Unicity\IO;
+use Unicity\Lexer;
 
-	/**
-	 * This class represents the rule definition for a "whitespace" token, which the tokenizer will use
-	 * to tokenize a string.
-	 *
-	 * @access public
-	 * @class
-	 * @package Lexer
-	 */
-	class Whitespace extends Core\AbstractObject implements Lexer\Scanner\ITokenRule {
+/**
+ * This class represents the rule definition for a "whitespace" token, which the tokenizer will use
+ * to tokenize a string.
+ *
+ * @access public
+ * @class
+ * @package Lexer
+ */
+class Whitespace extends Core\AbstractObject implements Lexer\Scanner\ITokenRule
+{
+    /**
+     * This variable stores the traditional whitespace characters.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $whitespace;
 
-		/**
-		 * This variable stores the traditional whitespace characters.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $whitespace;
+    /**
+     * This constructor initializes the class.
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        $this->whitespace = [' ', "\t", "\n", "\r", "\0", "\x0B", "\x0C"]; // http://php.net/manual/en/regexp.reference.escape.php
+    }
 
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 */
-		public function __construct() {
-			$this->whitespace = array(' ', "\t", "\n", "\r", "\0", "\x0B", "\x0C"); // http://php.net/manual/en/regexp.reference.escape.php
-		}
+    /**
+     * This destructor ensures that any resources are properly disposed.
+     *
+     * @access public
+     */
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->whitespace);
+    }
 
-		/**
-		 * This destructor ensures that any resources are properly disposed.
-		 *
-		 * @access public
-		 */
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->whitespace);
-		}
+    /**
+     * This method return a tuple representing the token discovered.
+     *
+     * @access public
+     * @param \Unicity\IO\Reader $reader the reader to be used
+     * @return \Unicity\Lexer\Scanner\Tuple a tuple representing the token
+     *                                      discovered
+     */
+    public function process(IO\Reader $reader): ?Lexer\Scanner\Tuple
+    {
+        $index = $reader->position();
+        $char = $reader->readChar($index, false);
+        if (($char !== null) && in_array($char, $this->whitespace)) {
+            $lookahead = $index;
+            do {
+                $lookahead++;
+                $next = $reader->readChar($lookahead, false);
+            } while (($next !== null) && in_array($next, $this->whitespace));
+            $token = $reader->readRange($index, $lookahead);
+            $tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
 
-		/**
-		 * This method return a tuple representing the token discovered.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\Reader $reader                        the reader to be used
-		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
-		 *                                                          discovered
-		 */
-		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple {
-			$index = $reader->position();
-			$char = $reader->readChar($index, false);
-			if (($char !== null) && in_array($char, $this->whitespace)) {
-				$lookahead = $index;
-				do {
-					$lookahead++;
-					$next = $reader->readChar($lookahead, false);
-				}
-				while (($next !== null) && in_array($next, $this->whitespace));
-				$token = $reader->readRange($index, $lookahead);
-				$tuple = new Lexer\Scanner\Tuple(Lexer\Scanner\TokenType::whitespace(), new Common\StringRef($token), $index);
-				return $tuple;
-			}
-			return null;
-		}
+            return $tuple;
+        }
 
-	}
+        return null;
+    }
 
 }

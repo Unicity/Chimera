@@ -17,29 +17,28 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring\Object\Factory {
+namespace Unicity\Spring\Object\Factory;
 
-	use \Unicity\Core;
-	use \Unicity\Spring;
-	use \Unicity\Throwable;
+use Unicity\Core;
+use Unicity\Spring;
+use Unicity\Throwable;
 
-	class UndefinedElement extends Spring\Object\Factory {
-
-		/**
-		 * This method returns an object matching the description specified by the element.
-		 *
-		 * @access public
-		 * @param Spring\Object\Parser $parser                      a reference to the parser
-		 * @param \SimpleXMLElement $element                        the element to be parsed
-		 * @return mixed                                            an object matching the description
-		 *                                                          specified by the element
-		 * @throws Throwable\Parse\Exception                        indicates that a problem occurred
-		 *                                                          when parsing
-		 */
-		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			return Core\Data\Undefined::instance();
-		}
-
-	}
+class UndefinedElement extends Spring\Object\Factory
+{
+    /**
+     * This method returns an object matching the description specified by the element.
+     *
+     * @access public
+     * @param Spring\Object\Parser $parser a reference to the parser
+     * @param \SimpleXMLElement $element the element to be parsed
+     * @return mixed an object matching the description
+     *               specified by the element
+     * @throws Throwable\Parse\Exception indicates that a problem occurred
+     *                                   when parsing
+     */
+    public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element)
+    {
+        return Core\Data\Undefined::instance();
+    }
 
 }

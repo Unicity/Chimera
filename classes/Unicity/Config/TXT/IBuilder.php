@@ -16,31 +16,29 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\TXT {
+namespace Unicity\Config\TXT;
 
-	use \Unicity\Config;
+use Unicity\Config;
 
-	/**
-	 * This interface provides a contract that defines a text file builder.
-	 *
-	 * @access public
-	 * @interface
-	 * @package MappingService
-	 */
-	interface IBuilder {
-
-		/**
-		 * This method returns the data as a transaction.
-		 *
-		 * @access public
-		 * @static
-		 * @param Config\TXT\Writer $writer                         the text file writer to be used
-		 * @return string                                           the text
-		 */
-		public static function toTXT(Config\TXT\Writer $writer);
-
-	}
+/**
+ * This interface provides a contract that defines a text file builder.
+ *
+ * @access public
+ * @interface
+ * @package MappingService
+ */
+interface IBuilder
+{
+    /**
+     * This method returns the data as a transaction.
+     *
+     * @access public
+     * @static
+     * @param Config\TXT\Writer $writer the text file writer to be used
+     * @return string the text
+     */
+    public static function toTXT(Config\TXT\Writer $writer);
 
 }

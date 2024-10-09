@@ -17,32 +17,30 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Lexer\Scanner {
+namespace Unicity\Lexer\Scanner;
 
-	use \Unicity\IO;
-	use \Unicity\Lexer;
+use Unicity\IO;
+use Unicity\Lexer;
 
-	/**
-	 * This interface defines the contract for a rule definition of a token.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Lexer
-	 */
-	interface ITokenRule {
-
-		/**
-		 * This method return a tuple representing the token discovered.
-		 *
-		 * @access public
-		 * @param \Unicity\IO\Reader $reader                        the reader to be used
-		 * @return \Unicity\Lexer\Scanner\Tuple                     a tuple representing the token
-		 *                                                          discovered
-		 */
-		public function process(IO\Reader $reader) : ?Lexer\Scanner\Tuple;
-
-	}
+/**
+ * This interface defines the contract for a rule definition of a token.
+ *
+ * @access public
+ * @interface
+ * @package Lexer
+ */
+interface ITokenRule
+{
+    /**
+     * This method return a tuple representing the token discovered.
+     *
+     * @access public
+     * @param \Unicity\IO\Reader $reader the reader to be used
+     * @return \Unicity\Lexer\Scanner\Tuple a tuple representing the token
+     *                                      discovered
+     */
+    public function process(IO\Reader $reader): ?Lexer\Scanner\Tuple;
 
 }

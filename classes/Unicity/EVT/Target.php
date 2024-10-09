@@ -16,40 +16,43 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\Core;
-	use \Unicity\EVT;
+use Unicity\Core;
+use Unicity\EVT;
 
-	class Target extends Core\AbstractObject {
+class Target extends Core\AbstractObject
+{
+    protected $actor;
 
-		protected $actor;
+    public function __construct($actor)
+    {
+        $this->actor;
+    }
 
-		public function __construct($actor) {
-			$this->actor;
-		}
+    public function __destruct()
+    {
+        parent::__destruct();
+        unset($this->actor);
+    }
 
-		public function __destruct() {
-			parent::__destruct();
-			unset($this->actor);
-		}
+    public function getActor()
+    {
+        return $this->actor;
+    }
 
-		public function getActor() {
-			return $this->actor;
-		}
+    public function jsonSerialize()
+    {
+        return [
+            'actor' => $this->actor,
+        ];
+    }
 
-		public function jsonSerialize() {
-			return [
-				'actor' => $this->actor,
-			];
-		}
-
-		public function toSource() : EVT\Source {
-			return new EVT\Source($this->actor);
-		}
-
-	}
+    public function toSource(): EVT\Source
+    {
+        return new EVT\Source($this->actor);
+    }
 
 }

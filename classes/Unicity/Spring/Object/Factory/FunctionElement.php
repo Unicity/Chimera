@@ -17,47 +17,43 @@
  * limitations under the License.
  */
 
-namespace Unicity\Spring\Object\Factory {
+namespace Unicity\Spring\Object\Factory;
 
-	use \Unicity\Spring;
-	use \Unicity\Throwable;
+use Unicity\Spring;
+use Unicity\Throwable;
 
-	class FunctionElement extends Spring\Object\Factory {
+class FunctionElement extends Spring\Object\Factory
+{
+    /**
+     * This method returns an object matching the description specified by the element.
+     *
+     * @access public
+     * @param Spring\Object\Parser $parser a reference to the parser
+     * @param \SimpleXMLElement $element the element to be parsed
+     * @return mixed an object matching the description
+     *               specified by the element
+     * @throws Throwable\Parse\Exception indicates that a problem occurred
+     *                                   when parsing
+     */
+    public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element)
+    {
+        $attributes = $parser->getElementAttributes($element);
 
-		/**
-		 * This method returns an object matching the description specified by the element.
-		 *
-		 * @access public
-		 * @param Spring\Object\Parser $parser                      a reference to the parser
-		 * @param \SimpleXMLElement $element                        the element to be parsed
-		 * @return mixed                                            an object matching the description
-		 *                                                          specified by the element
-		 * @throws Throwable\Parse\Exception                        indicates that a problem occurred
-		 *                                                          when parsing
-		 */
-		public function getObject(Spring\Object\Parser $parser, \SimpleXMLElement $element) {
-			$attributes = $parser->getElementAttributes($element);
-
-			if (isset($attributes['delegate-object']) && isset($attributes['delegate-method'])) {
-				$delegate_object = $parser->valueOf($attributes['delegate-object']);
-				if ($parser->isClassName($delegate_object) && class_exists($delegate_object)) {
-					$delegate_method = $parser->valueOf($attributes['delegate-method']);
-					if ($parser->isMethodName($delegate_method) && method_exists($delegate_object, $delegate_method)) {
-						return array($delegate_object, $delegate_method);
-					}
-					else {
-						throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid method name, but got ":name".', array(':name' => $delegate_method));
-					}
-				}
-				else {
-					throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid class name, but got ":name".', array(':name' => $delegate_object));
-				}
-			}
-			else {
-				throw new Throwable\Parse\Exception('Unable to process Spring XML. Tag ":tag" is missing a valid class name and/or method name.', array(':tag' => 'function'));
-			}
-		}
-
-	}
+        if (isset($attributes['delegate-object']) && isset($attributes['delegate-method'])) {
+            $delegate_object = $parser->valueOf($attributes['delegate-object']);
+            if ($parser->isClassName($delegate_object) && class_exists($delegate_object)) {
+                $delegate_method = $parser->valueOf($attributes['delegate-method']);
+                if ($parser->isMethodName($delegate_method) && method_exists($delegate_object, $delegate_method)) {
+                    return [$delegate_object, $delegate_method];
+                } else {
+                    throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid method name, but got ":name".', [':name' => $delegate_method]);
+                }
+            } else {
+                throw new Throwable\Parse\Exception('Unable to process Spring XML. Expected a valid class name, but got ":name".', [':name' => $delegate_object]);
+            }
+        } else {
+            throw new Throwable\Parse\Exception('Unable to process Spring XML. Tag ":tag" is missing a valid class name and/or method name.', [':tag' => 'function']);
+        }
+    }
 
 }

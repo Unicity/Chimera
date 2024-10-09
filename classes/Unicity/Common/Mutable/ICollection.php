@@ -17,27 +17,25 @@
  * limitations under the License.
  */
 
-namespace Unicity\Common\Mutable {
+namespace Unicity\Common\Mutable;
 
-	use \Unicity\Common;
+use Unicity\Common;
 
-	/**
-	 * This interface defines the contract for a mutable collection.
-	 *
-	 * @access public
-	 * @interface
-	 * @package Common
-	 */
-	interface ICollection extends Common\ICollection {
-
-		/**
-		 * This method will remove all elements from the collection.
-		 *
-		 * @access public
-		 * @return boolean                                          whether all elements were removed
-		 */
-		public function clear();
-
-	}
+/**
+ * This interface defines the contract for a mutable collection.
+ *
+ * @access public
+ * @interface
+ * @package Common
+ */
+interface ICollection extends Common\ICollection
+{
+    /**
+     * This method will remove all elements from the collection.
+     *
+     * @access public
+     * @return boolean whether all elements were removed
+     */
+    public function clear();
 
 }

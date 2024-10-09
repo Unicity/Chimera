@@ -16,32 +16,32 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\VLD\Parser\Definition {
+namespace Unicity\VLD\Parser\Definition;
 
-	use \Unicity\VLD;
+use Unicity\VLD;
 
-	abstract class Control {
+abstract class Control
+{
+    protected static $controls = [
+        'all' => '\Unicity\VLD\Parser\Definition\AllControl',
+        'sel' => '\Unicity\VLD\Parser\Definition\SelControl',
+        'seq' => '\Unicity\VLD\Parser\Definition\SeqControl',
+    ];
 
-		protected static $controls = array(
-			'all' => '\Unicity\VLD\Parser\Definition\AllControl',
-			'sel' => '\Unicity\VLD\Parser\Definition\SelControl',
-			'seq' => '\Unicity\VLD\Parser\Definition\SeqControl',
-		);
+    protected $context;
 
-		protected $context;
+    public function __construct(VLD\Parser\Context $context)
+    {
+        $this->context = $context;
+    }
 
-		public function __construct(VLD\Parser\Context $context) {
-			$this->context = $context;
-		}
+    abstract public function get();
 
-		public abstract function get();
-
-		public static function getControl(string $name) : string {
-			return static::$controls[$name];
-		}
-
-	}
+    public static function getControl(string $name): string
+    {
+        return static::$controls[$name];
+    }
 
 }

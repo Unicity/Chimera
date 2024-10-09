@@ -16,46 +16,50 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Config\Inc {
+namespace Unicity\Config\Inc;
 
-	use \Unicity\Config;
-	use \Unicity\Core;
-	use \Unicity\Throwable;
+use Unicity\Config;
+use Unicity\Core;
 
-	/**
-	 * This class is used to build a collection from a PHP-include file.
-	 *
-	 * @access public
-	 * @class
-	 * @package Config
-	 */
-	class Reader extends Config\Reader {
+/**
+ * This class is used to build a collection from a PHP-include file.
+ *
+ * @access public
+ * @class
+ * @package Config
+ */
+class Reader extends Config\Reader
+{
+    /**
+     * This method returns the processed resource as a collection.
+     *
+     * @access public
+     * @param string $path the path to the value to be returned
+     * @return mixed the resource as a collection
+     */
+    public function read($path = null)
+    {
+        if ($this->file->getFileSize() > 0) {
+            $file = $this->file;
+            $reader = function () use ($file) {
+                return include($file);
+            };
+            $collection = $reader();
+            if ($path !== null) {
+                try {
+                    $path = Core\Convert::toString($path);
+                    $collection = Config\Helper::factory($collection)->getValue($path);
+                } catch (\Throwable $ex) {
+                    return null;
+                }
+            }
 
-		/**
-		 * This method returns the processed resource as a collection.
-		 *
-		 * @access public
-		 * @param string $path                                      the path to the value to be returned
-		 * @return mixed                                            the resource as a collection
-		 */
-		public function read($path = null) {
-			if ($this->file->getFileSize() > 0) {
-				$file = $this->file;
-				$reader = function () use ($file) {
-					return include($file);
-				};
-				$collection = $reader();
-				if ($path !== null) {
-					$path = Core\Convert::toString($path);
-					$collection = Config\Helper::factory($collection)->getValue($path);
-				}
-				return $collection;
-			}
-			return null;
-		}
+            return $collection;
+        }
 
-	}
+        return null;
+    }
 
 }

@@ -16,38 +16,38 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT\EventWriter;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class StdOut extends EVT\EventWriter {
+class StdOut extends EVT\EventWriter
+{
+    /**
+     * This constructor initializes the class with the specified resource.
+     *
+     * @access public
+     * @param array $metadata the metadata to be set
+     */
+    public function __construct(array $metadata = [])
+    {
+        parent::__construct(array_merge([
+            'eol' => "\n",
+        ], $metadata));
+    }
 
-		/**
-		 * This constructor initializes the class with the specified resource.
-		 *
-		 * @access public
-		 * @param array $metadata                                   the metadata to be set
-		 */
-		public function __construct(array $metadata = array()) {
-			parent::__construct(array_merge(array(
-				'eol' => "\n",
-			), $metadata));
-		}
-
-		/**
-		 * This method writes an array of events to the event storage.
-		 *
-		 * @access public
-		 * @param array $events                                     the events to be written
-		 */
-		public function write(array $events) {
-			foreach ($events as $event) {
-				fwrite(STDOUT, json_encode($event) . $this->metadata['eol']);
-			}
-		}
-
-	}
+    /**
+     * This method writes an array of events to the event storage.
+     *
+     * @access public
+     * @param array $events the events to be written
+     */
+    public function write(array $events)
+    {
+        foreach ($events as $event) {
+            fwrite(STDOUT, json_encode($event) . $this->metadata['eol']);
+        }
+    }
 
 }

@@ -16,68 +16,84 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\EVT {
+namespace Unicity\EVT;
 
-	use \Unicity\Core;
-	use \Unicity\EVT;
+use Unicity\Core;
+use Unicity\EVT;
 
-	abstract class ResponseHandler extends Core\AbstractObject {
+abstract class ResponseHandler extends Core\AbstractObject
+{
+    /**
+     * This method processes the message and context.
+     *
+     * @access public
+     * @final
+     * @param EVT\Response $message the message to be processed
+     * @param EVT\Context $context the context to be processed
+     */
+    final public function __invoke(EVT\Response $message, EVT\Context $context)
+    {
+        $exchange = new EVT\Exchange([
+            'context' => $context,
+            'message' => $message,
+        ]);
 
-		/**
-		 * This method processes the message and context.
-		 *
-		 * @access public
-		 * @final
-		 * @param EVT\Response $message                             the message to be processed
-		 * @param EVT\Context $context                              the context to be processed
-		 */
-		public final function __invoke(EVT\Response $message, EVT\Context $context) {
-			$exchange = new EVT\Exchange([
-				'context' => $context,
-				'message' => $message,
-			]);
+        try {
+            if ($this->isSuccessful($exchange)) {
+                $this->onSuccess($exchange);
+            } else {
+                $this->onFailure($exchange);
+            }
+        } catch (\Throwable $throwable) {
+            $this->onException($exchange, $throwable);
+        }
+    }
 
-			if ($this->isSuccessful($exchange)) {
-				$this->onSuccess($exchange);
-			}
-			else {
-				$this->onFailure($exchange);
-			}
-		}
+    /**
+     * This method tests whether the exchange was successful.
+     *
+     * @access public
+     * @param EVT\Exchange $exchange the exchange to be evaluated
+     * @return bool whether the exchange was successful
+     */
+    public function isSuccessful(EVT\Exchange $exchange): bool
+    {
+        return true;
+    }
 
-		/**
-		 * This method tests whether the exchange was successful.
-		 *
-		 * @access public
-		 * @param EVT\Exchange $exchange                            the exchange to be evaluated
-		 * @return bool                                             whether the exchange was successful
-		 */
-		public function isSuccessful(EVT\Exchange $exchange) : bool {
-			return true;
-		}
+    /**
+     * This method processes an exception message.
+     *
+     * @access public
+     * @param EVT\Exchange $exchange the exchange to be processed
+     */
+    public function onException(EVT\Exchange $exchange, \Throwable $throwable): void
+    {
+        throw $throwable;
+    }
 
-		/**
-		 * This method processes a failure message.
-		 *
-		 * @access public
-		 * @param EVT\Exchange $exchange                            the exchange to be processed
-		 */
-		public function onFailure(EVT\Exchange $exchange) : void {
-			// do nothing
-		}
+    /**
+     * This method processes a failure message.
+     *
+     * @access public
+     * @param EVT\Exchange $exchange the exchange to be processed
+     */
+    public function onFailure(EVT\Exchange $exchange): void
+    {
+        // do nothing
+    }
 
-		/**
-		 * This method processes a success message.
-		 *
-		 * @access public
-		 * @param EVT\Exchange $exchange                            the exchange to be processed
-		 */
-		public function onSuccess(EVT\Exchange $exchange) : void {
-			// do nothing
-		}
-
-	}
+    /**
+     * This method processes a success message.
+     *
+     * @access public
+     * @param EVT\Exchange $exchange the exchange to be processed
+     */
+    public function onSuccess(EVT\Exchange $exchange): void
+    {
+        // do nothing
+    }
 
 }

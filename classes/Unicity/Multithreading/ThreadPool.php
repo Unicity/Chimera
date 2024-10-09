@@ -16,76 +16,79 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\Multithreading {
+namespace Unicity\Multithreading;
 
-	use \Unicity\Core;
+use Unicity\Core;
 
-	class ThreadPool extends Core\AbstractObject {
+class ThreadPool extends Core\AbstractObject
+{
+    /**
+     * This variable stores the workers in the pool.
+     *
+     * @access protected
+     * @var array
+     */
+    protected $workers;
 
-		/**
-		 * This variable stores the workers in the pool.
-		 *
-		 * @access protected
-		 * @var array
-		 */
-		protected $workers;
+    /**
+     * This constructor initializes the class.
+     *
+     * @access public
+     */
+    public function __construct()
+    {
+        $this->workers = [];
+    }
 
-		/**
-		 * This constructor initializes the class.
-		 *
-		 * @access public
-		 */
-		public function __construct() {
-			$this->workers = array();
-		}
+    /**
+     * This method adds a worker to the pool.
+     *
+     * @access public
+     * @param \Thread $worker the worker to be added
+     */
+    public function add(\Thread $worker)
+    {
+        $this->workers[] = $worker;
+    }
 
-		/**
-		 * This method adds a worker to the pool.
-		 *
-		 * @access public
-		 * @param \Thread $worker                                   the worker to be added
-		 */
-		public function add(\Thread $worker) {
-			$this->workers[] = $worker;
-		}
+    /**
+     * This method cleans the pool of all workers.
+     *
+     * @access public
+     */
+    public function clean()
+    {
+        foreach ($this->workers as $id => $worker) {
+            if (!$worker->isRunning()) {
+                unset($this->workers[$id]);
+            }
+        }
+    }
 
-		/**
-		 * This method cleans the pool of all workers.
-		 *
-		 * @access public
-		 */
-		public function clean() {
-			foreach ($this->workers as $id => $worker) {
-				if (!$worker->isRunning()) {
-					unset($this->workers[$id]);
-				}
-			}
-		}
+    /**
+     * This method calls join on each worker in the pool.
+     *
+     * @access public
+     */
+    public function join()
+    {
+        foreach ($this->workers as $id => $worker) {
+            $this->workers[$id]->join();
+        }
+    }
 
-		/**
-		 * This method calls join on each worker in the pool.
-		 *
-		 * @access public
-		 */
-		public function join() {
-			foreach ($this->workers as $id => $worker) {
-				$this->workers[$id]->join();
-			}
-		}
-
-		/**
-		 * This method starts each worker in the pool.
-		 *
-		 * @access
-		 */
-		public function start() {
-			foreach ($this->workers as $id => $worker) {
-				$this->workers[$id]->start();
-			}
-		}
-
-	}
+    /**
+     * This method starts each worker in the pool.
+     *
+     * @access
+     */
+    public function start()
+    {
+        foreach ($this->workers as $id => $worker) {
+            $this->workers[$id]->start();
+        }
+    }
 
 }

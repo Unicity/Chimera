@@ -16,28 +16,27 @@
  * limitations under the License.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Unicity\FTP {
+namespace Unicity\FTP;
 
-	use \Unicity\EVT;
+use Unicity\EVT;
 
-	class Response extends EVT\Response {
-
-		public function __construct(array $map = []) {
-			parent::__construct(array_merge([
-				'body' => '',
-				'host' => '',
-				'local_uri' => null,
-				'method' => 'PUT', // Note: 'GET' to download; 'PUT' to upload (default)
-				'mode' => FTP_ASCII,
-				'port' => 21,
-				'remote_uri' => null,
-				'status' => 200,
-				'statusText' => 'OK',
-			], $map));
-		}
-
-	}
+class Response extends EVT\Response
+{
+    public function __construct(array $map = [])
+    {
+        parent::__construct(array_merge([
+            'body' => '',
+            'host' => '',
+            'local_uri' => null,
+            'method' => 'PUT', // Note: 'GET' to download; 'PUT' to upload (default)
+            'mode' => FTP_ASCII,
+            'port' => 21,
+            'remote_uri' => null,
+            'status' => 200,
+            'statusText' => 'OK',
+        ], $map));
+    }
 
 }
