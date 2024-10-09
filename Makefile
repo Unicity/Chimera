@@ -22,14 +22,9 @@
 # Definitions
 ########################################################################
 
-DOCKER_APP = chimera-app
-DOCKER_GIT = unicity/chimera
-DOCKER_PORT = 5000
-
 BOOTSTRAP_FILE = ./tests/Bootstrap.php
 BOOTSTRAP_SWITCH = --bootstrap $(BOOTSTRAP_FILE)
 
-COMPOSER_DIR = vendor
 COMPOSER_PHAR = composer.phar
 COMPOSER_URL = http://getcomposer.org/installer
 
@@ -79,7 +74,3 @@ install-phpunit:
 # make run-docker
 run-docker:
 	docker-compose up -d
-
-# make clean
-.PHONY: clean
-clean: uninstall clean-docker
