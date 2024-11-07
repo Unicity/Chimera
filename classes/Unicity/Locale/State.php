@@ -96,6 +96,7 @@ class State extends Locale\Country
 
     /**
      * This method returns the translated value for the specified state.
+     * This is done by running multiple queries in a fallback chain.
      *
      * @access protected
      * @param string $state the state to be translated
@@ -163,6 +164,7 @@ class State extends Locale\Country
                     return $records->current();
                 }
 
+                // when state is not in english characters (i.e: korean) we avoid this fallback query
                 if (preg_replace('/[^a-z]/i', '', $state_1) !== '') {
                     $records = DB\SQL::select('locale')
                         ->before(function (DB\Connection\Driver $driver) {
