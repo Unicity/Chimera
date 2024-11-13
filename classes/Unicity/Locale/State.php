@@ -96,6 +96,7 @@ class State extends Locale\Country
 
     /**
      * This method returns the translated value for the specified state.
+     * This is done by running multiple queries in a fallback chain.
      *
      * @access protected
      * @param string $state the state to be translated
@@ -163,21 +164,24 @@ class State extends Locale\Country
                     return $records->current();
                 }
 
-                $records = DB\SQL::select('locale')
-                    ->before(function (DB\Connection\Driver $driver) {
-                        $driver->get_resource()->createFunction('PREG_REPLACE', 'preg_replace', 3);
-                    })
-                    ->from('States')
-                    ->where_block('(')
-                    ->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_1)))
-                    ->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_2)), 'OR')
-                    ->where_block(')')
-                    ->where('CountryNumeric3', '=', $country)
-                    ->limit(1)
-                    ->query();
+                // when state is not in english characters (i.e: korean) we avoid this fallback query
+                if (preg_replace('/[^a-z]/i', '', $state_1) !== '') {
+                    $records = DB\SQL::select('locale')
+                        ->before(function (DB\Connection\Driver $driver) {
+                            $driver->get_resource()->createFunction('PREG_REPLACE', 'preg_replace', 3);
+                        })
+                        ->from('States')
+                        ->where_block('(')
+                        ->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_1)))
+                        ->where(DB\SQL::expr("LOWER(PREG_REPLACE('/[^a-z]/i', '', [StateAlias]))"), '=', strtolower(preg_replace('/[^a-z]/i', '', $state_2)), 'OR')
+                        ->where_block(')')
+                        ->where('CountryNumeric3', '=', $country)
+                        ->limit(1)
+                        ->query();
 
-                if ($records->is_loaded()) {
-                    return $records->current();
+                    if ($records->is_loaded()) {
+                        return $records->current();
+                    }
                 }
 
                 $records = DB\SQL::select('locale')
