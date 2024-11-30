@@ -35,6 +35,33 @@ use Unicity\Throwable;
 class XML extends \SimpleXMLElement implements Core\IObject, \JsonSerializable
 {
     /**
+     * Regex for identifying invalid characters in XML:
+     *
+     * XML specification defines a strict set of rules for valid characters:
+     * - Control characters allowed: Tab (U+0009), Line Feed (U+000A), Carriage Return (U+000D).
+     * - Printable characters allowed:
+     *   - U+0020 (Space) through U+D7FF.
+     *   - U+E000 through U+FFFD.
+     *   - Characters beyond U+10000 are allowed but not covered here.
+     *
+     * This regex identifies characters outside these ranges, which are considered invalid
+     * in XML documents and may result in fatal parsing errors.
+     *
+     * Explanation of the regex:
+     * - `\x{0009}`: Matches Tab (U+0009).
+     * - `\x{000a}`: Matches Line Feed (U+000A).
+     * - `\x{000d}`: Matches Carriage Return (U+000D).
+     * - `\x{0020}-\x{D7FF}`: Matches printable characters from U+0020 (Space) to U+D7FF.
+     * - `\x{E000}-\x{FFFD}`: Matches additional printable characters from U+E000 to U+FFFD.
+     * - The `^` at the start of the regex negates these ranges, matching all invalid characters.
+     * - The `/u` flag ensures the regex operates in UTF-8 mode.
+     *
+     * Note: This regex and the functionality below are tightly coupled with how PHP's regex engine
+     *   handles Unicode characters. This may need to be adjusted if the behavior changes in future PHP versions.
+     */
+    public const XML_INVALID_CHARS_REGEX = '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u';
+
+    /**
      * This variable stores the file name to be used when imported/exported.
      *
      * @access protected
@@ -360,8 +387,7 @@ class XML extends \SimpleXMLElement implements Core\IObject, \JsonSerializable
     }
 
     /**
-     * This method returns an instance of the class with the contents of the specified
-     * XML file.
+     * This method returns an instance of the class with the contents of the specified XML file.
      *
      * @access public
      * @static
@@ -369,21 +395,81 @@ class XML extends \SimpleXMLElement implements Core\IObject, \JsonSerializable
      * @return Core\Data\XML an instance of this class
      * @throws Throwable\InvalidArgument\Exception indicates a data type mismatch
      * @throws Throwable\FileNotFound\Exception indicates that the file does not exist
+     * @throws \RuntimeException indicates a failure to parse XML
      */
-    public static function load(IO\File $file): Core\Data\XML
+    public static function load(IO\File $file, bool $removeInvalid = true, string $replacement = '�'): Core\Data\XML
     {
         if (!$file->exists()) {
-            throw new Throwable\FileNotFound\Exception('Unable to locate file. File ":file" does not exist.', [':file' => $file]);
+            throw new Throwable\FileNotFound\Exception(
+                'Unable to locate file. File does not exist.'
+            );
         }
 
         $buffer = file_get_contents($file);
-        $buffer = preg_replace('/^' . pack('H*', 'EFBBBF') . '/', '', $buffer);
 
+        // Remove UTF-8 BOM
+        $buffer = preg_replace('/^\xEF\xBB\xBF/', '', $buffer);
+
+        // Ensure XML declaration exists
         if (!preg_match('/^<\?xml\s+[^?>]+\?>/', $buffer)) {
             $buffer = static::declaration(Core\Data\Charset::UTF_8_ENCODING) . "\n" . $buffer;
         }
 
-        $xml = new static($buffer);
+        // Detect invalid characters
+        $invalidChars = self::detectInvalidXmlChars($buffer);
+
+        if (!empty($invalidChars)) {
+            if ($removeInvalid) {
+                // Log out the invalid characters and throw an exception
+                foreach ($invalidChars as $charDetails) {
+                    error_log(sprintf(
+                        'Invalid character detected: "%s" (U+%04X) at position %d in field "%s". Replaced with "%s".',
+                        $charDetails['character'],
+                        $charDetails['codepoint'],
+                        $charDetails['position'],
+                        $charDetails['context'],
+                        $replacement
+                    ));
+                }
+
+                $buffer = self::sanitizeXmlBuffer($buffer, $replacement);
+            } else {
+                throw new \RuntimeException(sprintf(
+                    'Invalid characters detected in XML. Details: %s',
+                    json_encode([
+                        'invalidChars' => $invalidChars,
+                    ])
+                ));
+            }
+        }
+
+        // enable xml parsing errors so that we can catch them
+        libxml_use_internal_errors(true);
+
+        try {
+            $xml = new static($buffer);
+        } catch (\Exception $e) {
+            // aggregate libxml errors into an error string
+            $libxmlErrors = '';
+            foreach (libxml_get_errors() as $error) {
+                $libxmlErrors .= sprintf(
+                    'XML Error: %s at line %d, column %d; ',
+                    trim($error->message),
+                    $error->line,
+                    $error->column
+                );
+            }
+            libxml_clear_errors();
+
+            throw new \RuntimeException(sprintf(
+                'Failed to parse XML. Error: %s. XML Errors: %s',
+                $e->getMessage(),
+                $libxmlErrors
+            ), 0, $e);
+        }
+
+        // reset xml-parsing error handling
+        libxml_use_internal_errors(false);
 
         return $xml;
     }
@@ -491,4 +577,73 @@ class XML extends \SimpleXMLElement implements Core\IObject, \JsonSerializable
         return $buffer;
     }
 
+    /**
+     * Polyfill for mb_ord for PHP < 7.2.
+     * Returns the Unicode code point of a character.
+     *
+     * @param string $char The character to convert.
+     * @param string $encoding The character encoding (default: UTF-8).
+     * @return int|null The Unicode code point or null on failure.
+     */
+    public static function mb_ord($char, $encoding = 'UTF-8')
+    {
+        // Use mb_ord if available use it
+        if (function_exists('mb_ord')) {
+            return mb_ord($char, $encoding);
+        }
+
+        if (strlen($char) === 1) {
+            return ord($char); // For single-byte characters
+        }
+        $result = unpack('N', mb_convert_encoding($char, 'UCS-4BE', $encoding));
+
+        return $result ? $result[1] : null;
+    }
+
+    /**
+     * Detects invalid characters in an XML string buffer based on the XML specification.
+     *
+     * This function scans the buffer for invalid characters and returns their details,
+     * including the character, its Unicode code point, and its position in the buffer.
+     *
+     * @param string $buffer The XML string buffer to analyze.
+     * @return array An array of invalid characters, each represented as an associative array with:
+     *               - 'char': The invalid character.
+     *               - 'codepoint': The Unicode code point of the character.
+     *               - 'offset': The position of the character in the buffer.
+     */
+    public static function detectInvalidXmlChars(string $buffer): array
+    {
+        $invalidChars = [];
+        if (preg_match_all(self::XML_INVALID_CHARS_REGEX, $buffer, $matches, PREG_OFFSET_CAPTURE)) {
+            foreach ($matches[0] as [$char, $offset]) {
+                $invalidChars[] = [
+                    'char' => $char,
+                    'codepoint' => self::mb_ord($char, 'UTF-8'), // TODO after upgrading php version use mb_ord
+                    'offset' => $offset,
+                ];
+            }
+        }
+
+        return $invalidChars;
+    }
+
+    /**
+     * Removes or replaces invalid XML characters in a string buffer.
+     *
+     * XML has strict character validity rules, and characters outside the allowed ranges
+     * can cause parsing errors. This function ensures the buffer complies with the XML
+     * specification by either removing invalid characters or replacing them with a specified value.
+     *
+     * By default, invalid characters are removed. Optionally, a replacement string can be provided
+     * to substitute for invalid characters.
+     *
+     * @param string $buffer The XML string buffer to sanitize.
+     * @param string $replacement The string to replace invalid characters with. Defaults to an empty string.
+     * @return string The sanitized XML buffer.
+     */
+    public static function sanitizeXmlBuffer(string $buffer, string $replacement = ''): string
+    {
+        return preg_replace(self::XML_INVALID_CHARS_REGEX, $replacement, $buffer);
+    }
 }
