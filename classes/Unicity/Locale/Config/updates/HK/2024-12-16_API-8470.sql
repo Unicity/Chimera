@@ -1,0 +1,23 @@
+/* Hong Kong States (it seems there are no ISO values for this, so we set them by our own criteria) */
+INSERT INTO States (StateID, StateName, StateCode, CountryNumeric3, StateAlpha2, StateAlpha3, StateAlias, Labels)
+VALUES
+(2421, '中西區', '01', '344', NULL, NULL, '中西區', 'commercial')
+,(2422, '愉景灣', '02', '344', NULL, NULL, '愉景灣', 'commercial')
+,(2423, '東區', '03', '344', NULL, NULL, '東區', 'commercial')
+,(2424, '九龍城區', '04', '344', NULL, NULL, '九龍城區', 'commercial')
+,(2425, '葵青區', '05', '344', NULL, NULL, '葵青區', 'commercial')
+,(2426, '觀塘區', '06', '344', NULL, NULL, '觀塘區', 'commercial')
+,(2427, '大嶼山地區', '07', '344', NULL, NULL, '大嶼山地區', 'commercial')
+,(2428, '北區', '08', '344', NULL, NULL, '北區', 'commercial')
+,(2429, '西貢區', '09', '344', NULL, NULL, '西貢區', 'commercial')
+,(2430, '深水埗區', '10', '344', NULL, NULL, '深水埗區', 'commercial')
+,(2431, '南區', '11', '344', NULL, NULL, '南區', 'commercial')
+,(2432, '大埔區', '12', '344', NULL, NULL, '大埔區', 'commercial')
+,(2433, '荃灣區', '13', '344', NULL, NULL, '荃灣區', 'commercial')
+,(2434, '屯門區', '14', '344', NULL, NULL, '屯門區', 'commercial')
+,(2435, '東涌區', '15', '344', NULL, NULL, '東涌區', 'commercial')
+,(2436, '灣仔區', '16', '344', NULL, NULL, '灣仔區', 'commercial')
+,(2437, '黃大仙區', '17', '344', NULL, NULL, '黃大仙區', 'commercial')
+,(2438, '油尖旺區', '18', '344', NULL, NULL, '油尖旺區', 'commercial')
+,(2439, '元朗區', '19', '344', NULL, NULL, '元朗區', 'commercial')
+;
